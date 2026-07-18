@@ -1,36 +1,63 @@
-import type { BottomSheetTab } from "./types";
+import { Link, useLocation } from "react-router";
 
 type SheetNavigationProps = {
-  activeTab: BottomSheetTab;
-  onTabChange: (tab: BottomSheetTab) => void;
+  onNavigate: () => void;
 };
 
-const tabs: Array<{ id: BottomSheetTab; label: string; icon: "list" | "qr" | "map" }> = [
-  { id: "search", label: "Search", icon: "list" },
-  { id: "qr", label: "QR", icon: "qr" },
-  { id: "map", label: "Map", icon: "map" },
+type Tab = {
+  id: "search" | "qr" | "map" | "schedule";
+  label: string;
+  path: string;
+  icon: "list" | "qr" | "map" | "calendar";
+};
+
+const tabs: Tab[] = [
+  { id: "search", label: "Search", path: "/events", icon: "list" },
+  { id: "qr", label: "QR", path: "/qr", icon: "qr" },
+  { id: "map", label: "Map", path: "/", icon: "map" },
+  { id: "schedule", label: "Schedule", path: "/schedule", icon: "calendar" },
 ];
 
-export function SheetNavigation({ activeTab, onTabChange }: SheetNavigationProps) {
+export function SheetNavigation({ onNavigate }: SheetNavigationProps) {
+  const location = useLocation();
+  const activeTab = getActiveTab(location.pathname);
+
   return (
     <nav className="sheet-nav" aria-label="Bottom sheet navigation">
-      {tabs.map((tab) => (
-        <button
-          aria-label={tab.label}
-          aria-pressed={activeTab === tab.id}
-          className="sheet-nav__button"
-          key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          type="button"
-        >
-          <SheetIcon name={tab.icon} />
-        </button>
-      ))}
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <Link
+            aria-current={isActive ? "page" : undefined}
+            aria-label={tab.label}
+            className="sheet-nav__button"
+            key={tab.id}
+            onClick={onNavigate}
+            replace={isActive}
+            to={{ pathname: tab.path, search: location.search }}
+          >
+            <SheetIcon name={tab.icon} />
+          </Link>
+        );
+      })}
     </nav>
   );
 }
 
-function SheetIcon({ name }: { name: "list" | "qr" | "map" }) {
+function getActiveTab(pathname: string): Tab["id"] {
+  if (pathname === "/events" || pathname.startsWith("/e/")) {
+    return "search";
+  }
+  if (pathname === "/qr" || pathname.startsWith("/q/")) {
+    return "qr";
+  }
+  if (pathname === "/schedule") {
+    return "schedule";
+  }
+  return "map";
+}
+
+function SheetIcon({ name }: { name: Tab["icon"] }) {
   if (name === "list") {
     return (
       <svg className="sheet-icon" viewBox="0 0 32 32" aria-hidden="true">
@@ -45,6 +72,15 @@ function SheetIcon({ name }: { name: "list" | "qr" | "map" }) {
       <svg className="sheet-icon" viewBox="0 0 32 32" aria-hidden="true">
         <path d="M4 9.5 12 6l8 3.5L28 6v16.5L20 26l-8-3.5L4 26V9.5Z" />
         <path d="M12 6v16.5M20 9.5V26" />
+      </svg>
+    );
+  }
+
+  if (name === "calendar") {
+    return (
+      <svg className="sheet-icon" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="5" y="7" width="22" height="20" rx="2" />
+        <path d="M10 4v6M22 4v6M5 13h22M10 18h3M16 18h3M22 18h1M10 23h3M16 23h3" />
       </svg>
     );
   }
