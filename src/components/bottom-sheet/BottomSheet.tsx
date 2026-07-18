@@ -1,19 +1,22 @@
-import { type CSSProperties, type PointerEvent, useEffect, useMemo, useRef, useState } from "react";
-import { MapPanel } from "./MapPanel";
-import { QrPanel } from "./QrPanel";
-import { SearchPanel } from "./SearchPanel";
+import {
+  type CSSProperties,
+  type PointerEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { SheetNavigation } from "./SheetNavigation";
-import type { BottomSheetTab } from "./types";
 
 type BottomSheetProps = {
-  activeTab: BottomSheetTab;
-  onTabChange: (tab: BottomSheetTab) => void;
+  children: ReactNode;
 };
 
 const snapPoints = [22, 58, 82] as const;
 const initialSnapPoint = 58;
 
-export function BottomSheet({ activeTab, onTabChange }: BottomSheetProps) {
+export function BottomSheet({ children }: BottomSheetProps) {
   const [height, setHeight] = useState(initialSnapPoint);
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({ startY: 0, startHeight: initialSnapPoint, viewportHeight: 1 });
@@ -98,17 +101,11 @@ export function BottomSheet({ activeTab, onTabChange }: BottomSheetProps) {
         <div className="bottom-sheet__handle" aria-hidden="true" />
       </div>
       <SheetNavigation
-        activeTab={activeTab}
-        onTabChange={(tab) => {
-          onTabChange(tab);
+        onNavigate={() => {
           setHeight((currentHeight) => Math.max(currentHeight, initialSnapPoint));
         }}
       />
-      <div className="bottom-sheet__body">
-        {activeTab === "search" && <SearchPanel />}
-        {activeTab === "qr" && <QrPanel />}
-        {activeTab === "map" && <MapPanel />}
-      </div>
+      <div className="bottom-sheet__body">{children}</div>
     </section>
   );
 }
