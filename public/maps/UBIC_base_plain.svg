@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="674.15906"
+   height="287.35977"
+   viewBox="0 0 178.37125 76.03061"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:jsh="http://www.justsystem.co.jp/hanako13/svg">
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="ArrowWide"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1.2"
+       markerHeight="1.2"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         id="path1-9" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker29"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1.2"
+       markerHeight="1.2"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         id="path29" />
+    </marker>
+  </defs>
+  <g
+     id="Frame"
+     transform="translate(-4.7625004,-4.7625002)">
+    <path
+       id="fill"
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       d="M 30.474169,65.430208 V 68.494621 80.752269 H 182.90626 V 46.026854 H 174.60183 V 19.947012 H 55.962421 L 41.207824,5.2501698 20.022878,5.2582215 5.0486942,20.196407 5.0568442,41.314022 20.042443,56.24083 30.474209,56.23693 V 59.301342"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <path
+       id="frame"
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 30.474169,65.430208 V 68.494621 80.752269 H 182.90626 V 46.026854 H 174.60183 V 43.917958 M 174.60196,39.447027 174.60183,19.947012 H 55.962421 L 41.207824,5.2501698 20.022878,5.2582215 5.0486942,20.196407 5.0568442,41.314022 20.042443,56.24083 30.474209,56.23693 V 59.301342"
+       transform="translate(-0.02127678,-0.22373413)" />
+  </g>
+  <g
+     id="Part"
+     transform="translate(-4.7625004,-4.7625002)">
+    <rect
+       style="display:inline;fill:#fafafa;fill-opacity:1;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-dasharray:0.396875, 1.5875;stroke-dashoffset:0;stroke-opacity:1"
+       id="area_ResearchLab"
+       width="45.485954"
+       height="17.114349"
+       x="100.33903"
+       y="49.250015"
+       ry="3.4340749"
+       rx="3.9813941"
+       transform="translate(0.02873162,-0.17372643)" />
+    <rect
+       style="display:inline;fill:#fafafa;fill-opacity:1;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-dasharray:0.396875, 1.58749;stroke-dashoffset:0;stroke-opacity:1"
+       id="area_Meeting"
+       width="45.48653"
+       height="17.036486"
+       x="100.33903"
+       y="29.580961"
+       ry="3.422596"
+       rx="3.9813933"
+       transform="translate(0.02873162,-0.17372643)" />
+    <rect
+       style="display:inline;fill:#fafafa;fill-opacity:1;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-dasharray:0.396875, 1.5875;stroke-dashoffset:0;stroke-opacity:1"
+       id="area_CoworkLounge"
+       width="22.088909"
+       height="36.783165"
+       x="75.772346"
+       y="29.581869"
+       ry="4.3534684"
+       rx="4.9406466"
+       transform="translate(0.02873162,-0.17372643)" />
+    <path
+       id="area_Exchange"
+       style="display:inline;opacity:1;fill:#fafafa;fill-opacity:1;stroke:#000000;stroke-width:0.396875;stroke-linecap:round;stroke-dasharray:0.396875, 1.5875;stroke-dashoffset:0"
+       d="M 58.005808,40.191337 C 58.029878,38.293609 58.012008,35.708599 58.005808,33.036208 57.997608,29.464978 59.795375,29.580966 62.291794,29.580966 H 67.939185 C 70.508591,29.580966 71.985659,29.513026 72.004965,33.548671 72.024065,37.540817 72.022525,59.349339 72.004965,62.793352 71.996165,64.520641 70.624173,66.329924 68.909768,66.364205 H 46.256481 C 44.542075,66.398485 43.116459,64.520664 43.116459,62.793352 V 58.636158 C 43.116459,56.707974 44.574016,56.080014 45.799043,54.843823 47.819182,52.805272 54.417933,46.106961 56.968838,43.489029 57.919782,42.5131 57.984121,41.90108 58.005808,40.191337 Z"
+       transform="translate(0.02873162,-0.17372643)" />
+    <path
+       style="display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 148.01363,37.33036 V 46.074169"
+       id="part_3"
+       transform="translate(-0.02127686,-0.22373412)" />
+    <path
+       style="display:inline;opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 73.931745,27.399935 V 68.563792"
+       id="part_2"
+       transform="translate(-0.02127686,-0.22373412)" />
+    <path
+       style="display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       d="M 41.247995,68.647439 V 65.514159 M 41.247995,59.247601 V 56.11432"
+       id="part_1"
+       transform="translate(-0.02127686,-0.22373412)" />
+  </g>
+  <g
+     id="Room"
+     transform="translate(-4.7625004,-4.7625002)">
+    <rect
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_non5"
+       width="17.269918"
+       height="17.383232"
+       x="157.33205"
+       y="19.94713"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_non4"
+       width="4.6502352"
+       height="17.383232"
+       x="152.66386"
+       y="19.94713"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_non3"
+       width="4.6502352"
+       height="9.8504906"
+       x="148.01363"
+       y="27.479872"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <path
+       id="room_kitchenette"
+       style="display:inline;fill:#f0f0f0;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none"
+       d="M 148.02194,24.939979 V 19.947131 H 152.67218 V 27.479859 H 148.02194"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <g
+       id="room_cafe"
+       style="display:inline"
+       transform="translate(-0.02127678,-0.22373413)">
+      <path
+         id="room_cafe-2"
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264584;stroke-dasharray:none"
+         d="M 127.55263,27.47986 H 124.84054 V 19.947127 H 127.55263 C 127.55263,19.947127 130.89231,17.49416 136.36094,17.49416 141.82957,17.49416 145.16925,19.947127 145.16925,19.947127 H 147.88133 V 24.939977 27.473776 Z" />
+      <path
+         id="room_cafe-1"
+         style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.264584;stroke-dasharray:none"
+         d="M 127.56716,27.47986 H 124.84054 V 19.947127 H 127.56716 C 127.56716,19.947127 130.92474,17.49416 136.42267,17.49416 141.9206,17.49416 145.27817,19.947127 145.27817,19.947127 H 148.00479 V 24.939977" />
+    </g>
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_office"
+       width="43.127083"
+       height="7.5327277"
+       x="56.187908"
+       y="19.947157"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <path
+       id="room_toilet"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none"
+       d="M 68.297382,68.584142 H 80.280296 V 80.752408 H 51.428974 V 71.857386 L 53.515122,71.837036 V 68.563792 L 61.695239,68.584142"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <path
+       id="room_non2"
+       style="display:inline;fill:#f0f0f0;stroke:#000000;stroke-width:0.264583"
+       d="M 49.111844,71.857386 H 51.428974 V 74.668268 80.752398 H 46.275074 V 68.584137 L 50.285456,68.563797"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_non1"
+       width="5.0270839"
+       height="12.168262"
+       x="41.247993"
+       y="68.584137"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-dasharray:none;stroke-opacity:1"
+       id="room_AHU"
+       width="10.773935"
+       height="12.168262"
+       x="30.47406"
+       y="68.584137"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project8"
+       width="6.3499999"
+       height="7.5327334"
+       x="118.36497"
+       y="19.947157"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project7"
+       width="6.3499999"
+       height="7.5327334"
+       x="112.01498"
+       y="19.947157"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Multi"
+       width="12.7"
+       height="7.5327334"
+       x="99.314987"
+       y="19.947157"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <path
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.86003;stroke-dasharray:none;stroke-opacity:1"
+       id="room_3DTh"
+       d="M 100.62731,163.95311 -13.672242,164.03901 -94.55497,83.27777 -94.640871,-31.021779 -13.879626,-111.90451 100.41992,-111.99041 181.30265,-31.229163 181.38855,83.070386 Z"
+       transform="matrix(0.18531464,0,0,0.18472832,22.565924,25.714547)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Motion"
+       width="34.876812"
+       height="34.810387"
+       x="148.01363"
+       y="45.941875"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project6"
+       width="11.112499"
+       height="12.168262"
+       x="136.90112"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project5"
+       width="12.170833"
+       height="12.168262"
+       x="124.73029"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project4"
+       width="12.7"
+       height="12.168262"
+       x="112.0303"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project3"
+       width="12.170833"
+       height="12.168262"
+       x="99.859467"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project2"
+       width="10.054167"
+       height="12.168262"
+       x="89.805298"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+    <rect
+       style="display:inline;fill:#fffffe;fill-opacity:1;stroke:#000000;stroke-width:0.529167;stroke-dasharray:none;stroke-opacity:1"
+       id="room_Project1"
+       width="9.5250006"
+       height="12.168262"
+       x="80.280296"
+       y="68.584"
+       transform="translate(-0.02127678,-0.22373413)" />
+  </g>
+  <g
+     id="Text"
+     transform="translate(-4.7625004,-4.7625002)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="128.41907"
+       y="55.291584"
+       id="text_ResearchLab"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="128.41907"
+         y="55.291584"
+         id="tspan4606-81"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px">研究ラボエリア</tspan><tspan
+         x="128.41907"
+         y="58.156868"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan27">Research Lab Area</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="128.42738"
+       y="36.188908"
+       id="text_Meeting"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="128.42738"
+         y="36.188908"
+         id="tspan4606-82"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px">ミーティングスペース</tspan><tspan
+         x="128.42738"
+         y="39.054192"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan26">Meeting Space</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="90.512184"
+       y="41.249424"
+       id="text_CoworkLounge"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="90.512184"
+         y="41.249424"
+         id="tspan4606-4"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px">コワーキング・</tspan><tspan
+         x="90.512184"
+         y="44.424423"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan37">ラウンジスペース</tspan><tspan
+         x="90.512184"
+         y="47.289707"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan25">Coworking </tspan><tspan
+         x="90.512184"
+         y="50.111927"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan39">and Lounge</tspan><tspan
+         x="90.512184"
+         y="52.934147"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan41">Space</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="63.947239"
+       y="50.721157"
+       id="text_Exchange"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="63.947239"
+         y="50.721157"
+         id="tspan4606-3-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px">交流スペース</tspan><tspan
+         x="63.947239"
+         y="53.586441"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan24">Exchange</tspan><tspan
+         x="63.947239"
+         y="56.408661"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan40">Space</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.82222px;line-height:0;font-family:'MS PGothic';display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="142.28299"
+       y="22.138308"
+       id="text_cafe"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="142.28299"
+         y="22.138308"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan28">カフェスペース</tspan><tspan
+         x="142.28299"
+         y="24.650812"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan29">Cafe Space</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="81.110863"
+       y="22.581802"
+       id="text_office"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan33"
+         x="81.110863"
+         y="22.581802">事務室</tspan><tspan
+         x="81.110863"
+         y="25.094307"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.46944px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan17">Office</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.41111px;line-height:1;font-family:'MS PGothic';letter-spacing:-0.0529167px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="126.72443"
+       y="21.131678"
+       id="text_Project8"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="126.72443"
+         y="21.131678"
+         id="tspan4606-7-5-8"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-0"
+         x="126.72443"
+         y="22.56897">ルーム8</tspan><tspan
+         x="126.72443"
+         y="24.006264"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-3">Project</tspan><tspan
+         x="126.69797"
+         y="25.443556"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-5">Room 8</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.41111px;line-height:1;font-family:'MS PGothic';letter-spacing:-0.0529167px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="120.09824"
+       y="21.132711"
+       id="text_Project7"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="120.09824"
+         y="21.132711"
+         id="tspan4606-7-5-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-15"
+         x="120.09824"
+         y="22.570004">ルーム7</tspan><tspan
+         x="120.09824"
+         y="24.007298"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-2">Project</tspan><tspan
+         x="120.07178"
+         y="25.44459"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.41111px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-11">Room 7</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:0;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="110.17448"
+       y="21.776512"
+       id="text_Multi"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan36"
+         x="110.17448"
+         y="21.776512">多目的ルーム</tspan><tspan
+         x="110.17448"
+         y="23.583466"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan18">Multi purpose</tspan><tspan
+         x="110.17448"
+         y="25.347357"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.76389px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan19">Room</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:0;font-family:'MS PGothic';display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="31.787764"
+       y="29.233444"
+       id="text_3DTh"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="31.787764"
+         y="29.233444"
+         id="tspan4606-8"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px">3Dシアター</tspan><tspan
+         x="31.787764"
+         y="32.098728"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan16">3D Theater</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.175px;line-height:1;font-family:'MS PGothic';letter-spacing:0.00153553px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="172.58054"
+       y="60.103893"
+       id="text_Motion"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="172.58054"
+         y="60.103893"
+         id="tspan4606-7-7-1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0.00153553px;text-anchor:middle;stroke-width:0.282222px">運動解析ルーム</tspan><tspan
+         x="172.5813"
+         y="63.278893"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0.00153553px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan30">Motion Analysis Room</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="148.56641"
+       y="69.191147"
+       id="text_Project6"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="148.56641"
+         y="69.191147"
+         id="tspan4606-7-5-56"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-5"
+         x="148.56641"
+         y="71.347092">ルーム6</tspan><tspan
+         x="148.56641"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-5">Project</tspan><tspan
+         x="148.56641"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-1">Room 6</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="136.41837"
+       y="69.191147"
+       id="text_Project5"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="136.41837"
+         y="69.191147"
+         id="tspan4606-7-5-1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-3"
+         x="136.41837"
+         y="71.347092">ルーム5</tspan><tspan
+         x="136.41837"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-77">Project</tspan><tspan
+         x="136.41837"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-65">Room 5</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="123.44206"
+       y="69.191147"
+       id="text_Project4"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="123.44206"
+         y="69.191147"
+         id="tspan4606-7-5-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-8"
+         x="123.44206"
+         y="71.347092">ルーム4</tspan><tspan
+         x="123.44206"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-78">Project</tspan><tspan
+         x="123.44206"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-7">Room 4</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="110.46576"
+       y="69.191147"
+       id="text_Project3"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="110.46576"
+         y="69.191147"
+         id="tspan4606-7-5-2"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-9"
+         x="110.46576"
+         y="71.347092">ルーム3</tspan><tspan
+         x="110.46576"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-4">Project</tspan><tspan
+         x="110.46576"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:0px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-3">Room 3</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:-0.0529167px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="98.843445"
+       y="69.191147"
+       id="text_Project2"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="98.843445"
+         y="69.191147"
+         id="tspan4606-7-5-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23-1"
+         x="98.843445"
+         y="71.347092">ルーム2</tspan><tspan
+         x="98.843445"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20-7">Project</tspan><tspan
+         x="98.816986"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21-6">Room 2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.11667px;line-height:1;font-family:'MS PGothic';letter-spacing:-0.0529167px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282222px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="88.628052"
+       y="69.191147"
+       id="text_Project1"
+       transform="matrix(0.95831687,0,0,1.0434962,0.02873162,-0.17372643)"><tspan
+         x="88.628052"
+         y="69.191147"
+         id="tspan4606-7-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px">プロジェクト</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan23"
+         x="88.628052"
+         y="71.347092">ルーム1</tspan><tspan
+         x="88.628052"
+         y="73.503036"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan20">Project</tspan><tspan
+         x="88.601593"
+         y="75.658981"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1;font-family:'Meiryo UI';text-align:center;letter-spacing:-0.0529167px;text-anchor:middle;stroke-width:0.282222px"
+         id="tspan21">Room 1</tspan></text>
+  </g>
+  <g
+     id="Mark"
+     transform="translate(-4.7625004,-4.7625002)">
+    <path
+       style="display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.344;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#ArrowWide);marker-end:url(#marker29)"
+       d="M 27.379473,62.207285 C 29.321055,62.179215 31.262608,62.244845 33.204081,62.207285"
+       id="mark_entrance"
+       transform="translate(0.02873162,-0.17372643)" />
+    <g
+       id="mark_toilet"
+       style="display:inline;stroke-width:1.00345"
+       transform="matrix(0.2812517,0,0,0.28125265,-20.787529,-18.115648)">
+      <path
+         style="display:inline;opacity:1;fill:none;stroke:#000000;stroke-width:1.00345;stroke-miterlimit:4;stroke-dasharray:none"
+         d="M 317.50005,332.49576 C 316.92015,334.04291 315.39168,335.00504 313.76816,334.84485 312.14474,334.68466 310.82758,333.44178 310.55219,331.81013 310.2769,330.17848 311.11134,328.56156 312.58977,327.8622"
+         id="mark_toiletA-4"
+         jsh:type="arc"
+         jsh:cx="3276"
+         jsh:cy="4534"
+         jsh:rx="42"
+         jsh:ry="42"
+         jsh:rotate="0"
+         jsh:startAngle="19"
+         jsh:endAngle="245" />
+      <path
+         id="mark_toiletA-3"
+         d="M 313.59378,326.79972 314.48505,330.86276 H 318.20918 L 319.40576,333.86222 H 320.50003"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:1.00345;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
+      <path
+         id="mark_toiletA-2"
+         d="M -382.7857,-521.8496 -342.42857,-521.84961"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:10.4369;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+         transform="matrix(0.1177563,0,0,0.08846611,358.79235,374.05901)" />
+      <path
+         style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.10549"
+         id="mark_toiletA-1"
+         d="M 315.01045,323.86734 A 1.5051739,1.5051709 0 0 1 313.50877,325.37251 1.5051739,1.5051709 0 0 1 312.00012,323.87432 1.5051739,1.5051709 0 0 1 313.49481,322.36221 1.5051739,1.5051709 0 0 1 315.01039,323.85338" />
+      <path
+         style="display:inline;fill:#000000;fill-rule:evenodd;stroke-width:1.00345"
+         d="M 302.92014,335.3875 308.00011,335.38654 305.96813,326.35656 H 304.96621 L 302.92014,335.38759 Z"
+         id="mark_toiletF-2" />
+      <path
+         d="M 306.96529,323.86734 A 1.5051739,1.5051709 0 0 1 305.4636,325.37251 1.5051739,1.5051709 0 0 1 303.95496,323.87432 1.5051739,1.5051709 0 0 1 305.44964,322.36221 1.5051739,1.5051709 0 0 1 306.96522,323.85338"
+         id="mark_toiletF-1"
+         style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.10549" />
+      <path
+         style="display:inline;fill:#000000;fill-rule:evenodd;stroke-width:1.00345"
+         d="M 294.9653,326.35661 300.04526,326.35755 297.50528,335.76389 294.9653,326.35657 Z"
+         id="mark_toiletM-2" />
+      <path
+         style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.10549"
+         id="mark_toiletM-1"
+         d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" />
+    </g>
+  </g>
+  <rect
+     style="display:none;opacity:0.4;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+     id="filter"
+     width="187.85417"
+     height="139.17084"
+     x="-4.7625003"
+     y="-4.7624989" />
+</svg>
