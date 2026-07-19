@@ -1,9 +1,8 @@
 import {
-  type CSSProperties,
   type PointerEvent,
   type ReactNode,
   useEffect,
-  useMemo,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -11,23 +10,20 @@ import { SheetNavigation } from "./SheetNavigation";
 
 type BottomSheetProps = {
   children: ReactNode;
+  onHeightChange: (height: number) => void;
 };
 
 const snapPoints = [22, 58, 82] as const;
 const initialSnapPoint = 58;
 
-export function BottomSheet({ children }: BottomSheetProps) {
+export function BottomSheet({ children, onHeightChange }: BottomSheetProps) {
   const [height, setHeight] = useState(initialSnapPoint);
   const [isDragging, setIsDragging] = useState(false);
   const dragState = useRef({ startY: 0, startHeight: initialSnapPoint, viewportHeight: 1 });
 
-  const sheetStyle = useMemo(
-    () =>
-      ({
-        "--bottom-sheet-height": `${height}svh`,
-      }) as CSSProperties,
-    [height],
-  );
+  useLayoutEffect(() => {
+    onHeightChange(height);
+  }, [height, onHeightChange]);
 
   useEffect(() => {
     const moveDrag = (event: globalThis.PointerEvent) => {
@@ -88,7 +84,7 @@ export function BottomSheet({ children }: BottomSheetProps) {
   };
 
   return (
-    <section className={isDragging ? "bottom-sheet is-dragging" : "bottom-sheet"} style={sheetStyle} aria-label="Map controls">
+    <section className={isDragging ? "bottom-sheet is-dragging" : "bottom-sheet"} aria-label="Map controls">
       <div
         className="bottom-sheet__drag-zone"
         onPointerDown={startDrag}
