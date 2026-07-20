@@ -17,7 +17,7 @@
 | 6 | スケジュール | ✅ 完了 | PDF画像表示(public/schedule/) |
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
-最新コミット時点: `e979c25 いい感じにマップが動くの巻き`(ステップ2一式を含む)
+最新コミット: `82b1447 研究棟1F〜3Fの階段接続ルート(03b)`
 
 ## 動作確認手順(検証ゲート)
 
@@ -63,5 +63,5 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 ## 既知の注意(再発防止ルール)
 
 - **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で36件PASSを必ず確認する
-- SVG(`public/maps/`)は読み取り専用。要素IDがデータとの紐付けキー(AGENTS.md参照)
+- SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)

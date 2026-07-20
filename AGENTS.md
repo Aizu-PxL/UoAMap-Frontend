@@ -7,7 +7,7 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 
 - **[docs/SPEC.md](docs/SPEC.md)** — プロダクト仕様の正。機能・データモデル・技術方針・ロードマップはすべてここに従う。仕様を変える場合は先にSPEC.mdを更新する
 - **[docs/STATUS.md](docs/STATUS.md)** — 現在の進捗・動作確認手順・アーキテクチャ要点。**作業を再開するときは最初にこれを読む**
-- [docs/WORKFLOW.md](docs/WORKFLOW.md) — 作業の進め方(ブリーフ方式・検証ゲート・レビュー・差し戻しルール)
+- [docs/WORKFLOW.md](docs/WORKFLOW.md) — 作業の進め方(運用モード・ブリーフ様式・検証ゲート・レビュー)。実装は基本Codex単独の一気通貫、Claude(Fable)が関与する場合は従来のリード運用に戻る
 - [docs/BACKLOG.md](docs/BACKLOG.md) — 未実装の要望・検討事項(SPEC昇格前の置き場)
 - [docs/FIGMA.md](docs/FIGMA.md) — FigmaファイルのノードID対応表・トークン対応・運用ルール
 - [docs/API.md](docs/API.md) — API契約(バックエンドとの境界。経路API・検索APIは作らない)
@@ -17,7 +17,8 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 - UIの正は Figma「UoAmap」の 📱 Screens ページ(Page 1 はレガシー、実装対象外)
 - スマホ専用。PC対応・レスポンシブは不要
 - UIコンポーネントから直接fetchしない。データ取得は `src/data/` のリポジトリ層を経由する
-- 地図は `public/maps/` の自作構造化SVG(Inkscape製)が正。要素ID(`room_*`, `building_*` 等)がデータとの紐付けキーなので、SVGを編集する際はIDを壊さない
-- **git操作(checkout / reset / stash / commit)はユーザーまたはリードのみ**。実装エージェントは行わない
+- 地図は `public/maps/` の自作構造化SVG(Inkscape製)が正。要素ID(`room_*`, `building_*` 等)がデータとの紐付けキーなので、SVGを編集する際はIDを壊さない。SVGは `Route` グループの追加・編集のみ可、既存要素は読み取り専用
+- **git操作(checkout / reset / stash / commit)はユーザーまたはリード(Claude関与時)のみ**。実装(Codex)は行わない
+- 作業を再開するときは [docs/WORKFLOW.md](docs/WORKFLOW.md)「作業開始時に読む順」に従う
 - `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で36件PASSを確認する
 - 開発コマンド: `bun run dev` / `bun run build`(build は tsc -b を含むため型チェックを兼ねる)/ `bun run verify:places`
