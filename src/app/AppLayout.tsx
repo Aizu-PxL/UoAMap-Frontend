@@ -1,8 +1,10 @@
-import { type CSSProperties, useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { BottomSheet } from "../components/bottom-sheet/BottomSheet";
 import { useCampusData } from "../data/DataProvider";
 import { MapCanvas } from "../features/map/MapCanvas";
+import { findShortestRouteBetweenPlaces } from "../features/routing/findShortestRoute";
+import { routeGraph } from "../features/routing/routeGraph";
 import { useNavState } from "./useNavState";
 
 export function AppLayout() {
@@ -24,6 +26,18 @@ export function AppLayout() {
   const appShellStyle = {
     "--bottom-sheet-height": `${bottomSheetHeight}svh`,
   } as CSSProperties;
+  const routeEdges = useMemo(() => {
+    if (!currentPlace || !destinationPlace) {
+      return [];
+    }
+    return (
+      findShortestRouteBetweenPlaces(
+        routeGraph,
+        currentPlace.id,
+        destinationPlace.id,
+      ) ?? []
+    );
+  }, [currentPlace, destinationPlace]);
 
   useEffect(() => {
     if (prioritizedPlace) {
@@ -44,6 +58,7 @@ export function AppLayout() {
         focusPlace={focusPlace}
         focusRequestNonce={focusRequestNonce}
         events={events}
+        routeEdges={routeEdges}
       />
       <BottomSheet onHeightChange={setBottomSheetHeight}>
         <Outlet />

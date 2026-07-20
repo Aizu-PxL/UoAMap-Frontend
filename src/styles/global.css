@@ -7,6 +7,18 @@
   --color-surface-muted: #d9d9d9;
   --color-card-bg: rgba(230, 229, 229, 0.25);
   --color-description-bg: #ededed;
+  --map-marker-destination: #e0524d;
+  --map-marker-current: #1769aa;
+  --map-marker-focus: var(--color-accent);
+  --map-marker-detail: var(--color-surface);
+  --map-marker-event-fill: var(--color-surface);
+  --map-marker-event-border: var(--color-accent);
+  --map-marker-event-glyph: var(--color-accent);
+  --map-marker-event-count-fill: var(--color-accent);
+  --map-marker-event-count-text: var(--color-surface);
+  --map-marker-hit-area: transparent;
+  --map-marker-shadow: rgba(0, 0, 0, 0.3);
+  --map-label-halo: rgba(255, 255, 255, 0.92);
   --radius-chip: 8px;
   --radius-card: 9px;
   --radius-sheet: 20px;
@@ -89,30 +101,61 @@ input {
   height: 100%;
 }
 
+.map-canvas__route-layer,
+.map-canvas__label-layer,
 .map-canvas__marker-layer {
   position: absolute;
   inset: 0;
-  z-index: 1;
   width: 100%;
   height: 100%;
   overflow: visible;
   pointer-events: none;
 }
 
+.map-canvas__route-layer {
+  z-index: 1;
+}
+
+.map-canvas__label-layer {
+  z-index: 2;
+}
+
+.map-canvas__marker-layer {
+  z-index: 3;
+}
+
+.map-label {
+  fill: var(--color-text);
+  stroke: var(--map-label-halo);
+  paint-order: stroke fill;
+  stroke-linejoin: round;
+  font-family: var(--font-family);
+  font-weight: 600;
+}
+
+.map-route {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
 .map-marker {
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 2px 2px var(--map-marker-shadow));
 }
 
 .map-marker--destination {
-  fill: #ff0000;
+  fill: var(--map-marker-destination);
 }
 
 .map-marker--current {
-  fill: #1769aa;
+  fill: var(--map-marker-current);
 }
 
 .map-marker--focus {
-  fill: var(--color-accent);
+  fill: var(--map-marker-focus);
 }
 
 .map-marker--event {
@@ -121,36 +164,49 @@ input {
 }
 
 .map-marker__hit-area {
-  fill: transparent;
+  fill: var(--map-marker-hit-area);
 }
 
-.map-marker__event-background {
-  fill: var(--color-surface);
+.map-marker__event-surface {
+  fill: var(--map-marker-event-fill);
+  stroke: var(--map-marker-event-border);
+  stroke-width: 2px;
 }
 
-/* FigmaのMarker/Event準拠(人型バッジ、#1F1F1F) */
-.map-marker__event-shape {
-  fill: #1f1f1f;
+.map-marker__event-glyph {
+  fill: var(--map-marker-event-glyph);
+}
+
+.map-marker__event-count-background {
+  fill: var(--map-marker-event-count-fill);
+}
+
+.map-marker__event-count {
+  fill: var(--map-marker-event-count-text);
+  font-family: var(--font-family);
+  font-size: 9px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
 }
 
 .map-marker--event:focus-visible {
   outline: none;
 }
 
-.map-marker--event:focus-visible .map-marker__event-shape {
-  stroke: #ffffff;
-  stroke-width: 3px;
+.map-marker--event:focus-visible .map-marker__event-surface {
+  stroke-width: 4px;
 }
 
 .map-marker__detail {
-  fill: #ffffff;
+  fill: var(--map-marker-detail);
 }
 
 .map-canvas__controls {
   position: absolute;
   right: 1rem;
   bottom: calc(var(--bottom-sheet-height) + 1rem);
-  z-index: 2;
+  z-index: 4;
   display: grid;
   justify-items: end;
   gap: 0.65rem;
@@ -206,7 +262,8 @@ input {
   z-index: 5;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
-  width: 100vw;
+  width: 100%;
+  max-width: 430px;
   min-height: 12rem;
   height: var(--bottom-sheet-height);
   max-height: 82svh;
@@ -247,13 +304,13 @@ input {
   background: #cccccc;
 }
 
-/* FigmaのTabBar(固定354px・中央寄せ)準拠: 横長画面でも広がらない */
+/* Figmaの354px幅は代表値。シート幅に追従し、430pxを上限に中央寄せする */
 .sheet-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 354px;
+  max-width: 430px;
   min-height: 4rem;
   margin: 0.7rem auto 1.4rem;
 }
@@ -312,6 +369,7 @@ input {
 }
 
 .bottom-sheet__body {
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }

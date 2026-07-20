@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { floors, getPlace, mapSheets } from "../../data/places";
-import type { Event as CampusEvent, Place } from "../../data/types";
-import { getPlaceCoordinates } from "./placeLocator";
+import type { Event as CampusEvent, Place, RouteEdge } from "../../data/types";
+import { extractMapLabels, renderMapLabels } from "./mapLabels";
+import type { MapLabel } from "./mapLabels";
+import { getMeetUserUnitsPerPixel } from "./mapViewportScale";
+import { getPlaceCoordinates, getSvgElementCoordinates } from "./placeLocator";
 
 interface ViewBox {
   x: number;
@@ -19,6 +22,7 @@ interface MapCanvasProps {
   focusPlace: Place | null;
   focusRequestNonce: number;
   events: CampusEvent[];
+  routeEdges: RouteEdge[];
 }
 
 const DEFAULT_FLOOR_ID = "campus";
@@ -32,19 +36,15 @@ const DEFAULT_VIEW_BOX: ViewBox = {
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const FOCUS_VIEW_BOX_RATIO = 0.4;
 const FOCUS_VERTICAL_ANCHOR = 0.2;
-const MARKER_REFERENCE_WIDTH = 390;
 const PIN_PATH =
   "M25 45.83c-5.59-4.76-9.77-9.17-12.53-13.25-2.76-4.08-4.14-7.86-4.14-11.33 0-5.21 1.68-9.36 5.03-12.45C16.71 5.71 20.59 4.17 25 4.17s8.29 1.55 11.64 4.64c3.35 3.09 5.03 7.24 5.03 12.45 0 3.47-1.38 7.25-4.14 11.33-2.76 4.08-6.94 8.49-12.53 13.25Z";
 const LOCATION_DETAIL_PATH = "M25 27.08a5.83 5.83 0 1 0 0-11.66 5.83 5.83 0 0 0 0 11.66Z";
 const PERSON_DETAIL_PATH =
   "M25 20.42a4.17 4.17 0 1 0 0-8.34 4.17 4.17 0 0 0 0 8.34Zm-7.29 10.41h14.58v-2.08c0-3.47-3.24-6.25-7.29-6.25s-7.29 2.78-7.29 6.25v2.08Z";
-// FigmaのMarker/Event(79:364)からエクスポートした人型バッジ形状(22×25)
-const EVENT_MARKER_BACKGROUND_PATH =
-  "M11 25L7.33333 21.4286H2.44444C1.77222 21.4286 1.19676 21.1954 0.718056 20.7292C0.239352 20.2629 0 19.7024 0 19.0476V2.38095C0 1.72619 0.239352 1.16567 0.718056 0.699405C1.19676 0.233135 1.77222 0 2.44444 0H19.5556C20.2278 0 20.8032 0.233135 21.2819 0.699405C21.7606 1.16567 22 1.72619 22 2.38095V19.0476C22 19.7024 21.7606 20.2629 21.2819 20.7292C20.8032 21.1954 20.2278 21.4286 19.5556 21.4286H14.6667L11 25Z";
-const EVENT_MARKER_PATH =
-  "M11 25L7.33333 21.4286H2.44444C1.77222 21.4286 1.19676 21.1954 0.718056 20.7292C0.239352 20.2629 0 19.7024 0 19.0476V2.38095C0 1.72619 0.239352 1.16567 0.718056 0.699405C1.19676 0.233135 1.77222 0 2.44444 0H19.5556C20.2278 0 20.8032 0.233135 21.2819 0.699405C21.7606 1.16567 22 1.72619 22 2.38095V19.0476C22 19.7024 21.7606 20.2629 21.2819 20.7292C20.8032 21.1954 20.2278 21.4286 19.5556 21.4286H14.6667L11 25ZM2.44444 17.6786C3.54444 16.627 4.82269 15.7986 6.27917 15.1935C7.73565 14.5883 9.30926 14.2857 11 14.2857C12.6907 14.2857 14.2644 14.5883 15.7208 15.1935C17.1773 15.7986 18.4556 16.627 19.5556 17.6786V2.38095H2.44444V17.6786ZM14.025 10.6845C14.8602 9.87103 15.2778 8.88889 15.2778 7.7381C15.2778 6.5873 14.8602 5.60516 14.025 4.79167C13.1898 3.97817 12.1815 3.57143 11 3.57143C9.81852 3.57143 8.81019 3.97817 7.975 4.79167C7.13981 5.60516 6.72222 6.5873 6.72222 7.7381C6.72222 8.88889 7.13981 9.87103 7.975 10.6845C8.81019 11.498 9.81852 11.9048 11 11.9048C12.1815 11.9048 13.1898 11.498 14.025 10.6845ZM4.88889 19.0476H17.1111V18.75C16.2556 18.0556 15.3083 17.5347 14.2694 17.1875C13.2306 16.8403 12.1407 16.6667 11 16.6667C9.85926 16.6667 8.76944 16.8403 7.73056 17.1875C6.69167 17.5347 5.74444 18.0556 4.88889 18.75V19.0476ZM9.70139 9.00298C9.34491 8.65575 9.16667 8.23413 9.16667 7.7381C9.16667 7.24206 9.34491 6.82044 9.70139 6.47321C10.0579 6.12599 10.4907 5.95238 11 5.95238C11.5093 5.95238 11.9421 6.12599 12.2986 6.47321C12.6551 6.82044 12.8333 7.24206 12.8333 7.7381C12.8333 8.23413 12.6551 8.65575 12.2986 9.00298C11.9421 9.3502 11.5093 9.52381 11 9.52381C10.4907 9.52381 10.0579 9.3502 9.70139 9.00298Z";
-// バッジ(25px)を従来ピン(42px)と同程度の画面サイズにする倍率
-const EVENT_MARKER_SCALE = 1.6;
+const EVENT_MARKER_SIZE = 24;
+const EVENT_MARKER_RADIUS = 11;
+const EVENT_MARKER_PERSON_PATH =
+  "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
 
 const floorGroups = [
   ["rq-1f", "rq-2f", "rq-3f"],
@@ -67,6 +67,61 @@ const buildingLabels: Record<keyof typeof buildingFloorIds, string> = {
   building_UBIC: "UBICを表示",
   building_LICTiA: "LICTiAを表示",
 };
+
+type CampusBuildingId = keyof typeof buildingFloorIds;
+
+// Place → Floor → MapSheet を、キャンパス図上の建物アンカーへ束ねる。
+const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
+  rq1f: "building_ResearchQuad",
+  rq2f: "building_ResearchQuad",
+  rq3f: "building_ResearchQuad",
+  sh1f: "building_StudentHall",
+  sh2f: "building_StudentHall",
+  lh: "building_LecHall",
+  ubic: "building_UBIC",
+  lictia: "building_LICTiA",
+};
+
+function resolveCampusBuildingId(place: Place): CampusBuildingId | null {
+  const placeFloor = floors.find((candidate) => candidate.id === place.floorId);
+  if (!placeFloor) {
+    return null;
+  }
+
+  const sheetBuildingId = campusBuildingIdBySheetId[placeFloor.sheetId];
+  if (sheetBuildingId) {
+    return sheetBuildingId;
+  }
+
+  if (
+    placeFloor.sheetId === DEFAULT_FLOOR_ID &&
+    place.mapping === "svg" &&
+    place.svgElementId in buildingFloorIds
+  ) {
+    return place.svgElementId as CampusBuildingId;
+  }
+
+  return null;
+}
+
+function getCampusEventCounts(events: CampusEvent[]) {
+  const eventCountByBuildingId = new Map<CampusBuildingId, number>();
+
+  for (const event of events) {
+    const place = getPlace(event.placeId);
+    const buildingId = place ? resolveCampusBuildingId(place) : null;
+    if (!buildingId) {
+      continue;
+    }
+
+    eventCountByBuildingId.set(
+      buildingId,
+      (eventCountByBuildingId.get(buildingId) ?? 0) + 1,
+    );
+  }
+
+  return eventCountByBuildingId;
+}
 
 const lectureHallFloorElements = {
   "lh-1f": ["fill_1F", "frame_1F", "part_1F", "room_1F", "text_1F", "mark_1F"],
@@ -242,18 +297,23 @@ export function MapCanvas({
   focusPlace,
   focusRequestNonce,
   events,
+  routeEdges,
 }: MapCanvasProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const svgHostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const routeLayerRef = useRef<SVGSVGElement>(null);
+  const labelLayerRef = useRef<SVGSVGElement>(null);
   const markerLayerRef = useRef<SVGSVGElement>(null);
   const floorIdRef = useRef(floorId);
   const onFloorChangeRef = useRef(onFloorChange);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewBox, setViewBox] = useState<ViewBox>(DEFAULT_VIEW_BOX);
+  const [mapLabels, setMapLabels] = useState<MapLabel[]>([]);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const lastHandledFocusRequestRef = useRef<string | null>(null);
 
   floorIdRef.current = floorId;
@@ -274,6 +334,7 @@ export function MapCanvas({
   const selectableFloorIds = floorGroups.find((group) =>
     group.some((candidate) => candidate === floorId),
   );
+  const hasVisibleRoute = routeEdges.some((edge) => edge.floorId === floorId);
 
   // Store original viewBox for zoom clamping calculation
   const originalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
@@ -299,6 +360,36 @@ export function MapCanvas({
     startViewBox: DEFAULT_VIEW_BOX,
   });
 
+  // xMidYMid meetの実表示縮尺を幅・高さの両方から再計算できるよう寸法を監視する。
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+
+    const updateContainerSize = (width: number, height: number) => {
+      setContainerSize((currentSize) =>
+        currentSize.width === width && currentSize.height === height
+          ? currentSize
+          : { width, height },
+      );
+    };
+    const initialRect = container.getBoundingClientRect();
+    updateContainerSize(initialRect.width, initialRect.height);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        updateContainerSize(entry.contentRect.width, entry.contentRect.height);
+      }
+    });
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   // Resolve floorId to a sheet and load its SVG. The text cache avoids repeat fetches.
   useEffect(() => {
     let cancelled = false;
@@ -308,6 +399,7 @@ export function MapCanvas({
     setError(null);
     if (!sheet) {
       svgRef.current = null;
+      setMapLabels([]);
       if (svgHost) {
         svgHost.replaceChildren();
       }
@@ -318,6 +410,7 @@ export function MapCanvas({
 
     setLoading(true);
     svgRef.current = null;
+    setMapLabels([]);
     svgHost?.replaceChildren();
 
     const loadSvg = async () => {
@@ -379,6 +472,7 @@ export function MapCanvas({
 
         svgHost.replaceChildren(svgElement);
         svgRef.current = svgElement;
+        setMapLabels(extractMapLabels(svgElement));
 
         // Determine if we should preserve viewBox across floor switch
         const previousFloorId = previousFloorIdRef.current;
@@ -442,7 +536,35 @@ export function MapCanvas({
       "viewBox",
       `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
     );
+    routeLayerRef.current?.setAttribute(
+      "viewBox",
+      `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
+    );
+    labelLayerRef.current?.setAttribute(
+      "viewBox",
+      `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
+    );
   }, [viewBox]);
+
+  // 生成済みグラフのうち、表示中フロアに属する経路区間だけを描画する。
+  useEffect(() => {
+    const routeLayer = routeLayerRef.current;
+    routeLayer?.replaceChildren();
+    if (!routeLayer || loading) {
+      return;
+    }
+
+    for (const edge of routeEdges) {
+      if (edge.floorId !== floorId) {
+        continue;
+      }
+      const path = document.createElementNS(SVG_NAMESPACE, "path");
+      path.setAttribute("class", "map-route");
+      path.setAttribute("data-route-edge-id", edge.id);
+      path.setAttribute("d", edge.pathD);
+      routeLayer.append(path);
+    }
+  }, [floorId, loading, routeEdges]);
 
   // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
   useEffect(() => {
@@ -478,6 +600,111 @@ export function MapCanvas({
     });
   }, [currentPlace, destinationPlace, floorId, focusPlace, focusRequestKey, loading]);
 
+  // 元SVGから抽出したラベルを、routeとmarkerの間の専用レイヤーへ描画する。
+  useEffect(() => {
+    const labelLayer = labelLayerRef.current;
+    const svgElement = svgRef.current;
+    labelLayer?.replaceChildren();
+    if (!labelLayer || !svgElement || loading) {
+      return;
+    }
+
+    const originalWidth = originalViewBoxRef.current.width;
+    const zoomScale = originalWidth / viewBox.width;
+    const userUnitsPerPixel = getMeetUserUnitsPerPixel(viewBox, containerSize);
+    if (userUnitsPerPixel === null) {
+      return;
+    }
+
+    const pinPlaceIds = new Set(
+      [currentPlace, destinationPlace, focusPlace]
+        .filter((place): place is Place => place !== null)
+        .map((place) => place.id),
+    );
+    const markerPlaces = [currentPlace, destinationPlace, focusPlace].filter(
+      (place): place is Place => place !== null && place.floorId === floorId,
+    );
+    const markerAnchors = markerPlaces
+      .map((place) => getPlaceCoordinates(place, svgElement))
+      .filter((coordinates): coordinates is { x: number; y: number } => coordinates !== null);
+
+    if (floorId === DEFAULT_FLOOR_ID) {
+      const occupiedBuildingIds = new Set(
+        markerPlaces
+          .map(resolveCampusBuildingId)
+          .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
+      );
+
+      for (const buildingId of getCampusEventCounts(events).keys()) {
+        if (occupiedBuildingIds.has(buildingId)) {
+          continue;
+        }
+        const coordinates = getSvgElementCoordinates(buildingId, svgElement);
+        if (coordinates) {
+          markerAnchors.push(coordinates);
+        }
+      }
+
+      const campusEventPlaceIds = new Set(events.map((event) => event.placeId));
+      for (const placeId of campusEventPlaceIds) {
+        const place = getPlace(placeId);
+        if (
+          !place ||
+          place.floorId !== DEFAULT_FLOOR_ID ||
+          resolveCampusBuildingId(place) !== null ||
+          pinPlaceIds.has(placeId)
+        ) {
+          continue;
+        }
+
+        const coordinates = getPlaceCoordinates(place, svgElement);
+        if (coordinates) {
+          markerAnchors.push(coordinates);
+        }
+      }
+    } else {
+      const eventPlaceIds = new Set<string>();
+
+      for (const event of events) {
+        if (!pinPlaceIds.has(event.placeId)) {
+          eventPlaceIds.add(event.placeId);
+        }
+      }
+
+      for (const placeId of eventPlaceIds) {
+        const place = getPlace(placeId);
+        if (place?.floorId !== floorId) {
+          continue;
+        }
+        const coordinates = getPlaceCoordinates(place, svgElement);
+        if (coordinates) {
+          markerAnchors.push(coordinates);
+        }
+      }
+    }
+
+    renderMapLabels({
+      layer: labelLayer,
+      labels: mapLabels,
+      zoomScale,
+      userUnitsPerPixel,
+      markerAnchors,
+      isCampusOverview: floorId === DEFAULT_FLOOR_ID,
+    });
+  }, [
+    currentPlace,
+    destinationPlace,
+    events,
+    floorId,
+    focusPlace,
+    loading,
+    mapLabels,
+    containerSize.height,
+    containerSize.width,
+    viewBox.height,
+    viewBox.width,
+  ]);
+
   // 元地図とは独立した overlay SVG の DOM を、表示状態ごとに同期する。
   useEffect(() => {
     const markerLayer = markerLayerRef.current;
@@ -488,12 +715,14 @@ export function MapCanvas({
       return;
     }
 
-    const originalWidth = originalViewBoxRef.current.width;
-    const zoomScale = originalWidth / viewBox.width;
-    const inverseZoomScale = 1 / zoomScale;
-    const baseMarkerScale = originalWidth / MARKER_REFERENCE_WIDTH;
-    const markerScale = inverseZoomScale * baseMarkerScale;
-    const eventByPlaceId = new Map<string, CampusEvent>();
+    const markerScale = getMeetUserUnitsPerPixel(viewBox, containerSize);
+    if (markerScale === null) {
+      return;
+    }
+    const eventsByPlaceId = new Map<
+      string,
+      { firstEvent: CampusEvent; eventCount: number }
+    >();
     const pinPlaceIds = new Set(
       [currentPlace, destinationPlace, focusPlace]
         .filter((place): place is Place => place !== null)
@@ -501,77 +730,204 @@ export function MapCanvas({
     );
 
     for (const event of events) {
-      if (!eventByPlaceId.has(event.placeId)) {
-        eventByPlaceId.set(event.placeId, event);
-      }
+      const eventGroup = eventsByPlaceId.get(event.placeId);
+      eventsByPlaceId.set(event.placeId, {
+        firstEvent: eventGroup?.firstEvent ?? event,
+        eventCount: (eventGroup?.eventCount ?? 0) + 1,
+      });
     }
 
-    // イベントを先に描画し、現在地・目的地・注目ピンを常に前面に保つ。
-    for (const [placeId, event] of eventByPlaceId) {
-      const place = getPlace(placeId);
-      if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
-        continue;
-      }
-
-      const coordinates = getPlaceCoordinates(place, svgElement);
-      if (!coordinates) {
-        continue;
-      }
-
+    const appendEventBadge = ({
+      coordinates,
+      markerLabel,
+      onActivate,
+      placeId,
+      eventId,
+      buildingId,
+      eventCount,
+    }: {
+      coordinates: { x: number; y: number };
+      markerLabel: string;
+      onActivate: () => void;
+      placeId?: string;
+      eventId?: string;
+      buildingId?: CampusBuildingId;
+      eventCount?: number;
+    }) => {
       const group = document.createElementNS(SVG_NAMESPACE, "g");
       const hitArea = document.createElementNS(SVG_NAMESPACE, "rect");
-      const backgroundPath = document.createElementNS(SVG_NAMESPACE, "path");
-      const path = document.createElementNS(SVG_NAMESPACE, "path");
-      const markerLabel = `${place.name}のイベントを表示: ${event.title}`;
-      const openEvent = () => {
-        const searchParams = new URLSearchParams(location.search);
-        searchParams.set("highlight", event.id);
-        void navigate({
-          pathname: "/events",
-          search: `?${searchParams.toString()}`,
-        });
-      };
+      const surface = document.createElementNS(SVG_NAMESPACE, "circle");
+      const glyph = document.createElementNS(SVG_NAMESPACE, "path");
       const openEventWithKeyboard = (keyboardEvent: KeyboardEvent) => {
         if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
           keyboardEvent.preventDefault();
-          openEvent();
+          onActivate();
         }
       };
       const stopMapGesture = (pointerEvent: PointerEvent) => {
         pointerEvent.stopPropagation();
       };
 
-      // バッジ下端の突起(11, 25)を地点座標に合わせる
       group.setAttribute(
         "transform",
-        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale * EVENT_MARKER_SCALE}) translate(-11 -25)`,
+        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale}) translate(-${EVENT_MARKER_SIZE / 2} -${EVENT_MARKER_SIZE})`,
       );
       group.setAttribute("class", "map-marker map-marker--event");
-      group.setAttribute("data-place-id", place.id);
-      group.setAttribute("data-event-id", event.id);
+      if (placeId) {
+        group.setAttribute("data-place-id", placeId);
+      }
+      if (eventId) {
+        group.setAttribute("data-event-id", eventId);
+      }
+      if (buildingId) {
+        group.setAttribute("data-building-id", buildingId);
+      }
+      if (eventCount !== undefined) {
+        group.setAttribute("data-event-count", String(eventCount));
+      }
       group.setAttribute("role", "button");
       group.setAttribute("tabindex", "0");
       group.setAttribute("aria-label", markerLabel);
       hitArea.setAttribute("class", "map-marker__hit-area");
-      hitArea.setAttribute("x", "-4");
-      hitArea.setAttribute("y", "-4");
-      hitArea.setAttribute("width", "30");
-      hitArea.setAttribute("height", "33");
-      hitArea.setAttribute("rx", "6");
-      backgroundPath.setAttribute("class", "map-marker__event-background");
-      backgroundPath.setAttribute("d", EVENT_MARKER_BACKGROUND_PATH);
-      path.setAttribute("class", "map-marker__event-shape");
-      path.setAttribute("d", EVENT_MARKER_PATH);
-      group.append(hitArea, backgroundPath, path);
+      hitArea.setAttribute("x", "-10");
+      hitArea.setAttribute("y", "-10");
+      hitArea.setAttribute("width", eventCount === undefined ? "44" : "56");
+      hitArea.setAttribute("height", "44");
+      hitArea.setAttribute("rx", "22");
+      surface.setAttribute("class", "map-marker__event-surface");
+      surface.setAttribute("cx", String(EVENT_MARKER_SIZE / 2));
+      surface.setAttribute("cy", String(EVENT_MARKER_SIZE / 2));
+      surface.setAttribute("r", String(EVENT_MARKER_RADIUS));
+      glyph.setAttribute("class", "map-marker__event-glyph");
+      glyph.setAttribute("d", EVENT_MARKER_PERSON_PATH);
+      group.append(hitArea, surface, glyph);
+
+      if (eventCount !== undefined) {
+        const countText = String(eventCount);
+        const countWidth = Math.max(14, 8 + countText.length * 6);
+        const countBackground = document.createElementNS(SVG_NAMESPACE, "rect");
+        const countLabel = document.createElementNS(SVG_NAMESPACE, "text");
+        countBackground.setAttribute("class", "map-marker__event-count-background");
+        countBackground.setAttribute("x", "16");
+        countBackground.setAttribute("y", "1");
+        countBackground.setAttribute("width", String(countWidth));
+        countBackground.setAttribute("height", "14");
+        countBackground.setAttribute("rx", "7");
+        countLabel.setAttribute("class", "map-marker__event-count");
+        countLabel.setAttribute("x", String(16 + countWidth / 2));
+        countLabel.setAttribute("y", "8");
+        countLabel.textContent = countText;
+        group.append(countBackground, countLabel);
+      }
+
       group.addEventListener("pointerdown", stopMapGesture);
-      group.addEventListener("click", openEvent);
+      group.addEventListener("click", onActivate);
       group.addEventListener("keydown", openEventWithKeyboard);
       listenerCleanups.push(() => {
         group.removeEventListener("pointerdown", stopMapGesture);
-        group.removeEventListener("click", openEvent);
+        group.removeEventListener("click", onActivate);
         group.removeEventListener("keydown", openEventWithKeyboard);
       });
       markerLayer.append(group);
+    };
+
+    // イベントを先に描画し、現在地・目的地・注目ピンを常に前面に保つ。
+    if (floorId === DEFAULT_FLOOR_ID) {
+      const occupiedBuildingIds = new Set(
+        [currentPlace, destinationPlace, focusPlace]
+          .filter(
+            (place): place is Place =>
+              place !== null && place.floorId === DEFAULT_FLOOR_ID,
+          )
+          .map(resolveCampusBuildingId)
+          .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
+      );
+
+      for (const [buildingId, eventCount] of getCampusEventCounts(events)) {
+        if (occupiedBuildingIds.has(buildingId)) {
+          continue;
+        }
+
+        const coordinates = getSvgElementCoordinates(buildingId, svgElement);
+        if (!coordinates) {
+          continue;
+        }
+
+        appendEventBadge({
+          coordinates,
+          markerLabel: `${buildingLabels[buildingId].replace(
+            "を表示",
+            "",
+          )}、イベント${eventCount}件。建物を表示`,
+          onActivate: () => onFloorChangeRef.current(buildingFloorIds[buildingId]),
+          buildingId,
+          eventCount,
+        });
+      }
+
+      for (const [placeId, { firstEvent, eventCount }] of eventsByPlaceId) {
+        const place = getPlace(placeId);
+        if (
+          !place ||
+          place.floorId !== DEFAULT_FLOOR_ID ||
+          resolveCampusBuildingId(place) !== null ||
+          pinPlaceIds.has(placeId)
+        ) {
+          continue;
+        }
+
+        const coordinates = getPlaceCoordinates(place, svgElement);
+        if (!coordinates) {
+          continue;
+        }
+
+        const openEvent = () => {
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.set("highlight", firstEvent.id);
+          void navigate({
+            pathname: "/events",
+            search: `?${searchParams.toString()}`,
+          });
+        };
+
+        appendEventBadge({
+          coordinates,
+          markerLabel: `${place.name}のイベント${eventCount}件を表示: ${firstEvent.title}`,
+          onActivate: openEvent,
+          placeId: place.id,
+          eventId: firstEvent.id,
+          eventCount,
+        });
+      }
+    } else {
+      for (const [placeId, { firstEvent }] of eventsByPlaceId) {
+        const place = getPlace(placeId);
+        if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
+          continue;
+        }
+
+        const coordinates = getPlaceCoordinates(place, svgElement);
+        if (!coordinates) {
+          continue;
+        }
+
+        const openEvent = () => {
+          const searchParams = new URLSearchParams(location.search);
+          searchParams.set("highlight", firstEvent.id);
+          void navigate({
+            pathname: "/events",
+            search: `?${searchParams.toString()}`,
+          });
+        };
+
+        appendEventBadge({
+          coordinates,
+          markerLabel: `${place.name}のイベントを表示: ${firstEvent.title}`,
+          onActivate: openEvent,
+          placeId: place.id,
+          eventId: firstEvent.id,
+        });
+      }
     }
 
     const markers = [
@@ -613,6 +969,8 @@ export function MapCanvas({
     };
   }, [
     currentPlace,
+    containerSize.height,
+    containerSize.width,
     destinationPlace,
     events,
     floorId,
@@ -791,6 +1149,20 @@ export function MapCanvas({
       onTouchCancel={handleTouchEnd}
     >
       <div ref={svgHostRef} className="map-canvas__svg-host" />
+      <svg
+        ref={routeLayerRef}
+        className="map-canvas__route-layer"
+        role={hasVisibleRoute ? "img" : undefined}
+        aria-label={hasVisibleRoute ? "現在地から目的地までのルート" : undefined}
+        aria-hidden={hasVisibleRoute ? undefined : true}
+        preserveAspectRatio="xMidYMid meet"
+      />
+      <svg
+        ref={labelLayerRef}
+        className="map-canvas__label-layer"
+        aria-hidden="true"
+        preserveAspectRatio="xMidYMid meet"
+      />
       <svg
         ref={markerLayerRef}
         className="map-canvas__marker-layer"

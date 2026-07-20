@@ -5,35 +5,27 @@ export type PlaceCoordinates = {
   y: number;
 };
 
-/** Place の位置指定を、表示中 SVG のルート座標へ解決する。 */
-export function getPlaceCoordinates(
-  place: Place,
+/** SVG要素の中心を、表示中SVGのルート座標へ解決する。 */
+export function getSvgElementCoordinates(
+  svgElementId: string,
   svgElement: SVGSVGElement | null,
 ): PlaceCoordinates | null {
-  if (place.mapping === "unmapped") {
-    return null;
-  }
-
-  if (place.mapping === "coordinates") {
-    return { ...place.coordinates };
-  }
-
   if (!svgElement) {
     return null;
   }
 
-  const placeElement = svgElement.getElementById(place.svgElementId);
-  if (!(placeElement instanceof SVGGraphicsElement)) {
+  const targetElement = svgElement.getElementById(svgElementId);
+  if (!(targetElement instanceof SVGGraphicsElement)) {
     return null;
   }
 
   try {
-    const bounds = placeElement.getBBox();
+    const bounds = targetElement.getBBox();
     const center = {
       x: bounds.x + bounds.width / 2,
       y: bounds.y + bounds.height / 2,
     };
-    const matrix = placeElement.getCTM();
+    const matrix = targetElement.getCTM();
     const rootMatrix = svgElement.getCTM();
 
     // getBBox() は対象要素のローカル座標なので、入れ子の transform も反映する。
@@ -59,7 +51,27 @@ export function getPlaceCoordinates(
 
     return center;
   } catch {
-    // 非描画要素など getBBox() を取得できない地点はフォーカス不可として扱う。
+    // 非描画要素など getBBox() を取得できない要素は位置解決不可として扱う。
     return null;
   }
+}
+
+/** Place の位置指定を、表示中 SVG のルート座標へ解決する。 */
+export function getPlaceCoordinates(
+  place: Place,
+  svgElement: SVGSVGElement | null,
+): PlaceCoordinates | null {
+  if (place.mapping === "unmapped") {
+    return null;
+  }
+
+  if (place.mapping === "coordinates") {
+    return { ...place.coordinates };
+  }
+
+  if (!svgElement) {
+    return null;
+  }
+
+  return getSvgElementCoordinates(place.svgElementId, svgElement);
 }
