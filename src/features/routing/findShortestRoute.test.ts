@@ -218,4 +218,50 @@ describe("findShortestRoute", () => {
       }).map((edge) => edge.id),
     ).toEqual(["transfer:entrance:rq-west-main:campus:rq-1f"]);
   });
+
+  test("学生ホール1Fの4地点が相互に到達可能", () => {
+    const placeIds = [
+      "sh-cafeteria",
+      "sh-reception",
+      "sh-hall",
+      "sh-shop",
+    ];
+
+    for (const startPlaceId of placeIds) {
+      for (const endPlaceId of placeIds) {
+        expect(
+          findShortestRouteBetweenPlaces(routeGraph, startPlaceId, endPlaceId) ===
+            null,
+        ).toEqual(false);
+      }
+    }
+  });
+
+  test("研究棟から学生ホールへ2つの建物入口を通って到達できる", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq1-161",
+      "sh-cafeteria",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(
+      route
+        ?.filter((item) => item.kind === "transfer")
+        .map((item) => item.id),
+    ).toEqual([
+      "transfer:entrance:rq-west-main:campus:rq-1f",
+      "transfer:entrance:sh-main:campus:sh-1f",
+    ]);
+  });
+
+  test("学生ホール1Fと2Fの中央階段transferが生成される", () => {
+    expect(
+      routeGraph.edges.some(
+        (edge) =>
+          edge.id === "transfer:sh-stairs-central:sh-1f:sh-2f" &&
+          edge.kind === "transfer",
+      ),
+    ).toEqual(true);
+  });
 });

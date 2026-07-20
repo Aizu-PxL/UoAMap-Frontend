@@ -43,6 +43,16 @@ function unmapped(id: string, floorId: string, name: string): Place {
   return { id, floorId, name, mapping: "unmapped" };
 }
 
+function coordinates(
+  id: string,
+  floorId: string,
+  name: string,
+  x: number,
+  y: number,
+): Place {
+  return { id, floorId, name, mapping: "coordinates", coordinates: { x, y } };
+}
+
 // 紐付けは scripts/verify-places.ts(bun run verify:places)でID実在を検証する。
 // unmapped地点は単一SVG要素に対応しない(複合施設・全域など)ものだけを残す。
 export const places: Place[] = [
@@ -61,8 +71,8 @@ export const places: Place[] = [
   svg("ubic-lab", "ubic-1f", "UBIC 研究ラボエリア", "area_ResearchLab"),
   svg("ubic-motion", "ubic-1f", "UBIC 運動解析ルーム", "room_Motion"),
   svg("sh-cafeteria", "sh-1f", "学生ホール 食堂", "room_1F_Cafeteria"),
-  // 食堂・ホール両方を指す複合地点のため単一SVG要素に対応しない
-  unmapped("sh-reception", "sh-1f", "学生ホール 食堂／ホール"),
+  // 食堂・ホール間の受付位置。複合地点のため座標アンカーで管理する。
+  coordinates("sh-reception", "sh-1f", "学生ホール 食堂／ホール", 66.5, 46.5),
   svg("sh-hall", "sh-1f", "学生ホール ホール", "room_1F_hall"),
   svg("sh-shop", "sh-1f", "学生ホール 売店", "room_1F_Shop"),
   // 建物単位の地点はキャンパス全体図の building_* に紐付ける

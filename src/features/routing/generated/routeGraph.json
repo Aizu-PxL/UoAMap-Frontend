@@ -83,7 +83,7 @@
       "floorId": "campus",
       "x": 330,
       "y": 323,
-      "kind": "corridor"
+      "kind": "entrance"
     },
     {
       "id": "rq-1f:route_node_entrance_west_junction",
@@ -422,6 +422,73 @@
       "x": 415,
       "y": 604,
       "kind": "stairs"
+    },
+    {
+      "id": "sh-1f:route_node_sh_cafeteria",
+      "floorId": "sh-1f",
+      "x": 72,
+      "y": 45,
+      "kind": "corridor",
+      "placeId": "sh-cafeteria"
+    },
+    {
+      "id": "sh-1f:route_node_sh_hall",
+      "floorId": "sh-1f",
+      "x": 51.13,
+      "y": 49.7,
+      "kind": "corridor",
+      "placeId": "sh-hall"
+    },
+    {
+      "id": "sh-1f:route_node_sh_main",
+      "floorId": "sh-1f",
+      "x": 51.13,
+      "y": 84.63,
+      "kind": "entrance"
+    },
+    {
+      "id": "sh-1f:route_node_sh_reception",
+      "floorId": "sh-1f",
+      "x": 66.5,
+      "y": 46.5,
+      "kind": "corridor",
+      "placeId": "sh-reception"
+    },
+    {
+      "id": "sh-1f:route_node_sh_shop",
+      "floorId": "sh-1f",
+      "x": 47,
+      "y": 84.63,
+      "kind": "corridor",
+      "placeId": "sh-shop"
+    },
+    {
+      "id": "sh-1f:route_node_sh_south_landing",
+      "floorId": "sh-1f",
+      "x": 54.8,
+      "y": 68,
+      "kind": "corridor"
+    },
+    {
+      "id": "sh-1f:route_node_sh_stairs_central",
+      "floorId": "sh-1f",
+      "x": 40.13,
+      "y": 49.7,
+      "kind": "stairs"
+    },
+    {
+      "id": "sh-2f:route_node_sh_stairs_central",
+      "floorId": "sh-2f",
+      "x": 47.95,
+      "y": 57.52,
+      "kind": "stairs"
+    },
+    {
+      "id": "sh-2f:route_node_sh2_south_landing",
+      "floorId": "sh-2f",
+      "x": 47.95,
+      "y": 62,
+      "kind": "corridor"
     }
   ],
   "edges": [
@@ -948,10 +1015,80 @@
       "pathD": "M 415 604 L 438 604"
     },
     {
+      "id": "sh-1f:route_edge_sh_hall_to_reception",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_hall",
+      "nodeB": "sh-1f:route_node_sh_reception",
+      "distance": 15.69958279700451,
+      "pathD": "M 51.13 49.7 L 66.5 46.5"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_hall_to_stairs",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_hall",
+      "nodeB": "sh-1f:route_node_sh_stairs_central",
+      "distance": 11,
+      "pathD": "M 51.13 49.7 L 40.13 49.7"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_main_to_shop",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_main",
+      "nodeB": "sh-1f:route_node_sh_shop",
+      "distance": 4.130000000000003,
+      "pathD": "M 51.13 84.63 L 47 84.63"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_main_to_south_landing",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_main",
+      "nodeB": "sh-1f:route_node_sh_south_landing",
+      "distance": 17.030143863162163,
+      "pathD": "M 51.13 84.63 L 54.8 68"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_reception_to_cafeteria",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_reception",
+      "nodeB": "sh-1f:route_node_sh_cafeteria",
+      "distance": 5.70087712549569,
+      "pathD": "M 66.5 46.5 L 72 45"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_south_landing_to_hall",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:route_node_sh_south_landing",
+      "nodeB": "sh-1f:route_node_sh_hall",
+      "distance": 18.66437515696681,
+      "pathD": "M 54.8 68 L 51.13 49.7"
+    },
+    {
+      "id": "sh-2f:route_edge_sh2_stairs_to_south_landing",
+      "kind": "walk",
+      "floorId": "sh-2f",
+      "nodeA": "sh-2f:route_node_sh_stairs_central",
+      "nodeB": "sh-2f:route_node_sh2_south_landing",
+      "distance": 4.479999999999997,
+      "pathD": "M 47.95 57.52 L 47.95 62"
+    },
+    {
       "id": "transfer:entrance:rq-west-main:campus:rq-1f",
       "kind": "transfer",
       "nodeA": "campus:route_node_rq_west_main",
       "nodeB": "rq-1f:route_node_entrance_west_main",
+      "distance": 0
+    },
+    {
+      "id": "transfer:entrance:sh-main:campus:sh-1f",
+      "kind": "transfer",
+      "nodeA": "campus:route_node_zone_north_west",
+      "nodeB": "sh-1f:route_node_sh_main",
       "distance": 0
     },
     {
@@ -994,6 +1131,13 @@
       "kind": "transfer",
       "nodeA": "rq-2f:route_node_stairs_south_east",
       "nodeB": "rq-3f:route_node_stairs_south_east",
+      "distance": 60
+    },
+    {
+      "id": "transfer:sh-stairs-central:sh-1f:sh-2f",
+      "kind": "transfer",
+      "nodeA": "sh-1f:route_node_sh_stairs_central",
+      "nodeB": "sh-2f:route_node_sh_stairs_central",
       "distance": 60
     }
   ]

@@ -1380,7 +1380,8 @@
     <circle
        id="route_node_zone_north_west"
        data-route-node=""
-       data-kind="corridor"
+       data-kind="entrance"
+       data-entrance-id="sh-main"
        cx="330"
        cy="323"
        r="2" />
