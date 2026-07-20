@@ -9,6 +9,34 @@
       "placeId": "auditorium"
     },
     {
+      "id": "campus:route_node_campus_north_east",
+      "floorId": "campus",
+      "x": 616,
+      "y": 218,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_campus_north_west",
+      "floorId": "campus",
+      "x": 466,
+      "y": 218,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_lictia_approach",
+      "floorId": "campus",
+      "x": 616,
+      "y": 250,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_lictia_main",
+      "floorId": "campus",
+      "x": 611,
+      "y": 250,
+      "kind": "entrance"
+    },
+    {
       "id": "campus:route_node_ped10_north",
       "floorId": "campus",
       "x": 328,
@@ -213,6 +241,57 @@
       "x": 329.5,
       "y": 132,
       "kind": "stairs"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_chamber",
+      "floorId": "lictia-1f",
+      "x": 33,
+      "y": 51,
+      "kind": "corridor",
+      "placeId": "lictia-chamber"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_corridor_east",
+      "floorId": "lictia-1f",
+      "x": 105,
+      "y": 48,
+      "kind": "corridor"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_corridor_west",
+      "floorId": "lictia-1f",
+      "x": 33,
+      "y": 48,
+      "kind": "corridor"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_hall",
+      "floorId": "lictia-1f",
+      "x": 105,
+      "y": 58,
+      "kind": "corridor"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_innovation",
+      "floorId": "lictia-1f",
+      "x": 82,
+      "y": 46,
+      "kind": "corridor",
+      "placeId": "lictia-innovation"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_innovation_junction",
+      "floorId": "lictia-1f",
+      "x": 82,
+      "y": 48,
+      "kind": "corridor"
+    },
+    {
+      "id": "lictia-1f:route_node_lictia_main",
+      "floorId": "lictia-1f",
+      "x": 118,
+      "y": 58,
+      "kind": "entrance"
     },
     {
       "id": "rq-1f:route_node_entrance_west_junction",
@@ -674,6 +753,24 @@
   ],
   "edges": [
     {
+      "id": "campus:route_edge_campus_north_east_to_lictia_approach",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_campus_north_east",
+      "nodeB": "campus:route_node_lictia_approach",
+      "distance": 32,
+      "pathD": "M 616 218 L 616 250"
+    },
+    {
+      "id": "campus:route_edge_campus_north_west_to_north_east",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_campus_north_west",
+      "nodeB": "campus:route_node_campus_north_east",
+      "distance": 150,
+      "pathD": "M 466 218 L 616 218"
+    },
+    {
       "id": "campus:route_edge_library_south_to_ped9_east",
       "kind": "walk",
       "floorId": "campus",
@@ -681,6 +778,15 @@
       "nodeB": "campus:route_node_ped9_east",
       "distance": 12,
       "pathD": "M 328 494 L 340 494"
+    },
+    {
+      "id": "campus:route_edge_lictia_approach_to_main",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_lictia_approach",
+      "nodeB": "campus:route_node_lictia_main",
+      "distance": 5,
+      "pathD": "M 616 250 L 611 250"
     },
     {
       "id": "campus:route_edge_ped10_north_to_south",
@@ -753,6 +859,15 @@
       "nodeB": "campus:route_node_ped12_west",
       "distance": 77,
       "pathD": "M 462 329 L 385 329"
+    },
+    {
+      "id": "campus:route_edge_ubic_main_to_campus_north_west",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ubic_main",
+      "nodeB": "campus:route_node_campus_north_west",
+      "distance": 27,
+      "pathD": "M 466 245 L 466 218"
     },
     {
       "id": "campus:route_edge_ubic_main_to_rq_west_main",
@@ -915,6 +1030,60 @@
       "nodeB": "lh-2f:route_node_lh_2f_corridor_east",
       "distance": 10.5,
       "pathD": "M 319 65 L 329.5 65"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_corridor_east_to_innovation_junction",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_corridor_east",
+      "nodeB": "lictia-1f:route_node_lictia_innovation_junction",
+      "distance": 23,
+      "pathD": "M 105 48 L 82 48"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_corridor_west_to_chamber",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_corridor_west",
+      "nodeB": "lictia-1f:route_node_lictia_chamber",
+      "distance": 3,
+      "pathD": "M 33 48 L 33 51"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_hall_to_corridor_east",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_hall",
+      "nodeB": "lictia-1f:route_node_lictia_corridor_east",
+      "distance": 10,
+      "pathD": "M 105 58 L 105 48"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_innovation_junction_to_corridor_west",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_innovation_junction",
+      "nodeB": "lictia-1f:route_node_lictia_corridor_west",
+      "distance": 49,
+      "pathD": "M 82 48 L 33 48"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_innovation_junction_to_innovation",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_innovation_junction",
+      "nodeB": "lictia-1f:route_node_lictia_innovation",
+      "distance": 2,
+      "pathD": "M 82 48 L 82 46"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_main_to_hall",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:route_node_lictia_main",
+      "nodeB": "lictia-1f:route_node_lictia_hall",
+      "distance": 13,
+      "pathD": "M 118 58 L 105 58"
     },
     {
       "id": "rq-1f:route_edge_104f_to_north_east",
@@ -1407,6 +1576,13 @@
       "kind": "transfer",
       "nodeA": "campus:route_node_zone_north_east",
       "nodeB": "lh-1f:route_node_lh_1f_entrance_main",
+      "distance": 0
+    },
+    {
+      "id": "transfer:entrance:lictia-main:campus:lictia-1f",
+      "kind": "transfer",
+      "nodeA": "campus:route_node_lictia_main",
+      "nodeB": "lictia-1f:route_node_lictia_main",
       "distance": 0
     },
     {

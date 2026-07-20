@@ -1373,6 +1373,35 @@
        cy="245"
        r="2" />
     <circle
+       id="route_node_campus_north_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="466"
+       cy="218"
+       r="2" />
+    <circle
+       id="route_node_campus_north_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="616"
+       cy="218"
+       r="2" />
+    <circle
+       id="route_node_lictia_approach"
+       data-route-node=""
+       data-kind="corridor"
+       cx="616"
+       cy="250"
+       r="2" />
+    <circle
+       id="route_node_lictia_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="lictia-main"
+       cx="611"
+       cy="250"
+       r="2" />
+    <circle
        id="route_node_ped12_west"
        data-route-node=""
        data-kind="corridor"
@@ -1464,6 +1493,30 @@
        data-node-a="route_node_ubic_main"
        data-node-b="route_node_rq_west_main"
        d="M 466 245 L 462 329" />
+    <path
+       id="route_edge_ubic_main_to_campus_north_west"
+       data-route-edge=""
+       data-node-a="route_node_ubic_main"
+       data-node-b="route_node_campus_north_west"
+       d="M 466 245 L 466 218" />
+    <path
+       id="route_edge_campus_north_west_to_north_east"
+       data-route-edge=""
+       data-node-a="route_node_campus_north_west"
+       data-node-b="route_node_campus_north_east"
+       d="M 466 218 L 616 218" />
+    <path
+       id="route_edge_campus_north_east_to_lictia_approach"
+       data-route-edge=""
+       data-node-a="route_node_campus_north_east"
+       data-node-b="route_node_lictia_approach"
+       d="M 616 218 L 616 250" />
+    <path
+       id="route_edge_lictia_approach_to_main"
+       data-route-edge=""
+       data-node-a="route_node_lictia_approach"
+       data-node-b="route_node_lictia_main"
+       d="M 616 250 L 611 250" />
     <path
        id="route_edge_ped12_west_to_zone_north_east"
        data-route-edge=""

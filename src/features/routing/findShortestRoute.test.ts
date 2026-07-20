@@ -367,4 +367,39 @@ describe("findShortestRoute", () => {
       "transfer:lh-stairs-east:lh-1f:lh-2f",
     ]);
   });
+
+  test("LICTiA内の2地点が相互に到達可能", () => {
+    expect(
+      findShortestRouteBetweenPlaces(
+        routeGraph,
+        "lictia-chamber",
+        "lictia-innovation",
+      ) === null,
+    ).toEqual(false);
+    expect(
+      findShortestRouteBetweenPlaces(
+        routeGraph,
+        "lictia-innovation",
+        "lictia-chamber",
+      ) === null,
+    ).toEqual(false);
+  });
+
+  test("研究棟からLICTiAへ2つの建物入口を通って到達できる", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq1-161",
+      "lictia-innovation",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(
+      route
+        ?.filter((item) => item.kind === "transfer")
+        .map((item) => item.id),
+    ).toEqual([
+      "transfer:entrance:rq-west-main:campus:rq-1f",
+      "transfer:entrance:lictia-main:campus:lictia-1f",
+    ]);
+  });
 });

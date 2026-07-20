@@ -95,8 +95,14 @@ export const places: Place[] = [
   svg("rq3-342a", "rq-3f", "研究棟3F 342A", "room_s3_342"),
   svg("rq3-348e", "rq-3f", "研究棟3F 348E", "room_s3_348"),
   svg("rq3-m11", "rq-3f", "研究棟3F M11", "room_e3_M11_361"),
-  // LICTiA1FのSVGに専用要素が見つからない
-  unmapped("lictia-chamber", "lictia-1f", "LICTiA1F 箱庭チャンバー室"),
+  // 専用要素はないため、箱庭展示に使う検証室の中心を座標アンカーにする。
+  coordinates(
+    "lictia-chamber",
+    "lictia-1f",
+    "LICTiA1F 箱庭チャンバー室",
+    32.5,
+    54.6,
+  ),
   svg(
     "lictia-innovation",
     "lictia-1f",
