@@ -1382,7 +1382,8 @@
     <circle
        id="route_node_zone_north_east"
        data-route-node=""
-       data-kind="corridor"
+       data-kind="entrance"
+       data-entrance-id="lh-main"
        cx="365"
        cy="323"
        r="2" />

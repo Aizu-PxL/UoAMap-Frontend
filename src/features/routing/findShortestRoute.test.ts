@@ -315,4 +315,56 @@ describe("findShortestRoute", () => {
       "transfer:entrance:ubic-main:campus:ubic-1f",
     ]);
   });
+
+  test("講義棟1F・2Fの9地点が相互に到達可能", () => {
+    const placeIds = [
+      "lh-large",
+      "lh-m8",
+      "lh-m10",
+      "lh-m2",
+      "lh-m3",
+      "lh-m4",
+      "lh-m5",
+      "lh-m6",
+      "lh-m7",
+    ];
+
+    for (const startPlaceId of placeIds) {
+      for (const endPlaceId of placeIds) {
+        expect(
+          findShortestRouteBetweenPlaces(routeGraph, startPlaceId, endPlaceId) ===
+            null,
+        ).toEqual(false);
+      }
+    }
+  });
+
+  test("講義棟1Fと2Fの東側階段transferが生成される", () => {
+    expect(
+      routeGraph.edges.some(
+        (edge) =>
+          edge.id === "transfer:lh-stairs-east:lh-1f:lh-2f" &&
+          edge.kind === "transfer",
+      ),
+    ).toEqual(true);
+  });
+
+  test("研究棟から講義棟2Fへ両建物入口と階段を通って到達できる", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq1-161",
+      "lh-m2",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(
+      route
+        ?.filter((item) => item.kind === "transfer")
+        .map((item) => item.id),
+    ).toEqual([
+      "transfer:entrance:rq-west-main:campus:rq-1f",
+      "transfer:entrance:lh-main:campus:lh-1f",
+      "transfer:lh-stairs-east:lh-1f:lh-2f",
+    ]);
+  });
 });
