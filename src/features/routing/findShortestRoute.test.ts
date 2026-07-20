@@ -6,10 +6,10 @@ import {
 } from "./findShortestRoute";
 import { routeGraph } from "./routeGraph";
 
-function node(id: string): RouteNode {
+function node(id: string, floorId = "test-floor"): RouteNode {
   return {
     id,
-    floorId: "test-floor",
+    floorId,
     x: 0,
     y: 0,
     kind: "corridor",
@@ -21,15 +21,26 @@ function edge(
   nodeA: string,
   nodeB: string,
   distance: number,
+  floorId = "test-floor",
 ): RouteEdge {
   return {
     id,
-    floorId: "test-floor",
+    kind: "walk",
+    floorId,
     nodeA,
     nodeB,
     distance,
     pathD: "M 0 0 L 1 1",
   };
+}
+
+function transferEdge(
+  id: string,
+  nodeA: string,
+  nodeB: string,
+  distance: number,
+): RouteEdge {
+  return { id, kind: "transfer", nodeA, nodeB, distance };
 }
 
 describe("findShortestRoute", () => {
@@ -59,6 +70,38 @@ describe("findShortestRoute", () => {
     expect(findShortestRoute(graph, "a", "d")?.map((item) => item.id)).toEqual([
       "ab",
       "bd",
+    ]);
+  });
+
+  test("2フロア・2階段では総距離が短い階段のtransferエッジを経路順に含む", () => {
+    const graph: RouteGraph = {
+      nodes: [
+        node("start", "floor-1"),
+        node("stairs-cheap-1f", "floor-1"),
+        node("stairs-expensive-1f", "floor-1"),
+        node("stairs-cheap-2f", "floor-2"),
+        node("stairs-expensive-2f", "floor-2"),
+        node("end", "floor-2"),
+      ],
+      edges: [
+        edge("start-cheap", "start", "stairs-cheap-1f", 2, "floor-1"),
+        transferEdge("transfer-cheap", "stairs-cheap-1f", "stairs-cheap-2f", 60),
+        edge("cheap-end", "stairs-cheap-2f", "end", 2, "floor-2"),
+        edge("start-expensive", "start", "stairs-expensive-1f", 1, "floor-1"),
+        transferEdge(
+          "transfer-expensive",
+          "stairs-expensive-1f",
+          "stairs-expensive-2f",
+          60,
+        ),
+        edge("expensive-end", "stairs-expensive-2f", "end", 10, "floor-2"),
+      ],
+    };
+
+    expect(findShortestRoute(graph, "start", "end")?.map((item) => item.id)).toEqual([
+      "start-cheap",
+      "transfer-cheap",
+      "cheap-end",
     ]);
   });
 
@@ -102,5 +145,19 @@ describe("findShortestRoute", () => {
         expect(route === null).toEqual(false);
       }
     }
+  });
+
+  test("RQ1FからRQ3Fへの実経路はtransferエッジを2本含む", () => {
+    const route = findShortestRouteBetweenPlaces(routeGraph, "rq1-161", "rq3-325f");
+
+    expect(route === null).toEqual(false);
+    expect(route?.filter((item) => item.kind === "transfer").length).toEqual(2);
+  });
+
+  test("RQ1FからRQ2Fへの実経路はtransferエッジを1本含む", () => {
+    const route = findShortestRouteBetweenPlaces(routeGraph, "rq1-161", "rq2-201f");
+
+    expect(route === null).toEqual(false);
+    expect(route?.filter((item) => item.kind === "transfer").length).toEqual(1);
   });
 });

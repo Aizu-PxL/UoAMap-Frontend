@@ -88,15 +88,24 @@ export type RouteNode = {
   placeId?: string;
 };
 
-export type RouteEdge = {
-  id: string;
-  floorId: string;
-  nodeA: string;
-  nodeB: string;
-  distance: number;
-  /** Routeレイヤーから抽出した、同じviewBox座標系の直線path */
-  pathD: string;
-};
+export type RouteEdge =
+  | {
+      id: string;
+      kind: "walk";
+      floorId: string;
+      nodeA: string;
+      nodeB: string;
+      distance: number;
+      /** Routeレイヤーから抽出した、同じviewBox座標系の直線path */
+      pathD: string;
+    }
+  | {
+      id: string;
+      kind: "transfer";
+      nodeA: string;
+      nodeB: string;
+      distance: number;
+    };
 
 export type RouteGraph = {
   nodes: RouteNode[];

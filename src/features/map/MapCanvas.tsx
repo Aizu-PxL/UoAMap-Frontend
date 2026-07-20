@@ -6,6 +6,7 @@ import { extractMapLabels, renderMapLabels } from "./mapLabels";
 import type { MapLabel } from "./mapLabels";
 import { getMeetUserUnitsPerPixel } from "./mapViewportScale";
 import { getPlaceCoordinates, getSvgElementCoordinates } from "./placeLocator";
+import { routeGraph } from "../routing/routeGraph";
 
 interface ViewBox {
   x: number;
@@ -45,6 +46,8 @@ const EVENT_MARKER_SIZE = 24;
 const EVENT_MARKER_RADIUS = 11;
 const EVENT_MARKER_PERSON_PATH =
   "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
+const ROUTE_TRANSFER_MARKER_RADIUS = 7;
+const routeNodeById = new Map(routeGraph.nodes.map((node) => [node.id, node]));
 
 const floorGroups = [
   ["rq-1f", "rq-2f", "rq-3f"],
@@ -334,7 +337,25 @@ export function MapCanvas({
   const selectableFloorIds = floorGroups.find((group) =>
     group.some((candidate) => candidate === floorId),
   );
-  const hasVisibleRoute = routeEdges.some((edge) => edge.floorId === floorId);
+  const routeFloorIds = new Set<string>();
+  for (const edge of routeEdges) {
+    if (edge.kind === "walk") {
+      routeFloorIds.add(edge.floorId);
+      continue;
+    }
+
+    const nodeA = routeNodeById.get(edge.nodeA);
+    const nodeB = routeNodeById.get(edge.nodeB);
+    if (nodeA) {
+      routeFloorIds.add(nodeA.floorId);
+    }
+    if (nodeB) {
+      routeFloorIds.add(nodeB.floorId);
+    }
+  }
+  const hasVisibleRoute = routeEdges.some(
+    (edge) => edge.kind === "walk" && edge.floorId === floorId,
+  );
 
   // Store original viewBox for zoom clamping calculation
   const originalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
@@ -554,7 +575,16 @@ export function MapCanvas({
       return;
     }
 
+    const transferNodeIds = new Set<string>();
     for (const edge of routeEdges) {
+      if (edge.kind === "transfer") {
+        for (const nodeId of [edge.nodeA, edge.nodeB]) {
+          if (routeNodeById.get(nodeId)?.floorId === floorId) {
+            transferNodeIds.add(nodeId);
+          }
+        }
+        continue;
+      }
       if (edge.floorId !== floorId) {
         continue;
       }
@@ -564,7 +594,25 @@ export function MapCanvas({
       path.setAttribute("d", edge.pathD);
       routeLayer.append(path);
     }
-  }, [floorId, loading, routeEdges]);
+
+    const userUnitsPerPixel = getMeetUserUnitsPerPixel(viewBox, containerSize);
+    if (userUnitsPerPixel === null) {
+      return;
+    }
+    for (const nodeId of transferNodeIds) {
+      const node = routeNodeById.get(nodeId);
+      if (!node) {
+        continue;
+      }
+      const marker = document.createElementNS(SVG_NAMESPACE, "circle");
+      marker.setAttribute("class", "map-route-transfer");
+      marker.setAttribute("data-route-node-id", node.id);
+      marker.setAttribute("cx", String(node.x));
+      marker.setAttribute("cy", String(node.y));
+      marker.setAttribute("r", String(ROUTE_TRANSFER_MARKER_RADIUS * userUnitsPerPixel));
+      routeLayer.append(marker);
+    }
+  }, [containerSize, floorId, loading, routeEdges, viewBox]);
 
   // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
   useEffect(() => {
@@ -1178,17 +1226,24 @@ export function MapCanvas({
       >
         {selectableFloorIds && (
           <div className="map-canvas__floor-switch" aria-label="フロア切替">
-            {selectableFloorIds.map((selectableFloorId) => (
-              <button
-                key={selectableFloorId}
-                type="button"
-                className="map-canvas__floor-button"
-                aria-pressed={selectableFloorId === floorId}
-                onClick={() => onFloorChange(selectableFloorId)}
-              >
-                {getFloorLabel(selectableFloorId)}
-              </button>
-            ))}
+            {selectableFloorIds.map((selectableFloorId) => {
+              const floorLabel = getFloorLabel(selectableFloorId);
+              const isOnRoute = routeFloorIds.has(selectableFloorId);
+              return (
+                <button
+                  key={selectableFloorId}
+                  type="button"
+                  className={`map-canvas__floor-button${
+                    isOnRoute ? " map-canvas__floor-button--on-route" : ""
+                  }`}
+                  aria-label={isOnRoute ? `${floorLabel}、ルート上` : floorLabel}
+                  aria-pressed={selectableFloorId === floorId}
+                  onClick={() => onFloorChange(selectableFloorId)}
+                >
+                  {floorLabel}
+                </button>
+              );
+            })}
           </div>
         )}
         {floorId !== DEFAULT_FLOOR_ID && (

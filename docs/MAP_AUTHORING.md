@@ -29,8 +29,31 @@
 - `data-kind`: `corridor` / `stairs` / `entrance`
 - イベント会場やQR地点へ接続するノードには `data-place-id="<Place.id>"` を付ける
 - `data-place-id`は`src/data/places.ts`に存在するIDだけを使い、1地点につき1ノードとする
-- 階段・出入口は将来のフロア／シート間接続点になる。接続規約は次スライスで確定する
+- 階段ノードのフロア間接続は後述「階段接続」の規約に従う。建物出入口(`entrance`)のシート間接続規約は屋外ルートを実装するスライスで確定する
 - ノードは通路の曲がり角、分岐、地点入口、階段、建物出入口に置く
+
+## 階段接続
+
+同じ物理階段を指す各フロアの`stairs`ノードに、共通の`data-stair-id`を付ける。
+
+```svg
+<circle
+  id="route_node_stairs_north_east"
+  data-route-node=""
+  data-kind="stairs"
+  data-stair-id="rq-stairs-ne"
+  cx="414"
+  cy="76"
+  r="2" />
+```
+
+- `data-stair-id`は`data-kind="stairs"`のノードにのみ付けられる。値はASCII英数字・ハイフン・アンダースコアのみ
+- 同一フロア内で同じ`data-stair-id`は1回まで。同じIDは2フロア以上に出現しなければならない(孤立IDはエラー)
+- 同じ`data-stair-id`を持つフロアは、`src/data/places.ts`の`floors`配列順で連続していなければならない(1Fと3Fにあって2Fにない、はエラー)
+- 抽出スクリプトが隣接フロアのペアごとに**transferエッジ**を自動生成する。SVGにフロアをまたぐpathは描かない
+  - 生成エッジID: `transfer:<stairId>:<floorA>:<floorB>`
+  - 距離は固定コスト`60`(viewBox座標系のユーザー単位。短い廊下1本ぶん相当で、どの階段を選ぶかの比較にのみ効く)
+- `data-stair-id`を持たない`stairs`ノードは従来どおり単なるフロア内ノードとして扱われる
 
 ## エッジ
 
@@ -65,6 +88,7 @@ bun run verify:routes
 - 不正なkind、座標、path形式
 - Route内のtransform
 - path始終点とノード座標の不一致
+- `data-stair-id`の不正(パターン違反、`stairs`以外への付与、フロア内重複、孤立ID、フロア非連続)
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 
 既存SVGを編集した後は、あわせて`bun run verify:places`を実行し、既存36地点のIDが保全されていることを確認する。

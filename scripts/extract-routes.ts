@@ -5,6 +5,7 @@ import type { RouteEdge, RouteGraph, RouteNode, RouteNodeKind } from "../src/dat
 
 type SourceNode = Omit<RouteNode, "id" | "floorId"> & {
   localId: string;
+  stairId?: string;
 };
 
 type SourceEdge = {
@@ -26,6 +27,8 @@ const outputPath = path.join(
 const checkOnly = process.argv.includes("--check");
 const routeKinds = new Set<RouteNodeKind>(["corridor", "stairs", "entrance"]);
 const routeIdPattern = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const stairIdPattern = /^[A-Za-z0-9_-]+$/;
+const transferDistance = 60;
 const numberPattern = "-?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?";
 const straightPathPattern = new RegExp(
   `^\\s*M\\s*(${numberPattern})[\\s,]+(${numberPattern})\\s*L\\s*(${numberPattern})[\\s,]+(${numberPattern})\\s*$`,
@@ -35,6 +38,10 @@ const nodes: RouteNode[] = [];
 const edges: RouteEdge[] = [];
 const globalNodeIds = new Set<string>();
 const globalEdgeIds = new Set<string>();
+const stairOccurrences = new Map<
+  string,
+  Array<{ floorId: string; floorIndex: number; nodeId: string }>
+>();
 
 for (const sheet of mapSheets) {
   const svgFilePath = path.join(
@@ -77,6 +84,7 @@ for (const sheet of mapSheets) {
         const rawKind = element.getAttribute("data-kind");
         const rawX = element.getAttribute("cx");
         const rawY = element.getAttribute("cy");
+        const rawStairId = element.getAttribute("data-stair-id");
         const x = rawX === null || rawX.trim() === "" ? Number.NaN : Number(rawX);
         const y = rawY === null || rawY.trim() === "" ? Number.NaN : Number(rawY);
 
@@ -108,7 +116,26 @@ for (const sheet of mapSheets) {
           y,
           kind: rawKind as RouteNodeKind,
           ...(placeId ? { placeId } : {}),
+          ...(rawStairId !== null ? { stairId: rawStairId } : {}),
         });
+      },
+    })
+    .on("g#Route [data-stair-id]", {
+      element(element) {
+        const localId = element.getAttribute("id") ?? element.tagName;
+        const stairId = element.getAttribute("data-stair-id") ?? "";
+        if (
+          element.tagName !== "circle" ||
+          !element.hasAttribute("data-route-node") ||
+          element.getAttribute("data-kind") !== "stairs"
+        ) {
+          errors.push(
+            `${sheet.svgUrl}: ${localId} のdata-stair-idはstairsノードにのみ付けられます`,
+          );
+        }
+        if (!stairIdPattern.test(stairId)) {
+          errors.push(`${sheet.svgUrl}: ${localId} のdata-stair-idが不正です`);
+        }
       },
     })
     .on("g#Route [data-route-edge]", {
@@ -167,6 +194,7 @@ for (const sheet of mapSheets) {
 
   const localNodeIds = new Set<string>();
   const placeIds = new Set<string>();
+  const stairIds = new Set<string>();
   for (const sourceNode of sourceNodes) {
     if (localNodeIds.has(sourceNode.localId)) {
       errors.push(`${sheet.svgUrl}: RouteノードID ${sourceNode.localId} が重複しています`);
@@ -202,6 +230,27 @@ for (const sheet of mapSheets) {
       kind: sourceNode.kind,
       ...(sourceNode.placeId ? { placeId: sourceNode.placeId } : {}),
     });
+
+    if (
+      sourceNode.stairId !== undefined &&
+      sourceNode.kind === "stairs" &&
+      stairIdPattern.test(sourceNode.stairId)
+    ) {
+      if (stairIds.has(sourceNode.stairId)) {
+        errors.push(
+          `${sheet.svgUrl}: data-stair-id ${sourceNode.stairId} が同一フロア内で重複しています`,
+        );
+      } else {
+        stairIds.add(sourceNode.stairId);
+        const occurrences = stairOccurrences.get(sourceNode.stairId) ?? [];
+        occurrences.push({
+          floorId: routeFloorId,
+          floorIndex: floors.indexOf(floor),
+          nodeId: id,
+        });
+        stairOccurrences.set(sourceNode.stairId, occurrences);
+      }
+    }
   }
 
   const localEdgeIds = new Set<string>();
@@ -249,11 +298,56 @@ for (const sheet of mapSheets) {
     globalEdgeIds.add(id);
     edges.push({
       id,
+      kind: "walk",
       floorId: routeFloorId,
       nodeA: `${routeFloorId}:${sourceEdge.nodeA}`,
       nodeB: `${routeFloorId}:${sourceEdge.nodeB}`,
       distance: Math.hypot(nodeB.x - nodeA.x, nodeB.y - nodeA.y),
       pathD: sourceEdge.pathD,
+    });
+  }
+}
+
+for (const [stairId, unsortedOccurrences] of stairOccurrences) {
+  const occurrences = [...unsortedOccurrences].sort(
+    (left, right) => left.floorIndex - right.floorIndex,
+  );
+  if (occurrences.length < 2) {
+    errors.push(`data-stair-id ${stairId} は2フロア以上に配置してください`);
+    continue;
+  }
+
+  let isContiguous = true;
+  for (let index = 1; index < occurrences.length; index += 1) {
+    const previous = occurrences[index - 1];
+    const current = occurrences[index];
+    if (current.floorIndex !== previous.floorIndex + 1) {
+      isContiguous = false;
+      break;
+    }
+  }
+  if (!isContiguous) {
+    errors.push(
+      `data-stair-id ${stairId} のフロアはfloors配列順で連続している必要があります`,
+    );
+    continue;
+  }
+
+  for (let index = 1; index < occurrences.length; index += 1) {
+    const floorA = occurrences[index - 1];
+    const floorB = occurrences[index];
+    const id = `transfer:${stairId}:${floorA.floorId}:${floorB.floorId}`;
+    if (globalEdgeIds.has(id)) {
+      errors.push(`経路エッジID ${id} が重複しています`);
+      continue;
+    }
+    globalEdgeIds.add(id);
+    edges.push({
+      id,
+      kind: "transfer",
+      nodeA: floorA.nodeId,
+      nodeB: floorB.nodeId,
+      distance: transferDistance,
     });
   }
 }

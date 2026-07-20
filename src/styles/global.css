@@ -142,6 +142,13 @@ input {
   vector-effect: non-scaling-stroke;
 }
 
+.map-route-transfer {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+  stroke-width: 4px;
+  vector-effect: non-scaling-stroke;
+}
+
 .map-marker {
   filter: drop-shadow(0 2px 2px var(--map-marker-shadow));
 }
@@ -231,15 +238,31 @@ input {
 }
 
 .map-canvas__floor-button {
+  position: relative;
   min-width: 2.75rem;
   padding: 0 0.7rem;
   border-radius: var(--radius-pill);
   background: transparent;
 }
 
+.map-canvas__floor-button--on-route::after {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  content: "";
+}
+
 .map-canvas__floor-button[aria-pressed="true"] {
   color: #ffffff;
   background: var(--color-accent);
+}
+
+.map-canvas__floor-button--on-route[aria-pressed="true"]::after {
+  background: var(--color-surface);
 }
 
 .map-canvas__campus-button {
