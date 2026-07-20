@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-21(ルート最終検証・引き継ぎ03j完了)
+最終更新: 2026-07-21(アプリ内QRスキャン05a完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -13,7 +13,7 @@
 | 2 | 地図表示 | ✅ 完了 | ブリーフ: docs/tasks/02a〜02d + UI修正02e〜02h(建物枠線・フロア切替viewBox維持・イベントマーカー・視認性とピン置換)。各レビュー指摘も修正済み。ビジュアル刷新04〜06と横長固定サイズ補正07(SPEC §3.1.1)も完了 |
 | 3 | ルート | ✅ 完了 | 03a〜03i。`campus-all`(全域概念)を除く全38 Placeを104ノード/112エッジの単一連結グラフへ収録。全イベント地点・Q001〜Q003地点をcoverageテストで固定 |
 | 4 | イベント検索 | ✅ 完了 | 検索・タグ絞り込み・詳細・「ここへ行く」 |
-| 5 | QR/ディープリンク | △ 一部 | `/q`・`/p`・`/e` の正規化は済み。**アプリ内QRスキャンが未実装** |
+| 5 | QR/ディープリンク | ✅ 完了 | `/q`・`/p`・`/e` の正規化、アプリ内カメラスキャン、`to`保持での再スキャン、エラー復旧を実装 |
 | 6 | スケジュール | ✅ 完了 | PDF画像表示(public/schedule/) |
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
@@ -49,6 +49,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 | `/?at=ubic-3d-theater&to=P18` | UBIC内で3Dシアターから研究ラボエリアまでの室内ルート線を表示 |
 | `/?at=rq1-161&to=P19` | UBICへ切替し、研究棟161から運動解析ルームまで研究棟入口・キャンパス・UBIC入口を通る経路を表示 |
 | `/q/Q003?to=M21` | `at=lh-large`へ正規化し、講義棟1F大講義室から2F M2まで東側階段を通る経路を表示。1F/2F双方にインジケータ |
+| `/qr?to=M21` | 背面カメラを起動。Q003を読むと`at=lh-large`でルート表示。QRタブへ戻ってQ001を読むと`to=M21`のまま`at=sh-hall`へ更新し、キャンパス横断ルートを再計算 |
 | `/?at=rq1-161&to=M21` | 講義棟2Fへ切替し、研究棟161からM2まで研究棟入口・キャンパス・講義棟入口・階段を通る経路を表示 |
 | `/?at=lictia-innovation&to=P20` | LICTiA内でイノベーション創出スペースから箱庭チャンバー室までの室内ルート線と両ピンを表示 |
 | `/?at=rq1-161&to=P21` | LICTiAへ切替し、研究棟161からイノベーション創出スペースまでキャンパス北側経路を通って表示 |
@@ -63,6 +64,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 
 - **地図SVGはReact非管理DOM**: `MapCanvas` は SVG を `svgHostRef`(専用div)内に `DOMParser`+`replaceChildren` で挿入する。**React管理下の要素とSVG DOMを混ぜない**こと(混ぜるとReactの再レンダーでクラッシュする)。SVG要素へのイベントは addEventListener + クリーンアップで管理
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」の再フォーカスも `focus=` クエリを書く方式(コンポーネントstateに逃がさない)
+- **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一origin・`BASE_URL`配下の`/q/:qrId`だけを受理する。読み取り後は既存クエリを保持して`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱時はscannerをdestroyし、カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。講義棟(LH)だけ1シートに1F/2F併記で、`fill_1F`/`frame_1F`/`part_1F`/`room_1F`/`text_1F`/`mark_1F`(2F同様)のグループdisplay切替で表現
 - **places.ts が地点語彙の正**: 全39 Placeの内訳はSVG要素への紐付け36件、座標アンカー2件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
@@ -77,3 +79,4 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で36件PASSを必ず確認する
 - SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)
+- カメラは本番ではHTTPSのsecure contextが必須。`qr-scanner`のMIT通知は`public/THIRD_PARTY_NOTICES.txt`として配布物へ同梱する(アプリ内ライセンス画面は不要)

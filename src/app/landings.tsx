@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { getPlace } from "../data/places";
 import { repository } from "../data/repository";
+import { createResolvedQrSearch } from "../features/qr/qrValue";
 
 /**
  * QRの着地ルート /q/:qrId(SPEC.md 3.2)。
@@ -29,10 +30,13 @@ export function QrLanding() {
           setError(`このQRコード（${qrId}）は登録されていません。`);
           return;
         }
-        const params = new URLSearchParams(searchParams);
-        params.set("at", qr.placeId);
-        params.delete("focus");
-        navigate({ pathname: "/", search: params.toString() }, { replace: true });
+        navigate(
+          {
+            pathname: "/",
+            search: createResolvedQrSearch(searchParams, qr.placeId),
+          },
+          { replace: true },
+        );
       })
       .catch(() => {
         if (!cancelled) {
