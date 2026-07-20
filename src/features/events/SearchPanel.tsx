@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router";
 import { useCampusData } from "../../data/DataProvider";
 import { getPlace } from "../../data/places";
 import type { Event as CampusEvent } from "../../data/types";
@@ -6,8 +7,17 @@ import { EventCard } from "./EventCard";
 
 export function SearchPanel() {
   const { events, tags, loading, error } = useCampusData();
+  const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [activeTagId, setActiveTagId] = useState<string | null>(null);
+  const [highlightedCardElement, setHighlightedCardElement] =
+    useState<HTMLAnchorElement | null>(null);
+  const previousHighlightRef = useRef<string | null>(null);
+  const lastScrolledElementRef = useRef<HTMLAnchorElement | null>(null);
+  const highlightedEventId = searchParams.get("highlight");
+  const highlightedCardRef = useCallback((element: HTMLAnchorElement | null) => {
+    setHighlightedCardElement(element);
+  }, []);
 
   const filteredEvents = useMemo(
     () => filterEvents(events, query, activeTagId),
@@ -18,6 +28,52 @@ export function SearchPanel() {
     () => new Map(tags.map((tag) => [tag.id, tag.label])),
     [tags],
   );
+
+  useEffect(() => {
+    if (highlightedEventId === previousHighlightRef.current) {
+      return;
+    }
+
+    previousHighlightRef.current = highlightedEventId;
+    lastScrolledElementRef.current = null;
+    if (highlightedEventId) {
+      // A marker selection starts from the unfiltered list so its card is visible.
+      setQuery("");
+      setActiveTagId(null);
+    }
+  }, [highlightedEventId]);
+
+  // 対象カードのDOM要素が(再)出現するたびにスクロールする。
+  // ロード完了時のリスト再マウントでsmoothスクロールが中断されても、
+  // 新しい要素インスタンスに対して再実行される。
+  useEffect(() => {
+    if (!highlightedEventId) {
+      lastScrolledElementRef.current = null;
+      return;
+    }
+    if (
+      loading ||
+      !highlightedCardElement ||
+      !highlightedCardElement.isConnected ||
+      highlightedCardElement.dataset.eventId !== highlightedEventId ||
+      lastScrolledElementRef.current === highlightedCardElement
+    ) {
+      return;
+    }
+
+    // 画面遷移直後のジャンプなので即時スクロール(smoothはバックグラウンドタブ等で
+    // アニメーションが進まず止まることがある)
+    const scrollToCard = () =>
+      highlightedCardElement.scrollIntoView({
+        behavior: "auto",
+        block: "center",
+      });
+    scrollToCard();
+    // ボトムシートの高さトランジション(180ms)中に走るとズレるので、完了後に補正
+    const correctionTimer = window.setTimeout(scrollToCard, 250);
+    lastScrolledElementRef.current = highlightedCardElement;
+    return () => window.clearTimeout(correctionTimer);
+  }, [highlightedCardElement, highlightedEventId, loading]);
 
   return (
     <div className="search-panel">
@@ -67,6 +123,8 @@ export function SearchPanel() {
               key={event.id}
               event={event}
               tagLabel={event.tags.map((id) => tagLabelById.get(id) ?? id).join(" / ")}
+              highlighted={event.id === highlightedEventId}
+              cardRef={event.id === highlightedEventId ? highlightedCardRef : undefined}
             />
           ))
         )}

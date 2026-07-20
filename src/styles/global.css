@@ -65,6 +65,23 @@ input {
   touch-action: none;
 }
 
+/* 【調整ポイント】クリック可能な建物の枠線(BACKLOG「建物枠線の見た目調整」)
+   色・太さ・透明度はここを変更。どの建物に付くかは
+   src/features/map/MapCanvas.tsx の buildingFloorIds とクラス付与ループ */
+.map-canvas__interactive-building {
+  stroke: var(--color-accent) !important;
+  stroke-width: 2px !important;
+  stroke-opacity: 0.38 !important;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-canvas__interactive-building:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  stroke-opacity: 1 !important;
+}
+
 .map-canvas__svg-host {
   position: absolute;
   inset: 0;
@@ -96,6 +113,33 @@ input {
 
 .map-marker--focus {
   fill: var(--color-accent);
+}
+
+.map-marker--event {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.map-marker__hit-area {
+  fill: transparent;
+}
+
+.map-marker__event-background {
+  fill: var(--color-surface);
+}
+
+/* FigmaのMarker/Event準拠(人型バッジ、#1F1F1F) */
+.map-marker__event-shape {
+  fill: #1f1f1f;
+}
+
+.map-marker--event:focus-visible {
+  outline: none;
+}
+
+.map-marker--event:focus-visible .map-marker__event-shape {
+  stroke: #ffffff;
+  stroke-width: 3px;
 }
 
 .map-marker__detail {
@@ -383,11 +427,19 @@ input {
 .event-card {
   display: block;
   padding: 0.5rem 0.8rem;
+  border: 2px solid transparent;
   border-radius: var(--radius-card);
   color: inherit;
   background: var(--color-card-bg);
   box-shadow: var(--shadow-card);
   text-decoration: none;
+}
+
+.event-card.is-highlighted {
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 22%, transparent),
+    var(--shadow-card);
 }
 
 .event-card h2 {

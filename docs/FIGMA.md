@@ -40,7 +40,7 @@
 | Icon/PersonPin / Icon/LocationPin / Icon/QrStartMarker | `78:365` / `78:368` / `78:371` | 地図マーカー用 |
 | TimelineItem | `91:413` | タイムライン版の部品(不採用・保管) |
 
-注: `MapCanvas` 内の `Marker/Arrow` は**イベント開催地マーカー**(BACKLOG #1)。`Marker/Event` 等への改名待ち。
+注: `MapCanvas` 内の `Marker/Event`(旧 Marker/Arrow、`79:364`)は**イベント開催地マーカー**。タップで検索タブ+該当イベント強調(SPEC §3.1/§3.4)。
 
 ## Tokens ⇔ CSS変数対応
 

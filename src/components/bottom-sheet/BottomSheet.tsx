@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSearchParams } from "react-router";
 import { SheetNavigation } from "./SheetNavigation";
 
 type BottomSheetProps = {
@@ -24,6 +25,16 @@ export function BottomSheet({ children, onHeightChange }: BottomSheetProps) {
   useLayoutEffect(() => {
     onHeightChange(height);
   }, [height, onHeightChange]);
+
+  // 地図のイベントマーカータップ等でhighlightが付いたら、
+  // シートが最小のままだと一覧が見えないので初期スナップ以上へ展開する
+  const [searchParams] = useSearchParams();
+  const highlightedEventId = searchParams.get("highlight");
+  useEffect(() => {
+    if (highlightedEventId) {
+      setHeight((currentHeight) => Math.max(currentHeight, initialSnapPoint));
+    }
+  }, [highlightedEventId]);
 
   useEffect(() => {
     const moveDrag = (event: globalThis.PointerEvent) => {

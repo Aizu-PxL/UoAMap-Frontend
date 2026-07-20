@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { BottomSheet } from "../components/bottom-sheet/BottomSheet";
+import { useCampusData } from "../data/DataProvider";
 import { MapCanvas } from "../features/map/MapCanvas";
 import { useNavState } from "./useNavState";
 
@@ -8,6 +9,7 @@ export function AppLayout() {
   const [floorId, setFloorId] = useState("campus");
   const [bottomSheetHeight, setBottomSheetHeight] = useState(58);
   const location = useLocation();
+  const { events } = useCampusData();
   const { currentPlace, destinationPlace, focusPlace } = useNavState();
 
   const prioritizedPlace = focusPlace ?? destinationPlace ?? currentPlace;
@@ -41,6 +43,7 @@ export function AppLayout() {
         destinationPlace={destinationPlace}
         focusPlace={focusPlace}
         focusRequestNonce={focusRequestNonce}
+        events={events}
       />
       <BottomSheet onHeightChange={setBottomSheetHeight}>
         <Outlet />
