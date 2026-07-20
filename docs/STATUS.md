@@ -1,9 +1,9 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-21(全38案内地点のRoute coverage 03i完了・ステップ3完了)
+最終更新: 2026-07-21(ルート最終検証・引き継ぎ03j完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
-新しいセッション・別のエージェントは、まずこのファイル → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。仕様の正は [SPEC.md](SPEC.md)。
+新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
 
 ## ロードマップ進捗(SPEC.md §6)
 
@@ -17,7 +17,7 @@
 | 6 | スケジュール | ✅ 完了 | PDF画像表示(public/schedule/) |
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
-最新コミット: `82b1447 研究棟1F〜3Fの階段接続ルート(03b)`
+最新ルート実装コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 動作確認手順(検証ゲート)
 
@@ -64,7 +64,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **地図SVGはReact非管理DOM**: `MapCanvas` は SVG を `svgHostRef`(専用div)内に `DOMParser`+`replaceChildren` で挿入する。**React管理下の要素とSVG DOMを混ぜない**こと(混ぜるとReactの再レンダーでクラッシュする)。SVG要素へのイベントは addEventListener + クリーンアップで管理
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」の再フォーカスも `focus=` クエリを書く方式(コンポーネントstateに逃がさない)
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。講義棟(LH)だけ1シートに1F/2F併記で、`fill_1F`/`frame_1F`/`part_1F`/`room_1F`/`text_1F`/`mark_1F`(2F同様)のグループdisplay切替で表現
-- **places.ts が地点語彙の正**: Place⇔SVG要素の紐付け36件+意図的unmapped 5件(複合施設等、ファイル内コメント参照)。**変更したら必ず `bun run verify:places`**
+- **places.ts が地点語彙の正**: 全39 Placeの内訳はSVG要素への紐付け36件、座標アンカー2件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する
 - **マーカー**: React非管理のオーバーレイSVGレイヤー。ズームしても画面上サイズ一定になるよう逆スケール補正あり。イベント開催地マーカーは同一placeIdで1つに集約し、タップで `/events?highlight=:eventId`(先頭イベント代表)へ遷移。同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示

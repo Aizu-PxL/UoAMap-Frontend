@@ -265,13 +265,13 @@ for (const sheet of mapSheets) {
   const entranceIds = new Set<string>();
   for (const sourceNode of sourceNodes) {
     const localNodeKey = `${sourceNode.floorId}:${sourceNode.localId}`;
-    if (localNodeIds.has(localNodeKey)) {
+    if (localNodeIds.has(sourceNode.localId)) {
       errors.push(
-        `${sheet.svgUrl}: ${sourceNode.floorId}のRouteノードID ${sourceNode.localId} が重複しています`,
+        `${sheet.svgUrl}: RouteノードID ${sourceNode.localId} がSVG内で重複しています`,
       );
       continue;
     }
-    localNodeIds.add(localNodeKey);
+    localNodeIds.add(sourceNode.localId);
 
     if (sourceNode.placeId) {
       const place = getPlace(sourceNode.placeId);
@@ -360,13 +360,13 @@ for (const sheet of mapSheets) {
   );
   for (const sourceEdge of sourceEdges) {
     const localEdgeKey = `${sourceEdge.floorId}:${sourceEdge.localId}`;
-    if (localEdgeIds.has(localEdgeKey)) {
+    if (localEdgeIds.has(sourceEdge.localId)) {
       errors.push(
-        `${sheet.svgUrl}: ${sourceEdge.floorId}のRouteエッジID ${sourceEdge.localId} が重複しています`,
+        `${sheet.svgUrl}: RouteエッジID ${sourceEdge.localId} がSVG内で重複しています`,
       );
       continue;
     }
-    localEdgeIds.add(localEdgeKey);
+    localEdgeIds.add(sourceEdge.localId);
 
     const nodeA = sourceNodeById.get(`${sourceEdge.floorId}:${sourceEdge.nodeA}`);
     const nodeB = sourceNodeById.get(`${sourceEdge.floorId}:${sourceEdge.nodeB}`);

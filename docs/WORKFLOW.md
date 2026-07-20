@@ -11,9 +11,10 @@
 ## 作業開始時に読む順
 
 1. [STATUS.md](STATUS.md) — 現在の進捗・動作確認手順・アーキテクチャ要点
-2. [SPEC.md](SPEC.md) — 着手する機能の仕様(正)
-3. このファイル — 運用モードと品質ゲート
-4. [BACKLOG.md](BACKLOG.md) — 次に着手する候補
+2. [HANDOFF.md](HANDOFF.md) — 直近の完了内容・判断記録・次の着手候補
+3. [SPEC.md](SPEC.md) — 着手する機能の仕様(正)
+4. このファイル — 運用モードと品質ゲート
+5. [BACKLOG.md](BACKLOG.md) — 次に着手する候補
 
 ## 全体の流れ
 
@@ -82,6 +83,7 @@ STATUS.md 更新 → コミット(ユーザーまたはリード)
 |---|---|
 | [SPEC.md](SPEC.md) | 仕様変更の**前**(実装より先) |
 | [STATUS.md](STATUS.md) | スライス完了ごと |
+| [HANDOFF.md](HANDOFF.md) | 大きな機能群の完了時・次セッションへ判断を残すとき |
 | [BACKLOG.md](BACKLOG.md) | 要望が出たとき追加 / 消化したら削除 |
 | [FIGMA.md](FIGMA.md) | Figmaの構造・トークン変更時 |
 | [API.md](API.md) | API契約の変更時(フロント・バック双方合意の上で先に更新) |
