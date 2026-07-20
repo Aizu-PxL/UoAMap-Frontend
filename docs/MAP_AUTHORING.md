@@ -29,7 +29,7 @@
 - `data-kind`: `corridor` / `stairs` / `entrance`
 - イベント会場やQR地点へ接続するノードには `data-place-id="<Place.id>"` を付ける
 - `data-place-id`は`src/data/places.ts`に存在するIDだけを使い、1地点につき1ノードとする
-- 階段ノードのフロア間接続は後述「階段接続」の規約に従う。建物出入口(`entrance`)のシート間接続規約は屋外ルートを実装するスライスで確定する
+- 階段ノードのフロア間接続は後述「階段接続」、建物出入口(`entrance`)のシート間接続は「建物出入口接続」の規約に従う
 - ノードは通路の曲がり角、分岐、地点入口、階段、建物出入口に置く
 
 ## 階段接続
@@ -54,6 +54,27 @@
   - 生成エッジID: `transfer:<stairId>:<floorA>:<floorB>`
   - 距離は固定コスト`60`(viewBox座標系のユーザー単位。短い廊下1本ぶん相当で、どの階段を選ぶかの比較にのみ効く)
 - `data-stair-id`を持たない`stairs`ノードは従来どおり単なるフロア内ノードとして扱われる
+
+## 建物出入口接続
+
+同じ物理出入口を指す建物フロア側とキャンパス側の`entrance`ノードに、共通の`data-entrance-id`を付ける。
+
+```svg
+<circle
+  id="route_node_entrance_west_main"
+  data-route-node=""
+  data-kind="entrance"
+  data-entrance-id="rq-west-main"
+  cx="33"
+  cy="174"
+  r="2" />
+```
+
+- `data-entrance-id`は`data-kind="entrance"`のノードにのみ付けられる。値はASCII英数字・ハイフン・アンダースコアのみ
+- 1つの`data-entrance-id`は2ノードにだけ付け、片方を`floorId="campus"`、もう片方を建物フロアに置く
+- 抽出スクリプトが2ノード間へ距離`0`の**transferエッジ**を自動生成する。SVGにシートをまたぐpathは描かない
+  - 生成エッジID: `transfer:entrance:<entranceId>:campus:<buildingFloorId>`
+- `data-entrance-id`を持たない`entrance`ノードは、専用の建物シートを持たない目的地の入口など、単一シート内の通常ノードとして扱われる
 
 ## エッジ
 
@@ -89,6 +110,7 @@ bun run verify:routes
 - Route内のtransform
 - path始終点とノード座標の不一致
 - `data-stair-id`の不正(パターン違反、`stairs`以外への付与、フロア内重複、孤立ID、フロア非連続)
+- `data-entrance-id`の不正(パターン違反、`entrance`以外への付与、2ノード以外への付与、campus側と建物側の組合せ違反)
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 
 既存SVGを編集した後は、あわせて`bun run verify:places`を実行し、既存36地点のIDが保全されていることを確認する。

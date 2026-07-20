@@ -356,6 +356,7 @@ export function MapCanvas({
   const hasVisibleRoute = routeEdges.some(
     (edge) => edge.kind === "walk" && edge.floorId === floorId,
   );
+  const isCampusOnRoute = routeFloorIds.has(DEFAULT_FLOOR_ID);
 
   // Store original viewBox for zoom clamping calculation
   const originalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
@@ -1249,7 +1250,14 @@ export function MapCanvas({
         {floorId !== DEFAULT_FLOOR_ID && (
           <button
             type="button"
-            className="map-canvas__campus-button"
+            className={`map-canvas__campus-button${
+              isCampusOnRoute ? " map-canvas__campus-button--on-route" : ""
+            }`}
+            aria-label={
+              isCampusOnRoute
+                ? "キャンパス全体へ戻る、ルート上"
+                : "キャンパス全体へ戻る"
+            }
             onClick={() => onFloorChange(DEFAULT_FLOOR_ID)}
           >
             キャンパス全体へ戻る

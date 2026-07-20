@@ -1,6 +1,105 @@
 {
   "nodes": [
     {
+      "id": "campus:route_node_auditorium_entrance",
+      "floorId": "campus",
+      "x": 352,
+      "y": 563,
+      "kind": "entrance",
+      "placeId": "auditorium"
+    },
+    {
+      "id": "campus:route_node_ped10_north",
+      "floorId": "campus",
+      "x": 328,
+      "y": 400,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped10_south",
+      "floorId": "campus",
+      "x": 328,
+      "y": 416,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped12_west",
+      "floorId": "campus",
+      "x": 385,
+      "y": 329,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped3_ped4_junction",
+      "floorId": "campus",
+      "x": 367,
+      "y": 563,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped7_east",
+      "floorId": "campus",
+      "x": 366,
+      "y": 489,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped8_ped7_junction",
+      "floorId": "campus",
+      "x": 339,
+      "y": 489,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_ped9_east",
+      "floorId": "campus",
+      "x": 340,
+      "y": 494,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_rq_west_main",
+      "floorId": "campus",
+      "x": 462,
+      "y": 329,
+      "kind": "entrance"
+    },
+    {
+      "id": "campus:route_node_zone_library_south",
+      "floorId": "campus",
+      "x": 328,
+      "y": 494,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_zone_north_east",
+      "floorId": "campus",
+      "x": 365,
+      "y": 323,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:route_node_zone_north_west",
+      "floorId": "campus",
+      "x": 330,
+      "y": 323,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-1f:route_node_entrance_west_junction",
+      "floorId": "rq-1f",
+      "x": 70,
+      "y": 174,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-1f:route_node_entrance_west_main",
+      "floorId": "rq-1f",
+      "x": 33,
+      "y": 174,
+      "kind": "entrance"
+    },
+    {
       "id": "rq-1f:route_node_middle_east",
       "floorId": "rq-1f",
       "x": 414,
@@ -327,6 +426,105 @@
   ],
   "edges": [
     {
+      "id": "campus:route_edge_library_south_to_ped9_east",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_zone_library_south",
+      "nodeB": "campus:route_node_ped9_east",
+      "distance": 12,
+      "pathD": "M 328 494 L 340 494"
+    },
+    {
+      "id": "campus:route_edge_ped10_north_to_south",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped10_north",
+      "nodeB": "campus:route_node_ped10_south",
+      "distance": 16,
+      "pathD": "M 328 400 L 328 416"
+    },
+    {
+      "id": "campus:route_edge_ped10_south_to_library_south",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped10_south",
+      "nodeB": "campus:route_node_zone_library_south",
+      "distance": 78,
+      "pathD": "M 328 416 L 328 494"
+    },
+    {
+      "id": "campus:route_edge_ped12_west_to_zone_north_east",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped12_west",
+      "nodeB": "campus:route_node_zone_north_east",
+      "distance": 20.8806130178211,
+      "pathD": "M 385 329 L 365 323"
+    },
+    {
+      "id": "campus:route_edge_ped3_ped4_to_auditorium",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped3_ped4_junction",
+      "nodeB": "campus:route_node_auditorium_entrance",
+      "distance": 15,
+      "pathD": "M 367 563 L 352 563"
+    },
+    {
+      "id": "campus:route_edge_ped7_east_to_ped3_ped4",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped7_east",
+      "nodeB": "campus:route_node_ped3_ped4_junction",
+      "distance": 74.00675644831355,
+      "pathD": "M 366 489 L 367 563"
+    },
+    {
+      "id": "campus:route_edge_ped8_ped7_to_ped7_east",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped8_ped7_junction",
+      "nodeB": "campus:route_node_ped7_east",
+      "distance": 27,
+      "pathD": "M 339 489 L 366 489"
+    },
+    {
+      "id": "campus:route_edge_ped9_east_to_ped8_ped7",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped9_east",
+      "nodeB": "campus:route_node_ped8_ped7_junction",
+      "distance": 5.0990195135927845,
+      "pathD": "M 340 494 L 339 489"
+    },
+    {
+      "id": "campus:route_edge_rq_west_main_to_ped12_west",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_rq_west_main",
+      "nodeB": "campus:route_node_ped12_west",
+      "distance": 77,
+      "pathD": "M 462 329 L 385 329"
+    },
+    {
+      "id": "campus:route_edge_zone_north_east_to_north_west",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_zone_north_east",
+      "nodeB": "campus:route_node_zone_north_west",
+      "distance": 35,
+      "pathD": "M 365 323 L 330 323"
+    },
+    {
+      "id": "campus:route_edge_zone_north_west_to_ped10_north",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_zone_north_west",
+      "nodeB": "campus:route_node_ped10_north",
+      "distance": 77.02596964660685,
+      "pathD": "M 330 323 L 328 400"
+    },
+    {
       "id": "rq-1f:route_edge_104f_to_north_east",
       "kind": "walk",
       "floorId": "rq-1f",
@@ -352,6 +550,24 @@
       "nodeB": "rq-1f:route_node_middle_west",
       "distance": 86,
       "pathD": "M 70 260 L 70 346"
+    },
+    {
+      "id": "rq-1f:route_edge_entrance_junction_to_161",
+      "kind": "walk",
+      "floorId": "rq-1f",
+      "nodeA": "rq-1f:route_node_entrance_west_junction",
+      "nodeB": "rq-1f:route_node_rq1_161",
+      "distance": 86,
+      "pathD": "M 70 174 L 70 260"
+    },
+    {
+      "id": "rq-1f:route_edge_entrance_junction_to_west_main",
+      "kind": "walk",
+      "floorId": "rq-1f",
+      "nodeA": "rq-1f:route_node_entrance_west_junction",
+      "nodeB": "rq-1f:route_node_entrance_west_main",
+      "distance": 37,
+      "pathD": "M 70 174 L 33 174"
     },
     {
       "id": "rq-1f:route_edge_junction_to_141e",
@@ -435,13 +651,13 @@
       "pathD": "M 70 76 L 363 76"
     },
     {
-      "id": "rq-1f:route_edge_north_west_to_161",
+      "id": "rq-1f:route_edge_north_west_to_entrance_junction",
       "kind": "walk",
       "floorId": "rq-1f",
       "nodeA": "rq-1f:route_node_north_west",
-      "nodeB": "rq-1f:route_node_rq1_161",
-      "distance": 184,
-      "pathD": "M 70 76 L 70 260"
+      "nodeB": "rq-1f:route_node_entrance_west_junction",
+      "distance": 98,
+      "pathD": "M 70 76 L 70 174"
     },
     {
       "id": "rq-1f:route_edge_south_west_to_junction",
@@ -730,6 +946,13 @@
       "nodeB": "rq-3f:route_node_east_south_junction",
       "distance": 23,
       "pathD": "M 415 604 L 438 604"
+    },
+    {
+      "id": "transfer:entrance:rq-west-main:campus:rq-1f",
+      "kind": "transfer",
+      "nodeA": "campus:route_node_rq_west_main",
+      "nodeB": "rq-1f:route_node_entrance_west_main",
+      "distance": 0
     },
     {
       "id": "transfer:rq-stairs-mw:rq-1f:rq-2f",

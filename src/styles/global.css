@@ -245,7 +245,8 @@ input {
   background: transparent;
 }
 
-.map-canvas__floor-button--on-route::after {
+.map-canvas__floor-button--on-route::after,
+.map-canvas__campus-button--on-route::after {
   position: absolute;
   top: 0.35rem;
   right: 0.35rem;
@@ -266,6 +267,7 @@ input {
 }
 
 .map-canvas__campus-button {
+  position: relative;
   padding: 0 1rem;
   border-radius: var(--radius-pill);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);

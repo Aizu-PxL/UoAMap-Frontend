@@ -160,4 +160,62 @@ describe("findShortestRoute", () => {
     expect(route === null).toEqual(false);
     expect(route?.filter((item) => item.kind === "transfer").length).toEqual(1);
   });
+
+  test("RQ3Fと講堂の実経路は全4フロアと入口transferを通る", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq3-325f",
+      "auditorium",
+    );
+    const reverseRoute = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "auditorium",
+      "rq3-325f",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(reverseRoute === null).toEqual(false);
+
+    const nodeById = new Map(routeGraph.nodes.map((item) => [item.id, item]));
+    const routeFloorIds = new Set<string>();
+    for (const edge of route ?? []) {
+      if (edge.kind === "walk") {
+        routeFloorIds.add(edge.floorId);
+        continue;
+      }
+      const nodeA = nodeById.get(edge.nodeA);
+      const nodeB = nodeById.get(edge.nodeB);
+      if (nodeA) {
+        routeFloorIds.add(nodeA.floorId);
+      }
+      if (nodeB) {
+        routeFloorIds.add(nodeB.floorId);
+      }
+    }
+
+    expect([...routeFloorIds].sort()).toEqual([
+      "campus",
+      "rq-1f",
+      "rq-2f",
+      "rq-3f",
+    ]);
+
+    const transferEdges = (route ?? []).filter(
+      (edge) => edge.kind === "transfer",
+    );
+    const stairTransferEdges = transferEdges.filter((edge) => {
+      const nodeA = nodeById.get(edge.nodeA);
+      const nodeB = nodeById.get(edge.nodeB);
+      return nodeA?.kind === "stairs" && nodeB?.kind === "stairs";
+    });
+    expect(transferEdges.length).toEqual(3);
+    expect(stairTransferEdges.length).toEqual(2);
+    expect(
+      transferEdges.filter((edge) => {
+        const nodeA = nodeById.get(edge.nodeA);
+        const nodeB = nodeById.get(edge.nodeB);
+        return nodeA?.kind === "entrance" && nodeB?.kind === "entrance";
+      }).map((edge) => edge.id),
+    ).toEqual(["transfer:entrance:rq-west-main:campus:rq-1f"]);
+  });
 });

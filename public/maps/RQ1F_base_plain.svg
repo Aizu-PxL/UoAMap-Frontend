@@ -2170,6 +2170,21 @@
        cy="76"
        r="2" />
     <circle
+       id="route_node_entrance_west_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="70"
+       cy="174"
+       r="2" />
+    <circle
+       id="route_node_entrance_west_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="rq-west-main"
+       cx="33"
+       cy="174"
+       r="2" />
+    <circle
        id="route_node_rq1_104f"
        data-route-node=""
        data-kind="corridor"
@@ -2274,11 +2289,23 @@
        data-node-b="route_node_stairs_north_east"
        d="M 363 76 L 414 76" />
     <path
-       id="route_edge_north_west_to_161"
+       id="route_edge_north_west_to_entrance_junction"
        data-route-edge=""
        data-node-a="route_node_north_west"
+       data-node-b="route_node_entrance_west_junction"
+       d="M 70 76 L 70 174" />
+    <path
+       id="route_edge_entrance_junction_to_161"
+       data-route-edge=""
+       data-node-a="route_node_entrance_west_junction"
        data-node-b="route_node_rq1_161"
-       d="M 70 76 L 70 260" />
+       d="M 70 174 L 70 260" />
+    <path
+       id="route_edge_entrance_junction_to_west_main"
+       data-route-edge=""
+       data-node-a="route_node_entrance_west_junction"
+       data-node-b="route_node_entrance_west_main"
+       d="M 70 174 L 33 174" />
     <path
        id="route_edge_161_to_middle_west"
        data-route-edge=""
