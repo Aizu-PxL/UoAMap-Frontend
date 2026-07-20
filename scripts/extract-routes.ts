@@ -5,12 +5,14 @@ import type { RouteEdge, RouteGraph, RouteNode, RouteNodeKind } from "../src/dat
 
 type SourceNode = Omit<RouteNode, "id" | "floorId"> & {
   localId: string;
+  floorId: string;
   stairId?: string;
   entranceId?: string;
 };
 
 type SourceEdge = {
   localId: string;
+  floorId: string;
   nodeA: string;
   nodeB: string;
   pathD: string;
@@ -41,6 +43,7 @@ const nodes: RouteNode[] = [];
 const edges: RouteEdge[] = [];
 const globalNodeIds = new Set<string>();
 const globalEdgeIds = new Set<string>();
+const globalPlaceNodeIds = new Map<string, string>();
 const stairOccurrences = new Map<
   string,
   Array<{ floorId: string; floorIndex: number; nodeId: string }>
@@ -51,6 +54,7 @@ const entranceOccurrences = new Map<
 >();
 
 for (const sheet of mapSheets) {
+  const sheetFloors = floors.filter((floor) => floor.sheetId === sheet.id);
   const svgFilePath = path.join(
     import.meta.dirname,
     "..",
@@ -64,6 +68,32 @@ for (const sheet of mapSheets) {
   const sourceNodes: SourceNode[] = [];
   const sourceEdges: SourceEdge[] = [];
   const transformedElements: string[] = [];
+
+  const resolveElementFloorId = (
+    elementFloorId: string | null,
+    elementLabel: string,
+  ): string | null => {
+    const floorId = elementFloorId ?? routeFloorId;
+    if (!floorId) {
+      errors.push(
+        `${sheet.svgUrl}: 複数フロアRouteの${elementLabel}にdata-floor-idがありません`,
+      );
+      return null;
+    }
+    if (routeFloorId && elementFloorId && elementFloorId !== routeFloorId) {
+      errors.push(
+        `${sheet.svgUrl}: ${elementLabel}のdata-floor-id="${elementFloorId}"がRouteの${routeFloorId}と一致しません`,
+      );
+      return null;
+    }
+    if (!sheetFloors.some((floor) => floor.id === floorId)) {
+      errors.push(
+        `${sheet.svgUrl}: ${elementLabel}のdata-floor-id="${floorId}"がシートと一致しません`,
+      );
+      return null;
+    }
+    return floorId;
+  };
 
   await new HTMLRewriter()
     .on("g#Route", {
@@ -88,6 +118,10 @@ for (const sheet of mapSheets) {
     .on("g#Route [data-route-node]", {
       element(element) {
         const localId = element.getAttribute("id");
+        const floorId = resolveElementFloorId(
+          element.getAttribute("data-floor-id"),
+          localId ?? "Routeノード",
+        );
         const rawKind = element.getAttribute("data-kind");
         const rawX = element.getAttribute("cx");
         const rawY = element.getAttribute("cy");
@@ -100,7 +134,7 @@ for (const sheet of mapSheets) {
           errors.push(`${sheet.svgUrl}: Routeノードはcircleである必要があります`);
           return;
         }
-        if (!localId) {
+        if (!localId || !floorId) {
           errors.push(`${sheet.svgUrl}: IDのないRouteノードがあります`);
           return;
         }
@@ -120,6 +154,7 @@ for (const sheet of mapSheets) {
         const placeId = element.getAttribute("data-place-id") ?? undefined;
         sourceNodes.push({
           localId,
+          floorId,
           x,
           y,
           kind: rawKind as RouteNodeKind,
@@ -168,6 +203,10 @@ for (const sheet of mapSheets) {
     .on("g#Route [data-route-edge]", {
       element(element) {
         const localId = element.getAttribute("id");
+        const floorId = resolveElementFloorId(
+          element.getAttribute("data-floor-id"),
+          localId ?? "Routeエッジ",
+        );
         const nodeA = element.getAttribute("data-node-a");
         const nodeB = element.getAttribute("data-node-b");
         const pathD = element.getAttribute("d");
@@ -176,7 +215,7 @@ for (const sheet of mapSheets) {
           errors.push(`${sheet.svgUrl}: Routeエッジはpathである必要があります`);
           return;
         }
-        if (!localId || !nodeA || !nodeB || !pathD) {
+        if (!localId || !floorId || !nodeA || !nodeB || !pathD) {
           errors.push(`${sheet.svgUrl}: Routeエッジの必須属性が不足しています`);
           return;
         }
@@ -188,7 +227,7 @@ for (const sheet of mapSheets) {
           errors.push(`${sheet.svgUrl}: Routeエッジ ${localId} のID属性が不正です`);
           return;
         }
-        sourceEdges.push({ localId, nodeA, nodeB, pathD });
+        sourceEdges.push({ localId, floorId, nodeA, nodeB, pathD });
       },
     })
     .transform(new Response(svgContent))
@@ -205,14 +244,16 @@ for (const sheet of mapSheets) {
     errors.push(`${sheet.svgUrl}: RouteグループはSVGルート直下に配置してください`);
     continue;
   }
-  if (!routeFloorId) {
-    errors.push(`${sheet.svgUrl}: Routeにdata-floor-idがありません`);
-    continue;
-  }
-
-  const floor = floors.find((candidate) => candidate.id === routeFloorId);
-  if (!floor || floor.sheetId !== sheet.id) {
-    errors.push(`${sheet.svgUrl}: data-floor-id="${routeFloorId}" がシートと一致しません`);
+  if (routeFloorId) {
+    const floor = floors.find((candidate) => candidate.id === routeFloorId);
+    if (!floor || floor.sheetId !== sheet.id) {
+      errors.push(`${sheet.svgUrl}: data-floor-id="${routeFloorId}" がシートと一致しません`);
+      continue;
+    }
+  } else if (sheetFloors.length < 2) {
+    errors.push(
+      `${sheet.svgUrl}: 単一フロアSVGのRouteにdata-floor-idがありません`,
+    );
     continue;
   }
   for (const elementId of transformedElements) {
@@ -220,39 +261,45 @@ for (const sheet of mapSheets) {
   }
 
   const localNodeIds = new Set<string>();
-  const placeIds = new Set<string>();
   const stairIds = new Set<string>();
   const entranceIds = new Set<string>();
   for (const sourceNode of sourceNodes) {
-    if (localNodeIds.has(sourceNode.localId)) {
-      errors.push(`${sheet.svgUrl}: RouteノードID ${sourceNode.localId} が重複しています`);
+    const localNodeKey = `${sourceNode.floorId}:${sourceNode.localId}`;
+    if (localNodeIds.has(localNodeKey)) {
+      errors.push(
+        `${sheet.svgUrl}: ${sourceNode.floorId}のRouteノードID ${sourceNode.localId} が重複しています`,
+      );
       continue;
     }
-    localNodeIds.add(sourceNode.localId);
+    localNodeIds.add(localNodeKey);
 
     if (sourceNode.placeId) {
       const place = getPlace(sourceNode.placeId);
       if (!place) {
         errors.push(`${sheet.svgUrl}: 未登録Place ${sourceNode.placeId} を参照しています`);
-      } else if (place.floorId !== routeFloorId) {
+      } else if (place.floorId !== sourceNode.floorId) {
         errors.push(
-          `${sheet.svgUrl}: Place ${sourceNode.placeId} は ${routeFloorId} に属していません`,
+          `${sheet.svgUrl}: Place ${sourceNode.placeId} は ${sourceNode.floorId} に属していません`,
         );
       }
-      if (placeIds.has(sourceNode.placeId)) {
-        errors.push(`${sheet.svgUrl}: Place ${sourceNode.placeId} のノードが重複しています`);
+      const existingNodeId = globalPlaceNodeIds.get(sourceNode.placeId);
+      if (existingNodeId) {
+        errors.push(
+          `${sheet.svgUrl}: Place ${sourceNode.placeId} のノードが ${existingNodeId} と重複しています`,
+        );
+      } else {
+        globalPlaceNodeIds.set(sourceNode.placeId, localNodeKey);
       }
-      placeIds.add(sourceNode.placeId);
     }
 
-    const id = `${routeFloorId}:${sourceNode.localId}`;
+    const id = localNodeKey;
     if (globalNodeIds.has(id)) {
       errors.push(`経路ノードID ${id} が重複しています`);
     }
     globalNodeIds.add(id);
     nodes.push({
       id,
-      floorId: routeFloorId,
+      floorId: sourceNode.floorId,
       x: sourceNode.x,
       y: sourceNode.y,
       kind: sourceNode.kind,
@@ -264,15 +311,20 @@ for (const sheet of mapSheets) {
       sourceNode.kind === "stairs" &&
       stairIdPattern.test(sourceNode.stairId)
     ) {
-      if (stairIds.has(sourceNode.stairId)) {
+      const stairKey = `${sourceNode.floorId}:${sourceNode.stairId}`;
+      if (stairIds.has(stairKey)) {
         errors.push(
           `${sheet.svgUrl}: data-stair-id ${sourceNode.stairId} が同一フロア内で重複しています`,
         );
       } else {
-        stairIds.add(sourceNode.stairId);
+        stairIds.add(stairKey);
+        const floor = floors.find((candidate) => candidate.id === sourceNode.floorId);
+        if (!floor) {
+          continue;
+        }
         const occurrences = stairOccurrences.get(sourceNode.stairId) ?? [];
         occurrences.push({
-          floorId: routeFloorId,
+          floorId: sourceNode.floorId,
           floorIndex: floors.indexOf(floor),
           nodeId: id,
         });
@@ -285,15 +337,16 @@ for (const sheet of mapSheets) {
       sourceNode.kind === "entrance" &&
       entranceIdPattern.test(sourceNode.entranceId)
     ) {
-      if (entranceIds.has(sourceNode.entranceId)) {
+      const entranceKey = `${sourceNode.floorId}:${sourceNode.entranceId}`;
+      if (entranceIds.has(entranceKey)) {
         errors.push(
           `${sheet.svgUrl}: data-entrance-id ${sourceNode.entranceId} が同一フロア内で重複しています`,
         );
       } else {
-        entranceIds.add(sourceNode.entranceId);
+        entranceIds.add(entranceKey);
         const occurrences = entranceOccurrences.get(sourceNode.entranceId) ?? [];
         occurrences.push({
-          floorId: routeFloorId,
+          floorId: sourceNode.floorId,
           nodeId: id,
         });
         entranceOccurrences.set(sourceNode.entranceId, occurrences);
@@ -302,16 +355,21 @@ for (const sheet of mapSheets) {
   }
 
   const localEdgeIds = new Set<string>();
-  const sourceNodeById = new Map(sourceNodes.map((node) => [node.localId, node]));
+  const sourceNodeById = new Map(
+    sourceNodes.map((node) => [`${node.floorId}:${node.localId}`, node]),
+  );
   for (const sourceEdge of sourceEdges) {
-    if (localEdgeIds.has(sourceEdge.localId)) {
-      errors.push(`${sheet.svgUrl}: RouteエッジID ${sourceEdge.localId} が重複しています`);
+    const localEdgeKey = `${sourceEdge.floorId}:${sourceEdge.localId}`;
+    if (localEdgeIds.has(localEdgeKey)) {
+      errors.push(
+        `${sheet.svgUrl}: ${sourceEdge.floorId}のRouteエッジID ${sourceEdge.localId} が重複しています`,
+      );
       continue;
     }
-    localEdgeIds.add(sourceEdge.localId);
+    localEdgeIds.add(localEdgeKey);
 
-    const nodeA = sourceNodeById.get(sourceEdge.nodeA);
-    const nodeB = sourceNodeById.get(sourceEdge.nodeB);
+    const nodeA = sourceNodeById.get(`${sourceEdge.floorId}:${sourceEdge.nodeA}`);
+    const nodeB = sourceNodeById.get(`${sourceEdge.floorId}:${sourceEdge.nodeB}`);
     if (!nodeA || !nodeB) {
       errors.push(
         `${sheet.svgUrl}: ${sourceEdge.localId} が未定義ノードを参照しています`,
@@ -339,7 +397,7 @@ for (const sheet of mapSheets) {
       continue;
     }
 
-    const id = `${routeFloorId}:${sourceEdge.localId}`;
+    const id = localEdgeKey;
     if (globalEdgeIds.has(id)) {
       errors.push(`経路エッジID ${id} が重複しています`);
     }
@@ -347,9 +405,9 @@ for (const sheet of mapSheets) {
     edges.push({
       id,
       kind: "walk",
-      floorId: routeFloorId,
-      nodeA: `${routeFloorId}:${sourceEdge.nodeA}`,
-      nodeB: `${routeFloorId}:${sourceEdge.nodeB}`,
+      floorId: sourceEdge.floorId,
+      nodeA: `${sourceEdge.floorId}:${sourceEdge.nodeA}`,
+      nodeB: `${sourceEdge.floorId}:${sourceEdge.nodeB}`,
       distance: Math.hypot(nodeB.x - nodeA.x, nodeB.y - nodeA.y),
       pathD: sourceEdge.pathD,
     });

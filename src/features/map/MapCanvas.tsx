@@ -353,9 +353,7 @@ export function MapCanvas({
       routeFloorIds.add(nodeB.floorId);
     }
   }
-  const hasVisibleRoute = routeEdges.some(
-    (edge) => edge.kind === "walk" && edge.floorId === floorId,
-  );
+  const hasVisibleRoute = routeFloorIds.has(floorId);
   const isCampusOnRoute = routeFloorIds.has(DEFAULT_FLOOR_ID);
 
   // Store original viewBox for zoom clamping calculation

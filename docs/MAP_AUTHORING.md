@@ -10,7 +10,37 @@
 - `Route` とその子孫に `transform` を付けない。座標はSVGのviewBox座標を直接使う
 - IDと属性値はASCII英数字・ハイフン・アンダースコアのみを使う
 - Route要素は実アプリでは非表示にし、抽出済みグラフから専用オーバーレイへ描画する
-- 1枚に複数フロアを含むLHの規約は、フロア間ルートを実装するスライスで追加する
+
+### 1枚に複数フロアを含むSVG
+
+講義棟(LH)のように1枚のSVGへ複数フロアを収録する場合も、SVGルート直下の
+`<g id="Route">`は1つだけ置く。この場合はRouteグループ自身の`data-floor-id`を省略し、
+すべてのRouteノードとRouteエッジへ、それぞれが属する`data-floor-id`を付ける。
+
+```svg
+<g id="Route">
+  <circle
+    id="route_node_1f_entrance"
+    data-route-node=""
+    data-floor-id="lh-1f"
+    data-kind="entrance"
+    cx="100"
+    cy="200"
+    r="2" />
+  <path
+    id="route_edge_1f_01"
+    data-route-edge=""
+    data-floor-id="lh-1f"
+    data-node-a="route_node_1f_entrance"
+    data-node-b="route_node_1f_junction"
+    d="M 100 200 L 140 200" />
+</g>
+```
+
+- `data-floor-id`は、そのSVGを使う`MapSheet`に属するFloorだけを指定できる
+- ノードID・エッジIDはフロアごとに一意であればよいが、混同を避けるため`1f`/`2f`等を含める
+- エッジは同じ`data-floor-id`のノード同士だけを接続する
+- 単一フロアSVGでは従来どおりRouteグループの`data-floor-id`を使い、子要素への重複指定は行わない
 
 ## ノード
 
@@ -29,6 +59,7 @@
 - `data-kind`: `corridor` / `stairs` / `entrance`
 - イベント会場やQR地点へ接続するノードには `data-place-id="<Place.id>"` を付ける
 - `data-place-id`は`src/data/places.ts`に存在するIDだけを使い、1地点につき1ノードとする
+- 同じ`data-place-id`は別SVG・別フロアを含むRouteグラフ全体で1回だけ使用できる
 - 階段ノードのフロア間接続は後述「階段接続」、建物出入口(`entrance`)のシート間接続は「建物出入口接続」の規約に従う
 - ノードは通路の曲がり角、分岐、地点入口、階段、建物出入口に置く
 
@@ -111,6 +142,8 @@ bun run verify:routes
 - path始終点とノード座標の不一致
 - `data-stair-id`の不正(パターン違反、`stairs`以外への付与、フロア内重複、孤立ID、フロア非連続)
 - `data-entrance-id`の不正(パターン違反、`entrance`以外への付与、2ノード以外への付与、campus側と建物側の組合せ違反)
+- 複数フロアSVGの`data-floor-id`不足・不一致・フロアをまたぐwalkエッジ
+- Routeグラフ全体での`data-place-id`重複
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 
 既存SVGを編集した後は、あわせて`bun run verify:places`を実行し、既存36地点のIDが保全されていることを確認する。
