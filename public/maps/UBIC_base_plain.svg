@@ -681,4 +681,98 @@
      height="139.17084"
      x="-4.7625003"
      y="-4.7624989" />
+  <g
+     id="Route"
+     data-floor-id="ubic-1f"
+     style="display:none">
+    <circle
+       id="route_node_entrance_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="ubic-main"
+       cx="26"
+       cy="57"
+       r="2" />
+    <circle
+       id="route_node_exchange_south"
+       data-route-node=""
+       data-kind="corridor"
+       cx="39"
+       cy="57"
+       r="2" />
+    <circle
+       id="route_node_ubic_3d_theater"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="ubic-3d-theater"
+       cx="39"
+       cy="49"
+       r="2" />
+    <circle
+       id="route_node_south_corridor_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="69"
+       cy="63"
+       r="2" />
+    <circle
+       id="route_node_ubic_lab"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="ubic-lab"
+       cx="118"
+       cy="63"
+       r="2" />
+    <circle
+       id="route_node_south_corridor_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="143"
+       cy="63"
+       r="2" />
+    <circle
+       id="route_node_ubic_motion"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="ubic-motion"
+       cx="143"
+       cy="58"
+       r="2" />
+    <path
+       id="route_edge_entrance_to_exchange"
+       data-route-edge=""
+       data-node-a="route_node_entrance_main"
+       data-node-b="route_node_exchange_south"
+       d="M 26 57 L 39 57" />
+    <path
+       id="route_edge_exchange_to_3d_theater"
+       data-route-edge=""
+       data-node-a="route_node_exchange_south"
+       data-node-b="route_node_ubic_3d_theater"
+       d="M 39 57 L 39 49" />
+    <path
+       id="route_edge_exchange_to_south_west"
+       data-route-edge=""
+       data-node-a="route_node_exchange_south"
+       data-node-b="route_node_south_corridor_west"
+       d="M 39 57 L 69 63" />
+    <path
+       id="route_edge_south_west_to_lab"
+       data-route-edge=""
+       data-node-a="route_node_south_corridor_west"
+       data-node-b="route_node_ubic_lab"
+       d="M 69 63 L 118 63" />
+    <path
+       id="route_edge_lab_to_south_east"
+       data-route-edge=""
+       data-node-a="route_node_ubic_lab"
+       data-node-b="route_node_south_corridor_east"
+       d="M 118 63 L 143 63" />
+    <path
+       id="route_edge_south_east_to_motion"
+       data-route-edge=""
+       data-node-a="route_node_south_corridor_east"
+       data-node-b="route_node_ubic_motion"
+       d="M 143 63 L 143 58" />
+  </g>
 </svg>

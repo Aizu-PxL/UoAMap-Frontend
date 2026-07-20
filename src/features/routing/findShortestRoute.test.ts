@@ -264,4 +264,55 @@ describe("findShortestRoute", () => {
       ),
     ).toEqual(true);
   });
+
+  test("UBIC内の3地点が相互に到達可能", () => {
+    const placeIds = ["ubic-3d-theater", "ubic-lab", "ubic-motion"];
+
+    for (const startPlaceId of placeIds) {
+      for (const endPlaceId of placeIds) {
+        expect(
+          findShortestRouteBetweenPlaces(routeGraph, startPlaceId, endPlaceId) ===
+            null,
+        ).toEqual(false);
+      }
+    }
+  });
+
+  test("UBIC建物地点から室内へ入口transferを通って到達できる", () => {
+    for (const destinationPlaceId of [
+      "ubic-3d-theater",
+      "ubic-lab",
+      "ubic-motion",
+    ]) {
+      const route = findShortestRouteBetweenPlaces(
+        routeGraph,
+        "ubic",
+        destinationPlaceId,
+      );
+      expect(route === null).toEqual(false);
+      expect(
+        route
+          ?.filter((item) => item.kind === "transfer")
+          .map((item) => item.id),
+      ).toEqual(["transfer:entrance:ubic-main:campus:ubic-1f"]);
+    }
+  });
+
+  test("研究棟からUBICへ2つの建物入口を通って到達できる", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq1-161",
+      "ubic-motion",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(
+      route
+        ?.filter((item) => item.kind === "transfer")
+        .map((item) => item.id),
+    ).toEqual([
+      "transfer:entrance:rq-west-main:campus:rq-1f",
+      "transfer:entrance:ubic-main:campus:ubic-1f",
+    ]);
+  });
 });

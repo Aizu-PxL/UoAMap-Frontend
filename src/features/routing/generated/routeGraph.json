@@ -65,6 +65,14 @@
       "kind": "entrance"
     },
     {
+      "id": "campus:route_node_ubic_main",
+      "floorId": "campus",
+      "x": 466,
+      "y": 245,
+      "kind": "entrance",
+      "placeId": "ubic"
+    },
+    {
       "id": "campus:route_node_zone_library_south",
       "floorId": "campus",
       "x": 328,
@@ -489,6 +497,58 @@
       "x": 47.95,
       "y": 62,
       "kind": "corridor"
+    },
+    {
+      "id": "ubic-1f:route_node_entrance_main",
+      "floorId": "ubic-1f",
+      "x": 26,
+      "y": 57,
+      "kind": "entrance"
+    },
+    {
+      "id": "ubic-1f:route_node_exchange_south",
+      "floorId": "ubic-1f",
+      "x": 39,
+      "y": 57,
+      "kind": "corridor"
+    },
+    {
+      "id": "ubic-1f:route_node_south_corridor_east",
+      "floorId": "ubic-1f",
+      "x": 143,
+      "y": 63,
+      "kind": "corridor"
+    },
+    {
+      "id": "ubic-1f:route_node_south_corridor_west",
+      "floorId": "ubic-1f",
+      "x": 69,
+      "y": 63,
+      "kind": "corridor"
+    },
+    {
+      "id": "ubic-1f:route_node_ubic_3d_theater",
+      "floorId": "ubic-1f",
+      "x": 39,
+      "y": 49,
+      "kind": "corridor",
+      "placeId": "ubic-3d-theater"
+    },
+    {
+      "id": "ubic-1f:route_node_ubic_lab",
+      "floorId": "ubic-1f",
+      "x": 118,
+      "y": 63,
+      "kind": "corridor",
+      "placeId": "ubic-lab"
+    },
+    {
+      "id": "ubic-1f:route_node_ubic_motion",
+      "floorId": "ubic-1f",
+      "x": 143,
+      "y": 58,
+      "kind": "corridor",
+      "placeId": "ubic-motion"
     }
   ],
   "edges": [
@@ -572,6 +632,15 @@
       "nodeB": "campus:route_node_ped12_west",
       "distance": 77,
       "pathD": "M 462 329 L 385 329"
+    },
+    {
+      "id": "campus:route_edge_ubic_main_to_rq_west_main",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ubic_main",
+      "nodeB": "campus:route_node_rq_west_main",
+      "distance": 84.09518416651456,
+      "pathD": "M 466 245 L 462 329"
     },
     {
       "id": "campus:route_edge_zone_north_east_to_north_west",
@@ -1092,6 +1161,13 @@
       "distance": 0
     },
     {
+      "id": "transfer:entrance:ubic-main:campus:ubic-1f",
+      "kind": "transfer",
+      "nodeA": "campus:route_node_ubic_main",
+      "nodeB": "ubic-1f:route_node_entrance_main",
+      "distance": 0
+    },
+    {
       "id": "transfer:rq-stairs-mw:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:route_node_stairs_middle_west",
@@ -1139,6 +1215,60 @@
       "nodeA": "sh-1f:route_node_sh_stairs_central",
       "nodeB": "sh-2f:route_node_sh_stairs_central",
       "distance": 60
+    },
+    {
+      "id": "ubic-1f:route_edge_entrance_to_exchange",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_entrance_main",
+      "nodeB": "ubic-1f:route_node_exchange_south",
+      "distance": 13,
+      "pathD": "M 26 57 L 39 57"
+    },
+    {
+      "id": "ubic-1f:route_edge_exchange_to_3d_theater",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_exchange_south",
+      "nodeB": "ubic-1f:route_node_ubic_3d_theater",
+      "distance": 8,
+      "pathD": "M 39 57 L 39 49"
+    },
+    {
+      "id": "ubic-1f:route_edge_exchange_to_south_west",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_exchange_south",
+      "nodeB": "ubic-1f:route_node_south_corridor_west",
+      "distance": 30.59411708155671,
+      "pathD": "M 39 57 L 69 63"
+    },
+    {
+      "id": "ubic-1f:route_edge_lab_to_south_east",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_ubic_lab",
+      "nodeB": "ubic-1f:route_node_south_corridor_east",
+      "distance": 25,
+      "pathD": "M 118 63 L 143 63"
+    },
+    {
+      "id": "ubic-1f:route_edge_south_east_to_motion",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_south_corridor_east",
+      "nodeB": "ubic-1f:route_node_ubic_motion",
+      "distance": 5,
+      "pathD": "M 143 63 L 143 58"
+    },
+    {
+      "id": "ubic-1f:route_edge_south_west_to_lab",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_south_corridor_west",
+      "nodeB": "ubic-1f:route_node_ubic_lab",
+      "distance": 49,
+      "pathD": "M 69 63 L 118 63"
     }
   ]
 }

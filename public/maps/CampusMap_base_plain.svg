@@ -1364,6 +1364,15 @@
        cy="329"
        r="2" />
     <circle
+       id="route_node_ubic_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="ubic-main"
+       data-place-id="ubic"
+       cx="466"
+       cy="245"
+       r="2" />
+    <circle
        id="route_node_ped12_west"
        data-route-node=""
        data-kind="corridor"
@@ -1448,6 +1457,12 @@
        data-node-a="route_node_rq_west_main"
        data-node-b="route_node_ped12_west"
        d="M 462 329 L 385 329" />
+    <path
+       id="route_edge_ubic_main_to_rq_west_main"
+       data-route-edge=""
+       data-node-a="route_node_ubic_main"
+       data-node-b="route_node_rq_west_main"
+       d="M 466 245 L 462 329" />
     <path
        id="route_edge_ped12_west_to_zone_north_east"
        data-route-edge=""
