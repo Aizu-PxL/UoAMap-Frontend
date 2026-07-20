@@ -86,11 +86,27 @@
       "kind": "corridor"
     },
     {
+      "id": "campus:route_node_robot_garage",
+      "floorId": "campus",
+      "x": 244,
+      "y": 390,
+      "kind": "entrance",
+      "placeId": "robot-garage"
+    },
+    {
+      "id": "campus:route_node_robot_parking_junction",
+      "floorId": "campus",
+      "x": 244,
+      "y": 416,
+      "kind": "corridor"
+    },
+    {
       "id": "campus:route_node_rq_west_main",
       "floorId": "campus",
       "x": 462,
       "y": 329,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "rq"
     },
     {
       "id": "campus:route_node_ubic_main",
@@ -807,6 +823,15 @@
       "pathD": "M 328 416 L 328 494"
     },
     {
+      "id": "campus:route_edge_ped10_south_to_robot_parking",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_ped10_south",
+      "nodeB": "campus:route_node_robot_parking_junction",
+      "distance": 84,
+      "pathD": "M 328 416 L 244 416"
+    },
+    {
       "id": "campus:route_edge_ped12_west_to_zone_north_east",
       "kind": "walk",
       "floorId": "campus",
@@ -850,6 +875,15 @@
       "nodeB": "campus:route_node_ped8_ped7_junction",
       "distance": 5.0990195135927845,
       "pathD": "M 340 494 L 339 489"
+    },
+    {
+      "id": "campus:route_edge_robot_parking_to_garage",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_robot_parking_junction",
+      "nodeB": "campus:route_node_robot_garage",
+      "distance": 26,
+      "pathD": "M 244 416 L 244 390"
     },
     {
       "id": "campus:route_edge_rq_west_main_to_ped12_west",

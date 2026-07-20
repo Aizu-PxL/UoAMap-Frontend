@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { mockEvents } from "../../data/mock/events";
+import { places } from "../../data/places";
 import type { RouteEdge, RouteGraph, RouteNode } from "../../data/types";
 import {
   findShortestRoute,
@@ -401,5 +403,70 @@ describe("findShortestRoute", () => {
       "transfer:entrance:rq-west-main:campus:rq-1f",
       "transfer:entrance:lictia-main:campus:lictia-1f",
     ]);
+  });
+
+  test("研究棟からロボット格納庫へ到達できる", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq1-161",
+      "robot-garage",
+    );
+
+    expect(route === null).toEqual(false);
+    expect(
+      route
+        ?.filter((item) => item.kind === "transfer")
+        .map((item) => item.id),
+    ).toEqual(["transfer:entrance:rq-west-main:campus:rq-1f"]);
+  });
+
+  test("campus-all以外の全38 PlaceがRouteへ収録され講堂から到達可能", () => {
+    const excludedPlaceIds = new Set(["campus-all"]);
+    const expectedPlaceIds = places
+      .filter((place) => !excludedPlaceIds.has(place.id))
+      .map((place) => place.id)
+      .sort();
+    const routedPlaceIds = routeGraph.nodes
+      .flatMap((item) => (item.placeId ? [item.placeId] : []))
+      .sort();
+
+    expect(routedPlaceIds).toEqual(expectedPlaceIds);
+    expect(expectedPlaceIds.length).toEqual(38);
+    for (const placeId of expectedPlaceIds) {
+      expect(
+        findShortestRouteBetweenPlaces(routeGraph, "auditorium", placeId) ===
+          null,
+      ).toEqual(false);
+    }
+  });
+
+  test("全Routeノードが単一連結成分に属する", () => {
+    const startNodeId = routeGraph.nodes[0]?.id;
+    expect(typeof startNodeId).toEqual("string");
+    for (const routeNode of routeGraph.nodes) {
+      expect(
+        startNodeId
+          ? findShortestRoute(routeGraph, startNodeId, routeNode.id) === null
+          : true,
+      ).toEqual(false);
+    }
+  });
+
+  test("全イベント地点とQRモック地点がRoute対応済み", () => {
+    const routedPlaceIds = new Set(
+      routeGraph.nodes.flatMap((item) => (item.placeId ? [item.placeId] : [])),
+    );
+    const eventPlaceIds = new Set(
+      mockEvents
+        .map((event) => event.placeId)
+        .filter((placeId) => placeId !== "campus-all"),
+    );
+    for (const placeId of eventPlaceIds) {
+      expect(routedPlaceIds.has(placeId)).toEqual(true);
+    }
+
+    for (const qrPlaceId of ["sh-hall", "ubic", "lh-large"]) {
+      expect(routedPlaceIds.has(qrPlaceId)).toEqual(true);
+    }
   });
 });

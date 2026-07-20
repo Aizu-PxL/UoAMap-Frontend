@@ -1360,6 +1360,7 @@
        data-route-node=""
        data-kind="entrance"
        data-entrance-id="rq-west-main"
+       data-place-id="rq"
        cx="462"
        cy="329"
        r="2" />
@@ -1437,6 +1438,21 @@
        data-kind="corridor"
        cx="328"
        cy="416"
+       r="2" />
+    <circle
+       id="route_node_robot_parking_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="244"
+       cy="416"
+       r="2" />
+    <circle
+       id="route_node_robot_garage"
+       data-route-node=""
+       data-kind="entrance"
+       data-place-id="robot-garage"
+       cx="244"
+       cy="390"
        r="2" />
     <circle
        id="route_node_zone_library_south"
@@ -1541,6 +1557,18 @@
        data-node-a="route_node_ped10_north"
        data-node-b="route_node_ped10_south"
        d="M 328 400 L 328 416" />
+    <path
+       id="route_edge_ped10_south_to_robot_parking"
+       data-route-edge=""
+       data-node-a="route_node_ped10_south"
+       data-node-b="route_node_robot_parking_junction"
+       d="M 328 416 L 244 416" />
+    <path
+       id="route_edge_robot_parking_to_garage"
+       data-route-edge=""
+       data-node-a="route_node_robot_parking_junction"
+       data-node-b="route_node_robot_garage"
+       d="M 244 416 L 244 390" />
     <path
        id="route_edge_ped10_south_to_library_south"
        data-route-edge=""
