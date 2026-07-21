@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリング準備)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM1)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -21,12 +21,14 @@
 
 ## リポジトリ横断リファクタリング
 
-本体コードを一括変更せず、次スレッドから小スライスで進めるための準備を `docs/tasks/13a-refactor-preparation.md` で行った。
+本体コードを一括変更せず、小スライスで進めるための準備を `docs/tasks/13a-refactor-preparation.md` で行い、M1を `docs/tasks/13b-navigation-search-refactor.md` で完了した。
 
 - ExecPlan規約: `.agent/PLANS.md`
 - 現行コードの監査根拠・実装順・受入基準: `.agent/refactor-plan.md`
 - リポジトリ固有Codex設定の非適用サンプル: `.codex/config.toml.example`
-- 開始位置: M1「URL状態のcharacterization testと純粋関数への集約」
+- M1: `src/app/navigationSearch.ts` に目的地、地点focus、QR解決後の現在地、イベントhighlight、再フォーカスnonceの純粋な更新規則を集約
+- M1テスト: 入力非破壊、無関係なクエリ保持、`to`保持、`focus`削除、MapCanvasから `/events?highlight=...` への遷移規則を6件のcharacterization testで固定
+- 次の開始位置: M2「経路の探索結果から表示モデルを作る」
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

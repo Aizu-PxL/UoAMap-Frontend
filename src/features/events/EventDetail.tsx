@@ -3,6 +3,7 @@ import { useCampusData } from "../../data/DataProvider";
 import { TagIcon } from "./EventCard";
 import { formatTimeSlots } from "../../data/format";
 import { getPlace } from "../../data/places";
+import { setDestinationSearchParams } from "../../app/navigationSearch";
 
 export function EventDetail() {
   const { eventId } = useParams();
@@ -41,9 +42,10 @@ export function EventDetail() {
   );
 
   const setDestination = () => {
-    const params = new URLSearchParams(location.search);
-    params.set("to", event.id);
-    params.delete("focus");
+    const params = setDestinationSearchParams(
+      new URLSearchParams(location.search),
+      event.id,
+    );
     navigate({ pathname: "/", search: params.toString() });
   };
 

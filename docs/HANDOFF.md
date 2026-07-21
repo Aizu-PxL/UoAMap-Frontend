@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリング準備)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM1)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングの本体実装は未着手。`docs/tasks/13a-refactor-preparation.md` でリポジトリ固有Codex設定サンプル、ExecPlan規約、読み取り専用監査に基づく初期計画を整備した。次のスレッドは [.agent/refactor-plan.md](../.agent/refactor-plan.md) のM1から開始する。
+リポジトリ横断リファクタリングはM1まで完了。`docs/tasks/13a-refactor-preparation.md` でリポジトリ固有Codex設定サンプル、ExecPlan規約、読み取り専用監査に基づく初期計画を整備し、`docs/tasks/13b-navigation-search-refactor.md` でURL状態更新を純粋関数へ集約した。次のスレッドは [.agent/refactor-plan.md](../.agent/refactor-plan.md) のM2から開始する。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。Codexはgitの変更操作を行わない。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のリポジトリ横断リファクタリングを実施してください。現行挙動を維持し、M1から順に小さなスライスとして、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
+`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のM2「経路の探索結果から表示モデルを作る」を小さなスライスとして開始してください。現行挙動を維持し、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
@@ -53,6 +53,9 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 ## 実装上の要点
 
+- URL状態更新は `src/app/navigationSearch.ts` が正。各関数は入力 `URLSearchParams` を変更せず新しいインスタンスを返し、目的地設定、地点focus、QR解決後の現在地、イベントhighlightの保持・削除規則を統一する
+- `MapPanel` の再フォーカスは同モジュールの `createNextMapFocusRequestState` で `mapFocusRequestNonce` を1ずつ増やす。URLが同じでも再フォーカスできる現行挙動を維持する
+- MapCanvasのイベントマーカーは共通関数で既存クエリを保持し、`/events?highlight=:eventId` へ遷移する
 - Routeの正は `public/maps/*.svg` の `Route` グループ。生成物は `src/features/routing/generated/routeGraph.json`
 - `bun run generate:routes` でSVGからグラフを再生成し、`bun run verify:routes` で生成差分と構造を検証する
 - すべての地図を1 SVG = 1 Floorで管理し、Routeグループの`data-floor-id`をシート唯一のFloorと一致させる。詳しい作図契約は [MAP_AUTHORING.md](MAP_AUTHORING.md)
@@ -64,10 +67,10 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 ## 最終検証結果
 
-2026-07-21時点で以下を確認済み。
+2026-07-22のM1完了時点で以下を確認済み。
 
 ```text
-bun test               36 tests / 0 fail / 367 expect() calls
+bun test               45 tests / 0 fail / 394 expect() calls
 bun run verify:routes  104 nodes / 112 edges
 bun run verify:places  36件すべてPASS
 bun run build          PASS（tsc -bを含む）

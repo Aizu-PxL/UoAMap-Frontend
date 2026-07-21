@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { setEventHighlightSearchParams } from "../../app/navigationSearch";
 import { floors, getPlace, mapSheets } from "../../data/places";
 import type { Event as CampusEvent, Place, RouteEdge } from "../../data/types";
 import { extractMapLabels, renderMapLabels } from "./mapLabels";
@@ -1010,8 +1011,10 @@ export function MapCanvas({
             return;
           }
 
-          const searchParams = new URLSearchParams(location.search);
-          searchParams.set("highlight", marker.action.eventId);
+          const searchParams = setEventHighlightSearchParams(
+            new URLSearchParams(location.search),
+            marker.action.eventId,
+          );
           void navigate({
             pathname: "/events",
             search: `?${searchParams.toString()}`,

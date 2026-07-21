@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **次スレッドで実装開始可能**
+状態: **M1完了、M2開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -81,7 +81,7 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 各項目は1つ以上の小スライスに分ける。番号は順序であり、1スライスにまとめる指示ではない。
 
-### M1: URL状態をcharacterization testで固定し、純粋関数へ集約
+### M1: URL状態をcharacterization testで固定し、純粋関数へ集約（完了）
 
 - `URLSearchParams` を受け取り、新しいインスタンスを返す純粋関数で、目的地設定、地点フォーカス、QR解決後の現在地設定を表す。
 - 無関係なクエリ保持、`to`保持、`focus`削除、再フォーカスnonceの現行挙動をテストする。
@@ -165,7 +165,11 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: リポジトリ固有Codex設定サンプル、ExecPlan規約、この初期計画を作成。
 - [x] 2026-07-22: 準備差分に対してTOML解析、39 tests、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。
 - [x] 2026-07-22: `MapCanvas` のイベントマーカーから `/events?highlight=...` へ遷移する処理と既存クエリ保持をM1のcharacterization test対象へ追記し、準備差分の最終独立レビューで指摘なし。
-- [ ] 次: 新しいスレッドで基準を再確認し、M1用の `docs/tasks/13b-*.md` を作成してURL characterization testから開始する。
+- [x] 2026-07-22: `docs/tasks/13b-navigation-search-refactor.md` を作成し、目的地、地点focus、QR解決後の現在地、イベントhighlight、再フォーカスnonceを `src/app/navigationSearch.ts` の純粋関数へ集約。
+- [x] 2026-07-22: URL characterization testを6件追加。45 tests / 394 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。
+- [x] 2026-07-22: 幅402pxでMapCanvasのP20マーカーから既存 `at` / `to` / `source` を保持したhighlight遷移、目的地設定、`/p`・`/q`着地、console errorなしを確認。
+- [x] 2026-07-22: M1独立レビューのP2（既存highlight置換とクエリ順維持のテスト不足）を修正し、再レビューで指摘なし。
+- [ ] 次: M2用の小スライスを作成し、経路表示モデルのcharacterization testから開始する。
 
 ## 8. 判断と発見
 
@@ -176,17 +180,18 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - 設計問題ではない仕様差・subpath互換性・本番公開課題は、リファクタリングと混ぜない。
 - アクティブな `.codex/config.toml` は実行権限を永続変更するため自動追加せず、レビュー用の `.codex/config.toml.example` だけを置いた。
 - 設定サンプルの `gpt-5.6` は、2026-07-22取得の現行Codexマニュアルと公式sample configの推奨例に合わせた。ローカルCLIの版番号だけからモデルカタログを推測しない。
+- 既存コードの見直しでは、現行10枚以外のSVGへ同種機能を適用する可能性を設計観点として持つ。ただし要件は未確定なので、将来機能や汎用化層を先行実装しない。各スライスでは現行SVGファイル名への不要な結合を増やさず、複数の実例から共通境界が立証された場合だけ抽象化する。
 
 ## 9. 次スレッドへの開始指示
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M1の根拠を現行コードで再確認し、`docs/tasks/13b-navigation-search-refactor.md` を作る。
-4. M1を実装・検証・文書更新し、`fork_turns="none"` の読み取り専用レビューを完了する。
-5. レビューを統合後、ExecPlanを更新して次のマイルストーンへ進む。
+3. M2の `routeEdges` 利用箇所と生成 `routeGraph` への依存を現行コードで再確認し、表示モデル用の小さな `docs/tasks/13c-*.md` を作る。
+4. transfer-onlyフロア、キャンパス戻りインジケータ、正逆経路のcharacterization testを先に追加する。
+5. M2を実装・検証・文書更新し、`fork_turns="none"` の読み取り専用レビューを完了する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のリポジトリ横断リファクタリングを実施してください。現行挙動を維持し、M1から順に小さなスライスとして、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
+`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のM2「経路の探索結果から表示モデルを作る」を小さなスライスとして開始してください。現行挙動を維持し、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
 ```

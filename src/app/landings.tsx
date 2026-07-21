@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { getPlace } from "../data/places";
 import { repository } from "../data/repository";
-import { createResolvedQrSearch } from "../features/qr/qrValue";
+import {
+  setFocusSearchParams,
+  setResolvedQrSearchParams,
+} from "./navigationSearch";
 
 /**
  * QRの着地ルート /q/:qrId(SPEC.md 3.2)。
@@ -33,7 +36,10 @@ export function QrLanding() {
         navigate(
           {
             pathname: "/",
-            search: createResolvedQrSearch(searchParams, qr.placeId),
+            search: setResolvedQrSearchParams(
+              searchParams,
+              qr.placeId,
+            ).toString(),
           },
           { replace: true },
         );
@@ -67,10 +73,9 @@ export function PlaceLanding() {
 
   const place = placeId ? getPlace(placeId) : undefined;
   const destination = useMemo(() => {
-    const params = new URLSearchParams(searchParams);
-    if (placeId) {
-      params.set("focus", placeId);
-    }
+    const params = placeId
+      ? setFocusSearchParams(searchParams, placeId)
+      : new URLSearchParams(searchParams);
     return { pathname: "/", search: params.toString() };
   }, [placeId, searchParams]);
 

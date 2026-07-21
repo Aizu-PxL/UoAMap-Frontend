@@ -72,20 +72,6 @@ export function createQrLandingLocation(
   };
 }
 
-/**
- * QR解決後のURL状態を作る。再スキャンではatだけを置き換え、
- * 目的地toを保持し、独立した注目地点focusは解除する。
- */
-export function createResolvedQrSearch(
-  currentSearch: URLSearchParams,
-  placeId: string,
-): string {
-  const params = new URLSearchParams(currentSearch);
-  params.set("at", placeId);
-  params.delete("focus");
-  return params.toString();
-}
-
 function normalizeBasePath(baseUrl: string): string {
   let pathname: string;
 
