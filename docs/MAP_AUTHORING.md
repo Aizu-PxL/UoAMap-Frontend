@@ -113,6 +113,8 @@
 
 対応表JSONは`src/data/types.ts`の`QrCode[]`と同じ`qrId / placeId / kind / installationNote`だけを含む。計画中のフロア、Routeノード、座標は計画JSONへ分離し、公開APIのレスポンスへは含めない。同じPlaceへ複数QRを割り当てる場合は、QRプロパティの「同じ地点にQRを追加」を使う。
 
+編集を戻すときは、ツールバーの「元に戻す」／「やり直す」、または`Ctrl/Cmd + Z`／`Ctrl/Cmd + Shift + Z`（Windowsでは`Ctrl + Y`も可）を使う。ノードのドラッグと設置メモ・Place名の連続入力はそれぞれ1操作として記録され、履歴はブラウザセッション内で最大100操作保持される。入力欄にフォーカスがある間は文字入力だけのUndoが優先される。SVGを読み直すと履歴は消えるが、計画JSONの読込は1操作として元へ戻せる。自動採番済みのQR・ノード・エッジ番号はUndoしても再利用されない。
+
 新規Place案を作ると、ダウンロード対象SVGのRouteノードにも`data-place-id`が付く。Place案JSONの内容を`src/data/places.ts`へ実装してからSVGを反映し、以下の抽出・検証を行う。QR候補を削除してもPlace案と`data-place-id`は自動削除されないため、不要ならノードのPlace IDを明示的に解除する。
 
 ## 抽出と検証

@@ -129,6 +129,8 @@
     <button data-mode="qr" title="Q">QR候補</button>
     <button data-mode="delete" title="D">削除</button>
   </div>
+  <button class="btn" id="undoBtn" title="元に戻す (Ctrl/Cmd + Z)" disabled>↶ 元に戻す</button>
+  <button class="btn" id="redoBtn" title="やり直す (Ctrl/Cmd + Shift + Z / Ctrl + Y)" disabled>↷ やり直す</button>
   <label class="chk"><input type="checkbox" id="snap" checked> 整数丸め</label>
   <label class="chk"><input type="checkbox" id="showLabels"> ラベル</label>
   <span class="spacer"></span>
@@ -221,6 +223,7 @@
       <li><b>入口</b>: kind=entrance にし、パネルで「対応入口を作成」→ 全体マップ側を自動生成</li>
       <li><b>階段</b>: kind=stairs にし、「隣接フロアに作成」→ 上下階に同IDを生成</li>
       <li><b>QR候補</b>: Routeノードをクリック。既存候補は一覧または黄色マーカーで選択</li>
+      <li><b>Undo / Redo</b>: <kbd>Ctrl/Cmd</kbd>+<kbd>Z</kbd> / <kbd>Ctrl/Cmd</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>（Windowsは<kbd>Ctrl</kbd>+<kbd>Y</kbd>も可）</li>
       <li>ホイールでズーム / 空きドラッグでパン / <kbd>V</kbd><kbd>N</kbd><kbd>E</kbd><kbd>Q</kbd><kbd>D</kbd> <kbd>Del</kbd></li>
     </ul>
     <p style="margin:8px 0 0">出力後: DLした各SVGを <code>public/maps/</code> に上書き → <code>bun run generate:routes</code> → <code>bun run verify:routes</code></p>
@@ -236,6 +239,7 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const ID_RE = /^[A-Za-z][A-Za-z0-9_-]*$/;
 const QR_ID_RE = /^Q\d{3,}$/;
 const PLAN_SCHEMA_VERSION = 1;
+const HISTORY_LIMIT = 100;
 
 /* ==== マップ設定（src/data/places.ts のミラー） ==== */
 const MAPS = [
@@ -270,6 +274,7 @@ const state = {
   placeProposals: new Map(), // placeId -> 座標Place案
   nextQrNumber: 1,
 };
+const history = { undo: [], redo: [] };
 let mode = "select";
 const view = { scale: 1, tx: 0, ty: 0 };
 
@@ -289,6 +294,92 @@ function numericQrPart(qrId){ const m = /^Q(\d+)$/.exec(qrId); return m ? Number
 function formatQrId(n){ return `Q${String(n).padStart(3,"0")}`; }
 function qrSort(a,b){ const na=numericQrPart(a.qrId), nb=numericQrPart(b.qrId); return na===nb ? a.qrId.localeCompare(b.qrId) : na-nb; }
 function findPlacementNode(qr){ const ms=state.maps.get(qr.sheetId); return { ms, node:ms?.nodes.get(qr.routeNodeId) }; }
+
+/* ==== Undo / Redo ==== */
+function routeSnapshot(ms){
+  return {
+    sheetId:ms.sheetId,
+    groupFloorId:ms.groupFloorId,
+    nodes:[...ms.nodes.values()].map(n=>({...n})),
+    edges:[...ms.edges.values()].map(e=>({...e})),
+  };
+}
+function routeSignature(ms){ return JSON.stringify(routeSnapshot(ms)); }
+function editorSnapshot(){
+  return {
+    maps:[...state.maps.values()].map(routeSnapshot),
+    qrPlacements:[...state.qrPlacements.values()].map(q=>({...q})),
+    placeProposals:[...state.placeProposals.values()].map(p=>({...p})),
+    currentSheetId:state.currentSheetId,
+    selection:state.selection ? {...state.selection} : null,
+  };
+}
+function editableSnapshotKey(snapshot){
+  return JSON.stringify({maps:snapshot.maps,qrPlacements:snapshot.qrPlacements,placeProposals:snapshot.placeProposals});
+}
+function refreshDirty(ms){ ms.dirty = routeSignature(ms) !== ms.savedRouteSignature; }
+function updateHistoryButtons(){
+  $("undoBtn").disabled = !history.undo.length;
+  $("redoBtn").disabled = !history.redo.length;
+  $("undoBtn").title = history.undo.length ? `元に戻す: ${history.undo.at(-1).label} (Ctrl/Cmd + Z)` : "元に戻す (Ctrl/Cmd + Z)";
+  $("redoBtn").title = history.redo.length ? `やり直す: ${history.redo.at(-1).label} (Ctrl/Cmd + Shift + Z / Ctrl + Y)` : "やり直す (Ctrl/Cmd + Shift + Z / Ctrl + Y)";
+}
+function resetHistory(){ history.undo.length=0; history.redo.length=0; updateHistoryButtons(); }
+function commitHistory(label,before){
+  const after=editorSnapshot();
+  if (editableSnapshotKey(before)===editableSnapshotKey(after)) return false;
+  history.undo.push({label,before,after});
+  if (history.undo.length>HISTORY_LIMIT) history.undo.shift();
+  history.redo.length=0; updateHistoryButtons(); return true;
+}
+function runEdit(label,mutate){
+  const before=editorSnapshot();
+  const result=mutate();
+  commitHistory(label,before);
+  return result;
+}
+function restoreEditorSnapshot(snapshot){
+  const previousSheetId=state.currentSheetId;
+  for (const saved of snapshot.maps){
+    const ms=state.maps.get(saved.sheetId); if (!ms) continue;
+    ms.groupFloorId=saved.groupFloorId;
+    ms.nodes=new Map(saved.nodes.map(n=>[n.id,{...n}]));
+    ms.edges=new Map(saved.edges.map(e=>[e.id,{...e}]));
+    refreshDirty(ms);
+  }
+  state.qrPlacements=new Map(snapshot.qrPlacements.map(q=>[q.qrId,{...q}]));
+  state.placeProposals=new Map(snapshot.placeProposals.map(p=>[p.id,{...p}]));
+  state.currentSheetId=state.maps.has(snapshot.currentSheetId) ? snapshot.currentSheetId : state.currentSheetId;
+  state.selection=snapshot.selection ? {...snapshot.selection} : null;
+  state.pendingEdgeFrom=null;
+  const ms=cur();
+  if (ms){
+    $("empty").style.display="none";
+    $("fileName").textContent=ms.fileName;
+    $("vbInfo").textContent=`${round(ms.viewBox.w)}×${round(ms.viewBox.h)}`;
+    $("groupFloor").value=ms.groupFloorId||"";
+    drawBackground();
+    if (previousSheetId!==state.currentSheetId) resetView();
+  }
+  render();
+}
+function undo(){
+  const entry=history.undo.pop(); if (!entry) return;
+  history.redo.push(entry); restoreEditorSnapshot(entry.before); updateHistoryButtons();
+}
+function redo(){
+  const entry=history.redo.pop(); if (!entry) return;
+  history.undo.push(entry); restoreEditorSnapshot(entry.after); updateHistoryButtons();
+}
+function bindContinuousEdit(element,label,apply){
+  let before=null;
+  const begin=()=>{ if (!before) before=editorSnapshot(); };
+  const finish=()=>{ if (!before) return; commitHistory(label,before); before=null; };
+  element.addEventListener("focus",begin);
+  element.addEventListener("input",(e)=>{ begin(); apply(e.target.value); });
+  element.addEventListener("change",finish);
+  element.addEventListener("blur",finish);
+}
 
 /* ==== SVG読込 ==== */
 $("openBtn").onclick = () => $("file").click();
@@ -379,7 +470,9 @@ function ingestSvg(fileName, text){
     const m = text.match(/\n([ \t]+)<circle[^>]*data-route-node/);
     if (m) ms.routeIndent = m[1];
   }
+  ms.savedRouteSignature = routeSignature(ms);
   state.maps.set(cfg.sheetId, ms);
+  resetHistory();
   return ms;
 }
 
@@ -471,18 +564,31 @@ function setMode(m){
 }
 document.addEventListener("keydown", (e)=>{
   if (/input|select|textarea/i.test(e.target.tagName)) return;
+  const command=e.ctrlKey||e.metaKey, key=e.key.toLowerCase();
+  if (command&&!e.altKey&&key==="z"){
+    e.preventDefault();
+    if (e.shiftKey) redo(); else undo();
+    return;
+  }
+  if (e.ctrlKey&&!e.metaKey&&!e.altKey&&key==="y"){
+    e.preventDefault(); redo(); return;
+  }
   const map = { v:"select", n:"node", e:"edge", q:"qr", d:"delete" };
-  if (map[e.key.toLowerCase()]){ setMode(map[e.key.toLowerCase()]); return; }
+  if (map[key]){ setMode(map[key]); return; }
   if ((e.key==="Delete"||e.key==="Backspace") && state.selection){ deleteSelection(); e.preventDefault(); }
   if (e.key==="Escape"){ state.selection=null; state.pendingEdgeFrom=null; render(); }
 });
+$("undoBtn").onclick=undo;
+$("redoBtn").onclick=redo;
 $("showLabels").onchange = ()=> render();
 $("groupFloor").onchange = (e)=>{
   const ms = cur(); if (!ms) return;
-  ms.groupFloorId = e.target.value.trim() || null; markDirty(ms);
-  render();
+  runEdit("Route floorを変更",()=>{
+    ms.groupFloorId = e.target.value.trim() || null; markDirty(ms);
+    render();
+  });
 };
-function markDirty(ms){ ms.dirty = true; }
+function markDirty(ms){ refreshDirty(ms); }
 
 /* ==== 描画 ==== */
 function render(){
@@ -545,7 +651,7 @@ overlay.addEventListener("pointerdown", (e)=>{
   const p = pxToUser(e.clientX, e.clientY); $("coord").textContent = `x ${round(p.x)}  y ${round(p.y)}`;
   if (mode==="select"){
     if (qrEl){ select("qr", qrEl.dataset.qr); return; }
-    if (nodeEl){ select("node", nodeEl.dataset.node); drag = { nodeId: nodeEl.dataset.node }; overlay.setPointerCapture(e.pointerId); return; }
+    if (nodeEl){ select("node", nodeEl.dataset.node); drag = { nodeId: nodeEl.dataset.node, before:editorSnapshot() }; overlay.setPointerCapture(e.pointerId); return; }
     if (edgeEl){ select("edge", edgeEl.dataset.edge); return; }
     select(null); drag = { pan:true, sx:e.clientX, sy:e.clientY, tx0:view.tx, ty0:view.ty }; overlay.setPointerCapture(e.pointerId); return;
   }
@@ -575,7 +681,14 @@ overlay.addEventListener("pointermove", (e)=>{
   if (drag.pan){ view.tx = drag.tx0 + (e.clientX-drag.sx); view.ty = drag.ty0 + (e.clientY-drag.sy); applyTransform(); return; }
   if (drag.nodeId){ const nd = ms.nodes.get(drag.nodeId); nd.x = maybeSnap(p.x); nd.y = maybeSnap(p.y); markDirty(ms); render(); }
 });
-overlay.addEventListener("pointerup", (e)=>{ if (drag){ try{ overlay.releasePointerCapture(e.pointerId);}catch{} } drag = null; });
+function finishDrag(e){
+  if (!drag) return;
+  try{ overlay.releasePointerCapture(e.pointerId);}catch{}
+  if (drag.nodeId) commitHistory("ノードを移動",drag.before);
+  drag=null;
+}
+overlay.addEventListener("pointerup",finishDrag);
+overlay.addEventListener("pointercancel",finishDrag);
 
 /* ==== 選択 ==== */
 function select(type,id){ state.selection = type ? {type,id} : null; render(); }
@@ -594,9 +707,12 @@ function uniqueEdgeId(ms, a, b){
   let id; do { id = `route_edge_${ms.autoEdge++}`; } while (ms.edges.has(id)); return id;
 }
 function addNode(x,y){
-  const ms = cur(); const id = uniqueNodeId(ms);
-  const node = { id, kind:"corridor", x, y };
-  ms.nodes.set(id, node); markDirty(ms); select("node", id);
+  const ms = cur();
+  runEdit("ノードを追加",()=>{
+    const id = uniqueNodeId(ms);
+    const node = { id, kind:"corridor", x, y };
+    ms.nodes.set(id, node); markDirty(ms); select("node", id);
+  });
 }
 function allocateQrId(){
   let id;
@@ -607,21 +723,27 @@ function addQrPlacement(sheetId, routeNodeId, force=false){
   const existing = [...state.qrPlacements.values()].find(q=>q.sheetId===sheetId&&q.routeNodeId===routeNodeId);
   if (existing && !force){ select("qr",existing.qrId); return; }
   const ms=state.maps.get(sheetId), node=ms?.nodes.get(routeNodeId); if (!node) return;
-  const qrId=allocateQrId();
-  state.qrPlacements.set(qrId,{ qrId, sheetId, routeNodeId, placeId:node.placeId||"", kind:"fixed", installationNote:"" });
-  select("qr",qrId);
+  runEdit("QR候補を追加",()=>{
+    const qrId=allocateQrId();
+    state.qrPlacements.set(qrId,{ qrId, sheetId, routeNodeId, placeId:node.placeId||"", kind:"fixed", installationNote:"" });
+    select("qr",qrId);
+  });
 }
 function removeQrPlacement(qrId){
-  state.qrPlacements.delete(qrId);
-  if (isSel("qr",qrId)) state.selection=null;
-  render();
+  runEdit("QR候補を削除",()=>{
+    state.qrPlacements.delete(qrId);
+    if (isSel("qr",qrId)) state.selection=null;
+    render();
+  });
 }
 function renameQr(oldId,newId){
   if (oldId===newId) return;
   if (!QR_ID_RE.test(newId)||state.qrPlacements.has(newId)){ alert("QR IDはQ001形式かつ重複なしで指定してください"); render(); return; }
-  const qr=state.qrPlacements.get(oldId); state.qrPlacements.delete(oldId); qr.qrId=newId; state.qrPlacements.set(newId,qr);
-  state.nextQrNumber=Math.max(state.nextQrNumber,numericQrPart(newId)+1);
-  state.selection={type:"qr",id:newId}; render();
+  runEdit("QR IDを変更",()=>{
+    const qr=state.qrPlacements.get(oldId); state.qrPlacements.delete(oldId); qr.qrId=newId; state.qrPlacements.set(newId,qr);
+    state.nextQrNumber=Math.max(state.nextQrNumber,numericQrPart(newId)+1);
+    state.selection={type:"qr",id:newId}; render();
+  });
 }
 function placeNodeOccurrences(placeId, exceptNode){
   const found=[];
@@ -635,12 +757,14 @@ function setNodePlaceId(ms,node,newId){
   newId=newId.trim();
   if (newId && !ID_RE.test(newId)){ alert("place-idの形式が不正です"); render(); return false; }
   if (newId && placeNodeOccurrences(newId,node).length){ alert(`place-id ${newId} は別ノードで使用済みです`); render(); return false; }
-  const oldId=node.placeId||"", oldProposal=state.placeProposals.get(oldId);
-  if (oldProposal){
-    state.placeProposals.delete(oldId);
-    if (newId) state.placeProposals.set(newId,{...oldProposal,id:newId});
-  }
-  node.placeId=newId||undefined; syncQrPlaceForNode(ms,node); markDirty(ms); render(); return true;
+  return runEdit("Place IDを変更",()=>{
+    const oldId=node.placeId||"", oldProposal=state.placeProposals.get(oldId);
+    if (oldProposal){
+      state.placeProposals.delete(oldId);
+      if (newId) state.placeProposals.set(newId,{...oldProposal,id:newId});
+    }
+    node.placeId=newId||undefined; syncQrPlaceForNode(ms,node); markDirty(ms); render(); return true;
+  });
 }
 function createPlaceProposal(qr,placeId,name){
   const {ms,node}=findPlacementNode(qr); placeId=placeId.trim(); name=name.trim();
@@ -648,9 +772,11 @@ function createPlaceProposal(qr,placeId,name){
   if (!placeId||!ID_RE.test(placeId)){ alert("Place IDを英数字・ハイフン・アンダースコアで入力してください"); return; }
   if (!name){ alert("Place表示名を入力してください"); return; }
   if (state.placeProposals.has(placeId)||placeNodeOccurrences(placeId,node).length){ alert(`place-id ${placeId} は使用済みです`); return; }
-  node.placeId=placeId;
-  state.placeProposals.set(placeId,{id:placeId,name,sheetId:ms.sheetId,routeNodeId:node.id});
-  syncQrPlaceForNode(ms,node); markDirty(ms); render();
+  runEdit("Place案を作成",()=>{
+    node.placeId=placeId;
+    state.placeProposals.set(placeId,{id:placeId,name,sheetId:ms.sheetId,routeNodeId:node.id});
+    syncQrPlaceForNode(ms,node); markDirty(ms); render();
+  });
 }
 function edgeClick(nodeId){
   const ms = cur();
@@ -659,33 +785,42 @@ function edgeClick(nodeId){
   const a = state.pendingEdgeFrom, b = nodeId;
   const dup = [...ms.edges.values()].some(e => (e.a===a&&e.b===b)||(e.a===b&&e.b===a));
   if (!dup){
-    const id = uniqueEdgeId(ms, a, b); const ed = { id, a, b };
-    ms.edges.set(id, ed); markDirty(ms); select("edge", id);
+    runEdit("エッジを追加",()=>{
+      const id = uniqueEdgeId(ms, a, b); const ed = { id, a, b };
+      ms.edges.set(id, ed); markDirty(ms); select("edge", id);
+    });
   }
   state.pendingEdgeFrom = null; render();
 }
 function removeNode(id){
-  const ms = cur(); ms.nodes.delete(id);
-  for (const [eid,ed] of [...ms.edges]) if (ed.a===id||ed.b===id) ms.edges.delete(eid);
-  if (state.selection && state.selection.id===id) state.selection = null;
-  if (state.pendingEdgeFrom===id) state.pendingEdgeFrom = null;
-  markDirty(ms); render();
+  const ms = cur();
+  runEdit("ノードを削除",()=>{
+    ms.nodes.delete(id);
+    for (const [eid,ed] of [...ms.edges]) if (ed.a===id||ed.b===id) ms.edges.delete(eid);
+    if (state.selection && state.selection.id===id) state.selection = null;
+    if (state.pendingEdgeFrom===id) state.pendingEdgeFrom = null;
+    markDirty(ms); render();
+  });
 }
-function removeEdge(id){ const ms = cur(); ms.edges.delete(id); if (state.selection&&state.selection.id===id) state.selection=null; markDirty(ms); render(); }
+function removeEdge(id){ const ms = cur(); runEdit("エッジを削除",()=>{ ms.edges.delete(id); if (state.selection&&state.selection.id===id) state.selection=null; markDirty(ms); render(); }); }
 function renameNode(oldId,newId){
   const ms = cur(); if (oldId===newId) return;
   if (!ID_RE.test(newId)||ms.nodes.has(newId)){ alert("IDが不正か重複: "+newId); render(); return; }
-  const nd = ms.nodes.get(oldId); ms.nodes.delete(oldId); nd.id = newId; ms.nodes.set(newId, nd);
-  for (const ed of ms.edges.values()){ if (ed.a===oldId) ed.a=newId; if (ed.b===oldId) ed.b=newId; }
-  for (const qr of state.qrPlacements.values()) if (qr.sheetId===ms.sheetId&&qr.routeNodeId===oldId) qr.routeNodeId=newId;
-  for (const proposal of state.placeProposals.values()) if (proposal.sheetId===ms.sheetId&&proposal.routeNodeId===oldId) proposal.routeNodeId=newId;
-  state.selection = {type:"node",id:newId}; markDirty(ms); render();
+  runEdit("ノードIDを変更",()=>{
+    const nd = ms.nodes.get(oldId); ms.nodes.delete(oldId); nd.id = newId; ms.nodes.set(newId, nd);
+    for (const ed of ms.edges.values()){ if (ed.a===oldId) ed.a=newId; if (ed.b===oldId) ed.b=newId; }
+    for (const qr of state.qrPlacements.values()) if (qr.sheetId===ms.sheetId&&qr.routeNodeId===oldId) qr.routeNodeId=newId;
+    for (const proposal of state.placeProposals.values()) if (proposal.sheetId===ms.sheetId&&proposal.routeNodeId===oldId) proposal.routeNodeId=newId;
+    state.selection = {type:"node",id:newId}; markDirty(ms); render();
+  });
 }
 function renameEdge(oldId,newId){
   const ms = cur(); if (oldId===newId) return;
   if (!ID_RE.test(newId)||ms.edges.has(newId)){ alert("IDが不正か重複: "+newId); render(); return; }
-  const ed = ms.edges.get(oldId); ms.edges.delete(oldId); ed.id = newId; ms.edges.set(newId, ed);
-  state.selection = {type:"edge",id:newId}; markDirty(ms); render();
+  runEdit("エッジIDを変更",()=>{
+    const ed = ms.edges.get(oldId); ms.edges.delete(oldId); ed.id = newId; ms.edges.set(newId, ed);
+    state.selection = {type:"edge",id:newId}; markDirty(ms); render();
+  });
 }
 $("delSel").onclick = ()=> deleteSelection();
 function deleteSelection(){
@@ -732,22 +867,26 @@ function createEntranceCounterpart(entranceId){
   createEntranceNode(dest, entranceId);
 }
 function createEntranceNode(destMs, entranceId){
-  const id = uniqueNodeId(destMs, `route_node_entrance_${sanitizeId(entranceId)}`);
-  const c = destMs.viewBox;
-  const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
-  destMs.nodes.set(id, node); markDirty(destMs);
-  switchMap(destMs.sheetId); select("node", id);
+  runEdit("対応入口を作成",()=>{
+    const id = uniqueNodeId(destMs, `route_node_entrance_${sanitizeId(entranceId)}`);
+    const c = destMs.viewBox;
+    const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
+    destMs.nodes.set(id, node); markDirty(destMs);
+    switchMap(destMs.sheetId); select("node", id);
+  });
   alert(`${FLOOR_NAME[destMs.cfg.floor]||destMs.fileName} に入口ノードを仮置きしました。歩く位置へドラッグしてください。`);
 }
 function createEntranceOnFloor(entranceId, floorId){
   const cfg = cfgForFloor(floorId); if (!cfg){ alert("対象フロア不明"); return; }
   const dest = state.maps.get(cfg.sheetId);
   if (!dest){ alert(`${FLOOR_NAME[floorId]} のマップが未読込です`); return; }
-  const id = uniqueNodeId(dest, `route_node_entrance_${sanitizeId(entranceId)}`);
-  const c = dest.viewBox;
-  const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
-  dest.nodes.set(id, node); markDirty(dest);
-  switchMap(dest.sheetId); select("node", id);
+  runEdit("対応入口を作成",()=>{
+    const id = uniqueNodeId(dest, `route_node_entrance_${sanitizeId(entranceId)}`);
+    const c = dest.viewBox;
+    const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
+    dest.nodes.set(id, node); markDirty(dest);
+    switchMap(dest.sheetId); select("node", id);
+  });
 }
 
 /* 生成: 階段の隣接フロアノード */
@@ -755,10 +894,12 @@ function createStairOnFloor(stairId, floorId, fromNode){
   const cfg = cfgForFloor(floorId); if (!cfg){ alert("対象フロア不明"); return; }
   const dest = state.maps.get(cfg.sheetId);
   if (!dest){ alert(`${FLOOR_NAME[floorId]} のマップが未読込です。『全マップ読込』を実行してください`); return; }
-  const id = uniqueNodeId(dest, `route_node_stairs_${sanitizeId(stairId)}_${sanitizeId(floorId)}`);
-  const node = { id, kind:"stairs", stairId, x: Math.round(fromNode?fromNode.x:dest.viewBox.x+dest.viewBox.w/2), y: Math.round(fromNode?fromNode.y:dest.viewBox.y+dest.viewBox.h/2) };
-  dest.nodes.set(id, node); markDirty(dest);
-  switchMap(dest.sheetId); select("node", id);
+  runEdit("階段ノードを作成",()=>{
+    const id = uniqueNodeId(dest, `route_node_stairs_${sanitizeId(stairId)}_${sanitizeId(floorId)}`);
+    const node = { id, kind:"stairs", stairId, x: Math.round(fromNode?fromNode.x:dest.viewBox.x+dest.viewBox.w/2), y: Math.round(fromNode?fromNode.y:dest.viewBox.y+dest.viewBox.h/2) };
+    dest.nodes.set(id, node); markDirty(dest);
+    switchMap(dest.sheetId); select("node", id);
+  });
   alert(`${FLOOR_NAME[floorId]} に階段ノードを仮置きしました。階段口へドラッグしてください。`);
 }
 
@@ -781,7 +922,7 @@ function renderProps(){
       <div class="field"><label>cx / cy</label><span class="muted">${fmt(n.x)} , ${fmt(n.y)}</span></div>
       <div id="linkArea"></div>`;
     $("p_id").onchange = (e)=> renameNode(n.id, e.target.value.trim());
-    $("p_kind").onchange = (e)=>{ n.kind = e.target.value; markDirty(cur()); render(); };
+    $("p_kind").onchange = (e)=>runEdit("ノード種別を変更",()=>{ n.kind = e.target.value; markDirty(cur()); render(); });
     $("p_place").onchange = (e)=> setNodePlaceId(cur(),n,e.target.value);
     renderLinkArea(n);
   } else if (ed) {
@@ -807,11 +948,11 @@ function renderProps(){
       </div>
       <div class="row-btns" style="margin-top:8px"><button class="mini-btn" id="addSameNode">同じ地点にQRを追加</button></div>`;
     $("p_qr_id").onchange=(e)=>renameQr(qr.qrId,e.target.value.trim());
-    $("p_qr_kind").onchange=(e)=>{qr.kind=e.target.value;validateQr();};
-    $("p_qr_note").oninput=(e)=>{qr.installationNote=e.target.value;validateQr();};
+    $("p_qr_kind").onchange=(e)=>runEdit("QR種別を変更",()=>{qr.kind=e.target.value;validateQr();});
+    bindContinuousEdit($("p_qr_note"),"QR設置メモを変更",(value)=>{qr.installationNote=value;validateQr();});
     if (node?.placeId){
       $("p_qr_place").onchange=(e)=>setNodePlaceId(ms,node,e.target.value);
-      if (proposal) $("p_qr_place_name").oninput=(e)=>{proposal.name=e.target.value;validateQr();};
+      if (proposal) bindContinuousEdit($("p_qr_place_name"),"Place名を変更",(value)=>{proposal.name=value;validateQr();});
     } else {
       $("mkPlaceProposal") && ($("mkPlaceProposal").onclick=()=>createPlaceProposal(qr,$("p_qr_place").value,$("p_qr_place_name").value));
     }
@@ -829,7 +970,7 @@ function renderLinkArea(n){
         <div id="entBadge"></div>
         <div class="row-btns" id="entBtns"></div>
       </div>`;
-    $("p_ent").onchange = (e)=>{ n.entranceId = e.target.value.trim()||undefined; markDirty(ms); render(); };
+    $("p_ent").onchange = (e)=>runEdit("入口IDを変更",()=>{ n.entranceId = e.target.value.trim()||undefined; markDirty(ms); render(); });
     const badge = $("entBadge"), btns = $("entBtns");
     if (!n.entranceId){ badge.innerHTML = `<span class="badge warn mini">entrance-id 未設定</span>`; return; }
     const info = entranceInfo(n.entranceId);
@@ -864,7 +1005,7 @@ function renderLinkArea(n){
         <div id="stBadge"></div>
         <div class="row-btns" id="stBtns"></div>
       </div>`;
-    $("p_stair").onchange = (e)=>{ n.stairId = e.target.value.trim()||undefined; markDirty(ms); render(); };
+    $("p_stair").onchange = (e)=>runEdit("階段IDを変更",()=>{ n.stairId = e.target.value.trim()||undefined; markDirty(ms); render(); });
     const badge = $("stBadge"), btns = $("stBtns");
     if (!n.stairId){ badge.innerHTML = `<span class="badge warn mini">stair-id 未設定</span>`; return; }
     const info = stairInfo(n.stairId);
@@ -1049,7 +1190,7 @@ $("openPlanBtn").onclick=()=>$("planInput").click();
 $("planInput").onchange=async(e)=>{
   const file=e.target.files[0]; e.target.value=""; if (!file) return;
   if ((state.qrPlacements.size||state.placeProposals.size)&&!confirm("現在のQR設置計画を読み込んだ内容で置き換えますか？")) return;
-  try { importPlanData(JSON.parse(await readText(file))); }
+  try { const data=JSON.parse(await readText(file)); runEdit("計画JSONを読込",()=>importPlanData(data)); }
   catch(err){ alert(`計画JSONを読み込めませんでした: ${err.message}`); }
 };
 $("exportJsonBtn").onclick=()=>{ if (ensureQrExportable()) downloadText("uoamap-qr-mapping.json",JSON.stringify(backendMappings(),null,2)+"\n"); };
@@ -1107,14 +1248,15 @@ function downloadSvg(ms){
   const a = $("dlAnchor"); a.href = URL.createObjectURL(blob); a.download = ms.fileName;
   a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
 }
-$("dlBtn").onclick = ()=>{ const ms = cur(); if (!ms){ alert("先にSVGを読み込んでください"); return; } downloadSvg(ms); ms.dirty = false; updateMapSelect(); };
+$("dlBtn").onclick = ()=>{ const ms = cur(); if (!ms){ alert("先にSVGを読み込んでください"); return; } downloadSvg(ms); ms.savedRouteSignature=routeSignature(ms); refreshDirty(ms); updateMapSelect(); };
 $("dlAllBtn").onclick = async ()=>{
   const dirty = [...state.maps.values()].filter(m=>m.dirty);
   if (!dirty.length){ alert("未保存の変更があるマップはありません"); return; }
-  for (let i=0;i<dirty.length;i++){ downloadSvg(dirty[i]); dirty[i].dirty = false; await new Promise(r=>setTimeout(r,250)); }
+  for (let i=0;i<dirty.length;i++){ downloadSvg(dirty[i]); dirty[i].savedRouteSignature=routeSignature(dirty[i]); refreshDirty(dirty[i]); await new Promise(r=>setTimeout(r,250)); }
   updateMapSelect();
   alert(`${dirty.length}枚のSVGをダウンロードしました。public/maps/ に上書きしてください。`);
 };
+updateHistoryButtons();
 render();
 </script>
 </body>
