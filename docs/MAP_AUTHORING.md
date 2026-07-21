@@ -100,6 +100,21 @@
 - 距離は抽出時にノード座標間のユークリッド距離から生成する
 - 交差するだけの線は接続されない。分岐させる場合は交点にノードを置き、エッジを分割する
 
+## QR設置計画
+
+`tools/route-editor.html` の「QR候補」モードでは、QRを読む来場者が立つRouteノードへ候補を配置する。壁面の掲示位置ではなく、ルート開始地点として妥当な歩行可能位置のノードを選ぶ。
+
+1. 「全マップ読込」で10枚を読み込む
+2. 「QR候補」を選び、対象Routeノードをクリックする
+3. 自動採番された`Q001`形式のQR ID、固定／可変、設置メモを確認する
+4. ノードに既存`data-place-id`があれば再利用する。無ければPlace IDと表示名を入力し、座標Place案を作る
+5. 途中状態は「計画JSONを保存」で保存し、後日「計画JSONを読込」で置換復元する
+6. QR検証がPASSしたら、対応表JSON／CSVと必要なPlace案JSONを出力する
+
+対応表JSONは`src/data/types.ts`の`QrCode[]`と同じ`qrId / placeId / kind / installationNote`だけを含む。計画中のフロア、Routeノード、座標は計画JSONへ分離し、公開APIのレスポンスへは含めない。同じPlaceへ複数QRを割り当てる場合は、QRプロパティの「同じ地点にQRを追加」を使う。
+
+新規Place案を作ると、ダウンロード対象SVGのRouteノードにも`data-place-id`が付く。Place案JSONの内容を`src/data/places.ts`へ実装してからSVGを反映し、以下の抽出・検証を行う。QR候補を削除してもPlace案と`data-place-id`は自動削除されないため、不要ならノードのPlace IDを明示的に解除する。
+
 ## 抽出と検証
 
 ```bash
