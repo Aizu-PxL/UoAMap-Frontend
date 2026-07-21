@@ -1,10 +1,20 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-21(講義棟SVGをフロア別分割)
-対象ブランチ: `feature/takami-makeFront`
+最終更新: 2026-07-22(リポジトリ横断リファクタリング準備)
+対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
+
+リポジトリ横断リファクタリングの本体実装は未着手。`docs/tasks/13a-refactor-preparation.md` でリポジトリ固有Codex設定サンプル、ExecPlan規約、読み取り専用監査に基づく初期計画を整備した。次のスレッドは [.agent/refactor-plan.md](../.agent/refactor-plan.md) のM1から開始する。
+
+開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。Codexはgitの変更操作を行わない。
+
+開始プロンプト:
+
+```text
+`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のリポジトリ横断リファクタリングを実施してください。現行挙動を維持し、M1から順に小さなスライスとして、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
+```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
 

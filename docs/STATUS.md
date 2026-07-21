@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-21(ルートエディタ Undo / Redo)
+最終更新: 2026-07-22(リポジトリ横断リファクタリング準備)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -18,6 +18,17 @@
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
 最新ルート実装コミット: `0189530 全案内地点のルート対応を完了`
+
+## リポジトリ横断リファクタリング
+
+本体コードを一括変更せず、次スレッドから小スライスで進めるための準備を `docs/tasks/13a-refactor-preparation.md` で行った。
+
+- ExecPlan規約: `.agent/PLANS.md`
+- 現行コードの監査根拠・実装順・受入基準: `.agent/refactor-plan.md`
+- リポジトリ固有Codex設定の非適用サンプル: `.codex/config.toml.example`
+- 開始位置: M1「URL状態のcharacterization testと純粋関数への集約」
+
+リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 
 ## 本番公開準備
 
