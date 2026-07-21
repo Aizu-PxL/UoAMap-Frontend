@@ -87,3 +87,4 @@ STATUS.md 更新 → コミット(ユーザーまたはリード)
 | [BACKLOG.md](BACKLOG.md) | 要望が出たとき追加 / 消化したら削除 |
 | [FIGMA.md](FIGMA.md) | Figmaの構造・トークン変更時 |
 | [API.md](API.md) | API契約の変更時(フロント・バック双方合意の上で先に更新) |
+| [PRODUCTION.md](PRODUCTION.md) | 本番URL、ホスティング、API本番構成、QR台帳、公開/受入手順を変更するとき |

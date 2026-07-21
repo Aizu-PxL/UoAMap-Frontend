@@ -4,6 +4,8 @@
 
 地図SVGと経路グラフを同じ座標系で管理するための契約。`public/maps/` の既存要素・ID・座標系は変更せず、経路要素だけを追加する。
 
+既存ノードをInkscapeで目視調整する人は、先に [ROUTE_EDITING_GUIDE.md](ROUTE_EDITING_GUIDE.md) を参照する。
+
 ## Routeグループ
 
 - 経路を持つSVGのルート直下に `<g id="Route" data-floor-id="...">` を1つ置く
