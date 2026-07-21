@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import { Link, useLocation } from "react-router";
 import { formatTimeSlots } from "../../data/format";
 import { getPlace } from "../../data/places";
@@ -6,15 +7,19 @@ import type { Event as CampusEvent } from "../../data/types";
 type EventCardProps = {
   event: CampusEvent;
   tagLabel: string;
+  highlighted?: boolean;
+  cardRef?: Ref<HTMLAnchorElement>;
 };
 
-export function EventCard({ event, tagLabel }: EventCardProps) {
+export function EventCard({ event, tagLabel, highlighted = false, cardRef }: EventCardProps) {
   const location = useLocation();
   const place = getPlace(event.placeId);
 
   return (
     <Link
-      className="event-card"
+      ref={cardRef}
+      className={highlighted ? "event-card is-highlighted" : "event-card"}
+      data-event-id={event.id}
       to={{ pathname: `/e/${event.id}`, search: location.search }}
     >
       <h2>{event.title}</h2>

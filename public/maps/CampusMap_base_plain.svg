@@ -1351,4 +1351,259 @@
          x="36.401478"
          y="648.51514">N</tspan></text>
   </g>
+  <g
+     id="Route"
+     data-floor-id="campus"
+     style="display:none">
+    <circle
+       id="route_node_rq_west_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="rq-west-main"
+       data-place-id="rq"
+       cx="462"
+       cy="329"
+       r="2" />
+    <circle
+       id="route_node_ubic_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="ubic-main"
+       data-place-id="ubic"
+       cx="466"
+       cy="245"
+       r="2" />
+    <circle
+       id="route_node_campus_north_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="466"
+       cy="218"
+       r="2" />
+    <circle
+       id="route_node_campus_north_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="616"
+       cy="218"
+       r="2" />
+    <circle
+       id="route_node_lictia_approach"
+       data-route-node=""
+       data-kind="corridor"
+       cx="616"
+       cy="250"
+       r="2" />
+    <circle
+       id="route_node_lictia_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="lictia-main"
+       cx="611"
+       cy="250"
+       r="2" />
+    <circle
+       id="route_node_ped12_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="385"
+       cy="329"
+       r="2" />
+    <circle
+       id="route_node_zone_north_east"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="lh-main"
+       cx="365"
+       cy="323"
+       r="2" />
+    <circle
+       id="route_node_zone_north_west"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="sh-main"
+       cx="330"
+       cy="323"
+       r="2" />
+    <circle
+       id="route_node_ped10_north"
+       data-route-node=""
+       data-kind="corridor"
+       cx="328"
+       cy="400"
+       r="2" />
+    <circle
+       id="route_node_ped10_south"
+       data-route-node=""
+       data-kind="corridor"
+       cx="328"
+       cy="416"
+       r="2" />
+    <circle
+       id="route_node_robot_parking_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="244"
+       cy="416"
+       r="2" />
+    <circle
+       id="route_node_robot_garage"
+       data-route-node=""
+       data-kind="entrance"
+       data-place-id="robot-garage"
+       cx="244"
+       cy="390"
+       r="2" />
+    <circle
+       id="route_node_zone_library_south"
+       data-route-node=""
+       data-kind="corridor"
+       cx="328"
+       cy="494"
+       r="2" />
+    <circle
+       id="route_node_ped9_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="340"
+       cy="494"
+       r="2" />
+    <circle
+       id="route_node_ped8_ped7_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="339"
+       cy="489"
+       r="2" />
+    <circle
+       id="route_node_ped7_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="366"
+       cy="489"
+       r="2" />
+    <circle
+       id="route_node_ped3_ped4_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="367"
+       cy="563"
+       r="2" />
+    <circle
+       id="route_node_auditorium_entrance"
+       data-route-node=""
+       data-kind="entrance"
+       data-place-id="auditorium"
+       cx="352"
+       cy="563"
+       r="2" />
+    <path
+       id="route_edge_rq_west_main_to_ped12_west"
+       data-route-edge=""
+       data-node-a="route_node_rq_west_main"
+       data-node-b="route_node_ped12_west"
+       d="M 462 329 L 385 329" />
+    <path
+       id="route_edge_ubic_main_to_rq_west_main"
+       data-route-edge=""
+       data-node-a="route_node_ubic_main"
+       data-node-b="route_node_rq_west_main"
+       d="M 466 245 L 462 329" />
+    <path
+       id="route_edge_ubic_main_to_campus_north_west"
+       data-route-edge=""
+       data-node-a="route_node_ubic_main"
+       data-node-b="route_node_campus_north_west"
+       d="M 466 245 L 466 218" />
+    <path
+       id="route_edge_campus_north_west_to_north_east"
+       data-route-edge=""
+       data-node-a="route_node_campus_north_west"
+       data-node-b="route_node_campus_north_east"
+       d="M 466 218 L 616 218" />
+    <path
+       id="route_edge_campus_north_east_to_lictia_approach"
+       data-route-edge=""
+       data-node-a="route_node_campus_north_east"
+       data-node-b="route_node_lictia_approach"
+       d="M 616 218 L 616 250" />
+    <path
+       id="route_edge_lictia_approach_to_main"
+       data-route-edge=""
+       data-node-a="route_node_lictia_approach"
+       data-node-b="route_node_lictia_main"
+       d="M 616 250 L 611 250" />
+    <path
+       id="route_edge_ped12_west_to_zone_north_east"
+       data-route-edge=""
+       data-node-a="route_node_ped12_west"
+       data-node-b="route_node_zone_north_east"
+       d="M 385 329 L 365 323" />
+    <path
+       id="route_edge_zone_north_east_to_north_west"
+       data-route-edge=""
+       data-node-a="route_node_zone_north_east"
+       data-node-b="route_node_zone_north_west"
+       d="M 365 323 L 330 323" />
+    <path
+       id="route_edge_zone_north_west_to_ped10_north"
+       data-route-edge=""
+       data-node-a="route_node_zone_north_west"
+       data-node-b="route_node_ped10_north"
+       d="M 330 323 L 328 400" />
+    <path
+       id="route_edge_ped10_north_to_south"
+       data-route-edge=""
+       data-node-a="route_node_ped10_north"
+       data-node-b="route_node_ped10_south"
+       d="M 328 400 L 328 416" />
+    <path
+       id="route_edge_ped10_south_to_robot_parking"
+       data-route-edge=""
+       data-node-a="route_node_ped10_south"
+       data-node-b="route_node_robot_parking_junction"
+       d="M 328 416 L 244 416" />
+    <path
+       id="route_edge_robot_parking_to_garage"
+       data-route-edge=""
+       data-node-a="route_node_robot_parking_junction"
+       data-node-b="route_node_robot_garage"
+       d="M 244 416 L 244 390" />
+    <path
+       id="route_edge_ped10_south_to_library_south"
+       data-route-edge=""
+       data-node-a="route_node_ped10_south"
+       data-node-b="route_node_zone_library_south"
+       d="M 328 416 L 328 494" />
+    <path
+       id="route_edge_library_south_to_ped9_east"
+       data-route-edge=""
+       data-node-a="route_node_zone_library_south"
+       data-node-b="route_node_ped9_east"
+       d="M 328 494 L 340 494" />
+    <path
+       id="route_edge_ped9_east_to_ped8_ped7"
+       data-route-edge=""
+       data-node-a="route_node_ped9_east"
+       data-node-b="route_node_ped8_ped7_junction"
+       d="M 340 494 L 339 489" />
+    <path
+       id="route_edge_ped8_ped7_to_ped7_east"
+       data-route-edge=""
+       data-node-a="route_node_ped8_ped7_junction"
+       data-node-b="route_node_ped7_east"
+       d="M 339 489 L 366 489" />
+    <path
+       id="route_edge_ped7_east_to_ped3_ped4"
+       data-route-edge=""
+       data-node-a="route_node_ped7_east"
+       data-node-b="route_node_ped3_ped4_junction"
+       d="M 366 489 L 367 563" />
+    <path
+       id="route_edge_ped3_ped4_to_auditorium"
+       data-route-edge=""
+       data-node-a="route_node_ped3_ped4_junction"
+       data-node-b="route_node_auditorium_entrance"
+       d="M 367 563 L 352 563" />
+  </g>
 </svg>

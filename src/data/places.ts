@@ -30,73 +30,86 @@ export const floors: Floor[] = [
   { id: "lictia-1f", sheetId: "lictia", name: "LICTiA 1F" },
 ];
 
+function svg(
+  id: string,
+  floorId: string,
+  name: string,
+  svgElementId: string,
+): Place {
+  return { id, floorId, name, mapping: "svg", svgElementId };
+}
+
 function unmapped(id: string, floorId: string, name: string): Place {
   return { id, floorId, name, mapping: "unmapped" };
 }
 
-// 未紐付け地点はmappingで明示し、SVG要素IDまたは座標の確定はステップ2で行う。
+function coordinates(
+  id: string,
+  floorId: string,
+  name: string,
+  x: number,
+  y: number,
+): Place {
+  return { id, floorId, name, mapping: "coordinates", coordinates: { x, y } };
+}
+
+// 紐付けは scripts/verify-places.ts(bun run verify:places)でID実在を検証する。
+// unmapped地点は単一SVG要素に対応しない(複合施設・全域など)ものだけを残す。
 export const places: Place[] = [
-  {
-    id: "auditorium",
-    floorId: "campus",
-    name: "講堂",
-    mapping: "svg",
-    svgElementId: "building_Auditrium",
-  },
-  unmapped("lh-large", "lh-1f", "大講義室"),
-  unmapped("lh-m2", "lh-2f", "講義棟 M2"),
-  unmapped("lh-m3", "lh-2f", "講義棟 M3"),
-  unmapped("lh-m4", "lh-2f", "講義棟 M4"),
-  unmapped("lh-m5", "lh-2f", "講義棟 M5"),
-  unmapped("lh-m6", "lh-2f", "講義棟 M6"),
-  {
-    id: "lh-m7",
-    floorId: "lh-2f",
-    name: "講義棟 M7",
-    mapping: "svg",
-    svgElementId: "room_2F_M7_207",
-  },
-  {
-    id: "lh-m8",
-    floorId: "lh-1f",
-    name: "講義棟 M8",
-    mapping: "svg",
-    svgElementId: "room_1F_M8_103",
-  },
-  unmapped("lh-m10", "lh-1f", "講義棟 M10"),
-  unmapped("ubic", "ubic-1f", "UBIC"),
-  unmapped("ubic-3d-theater", "ubic-1f", "UBIC 3Dシアター"),
-  unmapped("ubic-lab", "ubic-1f", "UBIC 研究ラボエリア"),
-  unmapped("ubic-motion", "ubic-1f", "UBIC 運動解析ルーム"),
-  unmapped("sh-cafeteria", "sh-1f", "学生ホール 食堂"),
-  unmapped("sh-reception", "sh-1f", "学生ホール 食堂／ホール"),
-  unmapped("sh-hall", "sh-1f", "学生ホール ホール"),
-  unmapped("sh-shop", "sh-1f", "学生ホール 売店"),
-  unmapped("rq", "rq-1f", "研究棟"),
+  svg("auditorium", "campus", "講堂", "building_Auditrium"),
+  svg("lh-large", "lh-1f", "大講義室", "room_1F_LTh"),
+  svg("lh-m2", "lh-2f", "講義棟 M2", "room_2F_M2_202"),
+  svg("lh-m3", "lh-2f", "講義棟 M3", "room_2F_M3_203"),
+  svg("lh-m4", "lh-2f", "講義棟 M4", "room_2F_M4_204"),
+  svg("lh-m5", "lh-2f", "講義棟 M5", "room_2F_M5_205"),
+  svg("lh-m6", "lh-2f", "講義棟 M6", "room_2F_M6_206"),
+  svg("lh-m7", "lh-2f", "講義棟 M7", "room_2F_M7_207"),
+  svg("lh-m8", "lh-1f", "講義棟 M8", "room_1F_M8_103"),
+  svg("lh-m10", "lh-1f", "講義棟 M10", "room_1F_M10_105"),
+  svg("ubic", "campus", "UBIC", "building_UBIC"),
+  svg("ubic-3d-theater", "ubic-1f", "UBIC 3Dシアター", "room_3DTh"),
+  svg("ubic-lab", "ubic-1f", "UBIC 研究ラボエリア", "area_ResearchLab"),
+  svg("ubic-motion", "ubic-1f", "UBIC 運動解析ルーム", "room_Motion"),
+  svg("sh-cafeteria", "sh-1f", "学生ホール 食堂", "room_1F_Cafeteria"),
+  // 食堂・ホール間の受付位置。複合地点のため座標アンカーで管理する。
+  coordinates("sh-reception", "sh-1f", "学生ホール 食堂／ホール", 66.5, 46.5),
+  svg("sh-hall", "sh-1f", "学生ホール ホール", "room_1F_hall"),
+  svg("sh-shop", "sh-1f", "学生ホール 売店", "room_1F_Shop"),
+  // 建物単位の地点はキャンパス全体図の building_* に紐付ける
+  svg("rq", "campus", "研究棟", "building_ResearchQuad"),
+  // キャンパス全体を示す単一SVG要素は存在しない
   unmapped("campus-all", "campus", "キャンパス全域"),
-  unmapped("rq1-104f", "rq-1f", "研究棟1F 104F"),
-  unmapped("rq1-141e", "rq-1f", "研究棟1F 141E"),
-  unmapped("rq1-144f", "rq-1f", "研究棟1F 144F"),
-  unmapped("rq1-127", "rq-1f", "研究棟1F 127"),
-  unmapped("rq1-161", "rq-1f", "研究棟1F 161"),
-  unmapped("rq2-201f", "rq-2f", "研究棟2F 201F"),
-  unmapped("rq2-243b", "rq-2f", "研究棟2F 243B"),
-  unmapped("rq2-267", "rq-2f", "研究棟2F 267"),
-  unmapped("rq2-268", "rq-2f", "研究棟2F 268"),
-  unmapped("rq2-s1", "rq-2f", "研究棟2F S1"),
-  unmapped("rq2-s4", "rq-2f", "研究棟2F S4"),
-  unmapped("rq3-325f", "rq-3f", "研究棟3F 325F"),
-  unmapped("rq3-328e", "rq-3f", "研究棟3F 328E"),
-  unmapped("rq3-342a", "rq-3f", "研究棟3F 342A"),
-  unmapped("rq3-348e", "rq-3f", "研究棟3F 348E"),
-  unmapped("rq3-m11", "rq-3f", "研究棟3F M11"),
-  unmapped("lictia-chamber", "lictia-1f", "LICTiA1F 箱庭チャンバー室"),
-  unmapped(
+  svg("rq1-104f", "rq-1f", "研究棟1F 104F", "room_n1_104"),
+  svg("rq1-141e", "rq-1f", "研究棟1F 141E", "room_s1_141"),
+  svg("rq1-144f", "rq-1f", "研究棟1F 144F", "room_s1_144"),
+  svg("rq1-127", "rq-1f", "研究棟1F 127", "room_m1_Global_127"),
+  svg("rq1-161", "rq-1f", "研究棟1F 161", "room_w1_Geek_161"),
+  svg("rq2-201f", "rq-2f", "研究棟2F 201F", "room_n2_201"),
+  svg("rq2-243b", "rq-2f", "研究棟2F 243B", "room_s2_243"),
+  svg("rq2-267", "rq-2f", "研究棟2F 267", "room_m2_267"),
+  svg("rq2-268", "rq-2f", "研究棟2F 268", "room_m2_268"),
+  svg("rq2-s1", "rq-2f", "研究棟2F S1", "room_w2_S1_275"),
+  svg("rq2-s4", "rq-2f", "研究棟2F S4", "room_w2_S4_275"),
+  svg("rq3-325f", "rq-3f", "研究棟3F 325F", "room_m3_325"),
+  svg("rq3-328e", "rq-3f", "研究棟3F 328E", "room_m3_328"),
+  svg("rq3-342a", "rq-3f", "研究棟3F 342A", "room_s3_342"),
+  svg("rq3-348e", "rq-3f", "研究棟3F 348E", "room_s3_348"),
+  svg("rq3-m11", "rq-3f", "研究棟3F M11", "room_e3_M11_361"),
+  // 専用要素はないため、箱庭展示に使う検証室の中心を座標アンカーにする。
+  coordinates(
+    "lictia-chamber",
+    "lictia-1f",
+    "LICTiA1F 箱庭チャンバー室",
+    32.5,
+    54.6,
+  ),
+  svg(
     "lictia-innovation",
     "lictia-1f",
     "LICTiA1F イノベーション創出スペース",
+    "area_1F_Innovation",
   ),
-  unmapped("robot-garage", "campus", "駐車場 ロボット格納庫"),
+  svg("robot-garage", "campus", "駐車場 ロボット格納庫", "building_RobotGarage"),
 ];
 
 const placeById = new Map(places.map((place) => [place.id, place]));

@@ -2402,4 +2402,258 @@
          d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" />
     </g>
   </g>
+  <g
+     id="Route"
+     data-floor-id="rq-2f"
+     style="display:none">
+    <circle
+       id="route_node_north_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="70"
+       cy="90"
+       r="2" />
+    <circle
+       id="route_node_north_connector_south"
+       data-route-node=""
+       data-kind="corridor"
+       cx="300"
+       cy="90"
+       r="2" />
+    <circle
+       id="route_node_north_connector_north"
+       data-route-node=""
+       data-kind="corridor"
+       cx="300"
+       cy="49"
+       r="2" />
+    <circle
+       id="route_node_rq2_201"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-201f"
+       cx="385"
+       cy="49"
+       r="2" />
+    <circle
+       id="route_node_stairs_north_east"
+       data-route-node=""
+       data-kind="stairs"
+       data-stair-id="rq-stairs-ne"
+       cx="436"
+       cy="90"
+       r="2" />
+    <circle
+       id="route_node_north_east_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="458"
+       cy="90"
+       r="2" />
+    <circle
+       id="route_node_rq2_s1"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-s1"
+       cx="70"
+       cy="113"
+       r="2" />
+    <circle
+       id="route_node_rq2_s4"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-s4"
+       cx="70"
+       cy="225"
+       r="2" />
+    <circle
+       id="route_node_middle_west_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="70"
+       cy="336"
+       r="2" />
+    <circle
+       id="route_node_stairs_middle_west"
+       data-route-node=""
+       data-kind="stairs"
+       data-stair-id="rq-stairs-mw"
+       cx="32"
+       cy="336"
+       r="2" />
+    <circle
+       id="route_node_middle_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="70"
+       cy="367"
+       r="2" />
+    <circle
+       id="route_node_rq2_268"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-268"
+       cx="99"
+       cy="367"
+       r="2" />
+    <circle
+       id="route_node_rq2_267"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-267"
+       cx="134"
+       cy="367"
+       r="2" />
+    <circle
+       id="route_node_east_middle"
+       data-route-node=""
+       data-kind="corridor"
+       cx="458"
+       cy="367"
+       r="2" />
+    <circle
+       id="route_node_south_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="70"
+       cy="604"
+       r="2" />
+    <circle
+       id="route_node_rq2_243"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="rq2-243b"
+       cx="200"
+       cy="604"
+       r="2" />
+    <circle
+       id="route_node_stairs_south_east"
+       data-route-node=""
+       data-kind="stairs"
+       data-stair-id="rq-stairs-se"
+       cx="436"
+       cy="604"
+       r="2" />
+    <circle
+       id="route_node_east_south_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="458"
+       cy="604"
+       r="2" />
+    <path
+       id="route_edge_north_west_to_connector"
+       data-route-edge=""
+       data-node-a="route_node_north_west"
+       data-node-b="route_node_north_connector_south"
+       d="M 70 90 L 300 90" />
+    <path
+       id="route_edge_connector_to_stairs_ne"
+       data-route-edge=""
+       data-node-a="route_node_north_connector_south"
+       data-node-b="route_node_stairs_north_east"
+       d="M 300 90 L 436 90" />
+    <path
+       id="route_edge_stairs_ne_to_east"
+       data-route-edge=""
+       data-node-a="route_node_stairs_north_east"
+       data-node-b="route_node_north_east_junction"
+       d="M 436 90 L 458 90" />
+    <path
+       id="route_edge_north_connector"
+       data-route-edge=""
+       data-node-a="route_node_north_connector_north"
+       data-node-b="route_node_north_connector_south"
+       d="M 300 49 L 300 90" />
+    <path
+       id="route_edge_connector_to_201"
+       data-route-edge=""
+       data-node-a="route_node_north_connector_north"
+       data-node-b="route_node_rq2_201"
+       d="M 300 49 L 385 49" />
+    <path
+       id="route_edge_north_west_to_s1"
+       data-route-edge=""
+       data-node-a="route_node_north_west"
+       data-node-b="route_node_rq2_s1"
+       d="M 70 90 L 70 113" />
+    <path
+       id="route_edge_s1_to_s4"
+       data-route-edge=""
+       data-node-a="route_node_rq2_s1"
+       data-node-b="route_node_rq2_s4"
+       d="M 70 113 L 70 225" />
+    <path
+       id="route_edge_s4_to_middle_west_junction"
+       data-route-edge=""
+       data-node-a="route_node_rq2_s4"
+       data-node-b="route_node_middle_west_junction"
+       d="M 70 225 L 70 336" />
+    <path
+       id="route_edge_junction_to_stairs_mw"
+       data-route-edge=""
+       data-node-a="route_node_middle_west_junction"
+       data-node-b="route_node_stairs_middle_west"
+       d="M 70 336 L 32 336" />
+    <path
+       id="route_edge_junction_to_middle_west"
+       data-route-edge=""
+       data-node-a="route_node_middle_west_junction"
+       data-node-b="route_node_middle_west"
+       d="M 70 336 L 70 367" />
+    <path
+       id="route_edge_middle_west_to_268"
+       data-route-edge=""
+       data-node-a="route_node_middle_west"
+       data-node-b="route_node_rq2_268"
+       d="M 70 367 L 99 367" />
+    <path
+       id="route_edge_268_to_267"
+       data-route-edge=""
+       data-node-a="route_node_rq2_268"
+       data-node-b="route_node_rq2_267"
+       d="M 99 367 L 134 367" />
+    <path
+       id="route_edge_267_to_east_middle"
+       data-route-edge=""
+       data-node-a="route_node_rq2_267"
+       data-node-b="route_node_east_middle"
+       d="M 134 367 L 458 367" />
+    <path
+       id="route_edge_middle_west_to_south_west"
+       data-route-edge=""
+       data-node-a="route_node_middle_west"
+       data-node-b="route_node_south_west"
+       d="M 70 367 L 70 604" />
+    <path
+       id="route_edge_south_west_to_243"
+       data-route-edge=""
+       data-node-a="route_node_south_west"
+       data-node-b="route_node_rq2_243"
+       d="M 70 604 L 200 604" />
+    <path
+       id="route_edge_243_to_stairs_se"
+       data-route-edge=""
+       data-node-a="route_node_rq2_243"
+       data-node-b="route_node_stairs_south_east"
+       d="M 200 604 L 436 604" />
+    <path
+       id="route_edge_stairs_se_to_east"
+       data-route-edge=""
+       data-node-a="route_node_stairs_south_east"
+       data-node-b="route_node_east_south_junction"
+       d="M 436 604 L 458 604" />
+    <path
+       id="route_edge_north_east_to_east_middle"
+       data-route-edge=""
+       data-node-a="route_node_north_east_junction"
+       data-node-b="route_node_east_middle"
+       d="M 458 90 L 458 367" />
+    <path
+       id="route_edge_east_middle_to_south_east"
+       data-route-edge=""
+       data-node-a="route_node_east_middle"
+       data-node-b="route_node_east_south_junction"
+       d="M 458 367 L 458 604" />
+  </g>
 </svg>

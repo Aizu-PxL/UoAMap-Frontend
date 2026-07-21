@@ -504,4 +504,98 @@
          id="mark_1F_toiletM-2" /><path
          style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.10549"
          id="mark_1F_toiletM-1"
-         d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" /></g></g></svg>
+         d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" /></g></g>
+  <g
+     id="Route"
+     data-floor-id="lictia-1f"
+     style="display:none">
+    <circle
+       id="route_node_lictia_main"
+       data-route-node=""
+       data-kind="entrance"
+       data-entrance-id="lictia-main"
+       cx="118"
+       cy="58"
+       r="2" />
+    <circle
+       id="route_node_lictia_hall"
+       data-route-node=""
+       data-kind="corridor"
+       cx="105"
+       cy="58"
+       r="2" />
+    <circle
+       id="route_node_lictia_corridor_east"
+       data-route-node=""
+       data-kind="corridor"
+       cx="105"
+       cy="48"
+       r="2" />
+    <circle
+       id="route_node_lictia_innovation_junction"
+       data-route-node=""
+       data-kind="corridor"
+       cx="82"
+       cy="48"
+       r="2" />
+    <circle
+       id="route_node_lictia_innovation"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="lictia-innovation"
+       cx="82"
+       cy="46"
+       r="2" />
+    <circle
+       id="route_node_lictia_corridor_west"
+       data-route-node=""
+       data-kind="corridor"
+       cx="33"
+       cy="48"
+       r="2" />
+    <circle
+       id="route_node_lictia_chamber"
+       data-route-node=""
+       data-kind="corridor"
+       data-place-id="lictia-chamber"
+       cx="33"
+       cy="51"
+       r="2" />
+    <path
+       id="route_edge_lictia_main_to_hall"
+       data-route-edge=""
+       data-node-a="route_node_lictia_main"
+       data-node-b="route_node_lictia_hall"
+       d="M 118 58 L 105 58" />
+    <path
+       id="route_edge_lictia_hall_to_corridor_east"
+       data-route-edge=""
+       data-node-a="route_node_lictia_hall"
+       data-node-b="route_node_lictia_corridor_east"
+       d="M 105 58 L 105 48" />
+    <path
+       id="route_edge_lictia_corridor_east_to_innovation_junction"
+       data-route-edge=""
+       data-node-a="route_node_lictia_corridor_east"
+       data-node-b="route_node_lictia_innovation_junction"
+       d="M 105 48 L 82 48" />
+    <path
+       id="route_edge_lictia_innovation_junction_to_innovation"
+       data-route-edge=""
+       data-node-a="route_node_lictia_innovation_junction"
+       data-node-b="route_node_lictia_innovation"
+       d="M 82 48 L 82 46" />
+    <path
+       id="route_edge_lictia_innovation_junction_to_corridor_west"
+       data-route-edge=""
+       data-node-a="route_node_lictia_innovation_junction"
+       data-node-b="route_node_lictia_corridor_west"
+       d="M 82 48 L 33 48" />
+    <path
+       id="route_edge_lictia_corridor_west_to_chamber"
+       data-route-edge=""
+       data-node-a="route_node_lictia_corridor_west"
+       data-node-b="route_node_lictia_chamber"
+       d="M 33 48 L 33 51" />
+  </g>
+</svg>

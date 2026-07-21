@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ルートノード作図ツール</title>
+<style>
+  :root {
+    --bg: #1e1e28; --panel: #262633; --panel2: #2f2f40; --line: #3a3a4d;
+    --text: #e6e6f0; --muted: #9a9ab0; --accent: #ff3ea5;
+    --edge: #ff00ff; --node: #ff2e88; --node-sel: #24d1ff; --node-pend: #ffd23e;
+    --ok: #4ade80; --warn: #fbbf24; --err: #f87171;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font: 13px/1.5 -apple-system, "Hiragino Sans", "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--text);
+    display: grid; grid-template-columns: 1fr 340px; grid-template-rows: auto 1fr;
+    grid-template-areas: "toolbar toolbar" "canvas side";
+    height: 100vh; overflow: hidden;
+  }
+  header {
+    grid-area: toolbar; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 14px; margin: 0 6px 0 0; font-weight: 700; }
+  .mode-group { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .mode-group button {
+    background: var(--panel2); color: var(--text); border: none; padding: 6px 11px;
+    cursor: pointer; font-size: 12px; border-right: 1px solid var(--line);
+  }
+  .mode-group button:last-child { border-right: none; }
+  .mode-group button.active { background: var(--accent); color: #fff; font-weight: 700; }
+  button.btn {
+    background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 11px; cursor: pointer; font-size: 12px;
+  }
+  button.btn:hover { background: #3a3a50; }
+  button.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  button.btn:disabled { opacity: .4; cursor: default; }
+  select.mapSel {
+    background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 8px; font-size: 12px; font-family: inherit; max-width: 200px;
+  }
+  label.chk { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); cursor: pointer; }
+  .spacer { flex: 1; }
+  .coord { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 128px; text-align: right; }
+
+  #stage {
+    grid-area: canvas; position: relative; overflow: hidden; background:
+      repeating-conic-gradient(#20202b 0% 25%, #23232f 0% 50%) 50% / 24px 24px;
+  }
+  #stage.dragover::after {
+    content: "SVGをここにドロップ"; position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 20px; background: rgba(255,62,165,.15); border: 3px dashed var(--accent); z-index: 10;
+  }
+  #stage svg { position: absolute; top: 0; left: 0; }
+  #bg { pointer-events: none; }
+  #overlay { touch-action: none; }
+  #overlay .edge { stroke: var(--edge); stroke-width: 1; fill: none; cursor: pointer; }
+  #overlay .edge.hit { stroke: transparent; stroke-width: 6; }
+  #overlay .edge.sel { stroke: var(--node-sel); }
+  #overlay circle.node { fill: var(--node); stroke: #fff; stroke-width: .4; cursor: pointer; }
+  #overlay circle.node.place { fill: #ff7b00; }
+  #overlay circle.node.stairs { fill: #7c3aed; }
+  #overlay circle.node.entrance { fill: #16a34a; }
+  #overlay circle.node.sel { stroke: var(--node-sel); stroke-width: 1; }
+  #overlay circle.node.pend { stroke: var(--node-pend); stroke-width: 1.2; }
+  #overlay .nodelabel { fill: #fff; font-size: 3px; paint-order: stroke; stroke: #000; stroke-width: .7; pointer-events: none; }
+  #empty {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+    color: var(--muted); padding: 24px; pointer-events: none;
+  }
+  #empty .big { font-size: 16px; color: var(--text); margin-bottom: 8px; }
+
+  aside {
+    grid-area: side; background: var(--panel); border-left: 1px solid var(--line);
+    overflow-y: auto; padding: 12px;
+  }
+  .card { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+  .card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 8px; }
+  .field { display: grid; grid-template-columns: 78px 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .field label { color: var(--muted); font-size: 12px; }
+  .field input, .field select {
+    width: 100%; background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 7px; font-size: 12px; font-family: inherit;
+  }
+  .field input:focus, .field select:focus { outline: 1px solid var(--accent); }
+  .stat { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+  .stat b { font-weight: 700; }
+  .issues { list-style: none; margin: 0; padding: 0; font-size: 12px; max-height: 200px; overflow-y: auto; }
+  .issues li { padding: 4px 6px; border-radius: 6px; margin-bottom: 3px; background: rgba(248,113,113,.12); color: var(--err); }
+  .issues li.ok { background: rgba(74,222,128,.12); color: var(--ok); }
+  .issues li.warn { background: rgba(251,191,36,.12); color: var(--warn); }
+  .muted { color: var(--muted); }
+  .help { font-size: 12px; color: var(--muted); }
+  .help kbd { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-size: 11px; }
+  .help ul { margin: 6px 0 0; padding-left: 18px; }
+  .row-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .danger { color: var(--err); border-color: rgba(248,113,113,.5); }
+  a.hidden-dl { display: none; }
+  .link-block { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 12px; margin: 4px 0 8px; }
+  .badge.ok { background: rgba(74,222,128,.15); color: var(--ok); }
+  .badge.warn { background: rgba(251,191,36,.15); color: var(--warn); }
+  .mini { font-size: 11px; }
+  button.mini-btn { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 11px; }
+  button.mini-btn:hover { background: #3a3a50; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧭 Route Editor</h1>
+  <div class="mode-group" id="modes">
+    <button data-mode="select" class="active" title="V">選択/移動</button>
+    <button data-mode="node" title="N">ノード追加</button>
+    <button data-mode="edge" title="E">エッジ追加</button>
+    <button data-mode="delete" title="D">削除</button>
+  </div>
+  <label class="chk"><input type="checkbox" id="snap" checked> 整数丸め</label>
+  <label class="chk"><input type="checkbox" id="showLabels"> ラベル</label>
+  <span class="spacer"></span>
+  <select class="mapSel" id="mapSel" title="表示マップ切替"><option>—</option></select>
+  <span class="coord" id="coord">—</span>
+  <button class="btn" id="loadAllBtn">全マップ読込</button>
+  <button class="btn" id="openBtn">SVGを開く</button>
+  <button class="btn" id="dlAllBtn">変更をまとめてDL</button>
+  <button class="btn primary" id="dlBtn">このSVGをDL</button>
+  <input type="file" id="file" accept=".svg,image/svg+xml" hidden multiple>
+  <input type="file" id="dirInput" hidden multiple webkitdirectory>
+  <a class="hidden-dl" id="dlAnchor"></a>
+</header>
+
+<div id="stage">
+  <svg id="bg"></svg>
+  <svg id="overlay"></svg>
+  <div id="empty">
+    <div>
+      <div class="big">地図SVGを読み込んでください</div>
+      <div class="muted">「全マップ読込」→ ダイアログで <code>public/maps</code> フォルダを選択（9枚一括ロード）<br>
+      （入口↔全体マップ / 階段のフロア間 繋ぎ込みには全マップ読込が必要）<br>
+      または SVGファイル（複数可）をここにドラッグ&ドロップ</div>
+    </div>
+  </div>
+</div>
+
+<aside>
+  <div class="card" id="metaCard">
+    <h2>現在のマップ</h2>
+    <div class="stat"><span class="muted">名前</span><b id="fileName">—</b></div>
+    <div class="stat"><span class="muted">viewBox</span><span id="vbInfo" class="muted">—</span></div>
+    <div class="field" style="margin-top:8px">
+      <label title="単一フロアSVGはグループにfloor-idが付く。講義棟等の複数フロアは空">Route floor</label>
+      <input id="groupFloor" placeholder="rq-1f など / 複数フロアは空">
+    </div>
+    <div class="stat"><span class="muted">複数フロア</span><span id="multiInfo" class="muted">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>統計</h2>
+    <div class="stat"><span>ノード</span><b id="nCount">0</b></div>
+    <div class="stat"><span>エッジ</span><b id="eCount">0</b></div>
+    <div class="stat"><span class="muted">読込マップ / 未保存</span><span id="mapCount" class="muted">0 / 0</span></div>
+  </div>
+
+  <div class="card" id="propCard" style="display:none">
+    <h2 id="propTitle">プロパティ</h2>
+    <div id="propBody"></div>
+    <div class="row-btns" style="margin-top:8px">
+      <button class="btn danger" id="delSel">削除</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>検証（このマップ）</h2>
+    <ul class="issues" id="issues"><li class="ok">SVG未読込</li></ul>
+  </div>
+
+  <div class="card">
+    <h2>検証（マップ横断: 入口・階段）</h2>
+    <ul class="issues" id="xissues"><li class="ok">—</li></ul>
+  </div>
+
+  <div class="card help">
+    <h2>使い方</h2>
+    <ul>
+      <li><b>選択/移動</b>: ノードをドラッグ→接続エッジ自動追従</li>
+      <li><b>ノード追加</b>: 空きをクリック / <b>エッジ</b>: A→Bを順にクリック</li>
+      <li><b>入口</b>: kind=entrance にし、パネルで「対応入口を作成」→ 全体マップ側を自動生成</li>
+      <li><b>階段</b>: kind=stairs にし、「隣接フロアに作成」→ 上下階に同IDを生成</li>
+      <li>ホイールでズーム / 空きドラッグでパン / <kbd>V</kbd><kbd>N</kbd><kbd>E</kbd><kbd>D</kbd> <kbd>Del</kbd></li>
+    </ul>
+    <p style="margin:8px 0 0">出力後: DLした各SVGを <code>public/maps/</code> に上書き → <code>bun run generate:routes</code> → <code>bun run verify:routes</code></p>
+  </div>
+</aside>
+
+<datalist id="entranceList"></datalist>
+<datalist id="stairList"></datalist>
+
+<script>
+"use strict";
+const SVGNS = "http://www.w3.org/2000/svg";
+const ID_RE = /^[A-Za-z][A-Za-z0-9_-]*$/;
+
+/* ==== マップ設定（src/data/places.ts のミラー） ==== */
+const MAPS = [
+  { sheetId:"campus", file:"CampusMap_base_plain.svg", floors:["campus"], group:"campus", name:"キャンパス全体" },
+  { sheetId:"rq1f", file:"RQ1F_base_plain.svg", floors:["rq-1f"], group:"rq", name:"研究棟 1F" },
+  { sheetId:"rq2f", file:"RQ2F_base_plain.svg", floors:["rq-2f"], group:"rq", name:"研究棟 2F" },
+  { sheetId:"rq3f", file:"RQ3F_base_plain.svg", floors:["rq-3f"], group:"rq", name:"研究棟 3F" },
+  { sheetId:"lh", file:"LH_base_plain.svg", floors:["lh-1f","lh-2f"], group:"lh", name:"講義棟(1F/2F)" },
+  { sheetId:"sh1f", file:"SH1F_base_plain.svg", floors:["sh-1f"], group:"sh", name:"学生ホール 1F" },
+  { sheetId:"sh2f", file:"SH2F_base_plain.svg", floors:["sh-2f"], group:"sh", name:"学生ホール 2F" },
+  { sheetId:"ubic", file:"UBIC_base_plain.svg", floors:["ubic-1f"], group:"ubic", name:"UBIC" },
+  { sheetId:"lictia", file:"LICTiA1F_base_plain.svg", floors:["lictia-1f"], group:"lictia", name:"LICTiA 1F" },
+];
+const FLOOR_ORDER = ["campus","rq-1f","rq-2f","rq-3f","lh-1f","lh-2f","sh-1f","sh-2f","ubic-1f","lictia-1f"];
+const FLOOR_NAME = {
+  "campus":"屋外","rq-1f":"研究棟1F","rq-2f":"研究棟2F","rq-3f":"研究棟3F",
+  "lh-1f":"講義棟1F","lh-2f":"講義棟2F","sh-1f":"学生ホール1F","sh-2f":"学生ホール2F",
+  "ubic-1f":"UBIC","lictia-1f":"LICTiA1F"
+};
+const cfgForSheet = (id) => MAPS.find(m => m.sheetId === id);
+const cfgForFile = (file) => MAPS.find(m => m.file === file);
+const cfgForFloor = (floorId) => MAPS.find(m => m.floors.includes(floorId));
+
+/* ==== 状態 ==== */
+const state = {
+  maps: new Map(),        // sheetId -> MapState
+  currentSheetId: null,
+  selection: null,        // {type:'node'|'edge', id}
+  pendingEdgeFrom: null,
+};
+let mode = "select";
+const view = { scale: 1, tx: 0, ty: 0 };
+
+const $ = (id) => document.getElementById(id);
+const stage = $("stage"), bg = $("bg"), overlay = $("overlay");
+const cur = () => state.currentSheetId ? state.maps.get(state.currentSheetId) : null;
+
+/* ==== ユーティリティ ==== */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function maybeSnap(v){ return $("snap").checked ? Math.round(v) : Math.round(v*100)/100; }
+function round(v){ return Math.round(v*100)/100; }
+function fmt(v){ return String(Math.round(v*1000)/1000); }
+function sanitizeId(s){ return String(s).replace(/[^A-Za-z0-9_-]/g,"_"); }
+function resolveFloor(ms, node){ return node.floorId || ms.groupFloorId || null; }
+function flash(btn, txt){ const o = btn.textContent; btn.textContent = txt; setTimeout(()=>btn.textContent=o, 1200); }
+
+/* ==== SVG読込 ==== */
+$("openBtn").onclick = () => $("file").click();
+$("file").onchange = (e) => { [...e.target.files].forEach(readFile); e.target.value=""; };
+stage.addEventListener("dragover", (e)=>{ e.preventDefault(); stage.classList.add("dragover"); });
+stage.addEventListener("dragleave", ()=> stage.classList.remove("dragover"));
+stage.addEventListener("drop", (e)=>{ e.preventDefault(); stage.classList.remove("dragover"); [...e.dataTransfer.files].forEach(readFile); });
+function readFile(file){ const r = new FileReader(); r.onload = () => { const ms = ingestSvg(file.name, r.result); if (ms) switchMap(ms.sheetId); updateMapSelect(); }; r.readAsText(file); }
+function readText(file){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = ()=>rej(r.error); r.readAsText(file); }); }
+
+// 一括読込: HTTP配信時は fetch、file:// で開いた時はフォルダ/複数ファイル選択にフォールバック
+$("loadAllBtn").onclick = async () => {
+  if (location.protocol !== "file:"){
+    const btn = $("loadAllBtn"); btn.disabled = true; const o = btn.textContent; btn.textContent = "読込中…";
+    let firstId = null, fail = [];
+    for (const cfg of MAPS){
+      try { const txt = await (await fetch("../public/maps/" + cfg.file)).text(); const ms = ingestSvg(cfg.file, txt); if (ms && !firstId) firstId = ms.sheetId; }
+      catch (e){ fail.push(cfg.file); }
+    }
+    btn.disabled = false; btn.textContent = o; updateMapSelect();
+    if (firstId){ switchMap(state.maps.has("campus") ? "campus" : firstId); if (!fail.length) return; }
+    if (fail.length){ alert("fetch で読めなかったため、フォルダ選択に切り替えます。\n次のダイアログで public/maps フォルダを選んでください。"); }
+  }
+  // file:// もしくは fetch 失敗 → フォルダ選択
+  $("dirInput").click();
+};
+
+// フォルダ（webkitdirectory）/ 複数ファイル選択からの一括取込
+$("dirInput").onchange = async (e)=> ingestFileList([...e.target.files], e.target);
+async function ingestFileList(files, inputEl){
+  const svgs = files.filter(f => /\.svg$/i.test(f.name));
+  if (!svgs.length){ alert("SVGファイルが見つかりませんでした。public/maps フォルダを選んでください。"); if (inputEl) inputEl.value=""; return; }
+  let firstId = null;
+  for (const f of svgs){
+    try { const txt = await readText(f); const ms = ingestSvg(f.name, txt); if (ms && !firstId) firstId = ms.sheetId; }
+    catch (err){ /* skip unreadable */ }
+  }
+  updateMapSelect();
+  if (firstId) switchMap(state.maps.has("campus") ? "campus" : firstId);
+  if (inputEl) inputEl.value = "";
+  const known = svgs.filter(f => cfgForFile(f.name)).length;
+  if (!known) alert("既知のマップ名(RQ1F_base_plain.svg 等)に一致するファイルがありませんでした。ファイル名をご確認ください。");
+}
+
+function parseViewBox(root){
+  const vb = root.getAttribute("viewBox");
+  if (vb){ const p = vb.trim().split(/[\s,]+/).map(Number); return {x:p[0],y:p[1],w:p[2],h:p[3]}; }
+  return {x:0,y:0,w:parseFloat(root.getAttribute("width"))||100,h:parseFloat(root.getAttribute("height"))||100};
+}
+
+function ingestSvg(fileName, text){
+  const cfg = cfgForFile(fileName) || { sheetId:fileName, file:fileName, floors:[], group:null, name:fileName };
+  const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+  const root = doc.querySelector("svg");
+  if (!root){ alert(fileName + ": SVGを解析できませんでした"); return null; }
+
+  // 背景（Routeを消したもの）
+  const bgDoc = new DOMParser().parseFromString(text, "image/svg+xml");
+  const bgRoute = bgDoc.querySelector("#Route"); if (bgRoute) bgRoute.remove();
+  const bgMarkup = bgDoc.querySelector("svg").innerHTML;
+
+  const ms = {
+    sheetId: cfg.sheetId, cfg, fileName, rawSvg: text,
+    viewBox: parseViewBox(root), bgMarkup,
+    groupFloorId: null, nodes: new Map(), edges: new Map(),
+    dirty: false, autoNode: 1, autoEdge: 1, routeIndent: "    ",
+  };
+
+  const route = root.querySelector("#Route");
+  if (route){
+    ms.groupFloorId = route.getAttribute("data-floor-id");
+    route.querySelectorAll("[data-route-node]").forEach((c)=>{
+      const id = c.getAttribute("id"); if (!id) return;
+      ms.nodes.set(id, {
+        id, kind: c.getAttribute("data-kind") || "corridor",
+        x: parseFloat(c.getAttribute("cx")), y: parseFloat(c.getAttribute("cy")),
+        placeId: c.getAttribute("data-place-id") || undefined,
+        stairId: c.getAttribute("data-stair-id") || undefined,
+        entranceId: c.getAttribute("data-entrance-id") || undefined,
+        floorId: c.getAttribute("data-floor-id") || undefined,
+      });
+    });
+    route.querySelectorAll("[data-route-edge]").forEach((p)=>{
+      const id = p.getAttribute("id"); if (!id) return;
+      ms.edges.set(id, {
+        id, a: p.getAttribute("data-node-a"), b: p.getAttribute("data-node-b"),
+        floorId: p.getAttribute("data-floor-id") || undefined,
+      });
+    });
+    const m = text.match(/\n([ \t]+)<circle[^>]*data-route-node/);
+    if (m) ms.routeIndent = m[1];
+  }
+  state.maps.set(cfg.sheetId, ms);
+  return ms;
+}
+
+/* ==== マップ切替 ==== */
+function switchMap(sheetId){
+  if (!state.maps.has(sheetId)) return;
+  state.currentSheetId = sheetId;
+  state.selection = null; state.pendingEdgeFrom = null;
+  const ms = cur();
+  $("empty").style.display = "none";
+  $("fileName").textContent = ms.fileName;
+  $("vbInfo").textContent = `${round(ms.viewBox.w)}×${round(ms.viewBox.h)}`;
+  $("groupFloor").value = ms.groupFloorId || "";
+  $("multiInfo").textContent = ms.groupFloorId ? "いいえ" : "はい（各ノードでfloor指定）";
+  drawBackground();
+  render();
+  requestAnimationFrame(()=>{ resetView(); render(); });
+  updateMapSelect();
+}
+function updateMapSelect(){
+  const sel = $("mapSel");
+  const loaded = MAPS.filter(c => state.maps.has(c.sheetId));
+  // 未知ファイルも拾う
+  const known = new Set(MAPS.map(c=>c.sheetId));
+  const extra = [...state.maps.values()].filter(ms => !known.has(ms.sheetId)).map(ms=>ms.cfg);
+  const all = [...loaded, ...extra];
+  if (!all.length){ sel.innerHTML = "<option>—</option>"; return; }
+  sel.innerHTML = all.map(c=>{
+    const ms = state.maps.get(c.sheetId);
+    const mark = ms && ms.dirty ? " ●" : "";
+    return `<option value="${esc(c.sheetId)}"${c.sheetId===state.currentSheetId?" selected":""}>${esc(c.name)}${mark}</option>`;
+  }).join("");
+  const dirty = [...state.maps.values()].filter(m=>m.dirty).length;
+  $("mapCount").textContent = `${state.maps.size} / ${dirty}`;
+}
+$("mapSel").onchange = (e)=> switchMap(e.target.value);
+
+/* ==== 表示（パン/ズーム） ==== */
+let bgG = null, olG = null;
+function ensureGroups(){
+  if (!bgG){ bgG = document.createElementNS(SVGNS,"g"); bg.appendChild(bgG); }
+  if (!olG){ olG = document.createElementNS(SVGNS,"g"); overlay.appendChild(olG); }
+}
+function setPixelViewBox(){
+  const r = stage.getBoundingClientRect();
+  for (const svg of [bg, overlay]){
+    svg.setAttribute("viewBox", `0 0 ${r.width} ${r.height}`);
+    svg.setAttribute("width", r.width); svg.setAttribute("height", r.height);
+    svg.setAttribute("preserveAspectRatio", "none");
+  }
+}
+function applyTransform(){
+  ensureGroups(); setPixelViewBox();
+  const ms = cur(); if (!ms) return;
+  const t = `translate(${view.tx} ${view.ty}) scale(${view.scale})`;
+  const off = `translate(${-ms.viewBox.x} ${-ms.viewBox.y})`;
+  bgG.setAttribute("transform", `${t} ${off}`);
+  olG.setAttribute("transform", `${t} ${off}`);
+}
+function drawBackground(){ ensureGroups(); const ms = cur(); bgG.innerHTML = ms ? ms.bgMarkup : ""; }
+function resetView(){
+  const ms = cur(); if (!ms) return;
+  const r = stage.getBoundingClientRect(); const { w, h } = ms.viewBox;
+  const s = Math.min(r.width/w, r.height/h) * 0.92;
+  view.scale = s; view.tx = (r.width - w*s)/2; view.ty = (r.height - h*s)/2;
+  applyTransform();
+}
+function pxToUser(clientX, clientY){
+  const r = stage.getBoundingClientRect(); const ms = cur();
+  const px = clientX - r.left, py = clientY - r.top;
+  return { x:(px-view.tx)/view.scale + ms.viewBox.x, y:(py-view.ty)/view.scale + ms.viewBox.y };
+}
+window.addEventListener("resize", ()=>{ if (cur()) applyTransform(); });
+stage.addEventListener("wheel", (e)=>{
+  if (!cur()) return; e.preventDefault();
+  const r = stage.getBoundingClientRect();
+  const mx = e.clientX - r.left, my = e.clientY - r.top;
+  const ns = Math.min(200, Math.max(0.05, view.scale * Math.exp(-e.deltaY*0.0015)));
+  view.tx = mx - (mx - view.tx) * (ns/view.scale);
+  view.ty = my - (my - view.ty) * (ns/view.scale);
+  view.scale = ns; applyTransform();
+}, { passive:false });
+
+/* ==== モード ==== */
+$("modes").addEventListener("click", (e)=>{ const b = e.target.closest("button"); if (b) setMode(b.dataset.mode); });
+function setMode(m){
+  mode = m;
+  document.querySelectorAll("#modes button").forEach(b=>b.classList.toggle("active", b.dataset.mode===m));
+  state.pendingEdgeFrom = null; render();
+}
+document.addEventListener("keydown", (e)=>{
+  if (/input|select|textarea/i.test(e.target.tagName)) return;
+  const map = { v:"select", n:"node", e:"edge", d:"delete" };
+  if (map[e.key.toLowerCase()]){ setMode(map[e.key.toLowerCase()]); return; }
+  if ((e.key==="Delete"||e.key==="Backspace") && state.selection){ deleteSelection(); e.preventDefault(); }
+  if (e.key==="Escape"){ state.selection=null; state.pendingEdgeFrom=null; render(); }
+});
+$("showLabels").onchange = ()=> render();
+$("groupFloor").onchange = (e)=>{
+  const ms = cur(); if (!ms) return;
+  ms.groupFloorId = e.target.value.trim() || null; markDirty(ms);
+  $("multiInfo").textContent = ms.groupFloorId ? "いいえ" : "はい（各ノードでfloor指定）";
+  render();
+};
+function markDirty(ms){ ms.dirty = true; }
+
+/* ==== 描画 ==== */
+function render(){
+  ensureGroups(); olG.innerHTML = "";
+  const ms = cur();
+  if (!ms){ $("nCount").textContent="0"; $("eCount").textContent="0"; validate(); validateCross(); return; }
+  const showLabels = $("showLabels").checked;
+
+  for (const ed of ms.edges.values()){
+    const a = ms.nodes.get(ed.a), b = ms.nodes.get(ed.b);
+    const line = document.createElementNS(SVGNS,"path");
+    if (a&&b) line.setAttribute("d", `M ${fmt(a.x)} ${fmt(a.y)} L ${fmt(b.x)} ${fmt(b.y)}`);
+    line.setAttribute("class", "edge" + (isSel("edge",ed.id)?" sel":""));
+    olG.appendChild(line);
+    const hit = document.createElementNS(SVGNS,"path");
+    if (a&&b) hit.setAttribute("d", line.getAttribute("d"));
+    hit.setAttribute("class","edge hit"); hit.dataset.edge = ed.id; olG.appendChild(hit);
+  }
+  for (const nd of ms.nodes.values()){
+    const c = document.createElementNS(SVGNS,"circle");
+    c.setAttribute("cx", fmt(nd.x)); c.setAttribute("cy", fmt(nd.y)); c.setAttribute("r", 2);
+    let cls = "node " + nd.kind;
+    if (nd.placeId && nd.kind==="corridor") cls += " place";
+    if (isSel("node",nd.id)) cls += " sel";
+    if (state.pendingEdgeFrom===nd.id) cls += " pend";
+    c.setAttribute("class", cls); c.dataset.node = nd.id; olG.appendChild(c);
+    if (showLabels){
+      const t = document.createElementNS(SVGNS,"text");
+      t.setAttribute("x", fmt(nd.x+2.5)); t.setAttribute("y", fmt(nd.y-2.5));
+      t.setAttribute("class","nodelabel"); t.textContent = nd.id.replace(/^route_node_/,"");
+      olG.appendChild(t);
+    }
+  }
+  $("nCount").textContent = ms.nodes.size;
+  $("eCount").textContent = ms.edges.size;
+  renderProps(); validate(); validateCross(); updateMapSelect();
+}
+function isSel(type,id){ return state.selection && state.selection.type===type && state.selection.id===id; }
+
+/* ==== ポインタ操作 ==== */
+let drag = null;
+overlay.addEventListener("pointerdown", (e)=>{
+  const ms = cur(); if (!ms) return;
+  const nodeEl = e.target.closest("[data-node]"), edgeEl = e.target.closest("[data-edge]");
+  const p = pxToUser(e.clientX, e.clientY); $("coord").textContent = `x ${round(p.x)}  y ${round(p.y)}`;
+  if (mode==="select"){
+    if (nodeEl){ select("node", nodeEl.dataset.node); drag = { nodeId: nodeEl.dataset.node }; overlay.setPointerCapture(e.pointerId); return; }
+    if (edgeEl){ select("edge", edgeEl.dataset.edge); return; }
+    select(null); drag = { pan:true, sx:e.clientX, sy:e.clientY, tx0:view.tx, ty0:view.ty }; overlay.setPointerCapture(e.pointerId); return;
+  }
+  if (mode==="node"){
+    if (nodeEl){ select("node", nodeEl.dataset.node); return; }
+    addNode(maybeSnap(p.x), maybeSnap(p.y)); return;
+  }
+  if (mode==="edge"){
+    if (nodeEl){ edgeClick(nodeEl.dataset.node); return; }
+    drag = { pan:true, sx:e.clientX, sy:e.clientY, tx0:view.tx, ty0:view.ty }; overlay.setPointerCapture(e.pointerId); return;
+  }
+  if (mode==="delete"){
+    if (nodeEl){ removeNode(nodeEl.dataset.node); return; }
+    if (edgeEl){ removeEdge(edgeEl.dataset.edge); return; }
+  }
+});
+overlay.addEventListener("pointermove", (e)=>{
+  const ms = cur(); if (!ms) return;
+  const p = pxToUser(e.clientX, e.clientY); $("coord").textContent = `x ${round(p.x)}  y ${round(p.y)}`;
+  if (!drag) return;
+  if (drag.pan){ view.tx = drag.tx0 + (e.clientX-drag.sx); view.ty = drag.ty0 + (e.clientY-drag.sy); applyTransform(); return; }
+  if (drag.nodeId){ const nd = ms.nodes.get(drag.nodeId); nd.x = maybeSnap(p.x); nd.y = maybeSnap(p.y); markDirty(ms); render(); }
+});
+overlay.addEventListener("pointerup", (e)=>{ if (drag){ try{ overlay.releasePointerCapture(e.pointerId);}catch{} } drag = null; });
+
+/* ==== 選択 ==== */
+function select(type,id){ state.selection = type ? {type,id} : null; render(); }
+function selNode(){ const ms=cur(); return ms && state.selection && state.selection.type==="node" ? ms.nodes.get(state.selection.id) : null; }
+function selEdge(){ const ms=cur(); return ms && state.selection && state.selection.type==="edge" ? ms.edges.get(state.selection.id) : null; }
+
+/* ==== 追加/削除/リネーム ==== */
+function uniqueNodeId(ms, base){
+  if (base && ID_RE.test(base) && !ms.nodes.has(base)) return base;
+  let id; do { id = `route_node_${ms.autoNode++}`; } while (ms.nodes.has(id)); return id;
+}
+function uniqueEdgeId(ms, a, b){
+  const base = `route_edge_${a.replace(/^route_node_/,"")}_to_${b.replace(/^route_node_/,"")}`;
+  if (ID_RE.test(base) && !ms.edges.has(base)) return base;
+  let id; do { id = `route_edge_${ms.autoEdge++}`; } while (ms.edges.has(id)); return id;
+}
+function addNode(x,y){
+  const ms = cur(); const id = uniqueNodeId(ms);
+  const node = { id, kind:"corridor", x, y };
+  if (!ms.groupFloorId && ms.cfg.floors.length) node.floorId = ms.cfg.floors[0];
+  ms.nodes.set(id, node); markDirty(ms); select("node", id);
+}
+function edgeClick(nodeId){
+  const ms = cur();
+  if (!state.pendingEdgeFrom){ state.pendingEdgeFrom = nodeId; render(); return; }
+  if (state.pendingEdgeFrom===nodeId){ state.pendingEdgeFrom = null; render(); return; }
+  const a = state.pendingEdgeFrom, b = nodeId;
+  const dup = [...ms.edges.values()].some(e => (e.a===a&&e.b===b)||(e.a===b&&e.b===a));
+  if (!dup){
+    const id = uniqueEdgeId(ms, a, b); const ed = { id, a, b };
+    if (!ms.groupFloorId){ const fa = ms.nodes.get(a)?.floorId, fb = ms.nodes.get(b)?.floorId; if (fa&&fa===fb) ed.floorId = fa; }
+    ms.edges.set(id, ed); markDirty(ms); select("edge", id);
+  }
+  state.pendingEdgeFrom = null; render();
+}
+function removeNode(id){
+  const ms = cur(); ms.nodes.delete(id);
+  for (const [eid,ed] of [...ms.edges]) if (ed.a===id||ed.b===id) ms.edges.delete(eid);
+  if (state.selection && state.selection.id===id) state.selection = null;
+  if (state.pendingEdgeFrom===id) state.pendingEdgeFrom = null;
+  markDirty(ms); render();
+}
+function removeEdge(id){ const ms = cur(); ms.edges.delete(id); if (state.selection&&state.selection.id===id) state.selection=null; markDirty(ms); render(); }
+function renameNode(oldId,newId){
+  const ms = cur(); if (oldId===newId) return;
+  if (!ID_RE.test(newId)||ms.nodes.has(newId)){ alert("IDが不正か重複: "+newId); render(); return; }
+  const nd = ms.nodes.get(oldId); ms.nodes.delete(oldId); nd.id = newId; ms.nodes.set(newId, nd);
+  for (const ed of ms.edges.values()){ if (ed.a===oldId) ed.a=newId; if (ed.b===oldId) ed.b=newId; }
+  state.selection = {type:"node",id:newId}; markDirty(ms); render();
+}
+function renameEdge(oldId,newId){
+  const ms = cur(); if (oldId===newId) return;
+  if (!ID_RE.test(newId)||ms.edges.has(newId)){ alert("IDが不正か重複: "+newId); render(); return; }
+  const ed = ms.edges.get(oldId); ms.edges.delete(oldId); ed.id = newId; ms.edges.set(newId, ed);
+  state.selection = {type:"edge",id:newId}; markDirty(ms); render();
+}
+$("delSel").onclick = ()=> deleteSelection();
+function deleteSelection(){ if (!state.selection) return; state.selection.type==="node" ? removeNode(state.selection.id) : removeEdge(state.selection.id); }
+
+/* ==== 入口/階段レジストリ ==== */
+function entranceInfo(entranceId){
+  const occ = [];
+  for (const ms of state.maps.values()) for (const n of ms.nodes.values())
+    if (n.kind==="entrance" && n.entranceId===entranceId) occ.push({ sheetId: ms.sheetId, ms, node: n });
+  const campus = occ.filter(o=>o.sheetId==="campus");
+  const building = occ.filter(o=>o.sheetId!=="campus");
+  return { occ, campus, building, ok: campus.length===1 && building.length===1 };
+}
+function stairInfo(stairId){
+  const occ = [];
+  for (const ms of state.maps.values()) for (const n of ms.nodes.values())
+    if (n.kind==="stairs" && n.stairId===stairId){ const f = resolveFloor(ms,n); occ.push({ sheetId: ms.sheetId, ms, node: n, floor: f, idx: FLOOR_ORDER.indexOf(f) }); }
+  occ.sort((a,b)=>a.idx-b.idx);
+  let contiguous = occ.length>=2;
+  for (let i=1;i<occ.length;i++) if (occ[i].idx !== occ[i-1].idx+1) contiguous = false;
+  return { occ, contiguous, ok: occ.length>=2 && contiguous };
+}
+function allIds(kind){
+  const set = new Set();
+  for (const ms of state.maps.values()) for (const n of ms.nodes.values()){
+    if (kind==="entrance" && n.entranceId) set.add(n.entranceId);
+    if (kind==="stairs" && n.stairId) set.add(n.stairId);
+  }
+  return [...set].sort();
+}
+function fillDatalist(id, values){ $(id).innerHTML = values.map(v=>`<option value="${esc(v)}">`).join(""); }
+
+/* 生成: 入口の相手ノード */
+function createEntranceCounterpart(entranceId){
+  const cm = cur();
+  if (cm.sheetId==="campus"){ alert("campus側からは、プロパティ内の「建物フロアを選んで作成」を使ってください"); return; }
+  const dest = state.maps.get("campus");
+  if (!dest){ alert("キャンパス全体マップが未読込です。『全マップ読込』を実行してください"); return; }
+  createEntranceNode(dest, entranceId);
+}
+function createEntranceNode(destMs, entranceId){
+  const id = uniqueNodeId(destMs, `route_node_entrance_${sanitizeId(entranceId)}`);
+  const c = destMs.viewBox;
+  const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
+  if (!destMs.groupFloorId && destMs.cfg.floors.length) node.floorId = destMs.cfg.floors[0];
+  destMs.nodes.set(id, node); markDirty(destMs);
+  switchMap(destMs.sheetId); select("node", id);
+  alert(`${FLOOR_NAME[destMs.cfg.floors[0]]||destMs.fileName} に入口ノードを仮置きしました。歩く位置へドラッグしてください。`);
+}
+function createEntranceOnFloor(entranceId, floorId){
+  const cfg = cfgForFloor(floorId); if (!cfg){ alert("対象フロア不明"); return; }
+  const dest = state.maps.get(cfg.sheetId);
+  if (!dest){ alert(`${FLOOR_NAME[floorId]} のマップが未読込です`); return; }
+  const id = uniqueNodeId(dest, `route_node_entrance_${sanitizeId(entranceId)}`);
+  const c = dest.viewBox;
+  const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
+  if (cfg.floors.length>1) node.floorId = floorId;
+  dest.nodes.set(id, node); markDirty(dest);
+  switchMap(dest.sheetId); select("node", id);
+}
+
+/* 生成: 階段の隣接フロアノード */
+function createStairOnFloor(stairId, floorId, fromNode){
+  const cfg = cfgForFloor(floorId); if (!cfg){ alert("対象フロア不明"); return; }
+  const dest = state.maps.get(cfg.sheetId);
+  if (!dest){ alert(`${FLOOR_NAME[floorId]} のマップが未読込です。『全マップ読込』を実行してください`); return; }
+  const id = uniqueNodeId(dest, `route_node_stairs_${sanitizeId(stairId)}_${sanitizeId(floorId)}`);
+  const node = { id, kind:"stairs", stairId, x: Math.round(fromNode?fromNode.x:dest.viewBox.x+dest.viewBox.w/2), y: Math.round(fromNode?fromNode.y:dest.viewBox.y+dest.viewBox.h/2) };
+  if (cfg.floors.length>1) node.floorId = floorId;
+  dest.nodes.set(id, node); markDirty(dest);
+  switchMap(dest.sheetId); select("node", id);
+  alert(`${FLOOR_NAME[floorId]} に階段ノードを仮置きしました。階段口へドラッグしてください。`);
+}
+
+/* ==== プロパティパネル ==== */
+function renderProps(){
+  const card = $("propCard"), body = $("propBody"), title = $("propTitle");
+  const n = selNode(), ed = selEdge();
+  if (!n && !ed){ card.style.display = "none"; return; }
+  card.style.display = "";
+  fillDatalist("entranceList", allIds("entrance"));
+  fillDatalist("stairList", allIds("stairs"));
+
+  if (n){
+    title.textContent = "ノード";
+    body.innerHTML = `
+      <div class="field"><label>id</label><input id="p_id" value="${esc(n.id)}"></div>
+      <div class="field"><label>kind</label>
+        <select id="p_kind">${["corridor","stairs","entrance"].map(k=>`<option ${k===n.kind?"selected":""}>${k}</option>`).join("")}</select></div>
+      <div class="field"><label>place-id</label><input id="p_place" value="${esc(n.placeId||"")}" placeholder="任意"></div>
+      <div class="field"><label>floor-id</label><input id="p_floor" value="${esc(n.floorId||"")}" placeholder="複数フロアSVG用"></div>
+      <div class="field"><label>cx / cy</label><span class="muted">${fmt(n.x)} , ${fmt(n.y)}</span></div>
+      <div id="linkArea"></div>`;
+    $("p_id").onchange = (e)=> renameNode(n.id, e.target.value.trim());
+    $("p_kind").onchange = (e)=>{ n.kind = e.target.value; markDirty(cur()); render(); };
+    $("p_place").onchange = (e)=>{ n.placeId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
+    $("p_floor").onchange = (e)=>{ n.floorId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
+    renderLinkArea(n);
+  } else {
+    title.textContent = "エッジ";
+    body.innerHTML = `
+      <div class="field"><label>id</label><input id="p_id" value="${esc(ed.id)}"></div>
+      <div class="field"><label>node-a</label><span class="muted">${esc(ed.a)}</span></div>
+      <div class="field"><label>node-b</label><span class="muted">${esc(ed.b)}</span></div>
+      <div class="field"><label>floor-id</label><input id="p_floor" value="${esc(ed.floorId||"")}" placeholder="複数フロアSVG用"></div>`;
+    $("p_id").onchange = (e)=> renameEdge(ed.id, e.target.value.trim());
+    $("p_floor").onchange = (e)=>{ ed.floorId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
+  }
+}
+
+function renderLinkArea(n){
+  const area = $("linkArea"); if (!area) return;
+  const ms = cur();
+  if (n.kind === "entrance"){
+    area.innerHTML = `
+      <div class="link-block">
+        <div class="field"><label>entrance-id</label><input id="p_ent" list="entranceList" value="${esc(n.entranceId||"")}" placeholder="rq-west-main 等"></div>
+        <div id="entBadge"></div>
+        <div class="row-btns" id="entBtns"></div>
+      </div>`;
+    $("p_ent").onchange = (e)=>{ n.entranceId = e.target.value.trim()||undefined; markDirty(ms); render(); };
+    const badge = $("entBadge"), btns = $("entBtns");
+    if (!n.entranceId){ badge.innerHTML = `<span class="badge warn mini">entrance-id 未設定</span>`; return; }
+    const info = entranceInfo(n.entranceId);
+    const sides = [];
+    if (info.campus.length) sides.push("campus");
+    for (const b of info.building) sides.push(FLOOR_NAME[resolveFloor(b.ms,b.node)]||b.sheetId);
+    if (info.ok){
+      badge.innerHTML = `<span class="badge ok mini">✓ 対応OK: ${sides.join(" ⇄ ")}</span>`;
+    } else {
+      const need = ms.sheetId==="campus" ? "建物側" : "campus側";
+      badge.innerHTML = `<span class="badge warn mini">⚠ 未対応 (${sides.join(", ")||"なし"}) — ${info.campus.length}+${info.building.length}件</span>`;
+    }
+    // ボタン
+    if (ms.sheetId !== "campus"){
+      const hasCampus = info.campus.length >= 1;
+      btns.innerHTML = `<button class="mini-btn" id="mkCampus" ${hasCampus?"disabled":""}>${hasCampus?"campus側あり":"全体マップに対応入口を作成"}</button>`
+        + (hasCampus ? `<button class="mini-btn" id="goCampus">campus側を表示</button>` : "");
+      $("mkCampus") && ($("mkCampus").onclick = ()=> createEntranceCounterpart(n.entranceId));
+      $("goCampus") && ($("goCampus").onclick = ()=>{ switchMap("campus"); const t = entranceInfo(n.entranceId).campus[0]; if (t) select("node", t.node.id); });
+    } else {
+      // campus側: 建物フロアを選んで作成
+      const opts = FLOOR_ORDER.filter(f=>f!=="campus").map(f=>`<option value="${f}">${FLOOR_NAME[f]}</option>`).join("");
+      btns.innerHTML = `<select class="mapSel" id="entFloor" style="max-width:150px">${opts}</select><button class="mini-btn" id="mkBuilding" ${info.building.length?"disabled":""}>${info.building.length?"建物側あり":"選択フロアに作成"}</button>`
+        + (info.building.length ? `<button class="mini-btn" id="goBuilding">建物側を表示</button>` : "");
+      $("mkBuilding") && ($("mkBuilding").onclick = ()=> createEntranceOnFloor(n.entranceId, $("entFloor").value));
+      $("goBuilding") && ($("goBuilding").onclick = ()=>{ const t = entranceInfo(n.entranceId).building[0]; if (t){ switchMap(t.ms.sheetId); select("node", t.node.id); } });
+    }
+  } else if (n.kind === "stairs"){
+    area.innerHTML = `
+      <div class="link-block">
+        <div class="field"><label>stair-id</label><input id="p_stair" list="stairList" value="${esc(n.stairId||"")}" placeholder="rq-stairs-ne 等"></div>
+        <div id="stBadge"></div>
+        <div class="row-btns" id="stBtns"></div>
+      </div>`;
+    $("p_stair").onchange = (e)=>{ n.stairId = e.target.value.trim()||undefined; markDirty(ms); render(); };
+    const badge = $("stBadge"), btns = $("stBtns");
+    if (!n.stairId){ badge.innerHTML = `<span class="badge warn mini">stair-id 未設定</span>`; return; }
+    const info = stairInfo(n.stairId);
+    const floorsTxt = info.occ.map(o=>FLOOR_NAME[o.floor]||o.floor).join(", ") || "なし";
+    if (info.ok) badge.innerHTML = `<span class="badge ok mini">✓ ${floorsTxt}（連続${info.occ.length}フロア）</span>`;
+    else badge.innerHTML = `<span class="badge warn mini">⚠ ${floorsTxt}（${info.occ.length}フロア${info.occ.length>=2&&!info.contiguous?"・非連続":""}）</span>`;
+    // 同じ建物グループで未配置フロア
+    const group = ms.cfg.group;
+    const groupFloors = FLOOR_ORDER.filter(f => { const c = cfgForFloor(f); return c && c.group===group; });
+    const have = new Set(info.occ.map(o=>o.floor));
+    const missing = groupFloors.filter(f=>!have.has(f));
+    btns.innerHTML = missing.length
+      ? missing.map(f=>`<button class="mini-btn" data-floor="${f}">${FLOOR_NAME[f]}に階段を作成</button>`).join("")
+      : `<span class="muted mini">同建物の全フロアに配置済み</span>`;
+    btns.querySelectorAll("[data-floor]").forEach(b=> b.onclick = ()=> createStairOnFloor(n.stairId, b.dataset.floor, n));
+  } else {
+    area.innerHTML = "";
+  }
+}
+
+/* ==== 検証（このマップ） ==== */
+function validate(){
+  const ms = cur(); const ul = $("issues");
+  if (!ms){ ul.innerHTML = '<li class="ok">SVG未読込</li>'; return; }
+  const issues = []; const kinds = new Set(["corridor","stairs","entrance"]);
+  for (const n of ms.nodes.values()){
+    if (!ID_RE.test(n.id)) issues.push(`ノードID不正: ${n.id}`);
+    if (!kinds.has(n.kind)) issues.push(`kind不正: ${n.id}`);
+    if (!isFinite(n.x)||!isFinite(n.y)) issues.push(`座標不正: ${n.id}`);
+    if (n.stairId && n.kind!=="stairs") issues.push(`stair-idはstairsのみ: ${n.id}`);
+    if (n.entranceId && n.kind!=="entrance") issues.push(`entrance-idはentranceのみ: ${n.id}`);
+    // 注: kind=stairs/entrance でも id 無しは契約上許容（place目的地等）。未対応は横断検証で扱う
+    if (!ms.groupFloorId && !n.floorId) issues.push(`複数フロア: floor-id未設定 ${n.id}`);
+  }
+  const places = new Map();
+  for (const n of ms.nodes.values()) if (n.placeId){ if (places.has(n.placeId)) issues.push(`place-id重複: ${n.placeId}`); else places.set(n.placeId,n.id); }
+  for (const e of ms.edges.values()){
+    if (!ID_RE.test(e.id)) issues.push(`エッジID不正: ${e.id}`);
+    if (!ms.nodes.has(e.a)) issues.push(`未定義ノード参照 ${e.id} → ${e.a}`);
+    if (!ms.nodes.has(e.b)) issues.push(`未定義ノード参照 ${e.id} → ${e.b}`);
+    if (e.a===e.b) issues.push(`自己ループ: ${e.id}`);
+    if (!ms.groupFloorId && !e.floorId) issues.push(`複数フロア: floor-id未設定 ${e.id}`);
+  }
+  ul.innerHTML = issues.length ? issues.slice(0,60).map(t=>`<li>${esc(t)}</li>`).join("")
+    : `<li class="ok">✓ 問題なし（${ms.nodes.size}ノード / ${ms.edges.size}エッジ）</li>`;
+}
+
+/* ==== 検証（マップ横断） ==== */
+function validateCross(){
+  const ul = $("xissues");
+  if (!state.maps.size){ ul.innerHTML = '<li class="ok">—</li>'; return; }
+  const issues = [];
+  for (const eid of allIds("entrance")){
+    const info = entranceInfo(eid);
+    if (!info.ok){
+      if (info.building.length && !info.campus.length) issues.push(`入口 ${eid}: campus側が未作成`);
+      else if (info.campus.length && !info.building.length) issues.push(`入口 ${eid}: 建物側が未作成`);
+      else if (info.campus.length>1) issues.push(`入口 ${eid}: campus側が${info.campus.length}個（1個にする）`);
+      else if (info.building.length>1) issues.push(`入口 ${eid}: 建物側が${info.building.length}個（1個にする）`);
+      else issues.push(`入口 ${eid}: campus+建物の各1ノードが必要`);
+    }
+  }
+  for (const sid of allIds("stairs")){
+    const info = stairInfo(sid);
+    if (info.occ.length < 2) issues.push(`階段 ${sid}: ${info.occ.length}フロアのみ（2フロア以上必要）`);
+    else if (!info.contiguous) issues.push(`階段 ${sid}: フロアが非連続（${info.occ.map(o=>FLOOR_NAME[o.floor]||o.floor).join(", ")}）`);
+  }
+  const loaded = state.maps.size;
+  const note = loaded < MAPS.length ? `<li class="warn">全${MAPS.length}マップ中 ${loaded} 読込。横断検証は読込済みマップのみが対象です。</li>` : "";
+  ul.innerHTML = note + (issues.length ? issues.map(t=>`<li>${esc(t)}</li>`).join("") : `<li class="ok">✓ 入口・階段の繋ぎ込みOK</li>`);
+}
+
+/* ==== 書き出し ==== */
+function buildRouteGroup(ms){
+  const ind = ms.routeIndent || "    ", ind2 = ind + "  ";
+  const attrs = ['id="Route"'];
+  if (ms.groupFloorId) attrs.push(`data-floor-id="${esc(ms.groupFloorId)}"`);
+  attrs.push('style="display:none"');
+  let out = `${ind}<g\n${ind}   ${attrs.join(`\n${ind}   `)}>`;
+  for (const n of ms.nodes.values()){
+    out += `\n${ind2}<circle`;
+    out += `\n${ind2}   id="${esc(n.id)}"`;
+    out += `\n${ind2}   data-route-node=""`;
+    out += `\n${ind2}   data-kind="${esc(n.kind)}"`;
+    if (n.placeId) out += `\n${ind2}   data-place-id="${esc(n.placeId)}"`;
+    if (n.stairId) out += `\n${ind2}   data-stair-id="${esc(n.stairId)}"`;
+    if (n.entranceId) out += `\n${ind2}   data-entrance-id="${esc(n.entranceId)}"`;
+    if (n.floorId) out += `\n${ind2}   data-floor-id="${esc(n.floorId)}"`;
+    out += `\n${ind2}   cx="${fmt(n.x)}"`;
+    out += `\n${ind2}   cy="${fmt(n.y)}"`;
+    out += `\n${ind2}   r="2" />`;
+  }
+  for (const e of ms.edges.values()){
+    const a = ms.nodes.get(e.a), b = ms.nodes.get(e.b);
+    const d = (a&&b) ? `M ${fmt(a.x)} ${fmt(a.y)} L ${fmt(b.x)} ${fmt(b.y)}` : "";
+    out += `\n${ind2}<path`;
+    out += `\n${ind2}   id="${esc(e.id)}"`;
+    out += `\n${ind2}   data-route-edge=""`;
+    out += `\n${ind2}   data-node-a="${esc(e.a)}"`;
+    out += `\n${ind2}   data-node-b="${esc(e.b)}"`;
+    if (e.floorId) out += `\n${ind2}   data-floor-id="${esc(e.floorId)}"`;
+    out += `\n${ind2}   d="${d}" />`;
+  }
+  out += `\n${ind}</g>`;
+  return out;
+}
+function buildFullSvg(ms){
+  const routeXml = buildRouteGroup(ms);
+  const raw = ms.rawSvg;
+  const re = /[ \t]*<g\b[^>]*\bid="Route"[\s\S]*?<\/g>/;
+  if (re.test(raw)) return raw.replace(re, ()=> routeXml.replace(/^[ \t]+/, ""));
+  return raw.replace(/<\/svg>\s*$/, ()=> `${routeXml}\n</svg>\n`);
+}
+function downloadSvg(ms){
+  const blob = new Blob([buildFullSvg(ms)], { type:"image/svg+xml" });
+  const a = $("dlAnchor"); a.href = URL.createObjectURL(blob); a.download = ms.fileName;
+  a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+}
+$("dlBtn").onclick = ()=>{ const ms = cur(); if (!ms){ alert("先にSVGを読み込んでください"); return; } downloadSvg(ms); ms.dirty = false; updateMapSelect(); };
+$("dlAllBtn").onclick = async ()=>{
+  const dirty = [...state.maps.values()].filter(m=>m.dirty);
+  if (!dirty.length){ alert("未保存の変更があるマップはありません"); return; }
+  for (let i=0;i<dirty.length;i++){ downloadSvg(dirty[i]); dirty[i].dirty = false; await new Promise(r=>setTimeout(r,250)); }
+  updateMapSelect();
+  alert(`${dirty.length}枚のSVGをダウンロードしました。public/maps/ に上書きしてください。`);
+};
+</script>
+</body>
+</html>

@@ -7,6 +7,18 @@
   --color-surface-muted: #d9d9d9;
   --color-card-bg: rgba(230, 229, 229, 0.25);
   --color-description-bg: #ededed;
+  --map-marker-destination: #e0524d;
+  --map-marker-current: #1769aa;
+  --map-marker-focus: var(--color-accent);
+  --map-marker-detail: var(--color-surface);
+  --map-marker-event-fill: var(--color-surface);
+  --map-marker-event-border: var(--color-accent);
+  --map-marker-event-glyph: var(--color-accent);
+  --map-marker-event-count-fill: var(--color-accent);
+  --map-marker-event-count-text: var(--color-surface);
+  --map-marker-hit-area: transparent;
+  --map-marker-shadow: rgba(0, 0, 0, 0.3);
+  --map-label-halo: rgba(255, 255, 255, 0.92);
   --radius-chip: 8px;
   --radius-card: 9px;
   --radius-sheet: 20px;
@@ -35,6 +47,7 @@ input {
 }
 
 .app-shell {
+  --bottom-sheet-height: 58svh;
   position: relative;
   width: 100vw;
   min-height: 100svh;
@@ -48,25 +61,234 @@ input {
   display: grid;
   place-items: center;
   color: #777777;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.78)),
-    repeating-linear-gradient(0deg, #d9ecec 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(90deg, #d9ecec 0 1px, transparent 1px 32px);
+  background: #f5f5f5;
+  z-index: 0;
+  touch-action: none;
+  overflow: hidden;
 }
 
-.map-canvas p {
+.map-canvas__status {
+  position: relative;
+  z-index: 2;
   margin: 0 0 42svh;
 }
 
+.map-canvas svg {
+  touch-action: none;
+}
+
+/* 【調整ポイント】クリック可能な建物の枠線(BACKLOG「建物枠線の見た目調整」)
+   色・太さ・透明度はここを変更。どの建物に付くかは
+   src/features/map/MapCanvas.tsx の buildingFloorIds とクラス付与ループ */
+.map-canvas__interactive-building {
+  stroke: var(--color-accent) !important;
+  stroke-width: 2px !important;
+  stroke-opacity: 0.38 !important;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-canvas__interactive-building:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  stroke-opacity: 1 !important;
+}
+
+.map-canvas__svg-host {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-canvas__route-layer,
+.map-canvas__label-layer,
+.map-canvas__marker-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.map-canvas__route-layer {
+  z-index: 1;
+}
+
+.map-canvas__label-layer {
+  z-index: 2;
+}
+
+.map-canvas__marker-layer {
+  z-index: 3;
+}
+
+.map-label {
+  fill: var(--color-text);
+  stroke: var(--map-label-halo);
+  paint-order: stroke fill;
+  stroke-linejoin: round;
+  font-family: var(--font-family);
+  font-weight: 600;
+}
+
+.map-route {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-route-transfer {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+  stroke-width: 4px;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-marker {
+  filter: drop-shadow(0 2px 2px var(--map-marker-shadow));
+}
+
+.map-marker--destination {
+  fill: var(--map-marker-destination);
+}
+
+.map-marker--current {
+  fill: var(--map-marker-current);
+}
+
+.map-marker--focus {
+  fill: var(--map-marker-focus);
+}
+
+.map-marker--event {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.map-marker__hit-area {
+  fill: var(--map-marker-hit-area);
+}
+
+.map-marker__event-surface {
+  fill: var(--map-marker-event-fill);
+  stroke: var(--map-marker-event-border);
+  stroke-width: 2px;
+}
+
+.map-marker__event-glyph {
+  fill: var(--map-marker-event-glyph);
+}
+
+.map-marker__event-count-background {
+  fill: var(--map-marker-event-count-fill);
+}
+
+.map-marker__event-count {
+  fill: var(--map-marker-event-count-text);
+  font-family: var(--font-family);
+  font-size: 9px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.map-marker--event:focus-visible {
+  outline: none;
+}
+
+.map-marker--event:focus-visible .map-marker__event-surface {
+  stroke-width: 4px;
+}
+
+.map-marker__detail {
+  fill: var(--map-marker-detail);
+}
+
+.map-canvas__controls {
+  position: absolute;
+  right: 1rem;
+  bottom: calc(var(--bottom-sheet-height) + 1rem);
+  z-index: 4;
+  display: grid;
+  justify-items: end;
+  gap: 0.65rem;
+}
+
+.map-canvas__floor-switch {
+  display: flex;
+  padding: 0.25rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-canvas__floor-button,
+.map-canvas__campus-button {
+  min-height: 2.5rem;
+  border: 0;
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.94);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.map-canvas__floor-button {
+  position: relative;
+  min-width: 2.75rem;
+  padding: 0 0.7rem;
+  border-radius: var(--radius-pill);
+  background: transparent;
+}
+
+.map-canvas__floor-button--on-route::after,
+.map-canvas__campus-button--on-route::after {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  content: "";
+}
+
+.map-canvas__floor-button[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--color-accent);
+}
+
+.map-canvas__floor-button--on-route[aria-pressed="true"]::after {
+  background: var(--color-surface);
+}
+
+.map-canvas__campus-button {
+  position: relative;
+  padding: 0 1rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-canvas__floor-button:focus-visible,
+.map-canvas__campus-button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+
 .bottom-sheet {
-  --bottom-sheet-height: 58svh;
   position: fixed;
   left: 50%;
   bottom: 0;
   z-index: 5;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
-  width: 100vw;
+  width: 100%;
+  max-width: 430px;
   min-height: 12rem;
   height: var(--bottom-sheet-height);
   max-height: 82svh;
@@ -107,13 +329,13 @@ input {
   background: #cccccc;
 }
 
-/* FigmaのTabBar(固定354px・中央寄せ)準拠: 横長画面でも広がらない */
+/* Figmaの354px幅は代表値。シート幅に追従し、430pxを上限に中央寄せする */
 .sheet-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 354px;
+  max-width: 430px;
   min-height: 4rem;
   margin: 0.7rem auto 1.4rem;
 }
@@ -172,6 +394,7 @@ input {
 }
 
 .bottom-sheet__body {
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }
@@ -179,21 +402,77 @@ input {
 .qr-panel {
   display: grid;
   justify-items: center;
-  padding-top: 1.1rem;
+  height: 100%;
+  padding: 3.5rem 0 2rem;
+  overflow-y: auto;
 }
 
 .qr-panel__copy {
-  width: min(100%, 20.5rem);
-  margin: 0 0 2rem;
-  font-size: 1rem;
-  line-height: 1.35;
+  width: min(254px, calc(100vw - 4rem));
+  margin: 0 0 1.75rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
   text-align: left;
 }
 
 .qr-panel__camera {
-  width: min(20.5rem, 72vw);
+  position: relative;
+  width: min(254px, calc(100vw - 4rem));
   aspect-ratio: 1;
-  background: #d9d9d9;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: var(--color-surface-muted);
+}
+
+.qr-panel__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--color-surface-muted);
+}
+
+.qr-panel__feedback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  color: #ffffff;
+  background: rgba(17, 17, 17, 0.62);
+  text-align: center;
+}
+
+.qr-panel__feedback--scanning {
+  inset: auto 0 0;
+  min-height: 4.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.qr-panel__feedback p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.qr-panel__retry {
+  min-width: 9rem;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: #ffffff;
+  background: var(--color-accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qr-panel__retry:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
 }
 
 .search-panel {
@@ -287,11 +566,19 @@ input {
 .event-card {
   display: block;
   padding: 0.5rem 0.8rem;
+  border: 2px solid transparent;
   border-radius: var(--radius-card);
   color: inherit;
   background: var(--color-card-bg);
   box-shadow: var(--shadow-card);
   text-decoration: none;
+}
+
+.event-card.is-highlighted {
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 22%, transparent),
+    var(--shadow-card);
 }
 
 .event-card h2 {
@@ -335,6 +622,32 @@ input {
 .map-panel p {
   margin: 0;
   color: #626262;
+}
+
+.map-panel__focus-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.map-panel__focus-actions button {
+  min-height: 44px;
+  padding: 0.65rem 0.8rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: #ffffff;
+  background: var(--color-accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.map-panel__focus-actions button:only-child {
+  grid-column: 1 / -1;
+}
+
+.map-panel__focus-actions button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .nav-status {
