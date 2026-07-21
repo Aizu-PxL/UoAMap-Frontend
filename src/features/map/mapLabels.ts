@@ -2,17 +2,8 @@ const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 const LABEL_TARGET_PX = 12;
 const LABEL_LINE_HEIGHT = 1.2;
-const LABEL_MARKER_OVERLAP_RADIUS_PX = 18;
-const LABEL_MARKER_OFFSET_PX = 22;
 const LABEL_COLLISION_PADDING_PX = 2;
 const LABEL_CHARACTER_WIDTH_EM = 0.95;
-const MID_ZOOM_START = 1.5;
-const ALL_LABELS_ZOOM = 2.5;
-// キャンパス俯瞰は母数が少なく(≈27件)、密度は衝突カリングで制御できるため件数では絞らない
-const CAMPUS_OVERVIEW_RETENTION = 1;
-const INTERIOR_OVERVIEW_RETENTION = 0.3;
-const CAMPUS_MID_ZOOM_RETENTION = 0.75;
-const INTERIOR_MID_ZOOM_RETENTION = 0.6;
 
 const campusBuildingLabelIds = new Set([
   "text_RobotGarage",
@@ -47,9 +38,7 @@ export interface MapLabel {
 interface RenderMapLabelsOptions {
   layer: SVGSVGElement;
   labels: MapLabel[];
-  zoomScale: number;
   userUnitsPerPixel: number;
-  markerAnchors: Array<{ x: number; y: number }>;
   isCampusOverview: boolean;
 }
 
@@ -196,12 +185,13 @@ function isSourceVisible(label: MapLabel): boolean {
   );
 }
 
-function getZoomCulledLabels(
+function getPrioritizedLabels(
   labels: MapLabel[],
-  zoomScale: number,
   isCampusOverview: boolean,
 ): MapLabel[] {
-  const labelsByPriority = [...labels].sort((first, second) => {
+  // 件数間引きは行わず、衝突カリングの優先順位だけを決める。
+  // 重ならない限り全ラベルを描画し、引き時も一覧性を保つ。
+  return [...labels].sort((first, second) => {
     // キャンパス俯瞰では建物名が衝突カリングでも勝つよう、font-sizeより優先する
     if (isCampusOverview) {
       const buildingDifference =
@@ -214,25 +204,6 @@ function getZoomCulledLabels(
 
     return second.originalFontSize - first.originalFontSize;
   });
-  if (zoomScale >= ALL_LABELS_ZOOM) {
-    return labelsByPriority;
-  }
-
-  const retention =
-    zoomScale < MID_ZOOM_START
-      ? isCampusOverview
-        ? CAMPUS_OVERVIEW_RETENTION
-        : INTERIOR_OVERVIEW_RETENTION
-      : isCampusOverview
-        ? CAMPUS_MID_ZOOM_RETENTION
-        : INTERIOR_MID_ZOOM_RETENTION;
-  const retainedLabelCount = Math.max(
-    1,
-    isCampusOverview
-      ? Math.round(labelsByPriority.length * retention)
-      : Math.floor(labelsByPriority.length * retention),
-  );
-  return labelsByPriority.slice(0, retainedLabelCount);
 }
 
 function getLabelBoundingBox(
@@ -331,33 +302,20 @@ export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
 export function renderMapLabels({
   layer,
   labels,
-  zoomScale,
   userUnitsPerPixel,
-  markerAnchors,
   isCampusOverview,
 }: RenderMapLabelsOptions): void {
   const visibleLabels = labels.filter(isSourceVisible);
-  const labelsByPriority = getZoomCulledLabels(
-    visibleLabels,
-    zoomScale,
-    isCampusOverview,
-  );
+  const labelsByPriority = getPrioritizedLabels(visibleLabels, isCampusOverview);
   const fragment = layer.ownerDocument.createDocumentFragment();
   const fontSize = LABEL_TARGET_PX * userUnitsPerPixel;
-  const overlapRadius = LABEL_MARKER_OVERLAP_RADIUS_PX * userUnitsPerPixel;
-  const markerOffset = LABEL_MARKER_OFFSET_PX * userUnitsPerPixel;
   const collisionPadding = LABEL_COLLISION_PADDING_PX * userUnitsPerPixel;
   const renderedLabelBoxes: LabelBoundingBox[] = [];
 
   for (const label of labelsByPriority) {
-    const overlapsMarker = markerAnchors.some(
-      (markerAnchor) =>
-        Math.hypot(
-          markerAnchor.x - label.anchor.x,
-          markerAnchor.y - label.anchor.y,
-        ) <= overlapRadius,
-    );
-    const y = label.anchor.y + (overlapsMarker ? markerOffset : 0);
+    // ラベルはアンカー位置に固定(イベント有無で高さがずれない)。
+    // マーカーとの重なりはマーカー側を持ち上げて回避する。
+    const y = label.anchor.y;
     const boundingBox = getLabelBoundingBox(
       label,
       y,

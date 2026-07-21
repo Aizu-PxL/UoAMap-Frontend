@@ -8,41 +8,13 @@
 
 ## Routeグループ
 
+- 1枚のSVGは1つのFloorだけを表す。複数フロアを1枚へ併記しない
 - 経路を持つSVGのルート直下に `<g id="Route" data-floor-id="...">` を1つ置く
+- `data-floor-id`は、そのSVGを使うMapSheetに登録された唯一のFloorと一致させる
+- Routeノード・Routeエッジには`data-floor-id`を重複指定しない
 - `Route` とその子孫に `transform` を付けない。座標はSVGのviewBox座標を直接使う
 - IDと属性値はASCII英数字・ハイフン・アンダースコアのみを使う
 - Route要素は実アプリでは非表示にし、抽出済みグラフから専用オーバーレイへ描画する
-
-### 1枚に複数フロアを含むSVG
-
-講義棟(LH)のように1枚のSVGへ複数フロアを収録する場合も、SVGルート直下の
-`<g id="Route">`は1つだけ置く。この場合はRouteグループ自身の`data-floor-id`を省略し、
-すべてのRouteノードとRouteエッジへ、それぞれが属する`data-floor-id`を付ける。
-
-```svg
-<g id="Route">
-  <circle
-    id="route_node_1f_entrance"
-    data-route-node=""
-    data-floor-id="lh-1f"
-    data-kind="entrance"
-    cx="100"
-    cy="200"
-    r="2" />
-  <path
-    id="route_edge_1f_01"
-    data-route-edge=""
-    data-floor-id="lh-1f"
-    data-node-a="route_node_1f_entrance"
-    data-node-b="route_node_1f_junction"
-    d="M 100 200 L 140 200" />
-</g>
-```
-
-- `data-floor-id`は、そのSVGを使う`MapSheet`に属するFloorだけを指定できる
-- ノードID・エッジIDはSVG全体で一意にし、`1f`/`2f`等のフロア識別子を含める
-- エッジは同じ`data-floor-id`のノード同士だけを接続する
-- 単一フロアSVGでは従来どおりRouteグループの`data-floor-id`を使い、子要素への重複指定は行わない
 
 ## ノード
 
@@ -144,7 +116,7 @@ bun run verify:routes
 - path始終点とノード座標の不一致
 - `data-stair-id`の不正(パターン違反、`stairs`以外への付与、フロア内重複、孤立ID、フロア非連続)
 - `data-entrance-id`の不正(パターン違反、`entrance`以外への付与、2ノード以外への付与、campus側と建物側の組合せ違反)
-- 複数フロアSVGの`data-floor-id`不足・不一致・フロアをまたぐwalkエッジ
+- 1 MapSheet = 1 Floor、Routeグループの`data-floor-id`一致、子要素への重複指定禁止
 - Routeグラフ全体での`data-place-id`重複
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 

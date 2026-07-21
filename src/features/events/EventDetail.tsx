@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { useCampusData } from "../../data/DataProvider";
 import { TagIcon } from "./EventCard";
@@ -12,21 +11,8 @@ export function EventDetail() {
   const navigate = useNavigate();
   const event = events.find((candidate) => candidate.id === eventId);
 
-  useEffect(() => {
-    if (!event) {
-      return;
-    }
-    const params = new URLSearchParams(location.search);
-    if (params.get("to") === event.id && !params.has("focus")) {
-      return;
-    }
-    params.set("to", event.id);
-    params.delete("focus");
-    navigate(
-      { pathname: location.pathname, search: params.toString() },
-      { replace: true },
-    );
-  }, [event, location.pathname, location.search, navigate]);
+  // 一覧からイベントを開いただけでは地図を動かさない(目的地・フォーカスは
+  // 「ここへ行く」を押したときだけ)。そのため詳細表示時の自動 `to` セットは行わない。
 
   if (loading) {
     return <div className="landing-message">読み込み中…</div>;

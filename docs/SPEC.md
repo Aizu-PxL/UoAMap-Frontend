@@ -55,7 +55,7 @@ FigmaフレームはiPhone基準の354pxで描かれているが、これは代�
 | CampusMap | 屋外キャンパス全体図 | `building_*`(全建物)、`path_Pedestrian1..12`(歩行者路)、道路・駐車場・フィールド等のレイヤーあり |
 | RQ1F / RQ2F / RQ3F | 研究棟 1〜3F | `room_*` 各66〜91室。東西棟(e/w)区分あり |
 | SH1F / SH2F | 学生ホール 1〜2F | `room_*` あり |
-| LH | 講義棟 | **1Fと2Fが1ファイルに併記**(`fill_1F` / `fill_2F`) |
+| LH1F / LH2F | 講義棟 1〜2F | 1フロア1ファイル。各SVGのviewBoxを対象階の外形に合わせる |
 | LICTiA1F | LICTiA 1F | `room_*`, `area_*` あり |
 | UBIC | UBIC(単一フロア) | `room_*`, `area_*` あり |
 
@@ -78,9 +78,9 @@ FigmaフレームはiPhone基準の354pxで描かれているが、これは代�
 - 専用ラベルレイヤー(route層とmarker層の間)に、アプリのフォントトークン(Noto Sans JP)で再描画する
 - ラベルは**画面上で固定サイズ**とする。SVGの `preserveAspectRatio="xMidYMid meet"` に合わせ、ピンと同じ逆スケール方式
   (`user単位/px = max(viewBox.width / コンテナ幅, viewBox.height / コンテナ高さ)`)を使う。目標サイズは11〜13px程度
-- **間引き**: 元font-sizeを重要度として使い、ズームアウト時(キャンパス全体など)は重要度の高いラベルのみ表示する。ズームインに応じて小さい部屋のラベルも出す
+- **間引き**: 件数ベースの間引きは行わない。元font-size(キャンパス俯瞰では建物名を最優先)を**衝突カリングの優先順位**として使い、他ラベルと重ならない限り全ラベルを表示する。ズームアウト時も一覧性を保ち、重なる場合のみ優先度の低いラベルを非表示にする
 - 複数行ラベル(tspan複数)は1ラベルとして行間を再構成して描画する
-- ピン・マーカーと同一アンカーのラベルは、マーカーと重ならないようアンカーの下側にオフセットして表示する
+- ラベルはアンカー位置に固定して描画し、イベント有無で高さがずれないようにする(全地点で揃える)。同一アンカーのマーカー(イベントバッジ・水滴ピン)はラベルと重ならないよう**マーカー側をラベルの上へ持ち上げて**回避する
 
 **マーカー・ピン**
 
@@ -164,8 +164,8 @@ FigmaフレームはiPhone基準の354pxで描かれているが、これは代�
 - **フロントエンド**: 地図SVG・経路グラフ(SVG由来の静的アセット)、経路計算、検索の実行
 
 ```
-MapSheet  … SVGファイル1枚(id, name, svgUrl)。キャンパス全体図 or 建物図
-Floor     … シート内のフロア領域(id, sheetId, name)。LHのように1シート複数フロアがある
+MapSheet  … SVGファイル1枚(id, name, svgUrl)。キャンパス全体図 or 建物の1フロア図
+Floor     … シートに対応するフロア(id, sheetId, name)。1 MapSheetにつき1 Floor
 Place     … 地点(id, floorId, svgElementId または座標, name)
              ← QRの地点ID・イベント会場・建物出入口はすべてPlace
 Event     … イベント(id, title, description, placeId, tags,
@@ -263,8 +263,8 @@ public/maps/  … 地図SVGアセット
   - 命名規則・要素属性・検証条件は [MAP_AUTHORING.md](MAP_AUTHORING.md) を正とする
 - [ ] QR設置地点の一覧(どこに何枚貼るか)とqrIdの採番規則
 - [x] 研究室公開(オープンラボ)の個別イベントは公式Web掲載の `P1`〜`P22` を使用する
-- [x] 講義棟(LH)の1F/2F併記シートのフロア切替UIをどう扱うか
-  - `fill_1F` / `fill_2F` 等のグループの `display` 切替で実装する
+- [x] 講義棟(LH)の1F/2Fフロア切替UIをどう扱うか
+  - 1F/2Fを別SVG・別MapSheetに分割し、他の複数階建物と同じフロア切替で実装する
 - [ ] ホスティング先と本番URL（QRや外部リンクに焼く前に [PRODUCTION.md](PRODUCTION.md) §3の所有者・URL・base pathを確定する）
 - [ ] イベント詳細画面のデザイン(Figma iPhone 17 - 5 の再構築)
 - [ ] バックエンドの技術選定(API契約確定後でよい)

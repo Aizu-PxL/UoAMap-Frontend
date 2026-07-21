@@ -138,7 +138,7 @@
   <div id="empty">
     <div>
       <div class="big">地図SVGを読み込んでください</div>
-      <div class="muted">「全マップ読込」→ ダイアログで <code>public/maps</code> フォルダを選択（9枚一括ロード）<br>
+      <div class="muted">「全マップ読込」→ ダイアログで <code>public/maps</code> フォルダを選択（10枚一括ロード）<br>
       （入口↔全体マップ / 階段のフロア間 繋ぎ込みには全マップ読込が必要）<br>
       または SVGファイル（複数可）をここにドラッグ&ドロップ</div>
     </div>
@@ -151,10 +151,9 @@
     <div class="stat"><span class="muted">名前</span><b id="fileName">—</b></div>
     <div class="stat"><span class="muted">viewBox</span><span id="vbInfo" class="muted">—</span></div>
     <div class="field" style="margin-top:8px">
-      <label title="単一フロアSVGはグループにfloor-idが付く。講義棟等の複数フロアは空">Route floor</label>
-      <input id="groupFloor" placeholder="rq-1f など / 複数フロアは空">
+      <label title="Routeグループに設定する、このSVG唯一のfloor-id">Route floor</label>
+      <input id="groupFloor" placeholder="rq-1f など">
     </div>
-    <div class="stat"><span class="muted">複数フロア</span><span id="multiInfo" class="muted">—</span></div>
   </div>
 
   <div class="card">
@@ -205,15 +204,16 @@ const ID_RE = /^[A-Za-z][A-Za-z0-9_-]*$/;
 
 /* ==== マップ設定（src/data/places.ts のミラー） ==== */
 const MAPS = [
-  { sheetId:"campus", file:"CampusMap_base_plain.svg", floors:["campus"], group:"campus", name:"キャンパス全体" },
-  { sheetId:"rq1f", file:"RQ1F_base_plain.svg", floors:["rq-1f"], group:"rq", name:"研究棟 1F" },
-  { sheetId:"rq2f", file:"RQ2F_base_plain.svg", floors:["rq-2f"], group:"rq", name:"研究棟 2F" },
-  { sheetId:"rq3f", file:"RQ3F_base_plain.svg", floors:["rq-3f"], group:"rq", name:"研究棟 3F" },
-  { sheetId:"lh", file:"LH_base_plain.svg", floors:["lh-1f","lh-2f"], group:"lh", name:"講義棟(1F/2F)" },
-  { sheetId:"sh1f", file:"SH1F_base_plain.svg", floors:["sh-1f"], group:"sh", name:"学生ホール 1F" },
-  { sheetId:"sh2f", file:"SH2F_base_plain.svg", floors:["sh-2f"], group:"sh", name:"学生ホール 2F" },
-  { sheetId:"ubic", file:"UBIC_base_plain.svg", floors:["ubic-1f"], group:"ubic", name:"UBIC" },
-  { sheetId:"lictia", file:"LICTiA1F_base_plain.svg", floors:["lictia-1f"], group:"lictia", name:"LICTiA 1F" },
+  { sheetId:"campus", file:"CampusMap_base_plain.svg", floor:"campus", group:"campus", name:"キャンパス全体" },
+  { sheetId:"rq1f", file:"RQ1F_base_plain.svg", floor:"rq-1f", group:"rq", name:"研究棟 1F" },
+  { sheetId:"rq2f", file:"RQ2F_base_plain.svg", floor:"rq-2f", group:"rq", name:"研究棟 2F" },
+  { sheetId:"rq3f", file:"RQ3F_base_plain.svg", floor:"rq-3f", group:"rq", name:"研究棟 3F" },
+  { sheetId:"lh1f", file:"LH1F_base_plain.svg", floor:"lh-1f", group:"lh", name:"講義棟 1F" },
+  { sheetId:"lh2f", file:"LH2F_base_plain.svg", floor:"lh-2f", group:"lh", name:"講義棟 2F" },
+  { sheetId:"sh1f", file:"SH1F_base_plain.svg", floor:"sh-1f", group:"sh", name:"学生ホール 1F" },
+  { sheetId:"sh2f", file:"SH2F_base_plain.svg", floor:"sh-2f", group:"sh", name:"学生ホール 2F" },
+  { sheetId:"ubic", file:"UBIC_base_plain.svg", floor:"ubic-1f", group:"ubic", name:"UBIC" },
+  { sheetId:"lictia", file:"LICTiA1F_base_plain.svg", floor:"lictia-1f", group:"lictia", name:"LICTiA 1F" },
 ];
 const FLOOR_ORDER = ["campus","rq-1f","rq-2f","rq-3f","lh-1f","lh-2f","sh-1f","sh-2f","ubic-1f","lictia-1f"];
 const FLOOR_NAME = {
@@ -223,7 +223,7 @@ const FLOOR_NAME = {
 };
 const cfgForSheet = (id) => MAPS.find(m => m.sheetId === id);
 const cfgForFile = (file) => MAPS.find(m => m.file === file);
-const cfgForFloor = (floorId) => MAPS.find(m => m.floors.includes(floorId));
+const cfgForFloor = (floorId) => MAPS.find(m => m.floor === floorId);
 
 /* ==== 状態 ==== */
 const state = {
@@ -245,7 +245,7 @@ function maybeSnap(v){ return $("snap").checked ? Math.round(v) : Math.round(v*1
 function round(v){ return Math.round(v*100)/100; }
 function fmt(v){ return String(Math.round(v*1000)/1000); }
 function sanitizeId(s){ return String(s).replace(/[^A-Za-z0-9_-]/g,"_"); }
-function resolveFloor(ms, node){ return node.floorId || ms.groupFloorId || null; }
+function resolveFloor(ms){ return ms.groupFloorId || ms.cfg.floor || null; }
 function flash(btn, txt){ const o = btn.textContent; btn.textContent = txt; setTimeout(()=>btn.textContent=o, 1200); }
 
 /* ==== SVG読込 ==== */
@@ -298,7 +298,7 @@ function parseViewBox(root){
 }
 
 function ingestSvg(fileName, text){
-  const cfg = cfgForFile(fileName) || { sheetId:fileName, file:fileName, floors:[], group:null, name:fileName };
+  const cfg = cfgForFile(fileName) || { sheetId:fileName, file:fileName, floor:null, group:null, name:fileName };
   const doc = new DOMParser().parseFromString(text, "image/svg+xml");
   const root = doc.querySelector("svg");
   if (!root){ alert(fileName + ": SVGを解析できませんでした"); return null; }
@@ -326,14 +326,12 @@ function ingestSvg(fileName, text){
         placeId: c.getAttribute("data-place-id") || undefined,
         stairId: c.getAttribute("data-stair-id") || undefined,
         entranceId: c.getAttribute("data-entrance-id") || undefined,
-        floorId: c.getAttribute("data-floor-id") || undefined,
       });
     });
     route.querySelectorAll("[data-route-edge]").forEach((p)=>{
       const id = p.getAttribute("id"); if (!id) return;
       ms.edges.set(id, {
         id, a: p.getAttribute("data-node-a"), b: p.getAttribute("data-node-b"),
-        floorId: p.getAttribute("data-floor-id") || undefined,
       });
     });
     const m = text.match(/\n([ \t]+)<circle[^>]*data-route-node/);
@@ -353,7 +351,6 @@ function switchMap(sheetId){
   $("fileName").textContent = ms.fileName;
   $("vbInfo").textContent = `${round(ms.viewBox.w)}×${round(ms.viewBox.h)}`;
   $("groupFloor").value = ms.groupFloorId || "";
-  $("multiInfo").textContent = ms.groupFloorId ? "いいえ" : "はい（各ノードでfloor指定）";
   drawBackground();
   render();
   requestAnimationFrame(()=>{ resetView(); render(); });
@@ -441,7 +438,6 @@ $("showLabels").onchange = ()=> render();
 $("groupFloor").onchange = (e)=>{
   const ms = cur(); if (!ms) return;
   ms.groupFloorId = e.target.value.trim() || null; markDirty(ms);
-  $("multiInfo").textContent = ms.groupFloorId ? "いいえ" : "はい（各ノードでfloor指定）";
   render();
 };
 function markDirty(ms){ ms.dirty = true; }
@@ -535,7 +531,6 @@ function uniqueEdgeId(ms, a, b){
 function addNode(x,y){
   const ms = cur(); const id = uniqueNodeId(ms);
   const node = { id, kind:"corridor", x, y };
-  if (!ms.groupFloorId && ms.cfg.floors.length) node.floorId = ms.cfg.floors[0];
   ms.nodes.set(id, node); markDirty(ms); select("node", id);
 }
 function edgeClick(nodeId){
@@ -546,7 +541,6 @@ function edgeClick(nodeId){
   const dup = [...ms.edges.values()].some(e => (e.a===a&&e.b===b)||(e.a===b&&e.b===a));
   if (!dup){
     const id = uniqueEdgeId(ms, a, b); const ed = { id, a, b };
-    if (!ms.groupFloorId){ const fa = ms.nodes.get(a)?.floorId, fb = ms.nodes.get(b)?.floorId; if (fa&&fa===fb) ed.floorId = fa; }
     ms.edges.set(id, ed); markDirty(ms); select("edge", id);
   }
   state.pendingEdgeFrom = null; render();
@@ -587,7 +581,7 @@ function entranceInfo(entranceId){
 function stairInfo(stairId){
   const occ = [];
   for (const ms of state.maps.values()) for (const n of ms.nodes.values())
-    if (n.kind==="stairs" && n.stairId===stairId){ const f = resolveFloor(ms,n); occ.push({ sheetId: ms.sheetId, ms, node: n, floor: f, idx: FLOOR_ORDER.indexOf(f) }); }
+    if (n.kind==="stairs" && n.stairId===stairId){ const f = resolveFloor(ms); occ.push({ sheetId: ms.sheetId, ms, node: n, floor: f, idx: FLOOR_ORDER.indexOf(f) }); }
   occ.sort((a,b)=>a.idx-b.idx);
   let contiguous = occ.length>=2;
   for (let i=1;i<occ.length;i++) if (occ[i].idx !== occ[i-1].idx+1) contiguous = false;
@@ -615,10 +609,9 @@ function createEntranceNode(destMs, entranceId){
   const id = uniqueNodeId(destMs, `route_node_entrance_${sanitizeId(entranceId)}`);
   const c = destMs.viewBox;
   const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
-  if (!destMs.groupFloorId && destMs.cfg.floors.length) node.floorId = destMs.cfg.floors[0];
   destMs.nodes.set(id, node); markDirty(destMs);
   switchMap(destMs.sheetId); select("node", id);
-  alert(`${FLOOR_NAME[destMs.cfg.floors[0]]||destMs.fileName} に入口ノードを仮置きしました。歩く位置へドラッグしてください。`);
+  alert(`${FLOOR_NAME[destMs.cfg.floor]||destMs.fileName} に入口ノードを仮置きしました。歩く位置へドラッグしてください。`);
 }
 function createEntranceOnFloor(entranceId, floorId){
   const cfg = cfgForFloor(floorId); if (!cfg){ alert("対象フロア不明"); return; }
@@ -627,7 +620,6 @@ function createEntranceOnFloor(entranceId, floorId){
   const id = uniqueNodeId(dest, `route_node_entrance_${sanitizeId(entranceId)}`);
   const c = dest.viewBox;
   const node = { id, kind:"entrance", entranceId, x: Math.round(c.x+c.w/2), y: Math.round(c.y+c.h/2) };
-  if (cfg.floors.length>1) node.floorId = floorId;
   dest.nodes.set(id, node); markDirty(dest);
   switchMap(dest.sheetId); select("node", id);
 }
@@ -639,7 +631,6 @@ function createStairOnFloor(stairId, floorId, fromNode){
   if (!dest){ alert(`${FLOOR_NAME[floorId]} のマップが未読込です。『全マップ読込』を実行してください`); return; }
   const id = uniqueNodeId(dest, `route_node_stairs_${sanitizeId(stairId)}_${sanitizeId(floorId)}`);
   const node = { id, kind:"stairs", stairId, x: Math.round(fromNode?fromNode.x:dest.viewBox.x+dest.viewBox.w/2), y: Math.round(fromNode?fromNode.y:dest.viewBox.y+dest.viewBox.h/2) };
-  if (cfg.floors.length>1) node.floorId = floorId;
   dest.nodes.set(id, node); markDirty(dest);
   switchMap(dest.sheetId); select("node", id);
   alert(`${FLOOR_NAME[floorId]} に階段ノードを仮置きしました。階段口へドラッグしてください。`);
@@ -661,23 +652,19 @@ function renderProps(){
       <div class="field"><label>kind</label>
         <select id="p_kind">${["corridor","stairs","entrance"].map(k=>`<option ${k===n.kind?"selected":""}>${k}</option>`).join("")}</select></div>
       <div class="field"><label>place-id</label><input id="p_place" value="${esc(n.placeId||"")}" placeholder="任意"></div>
-      <div class="field"><label>floor-id</label><input id="p_floor" value="${esc(n.floorId||"")}" placeholder="複数フロアSVG用"></div>
       <div class="field"><label>cx / cy</label><span class="muted">${fmt(n.x)} , ${fmt(n.y)}</span></div>
       <div id="linkArea"></div>`;
     $("p_id").onchange = (e)=> renameNode(n.id, e.target.value.trim());
     $("p_kind").onchange = (e)=>{ n.kind = e.target.value; markDirty(cur()); render(); };
     $("p_place").onchange = (e)=>{ n.placeId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
-    $("p_floor").onchange = (e)=>{ n.floorId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
     renderLinkArea(n);
   } else {
     title.textContent = "エッジ";
     body.innerHTML = `
       <div class="field"><label>id</label><input id="p_id" value="${esc(ed.id)}"></div>
       <div class="field"><label>node-a</label><span class="muted">${esc(ed.a)}</span></div>
-      <div class="field"><label>node-b</label><span class="muted">${esc(ed.b)}</span></div>
-      <div class="field"><label>floor-id</label><input id="p_floor" value="${esc(ed.floorId||"")}" placeholder="複数フロアSVG用"></div>`;
+      <div class="field"><label>node-b</label><span class="muted">${esc(ed.b)}</span></div>`;
     $("p_id").onchange = (e)=> renameEdge(ed.id, e.target.value.trim());
-    $("p_floor").onchange = (e)=>{ ed.floorId = e.target.value.trim()||undefined; markDirty(cur()); render(); };
   }
 }
 
@@ -697,7 +684,7 @@ function renderLinkArea(n){
     const info = entranceInfo(n.entranceId);
     const sides = [];
     if (info.campus.length) sides.push("campus");
-    for (const b of info.building) sides.push(FLOOR_NAME[resolveFloor(b.ms,b.node)]||b.sheetId);
+    for (const b of info.building) sides.push(FLOOR_NAME[resolveFloor(b.ms)]||b.sheetId);
     if (info.ok){
       badge.innerHTML = `<span class="badge ok mini">✓ 対応OK: ${sides.join(" ⇄ ")}</span>`;
     } else {
@@ -759,7 +746,6 @@ function validate(){
     if (n.stairId && n.kind!=="stairs") issues.push(`stair-idはstairsのみ: ${n.id}`);
     if (n.entranceId && n.kind!=="entrance") issues.push(`entrance-idはentranceのみ: ${n.id}`);
     // 注: kind=stairs/entrance でも id 無しは契約上許容（place目的地等）。未対応は横断検証で扱う
-    if (!ms.groupFloorId && !n.floorId) issues.push(`複数フロア: floor-id未設定 ${n.id}`);
   }
   const places = new Map();
   for (const n of ms.nodes.values()) if (n.placeId){ if (places.has(n.placeId)) issues.push(`place-id重複: ${n.placeId}`); else places.set(n.placeId,n.id); }
@@ -768,8 +754,9 @@ function validate(){
     if (!ms.nodes.has(e.a)) issues.push(`未定義ノード参照 ${e.id} → ${e.a}`);
     if (!ms.nodes.has(e.b)) issues.push(`未定義ノード参照 ${e.id} → ${e.b}`);
     if (e.a===e.b) issues.push(`自己ループ: ${e.id}`);
-    if (!ms.groupFloorId && !e.floorId) issues.push(`複数フロア: floor-id未設定 ${e.id}`);
   }
+  if (!ms.groupFloorId) issues.push("Routeグループのfloor-idが未設定");
+  if (ms.cfg.floor && ms.groupFloorId !== ms.cfg.floor) issues.push(`Route floor不一致: ${ms.groupFloorId||"未設定"}（期待値 ${ms.cfg.floor}）`);
   ul.innerHTML = issues.length ? issues.slice(0,60).map(t=>`<li>${esc(t)}</li>`).join("")
     : `<li class="ok">✓ 問題なし（${ms.nodes.size}ノード / ${ms.edges.size}エッジ）</li>`;
 }
@@ -814,7 +801,6 @@ function buildRouteGroup(ms){
     if (n.placeId) out += `\n${ind2}   data-place-id="${esc(n.placeId)}"`;
     if (n.stairId) out += `\n${ind2}   data-stair-id="${esc(n.stairId)}"`;
     if (n.entranceId) out += `\n${ind2}   data-entrance-id="${esc(n.entranceId)}"`;
-    if (n.floorId) out += `\n${ind2}   data-floor-id="${esc(n.floorId)}"`;
     out += `\n${ind2}   cx="${fmt(n.x)}"`;
     out += `\n${ind2}   cy="${fmt(n.y)}"`;
     out += `\n${ind2}   r="2" />`;
@@ -827,7 +813,6 @@ function buildRouteGroup(ms){
     out += `\n${ind2}   data-route-edge=""`;
     out += `\n${ind2}   data-node-a="${esc(e.a)}"`;
     out += `\n${ind2}   data-node-b="${esc(e.b)}"`;
-    if (e.floorId) out += `\n${ind2}   data-floor-id="${esc(e.floorId)}"`;
     out += `\n${ind2}   d="${d}" />`;
   }
   out += `\n${ind}</g>`;

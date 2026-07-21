@@ -44,6 +44,9 @@ const PERSON_DETAIL_PATH =
   "M25 20.42a4.17 4.17 0 1 0 0-8.34 4.17 4.17 0 0 0 0 8.34Zm-7.29 10.41h14.58v-2.08c0-3.47-3.24-6.25-7.29-6.25s-7.29 2.78-7.29 6.25v2.08Z";
 const EVENT_MARKER_SIZE = 24;
 const EVENT_MARKER_RADIUS = 11;
+// ラベルはアンカー位置に固定するため、マーカーをラベル(画面約12px)の上へ持ち上げて重なりを避ける。
+// translate は scale(markerScale) 後=1単位が画面1px相当なので、この値がそのまま画面px上の持ち上げ量になる。
+const MARKER_LABEL_CLEARANCE_PX = 18;
 const EVENT_MARKER_PERSON_PATH =
   "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
 const ROUTE_TRANSFER_MARKER_RADIUS = 7;
@@ -80,7 +83,8 @@ const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
   rq3f: "building_ResearchQuad",
   sh1f: "building_StudentHall",
   sh2f: "building_StudentHall",
-  lh: "building_LecHall",
+  lh1f: "building_LecHall",
+  lh2f: "building_LecHall",
   ubic: "building_UBIC",
   lictia: "building_LICTiA",
 };
@@ -125,11 +129,6 @@ function getCampusEventCounts(events: CampusEvent[]) {
 
   return eventCountByBuildingId;
 }
-
-const lectureHallFloorElements = {
-  "lh-1f": ["fill_1F", "frame_1F", "part_1F", "room_1F", "text_1F", "mark_1F"],
-  "lh-2f": ["fill_2F", "frame_2F", "part_2F", "room_2F", "text_2F", "mark_2F"],
-} as const;
 
 const svgTextCache = new Map<string, Promise<string>>();
 
@@ -203,22 +202,6 @@ function parseViewBox(svgElement: SVGSVGElement): ViewBox {
   throw new Error("Invalid SVG viewBox");
 }
 
-function setLectureHallFloor(svgElement: SVGSVGElement, floorId: string) {
-  if (floorId !== "lh-1f" && floorId !== "lh-2f") {
-    return;
-  }
-
-  for (const [lectureHallFloorId, elementIds] of Object.entries(lectureHallFloorElements)) {
-    const display = lectureHallFloorId === floorId ? "inline" : "none";
-    for (const elementId of elementIds) {
-      const element = svgElement.getElementById(elementId);
-      if (element instanceof SVGElement) {
-        element.style.display = display;
-      }
-    }
-  }
-}
-
 function getFloorLabel(floorId: string) {
   return floorId.slice(floorId.lastIndexOf("-") + 1).toUpperCase();
 }
@@ -234,6 +217,19 @@ function screenPointToSvg(
   }
 
   const point = new DOMPoint(clientX, clientY).matrixTransform(screenMatrix.inverse());
+  if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+    return null;
+  }
+
+  return { x: point.x, y: point.y };
+}
+
+function screenPointToSvgWithMatrix(
+  inverseScreenMatrix: DOMMatrix,
+  clientX: number,
+  clientY: number,
+) {
+  const point = new DOMPoint(clientX, clientY).matrixTransform(inverseScreenMatrix);
   if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
     return null;
   }
@@ -362,21 +358,18 @@ export function MapCanvas({
   // Track previous floor and its original viewBox for proportional mapping
   const previousFloorIdRef = useRef<string>(floorId);
   const previousOriginalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
-
   // Pointer tracking for pan and pinch
   const gestureRef = useRef<{
     isPanning: boolean;
     isPinching: boolean;
-    pointerX: number;
-    pointerY: number;
     startViewBox: ViewBox;
+    panStartSvgPoint?: { x: number; y: number };
+    panInverseScreenMatrix?: DOMMatrix;
     pinchStartDistance?: number;
     pinchCenter?: { x: number; y: number };
   }>({
     isPanning: false,
     isPinching: false,
-    pointerX: 0,
-    pointerY: 0,
     startViewBox: DEFAULT_VIEW_BOX,
   });
 
@@ -452,8 +445,6 @@ export function MapCanvas({
         const initialViewBox = parseViewBox(svgElement);
         svgElement.style.width = "100%";
         svgElement.style.height = "100%";
-        setLectureHallFloor(svgElement, floorIdRef.current);
-
         if (sheet.id === "campus") {
           for (const [elementId, destinationFloorId] of Object.entries(buildingFloorIds)) {
             const element = svgElement.getElementById(elementId);
@@ -536,13 +527,6 @@ export function MapCanvas({
       }
     };
   }, [sheetId]);
-
-  // LH uses one sheet for both floors, so switching floors only changes its SVG groups.
-  useEffect(() => {
-    if (svgRef.current) {
-      setLectureHallFloor(svgRef.current, floorId);
-    }
-  }, [floorId]);
 
   // Update SVG viewBox attribute
   useEffect(() => {
@@ -656,94 +640,21 @@ export function MapCanvas({
       return;
     }
 
-    const originalWidth = originalViewBoxRef.current.width;
-    const zoomScale = originalWidth / viewBox.width;
     const userUnitsPerPixel = getMeetUserUnitsPerPixel(viewBox, containerSize);
     if (userUnitsPerPixel === null) {
       return;
     }
 
-    const pinPlaceIds = new Set(
-      [currentPlace, destinationPlace, focusPlace]
-        .filter((place): place is Place => place !== null)
-        .map((place) => place.id),
-    );
-    const markerPlaces = [currentPlace, destinationPlace, focusPlace].filter(
-      (place): place is Place => place !== null && place.floorId === floorId,
-    );
-    const markerAnchors = markerPlaces
-      .map((place) => getPlaceCoordinates(place, svgElement))
-      .filter((coordinates): coordinates is { x: number; y: number } => coordinates !== null);
-
-    if (floorId === DEFAULT_FLOOR_ID) {
-      const occupiedBuildingIds = new Set(
-        markerPlaces
-          .map(resolveCampusBuildingId)
-          .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
-      );
-
-      for (const buildingId of getCampusEventCounts(events).keys()) {
-        if (occupiedBuildingIds.has(buildingId)) {
-          continue;
-        }
-        const coordinates = getSvgElementCoordinates(buildingId, svgElement);
-        if (coordinates) {
-          markerAnchors.push(coordinates);
-        }
-      }
-
-      const campusEventPlaceIds = new Set(events.map((event) => event.placeId));
-      for (const placeId of campusEventPlaceIds) {
-        const place = getPlace(placeId);
-        if (
-          !place ||
-          place.floorId !== DEFAULT_FLOOR_ID ||
-          resolveCampusBuildingId(place) !== null ||
-          pinPlaceIds.has(placeId)
-        ) {
-          continue;
-        }
-
-        const coordinates = getPlaceCoordinates(place, svgElement);
-        if (coordinates) {
-          markerAnchors.push(coordinates);
-        }
-      }
-    } else {
-      const eventPlaceIds = new Set<string>();
-
-      for (const event of events) {
-        if (!pinPlaceIds.has(event.placeId)) {
-          eventPlaceIds.add(event.placeId);
-        }
-      }
-
-      for (const placeId of eventPlaceIds) {
-        const place = getPlace(placeId);
-        if (place?.floorId !== floorId) {
-          continue;
-        }
-        const coordinates = getPlaceCoordinates(place, svgElement);
-        if (coordinates) {
-          markerAnchors.push(coordinates);
-        }
-      }
-    }
-
+    // ラベルはアンカー位置に固定し、マーカーとの重なりはマーカー側を持ち上げて回避する。
+    // そのためラベル描画はマーカー集合に依存しない。
     renderMapLabels({
       layer: labelLayer,
       labels: mapLabels,
-      zoomScale,
       userUnitsPerPixel,
-      markerAnchors,
       isCampusOverview: floorId === DEFAULT_FLOOR_ID,
     });
   }, [
-    currentPlace,
-    destinationPlace,
-    events,
     floorId,
-    focusPlace,
     loading,
     mapLabels,
     containerSize.height,
@@ -817,7 +728,7 @@ export function MapCanvas({
 
       group.setAttribute(
         "transform",
-        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale}) translate(-${EVENT_MARKER_SIZE / 2} -${EVENT_MARKER_SIZE})`,
+        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale}) translate(-${EVENT_MARKER_SIZE / 2} -${EVENT_MARKER_SIZE + MARKER_LABEL_CLEARANCE_PX})`,
       );
       group.setAttribute("class", "map-marker map-marker--event");
       if (placeId) {
@@ -998,7 +909,7 @@ export function MapCanvas({
       const detailPath = document.createElementNS(SVG_NAMESPACE, "path");
       group.setAttribute(
         "transform",
-        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale}) translate(-25 -45.83)`,
+        `translate(${coordinates.x} ${coordinates.y}) scale(${markerScale}) translate(-25 -${45.83 + MARKER_LABEL_CLEARANCE_PX})`,
       );
       group.setAttribute("class", `map-marker map-marker--${marker.kind}`);
       group.setAttribute("data-place-id", marker.place.id);
@@ -1067,31 +978,46 @@ export function MapCanvas({
 
   // Pan with pointer events
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!containerRef.current || gestureRef.current.isPinching) return;
+    const svgElement = svgRef.current;
+    const screenMatrix = svgElement?.getScreenCTM();
+    if (!containerRef.current || !screenMatrix || gestureRef.current.isPinching) return;
+
+    const inverseScreenMatrix = screenMatrix.inverse();
+    const panStartSvgPoint = screenPointToSvgWithMatrix(
+      inverseScreenMatrix,
+      event.clientX,
+      event.clientY,
+    );
+    if (!panStartSvgPoint) return;
+
     gestureRef.current.isPanning = true;
-    gestureRef.current.pointerX = event.clientX;
-    gestureRef.current.pointerY = event.clientY;
     gestureRef.current.startViewBox = { ...viewBox };
+    gestureRef.current.panStartSvgPoint = panStartSvgPoint;
+    gestureRef.current.panInverseScreenMatrix = inverseScreenMatrix;
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (
       gestureRef.current.isPinching ||
       !gestureRef.current.isPanning ||
-      !containerRef.current
+      !gestureRef.current.panStartSvgPoint ||
+      !gestureRef.current.panInverseScreenMatrix
     ) {
       return;
     }
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const dx = event.clientX - gestureRef.current.pointerX;
-    const dy = event.clientY - gestureRef.current.pointerY;
+    const currentSvgPoint = screenPointToSvgWithMatrix(
+      gestureRef.current.panInverseScreenMatrix,
+      event.clientX,
+      event.clientY,
+    );
+    if (!currentSvgPoint) return;
 
-    const deltaX = -(dx / rect.width) * viewBox.width;
-    const deltaY = -(dy / rect.height) * viewBox.height;
+    const deltaX = gestureRef.current.panStartSvgPoint.x - currentSvgPoint.x;
+    const deltaY = gestureRef.current.panStartSvgPoint.y - currentSvgPoint.y;
 
     setViewBox({
-      ...viewBox,
+      ...gestureRef.current.startViewBox,
       x: gestureRef.current.startViewBox.x + deltaX,
       y: gestureRef.current.startViewBox.y + deltaY,
     });
@@ -1099,6 +1025,8 @@ export function MapCanvas({
 
   const handlePointerUp = () => {
     gestureRef.current.isPanning = false;
+    gestureRef.current.panStartSvgPoint = undefined;
+    gestureRef.current.panInverseScreenMatrix = undefined;
   };
 
   const startPinch = (touches: React.TouchList) => {

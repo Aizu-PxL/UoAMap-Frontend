@@ -70,14 +70,15 @@ Routeの中では、次の2種類の図形を使っています。
 | 研究棟1F | `RQ1F_base_plain.svg` | `rq-1f` |
 | 研究棟2F | `RQ2F_base_plain.svg` | `rq-2f` |
 | 研究棟3F | `RQ3F_base_plain.svg` | `rq-3f` |
-| 講義棟1F・2F | `LH_base_plain.svg` | `lh-1f` / `lh-2f` |
+| 講義棟1F | `LH1F_base_plain.svg` | `lh-1f` |
+| 講義棟2F | `LH2F_base_plain.svg` | `lh-2f` |
 | 学生ホール1F | `SH1F_base_plain.svg` | `sh-1f` |
 | 学生ホール2F | `SH2F_base_plain.svg` | `sh-2f` |
 | UBIC | `UBIC_base_plain.svg` | `ubic-1f` |
 | LICTiA 1F | `LICTiA1F_base_plain.svg` | `lictia-1f` |
 
-講義棟だけは1枚のSVGに1Fと2Fが入っています。講義棟のノードとエッジには必ず個別の
-`data-floor-id` があり、1Fのエッジから2Fのノードへ直接つないではいけません。
+すべてのSVGは1フロアだけを持ち、`data-floor-id`はRouteグループへ設定します。
+ノードとエッジへ個別の`data-floor-id`を追加してはいけません。
 
 ## 5. 推奨する安全な作業方法
 
