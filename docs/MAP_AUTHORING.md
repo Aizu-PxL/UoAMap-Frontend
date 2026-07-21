@@ -8,41 +8,13 @@
 
 ## Routeグループ
 
+- 1枚のSVGは1つのFloorだけを表す。複数フロアを1枚へ併記しない
 - 経路を持つSVGのルート直下に `<g id="Route" data-floor-id="...">` を1つ置く
+- `data-floor-id`は、そのSVGを使うMapSheetに登録された唯一のFloorと一致させる
+- Routeノード・Routeエッジには`data-floor-id`を重複指定しない
 - `Route` とその子孫に `transform` を付けない。座標はSVGのviewBox座標を直接使う
 - IDと属性値はASCII英数字・ハイフン・アンダースコアのみを使う
 - Route要素は実アプリでは非表示にし、抽出済みグラフから専用オーバーレイへ描画する
-
-### 1枚に複数フロアを含むSVG
-
-講義棟(LH)のように1枚のSVGへ複数フロアを収録する場合も、SVGルート直下の
-`<g id="Route">`は1つだけ置く。この場合はRouteグループ自身の`data-floor-id`を省略し、
-すべてのRouteノードとRouteエッジへ、それぞれが属する`data-floor-id`を付ける。
-
-```svg
-<g id="Route">
-  <circle
-    id="route_node_1f_entrance"
-    data-route-node=""
-    data-floor-id="lh-1f"
-    data-kind="entrance"
-    cx="100"
-    cy="200"
-    r="2" />
-  <path
-    id="route_edge_1f_01"
-    data-route-edge=""
-    data-floor-id="lh-1f"
-    data-node-a="route_node_1f_entrance"
-    data-node-b="route_node_1f_junction"
-    d="M 100 200 L 140 200" />
-</g>
-```
-
-- `data-floor-id`は、そのSVGを使う`MapSheet`に属するFloorだけを指定できる
-- ノードID・エッジIDはSVG全体で一意にし、`1f`/`2f`等のフロア識別子を含める
-- エッジは同じ`data-floor-id`のノード同士だけを接続する
-- 単一フロアSVGでは従来どおりRouteグループの`data-floor-id`を使い、子要素への重複指定は行わない
 
 ## ノード
 
@@ -128,6 +100,23 @@
 - 距離は抽出時にノード座標間のユークリッド距離から生成する
 - 交差するだけの線は接続されない。分岐させる場合は交点にノードを置き、エッジを分割する
 
+## QR設置計画
+
+`tools/route-editor.html` の「QR候補」モードでは、QRを読む来場者が立つRouteノードへ候補を配置する。壁面の掲示位置ではなく、ルート開始地点として妥当な歩行可能位置のノードを選ぶ。
+
+1. 「全マップ読込」で10枚を読み込む
+2. 「QR候補」を選び、対象Routeノードをクリックする
+3. 自動採番された`Q001`形式のQR ID、固定／可変、設置メモを確認する
+4. ノードに既存`data-place-id`があれば再利用する。無ければPlace IDと表示名を入力し、座標Place案を作る
+5. 途中状態は「計画JSONを保存」で保存し、後日「計画JSONを読込」で置換復元する
+6. QR検証がPASSしたら、対応表JSON／CSVと必要なPlace案JSONを出力する
+
+対応表JSONは`src/data/types.ts`の`QrCode[]`と同じ`qrId / placeId / kind / installationNote`だけを含む。計画中のフロア、Routeノード、座標は計画JSONへ分離し、公開APIのレスポンスへは含めない。同じPlaceへ複数QRを割り当てる場合は、QRプロパティの「同じ地点にQRを追加」を使う。
+
+編集を戻すときは、ツールバーの「元に戻す」／「やり直す」、または`Ctrl/Cmd + Z`／`Ctrl/Cmd + Shift + Z`（Windowsでは`Ctrl + Y`も可）を使う。ノードのドラッグと設置メモ・Place名の連続入力はそれぞれ1操作として記録され、履歴はブラウザセッション内で最大100操作保持される。入力欄にフォーカスがある間は文字入力だけのUndoが優先される。SVGを読み直すと履歴は消えるが、計画JSONの読込は1操作として元へ戻せる。自動採番済みのQR・ノード・エッジ番号はUndoしても再利用されない。
+
+新規Place案を作ると、ダウンロード対象SVGのRouteノードにも`data-place-id`が付く。Place案JSONの内容を`src/data/places.ts`へ実装してからSVGを反映し、以下の抽出・検証を行う。QR候補を削除してもPlace案と`data-place-id`は自動削除されないため、不要ならノードのPlace IDを明示的に解除する。
+
 ## 抽出と検証
 
 ```bash
@@ -144,7 +133,7 @@ bun run verify:routes
 - path始終点とノード座標の不一致
 - `data-stair-id`の不正(パターン違反、`stairs`以外への付与、フロア内重複、孤立ID、フロア非連続)
 - `data-entrance-id`の不正(パターン違反、`entrance`以外への付与、2ノード以外への付与、campus側と建物側の組合せ違反)
-- 複数フロアSVGの`data-floor-id`不足・不一致・フロアをまたぐwalkエッジ
+- 1 MapSheet = 1 Floor、Routeグループの`data-floor-id`一致、子要素への重複指定禁止
 - Routeグラフ全体での`data-place-id`重複
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 

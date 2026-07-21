@@ -1,6 +1,6 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-21(本番公開・実機QR受入計画を追加)
+最終更新: 2026-07-21(講義棟SVGをフロア別分割)
 対象ブランチ: `feature/takami-makeFront`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
@@ -23,6 +23,7 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 | 03g | 講義棟1F/2Fと階段接続 | `84ca52e` |
 | 03h | LICTiAの屋内外ルート | `4ddbd9b` |
 | 03i | 研究棟建物地点・ロボット格納庫・全地点coverage | `0189530` |
+| 08 | 講義棟SVGを1F/2Fへ分割し複数フロア専用処理を撤去 | 未コミット |
 
 詳細なSCOPE・設計判断・受入結果は `docs/tasks/03d-*.md`〜`03i-*.md` を参照する。
 
@@ -44,8 +45,8 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 - Routeの正は `public/maps/*.svg` の `Route` グループ。生成物は `src/features/routing/generated/routeGraph.json`
 - `bun run generate:routes` でSVGからグラフを再生成し、`bun run verify:routes` で生成差分と構造を検証する
-- 1枚のSVGに複数フロアがある講義棟では、Routeの各node/edgeに `data-floor-id` を持たせる。詳しい作図契約は [MAP_AUTHORING.md](MAP_AUTHORING.md)
-- 複数フロアSVGでもnode/edgeのXML `id` はSVG全体で一意にする。抽出器が重複をエラーにする
+- すべての地図を1 SVG = 1 Floorで管理し、Routeグループの`data-floor-id`をシート唯一のFloorと一致させる。詳しい作図契約は [MAP_AUTHORING.md](MAP_AUTHORING.md)
+- 03dで導入した複数フロアSVG抽出は08で廃止した。講義棟は`LH1F_base_plain.svg`と`LH2F_base_plain.svg`が正本
 - 同じ `data-stair-id` の隣接階ノード間にコスト60、同じ `data-entrance-id` の建物側・キャンパス側ノード間にコスト0のtransfer edgeを生成する
 - `MapCanvas` は経路が存在するフロアだけでなく、乗換地点だけを含むフロアも表示対象として扱う
 - 全Place coverage、全ノードの単一連結性、全イベント地点、Q001〜Q003は `src/features/routing/findShortestRoute.test.ts` で固定している
@@ -64,6 +65,8 @@ git diff --check       PASS
 ```
 
 幅402pxのブラウザで学生ホール、UBIC、講義棟、LICTiA、ロボット格納庫について建物内経路と他建物からの横断経路を確認済み。05aでは実QR画像からQ003 URLを復号し、`to=M21`を保持した初回スキャン（`at=lh-large`）と再スキャン（`at=sh-hall`）で経路が講義棟内からキャンパス横断へ更新されること、`focus`解除、カメラ再起動・再試行、コンソールエラーなしを確認した。QR画面は幅320px・402px・430pxで254px正方形を維持し、横スクロールなし。代表URLは [STATUS.md](STATUS.md) の検証表に掲載している。
+
+08では講義棟を1F/2Fの別SVGへ分割し、幅402px・1440×900と再読み込みなしの幅変更で表示・ルート・マーカー・ラベルを確認した。ルート編集ツールは全10マップを読み込み、講義棟1F/2Fを個別に検証できる。Routeグラフは104ノード/112エッジのまま変更なし。
 
 再開時の最低限の健全性確認:
 
@@ -91,4 +94,4 @@ git diff --check
 - 既存要素・既存ID・座標系は読み取り専用。編集してよいのは `Route` グループだけ
 - Placeとの紐付けキーを壊さない
 - Routeを変更したら生成JSONを更新し、ルート4ゲート（test / verify:routes / verify:places / build）を必ず通す
-- 講義棟SVGは1枚に1F/2Fを併記しているため、Route要素の `data-floor-id` を省略しない
+- Routeの`data-floor-id`はSVG直下のRouteグループへ設定し、子ノード・エッジには重複指定しない

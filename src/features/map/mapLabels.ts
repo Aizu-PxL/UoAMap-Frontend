@@ -1,18 +1,17 @@
+import {
+  getCenteredLabelBounds,
+  getCenteredLineOffsetsEm,
+  isOverlayBoundsExcluded,
+  overlayBoundsIntersect,
+} from "./mapOverlayGeometry";
+import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
+
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 const LABEL_TARGET_PX = 12;
 const LABEL_LINE_HEIGHT = 1.2;
-const LABEL_MARKER_OVERLAP_RADIUS_PX = 18;
-const LABEL_MARKER_OFFSET_PX = 22;
 const LABEL_COLLISION_PADDING_PX = 2;
 const LABEL_CHARACTER_WIDTH_EM = 0.95;
-const MID_ZOOM_START = 1.5;
-const ALL_LABELS_ZOOM = 2.5;
-// キャンパス俯瞰は母数が少なく(≈27件)、密度は衝突カリングで制御できるため件数では絞らない
-const CAMPUS_OVERVIEW_RETENTION = 1;
-const INTERIOR_OVERVIEW_RETENTION = 0.3;
-const CAMPUS_MID_ZOOM_RETENTION = 0.75;
-const INTERIOR_MID_ZOOM_RETENTION = 0.6;
 
 const campusBuildingLabelIds = new Set([
   "text_RobotGarage",
@@ -37,9 +36,8 @@ export interface MapLabel {
   id: string;
   lines: string[];
   lineOffsetsEm: number[];
-  anchor: { x: number; y: number };
+  center: OverlayPoint;
   originalFontSize: number;
-  textAnchor: "start" | "middle" | "end";
   sourceWasHidden: boolean;
   visibilityAncestors: SVGElement[];
 }
@@ -47,17 +45,9 @@ export interface MapLabel {
 interface RenderMapLabelsOptions {
   layer: SVGSVGElement;
   labels: MapLabel[];
-  zoomScale: number;
   userUnitsPerPixel: number;
-  markerAnchors: Array<{ x: number; y: number }>;
   isCampusOverview: boolean;
-}
-
-interface LabelBoundingBox {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
+  exclusionBounds?: OverlayBounds[];
 }
 
 function parseNumericValue(value: string | null): number | null {
@@ -156,6 +146,63 @@ function getTextAnchor(element: SVGElement): "start" | "middle" | "end" {
   return textAnchor === "middle" || textAnchor === "end" ? textAnchor : "start";
 }
 
+function getSourceVisualCenter(
+  textElement: SVGTextElement,
+  root: SVGSVGElement,
+): OverlayPoint | null {
+  try {
+    const bounds = textElement.getBBox();
+    if (
+      !Number.isFinite(bounds.x) ||
+      !Number.isFinite(bounds.y) ||
+      !Number.isFinite(bounds.width) ||
+      !Number.isFinite(bounds.height) ||
+      bounds.width <= 0 ||
+      bounds.height <= 0
+    ) {
+      return null;
+    }
+
+    const transformedCenter = new DOMPoint(
+      bounds.x + bounds.width / 2,
+      bounds.y + bounds.height / 2,
+    ).matrixTransform(getTransformToRoot(textElement, root));
+
+    return Number.isFinite(transformedCenter.x) && Number.isFinite(transformedCenter.y)
+      ? { x: transformedCenter.x, y: transformedCenter.y }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function estimateVisualCenter(
+  anchor: OverlayPoint,
+  lines: string[],
+  lineOffsetsEm: number[],
+  originalFontSize: number,
+  textAnchor: "start" | "middle" | "end",
+): OverlayPoint {
+  const longestLineLength = Math.max(
+    1,
+    ...lines.map((line) => Array.from(line).length),
+  );
+  const estimatedWidth =
+    longestLineLength * originalFontSize * LABEL_CHARACTER_WIDTH_EM;
+  const firstOffset = lineOffsetsEm[0] ?? 0;
+  const lastOffset = lineOffsetsEm[lineOffsetsEm.length - 1] ?? firstOffset;
+
+  return {
+    x:
+      textAnchor === "middle"
+        ? anchor.x
+        : textAnchor === "end"
+          ? anchor.x - estimatedWidth / 2
+          : anchor.x + estimatedWidth / 2,
+    y: anchor.y + ((firstOffset + lastOffset) / 2 - 0.5) * originalFontSize,
+  };
+}
+
 function getLineOffsetsEm(
   textElement: SVGTextElement,
   lineElements: SVGGraphicsElement[],
@@ -196,12 +243,13 @@ function isSourceVisible(label: MapLabel): boolean {
   );
 }
 
-function getZoomCulledLabels(
+function getPrioritizedLabels(
   labels: MapLabel[],
-  zoomScale: number,
   isCampusOverview: boolean,
 ): MapLabel[] {
-  const labelsByPriority = [...labels].sort((first, second) => {
+  // 件数間引きは行わず、衝突カリングの優先順位だけを決める。
+  // 重ならない限り全ラベルを描画し、引き時も一覧性を保つ。
+  return [...labels].sort((first, second) => {
     // キャンパス俯瞰では建物名が衝突カリングでも勝つよう、font-sizeより優先する
     if (isCampusOverview) {
       const buildingDifference =
@@ -214,64 +262,6 @@ function getZoomCulledLabels(
 
     return second.originalFontSize - first.originalFontSize;
   });
-  if (zoomScale >= ALL_LABELS_ZOOM) {
-    return labelsByPriority;
-  }
-
-  const retention =
-    zoomScale < MID_ZOOM_START
-      ? isCampusOverview
-        ? CAMPUS_OVERVIEW_RETENTION
-        : INTERIOR_OVERVIEW_RETENTION
-      : isCampusOverview
-        ? CAMPUS_MID_ZOOM_RETENTION
-        : INTERIOR_MID_ZOOM_RETENTION;
-  const retainedLabelCount = Math.max(
-    1,
-    isCampusOverview
-      ? Math.round(labelsByPriority.length * retention)
-      : Math.floor(labelsByPriority.length * retention),
-  );
-  return labelsByPriority.slice(0, retainedLabelCount);
-}
-
-function getLabelBoundingBox(
-  label: MapLabel,
-  y: number,
-  fontSize: number,
-  padding: number,
-): LabelBoundingBox {
-  const longestLineLength = Math.max(
-    1,
-    ...label.lines.map((line) => Array.from(line).length),
-  );
-  const width = longestLineLength * fontSize * LABEL_CHARACTER_WIDTH_EM;
-  const height = Math.max(1, label.lines.length) * fontSize;
-  const left =
-    label.textAnchor === "middle"
-      ? label.anchor.x - width / 2
-      : label.textAnchor === "end"
-        ? label.anchor.x - width
-        : label.anchor.x;
-
-  return {
-    left: left - padding,
-    top: y - fontSize - padding,
-    right: left + width + padding,
-    bottom: y - fontSize + height + padding,
-  };
-}
-
-function boundingBoxesIntersect(
-  first: LabelBoundingBox,
-  second: LabelBoundingBox,
-): boolean {
-  return (
-    first.left < second.right &&
-    first.right > second.left &&
-    first.top < second.bottom &&
-    first.bottom > second.top
-  );
 }
 
 export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
@@ -294,6 +284,7 @@ export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
       : null;
     const originalFontSize = getOriginalFontSize(textElement, lineElements);
     const sourceWasHidden = isExplicitlyHidden(textElement);
+    const sourceVisualCenter = getSourceVisualCenter(textElement, svgElement);
     const visibilityAncestors: SVGElement[] = [];
     let ancestor: Element | null = textElement.parentNode as Element | null;
 
@@ -313,13 +304,18 @@ export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
       continue;
     }
 
+    const lineOffsetsEm = getLineOffsetsEm(textElement, lineElements, originalFontSize);
+    const textAnchor = getTextAnchor(firstLineElement);
+    const center =
+      sourceVisualCenter ??
+      estimateVisualCenter(anchor, lines, lineOffsetsEm, originalFontSize, textAnchor);
+
     labels.push({
       id: textElement.id || `map-label-${index}`,
       lines,
-      lineOffsetsEm: getLineOffsetsEm(textElement, lineElements, originalFontSize),
-      anchor,
+      lineOffsetsEm,
+      center,
       originalFontSize,
-      textAnchor: getTextAnchor(firstLineElement),
       sourceWasHidden,
       visibilityAncestors,
     });
@@ -331,42 +327,35 @@ export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
 export function renderMapLabels({
   layer,
   labels,
-  zoomScale,
   userUnitsPerPixel,
-  markerAnchors,
   isCampusOverview,
+  exclusionBounds = [],
 }: RenderMapLabelsOptions): void {
   const visibleLabels = labels.filter(isSourceVisible);
-  const labelsByPriority = getZoomCulledLabels(
-    visibleLabels,
-    zoomScale,
-    isCampusOverview,
-  );
+  const labelsByPriority = getPrioritizedLabels(visibleLabels, isCampusOverview);
   const fragment = layer.ownerDocument.createDocumentFragment();
   const fontSize = LABEL_TARGET_PX * userUnitsPerPixel;
-  const overlapRadius = LABEL_MARKER_OVERLAP_RADIUS_PX * userUnitsPerPixel;
-  const markerOffset = LABEL_MARKER_OFFSET_PX * userUnitsPerPixel;
   const collisionPadding = LABEL_COLLISION_PADDING_PX * userUnitsPerPixel;
-  const renderedLabelBoxes: LabelBoundingBox[] = [];
+  const renderedLabelBoxes: OverlayBounds[] = [];
 
   for (const label of labelsByPriority) {
-    const overlapsMarker = markerAnchors.some(
-      (markerAnchor) =>
-        Math.hypot(
-          markerAnchor.x - label.anchor.x,
-          markerAnchor.y - label.anchor.y,
-        ) <= overlapRadius,
+    const centeredLineOffsetsEm = getCenteredLineOffsetsEm(
+      label.lineOffsetsEm,
+      label.lines.length,
+      LABEL_LINE_HEIGHT,
     );
-    const y = label.anchor.y + (overlapsMarker ? markerOffset : 0);
-    const boundingBox = getLabelBoundingBox(
-      label,
-      y,
+    const boundingBox = getCenteredLabelBounds(
+      label.center,
+      label.lines,
+      centeredLineOffsetsEm,
       fontSize,
+      LABEL_CHARACTER_WIDTH_EM,
       collisionPadding,
     );
     if (
+      isOverlayBoundsExcluded(boundingBox, exclusionBounds) ||
       renderedLabelBoxes.some((renderedBox) =>
-        boundingBoxesIntersect(boundingBox, renderedBox),
+        overlayBoundsIntersect(boundingBox, renderedBox),
       )
     ) {
       continue;
@@ -375,23 +364,20 @@ export function renderMapLabels({
     renderedLabelBoxes.push(boundingBox);
     const textElement = layer.ownerDocument.createElementNS(SVG_NAMESPACE, "text");
     textElement.setAttribute("class", "map-label");
-    textElement.setAttribute("x", String(label.anchor.x));
-    textElement.setAttribute("y", String(y));
     textElement.setAttribute("font-size", String(fontSize));
     textElement.setAttribute("stroke-width", String(1.75 * userUnitsPerPixel));
-    textElement.setAttribute("text-anchor", label.textAnchor);
+    textElement.setAttribute("text-anchor", "middle");
+    textElement.setAttribute("dominant-baseline", "central");
     textElement.setAttribute("data-source-text-id", label.id);
     textElement.setAttribute("data-original-font-size", String(label.originalFontSize));
+    textElement.setAttribute("data-center-x", String(label.center.x));
+    textElement.setAttribute("data-center-y", String(label.center.y));
 
     for (const [lineIndex, line] of label.lines.entries()) {
       const tspan = layer.ownerDocument.createElementNS(SVG_NAMESPACE, "tspan");
-      tspan.setAttribute("x", String(label.anchor.x));
-      if (lineIndex > 0) {
-        const previousOffset = label.lineOffsetsEm[lineIndex - 1] ?? 0;
-        const currentOffset =
-          label.lineOffsetsEm[lineIndex] ?? previousOffset + LABEL_LINE_HEIGHT;
-        tspan.setAttribute("dy", `${currentOffset - previousOffset}em`);
-      }
+      const lineOffsetEm = centeredLineOffsetsEm[lineIndex] ?? 0;
+      tspan.setAttribute("x", String(label.center.x));
+      tspan.setAttribute("y", String(label.center.y + lineOffsetEm * fontSize));
       tspan.textContent = line;
       textElement.append(tspan);
     }

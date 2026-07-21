@@ -55,6 +55,13 @@ const entranceOccurrences = new Map<
 
 for (const sheet of mapSheets) {
   const sheetFloors = floors.filter((floor) => floor.sheetId === sheet.id);
+  if (sheetFloors.length !== 1) {
+    errors.push(
+      `${sheet.svgUrl}: MapSheetにはFloorを1つだけ登録してください（現在${sheetFloors.length}件）`,
+    );
+    continue;
+  }
+  const sheetFloor = sheetFloors[0];
   const svgFilePath = path.join(
     import.meta.dirname,
     "..",
@@ -68,32 +75,6 @@ for (const sheet of mapSheets) {
   const sourceNodes: SourceNode[] = [];
   const sourceEdges: SourceEdge[] = [];
   const transformedElements: string[] = [];
-
-  const resolveElementFloorId = (
-    elementFloorId: string | null,
-    elementLabel: string,
-  ): string | null => {
-    const floorId = elementFloorId ?? routeFloorId;
-    if (!floorId) {
-      errors.push(
-        `${sheet.svgUrl}: 複数フロアRouteの${elementLabel}にdata-floor-idがありません`,
-      );
-      return null;
-    }
-    if (routeFloorId && elementFloorId && elementFloorId !== routeFloorId) {
-      errors.push(
-        `${sheet.svgUrl}: ${elementLabel}のdata-floor-id="${elementFloorId}"がRouteの${routeFloorId}と一致しません`,
-      );
-      return null;
-    }
-    if (!sheetFloors.some((floor) => floor.id === floorId)) {
-      errors.push(
-        `${sheet.svgUrl}: ${elementLabel}のdata-floor-id="${floorId}"がシートと一致しません`,
-      );
-      return null;
-    }
-    return floorId;
-  };
 
   await new HTMLRewriter()
     .on("g#Route", {
@@ -118,10 +99,7 @@ for (const sheet of mapSheets) {
     .on("g#Route [data-route-node]", {
       element(element) {
         const localId = element.getAttribute("id");
-        const floorId = resolveElementFloorId(
-          element.getAttribute("data-floor-id"),
-          localId ?? "Routeノード",
-        );
+        const floorId = sheetFloor.id;
         const rawKind = element.getAttribute("data-kind");
         const rawX = element.getAttribute("cx");
         const rawY = element.getAttribute("cy");
@@ -134,7 +112,12 @@ for (const sheet of mapSheets) {
           errors.push(`${sheet.svgUrl}: Routeノードはcircleである必要があります`);
           return;
         }
-        if (!localId || !floorId) {
+        if (element.getAttribute("data-floor-id") !== null) {
+          errors.push(
+            `${sheet.svgUrl}: ${localId ?? "Routeノード"}のdata-floor-idはRouteグループへ設定してください`,
+          );
+        }
+        if (!localId) {
           errors.push(`${sheet.svgUrl}: IDのないRouteノードがあります`);
           return;
         }
@@ -203,10 +186,7 @@ for (const sheet of mapSheets) {
     .on("g#Route [data-route-edge]", {
       element(element) {
         const localId = element.getAttribute("id");
-        const floorId = resolveElementFloorId(
-          element.getAttribute("data-floor-id"),
-          localId ?? "Routeエッジ",
-        );
+        const floorId = sheetFloor.id;
         const nodeA = element.getAttribute("data-node-a");
         const nodeB = element.getAttribute("data-node-b");
         const pathD = element.getAttribute("d");
@@ -215,7 +195,12 @@ for (const sheet of mapSheets) {
           errors.push(`${sheet.svgUrl}: Routeエッジはpathである必要があります`);
           return;
         }
-        if (!localId || !floorId || !nodeA || !nodeB || !pathD) {
+        if (element.getAttribute("data-floor-id") !== null) {
+          errors.push(
+            `${sheet.svgUrl}: ${localId ?? "Routeエッジ"}のdata-floor-idはRouteグループへ設定してください`,
+          );
+        }
+        if (!localId || !nodeA || !nodeB || !pathD) {
           errors.push(`${sheet.svgUrl}: Routeエッジの必須属性が不足しています`);
           return;
         }
@@ -244,15 +229,13 @@ for (const sheet of mapSheets) {
     errors.push(`${sheet.svgUrl}: RouteグループはSVGルート直下に配置してください`);
     continue;
   }
-  if (routeFloorId) {
-    const floor = floors.find((candidate) => candidate.id === routeFloorId);
-    if (!floor || floor.sheetId !== sheet.id) {
-      errors.push(`${sheet.svgUrl}: data-floor-id="${routeFloorId}" がシートと一致しません`);
-      continue;
-    }
-  } else if (sheetFloors.length < 2) {
+  if (!routeFloorId) {
+    errors.push(`${sheet.svgUrl}: Routeグループにdata-floor-idがありません`);
+    continue;
+  }
+  if (routeFloorId !== sheetFloor.id) {
     errors.push(
-      `${sheet.svgUrl}: 単一フロアSVGのRouteにdata-floor-idがありません`,
+      `${sheet.svgUrl}: data-floor-id="${routeFloorId}" がFloor ${sheetFloor.id} と一致しません`,
     );
     continue;
   }
