@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M4完了、M5進行中（13h完了、13i開始可能）**
+状態: **M5完了、M6開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -188,7 +188,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13h-event-search.md` を作成し、地点名resolverを受け取る `filterEventsByCriteria` へID・タイトル・説明・地点名の部分一致とタグAND条件を抽出。SearchPanelのhighlight/scroll処理は変更していない。
 - [x] 2026-07-22: trim、大文字小文字、空白のみ、複数タグAND、未知タグ、未知地点、入力順維持を4件のcharacterization testで固定。71 tests / 447 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxで検索7件、タグ併用5件、0件表示、highlight=P20、console error 0件を確認。
 - [x] 2026-07-22: 13h初回独立レビューのP3（ブリーフのSPEC節番号誤り）を修正し、再レビューで指摘なし。
-- [ ] 次: M5の `13i-bottom-sheet-boundary` を開始する。
+- [x] 2026-07-22: `docs/tasks/13i-bottom-sheet-boundary.md` を作成し、22/58/82svhのclamp・drag換算・nearest・double-click・展開計算を純粋化。BottomSheetのURL依存を `expandRequestKey` propへ移し、window pointer listenerを削除。
+- [x] 2026-07-22: 純粋計算5件を追加し、76 tests / 454 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxで実DOMのdouble-click 58→82→22→58、marker highlightによる22→58展開、console error 0件を確認。pointer dragの換算・clamp・snapは純粋テストで確認。
+- [x] 2026-07-22: 13iの会話履歴なし読み取り専用レビューで指摘なし。M5を完了した。
+- [ ] 次: M6の `13j-route-extraction-core` を開始する。
 
 ## 8. 判断と発見
 
@@ -205,12 +208,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M5 13hの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13h-event-search.md` のSCOPE全体をレビューして閉じる。
-4. M5の `docs/tasks/13i-bottom-sheet-boundary.md` を作り、22/58/82svhのdrag・clamp・nearest・double-click計算をcharacterization testで固定する。
-5. BottomSheetのURL依存を `expandRequestKey` propへ置換し、pointer captureされたdrag-zoneのhandlerへ終了処理を一本化する。
+3. M5 13iの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13i-bottom-sheet-boundary.md` のSCOPE全体をレビューして閉じる。
+4. M6の `docs/tasks/13j-route-extraction-core.md` を作り、実10 SVGから現行JSONが完全一致するcharacterization testを先に追加する。
+5. Route解析・検証・transfer生成・serializerを副作用なしcoreへ移し、CLIはI/O・`--check`・終了処理だけにする。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13hの独立レビュー完了を確認した後、M5の `13i-bottom-sheet-boundary` を開始してください。BottomSheetのURL依存をexpandRequestKey propへ置換し、snap/drag計算を純粋化してpointer終了処理をdrag-zoneへ一本化してください。
+`.agent/PLANS.md` に従い、13iの独立レビュー完了を確認した後、M6の `13j-route-extraction-core` を開始してください。実10 SVGの生成JSON完全一致を先に固定し、解析・検証・transfer生成・serializerを副作用なしcoreへ移してください。
 ```

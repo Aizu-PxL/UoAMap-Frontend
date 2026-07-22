@@ -17,6 +17,7 @@ export function AppLayout() {
 
   const prioritizedPlace = focusPlace ?? destinationPlace ?? currentPlace;
   const navigationParams = new URLSearchParams(location.search);
+  const expandRequestKey = navigationParams.get("highlight");
   const hasNavigationParams = ["at", "to", "focus"].some((param) =>
     navigationParams.has(param),
   );
@@ -60,7 +61,10 @@ export function AppLayout() {
         events={events}
         routePresentation={routePresentation}
       />
-      <BottomSheet onHeightChange={setBottomSheetHeight}>
+      <BottomSheet
+        expandRequestKey={expandRequestKey}
+        onHeightChange={setBottomSheetHeight}
+      >
         <Outlet />
       </BottomSheet>
     </main>

@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM5 13h完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM5完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM5 13h `docs/tasks/13h-event-search.md` まで完了。地点名resolverを受け取る純粋関数へ部分一致とタグAND条件を抽出し、SearchPanelのhighlight/scroll処理は変更していない。71 tests / 447 assertions、build、36 places、104 nodes / 112 edges、幅402pxの検索・タグ併用・0件・highlight、console error 0件を確認。独立レビューのP3文書参照を修正し、再レビューで指摘なし。次は `13i-bottom-sheet-boundary`。
+リポジトリ横断リファクタリングはM5 13i `docs/tasks/13i-bottom-sheet-boundary.md` まで完了。BottomSheetのURL依存を `expandRequestKey` propへ移し、22/58/82svh計算を純粋化、window pointer listenerを削除した。76 tests / 454 assertions、build、36 places、104 nodes / 112 edges、幅402pxのdouble-click循環・highlight展開、console error 0件を確認。pointer drag換算・上下clamp・snapは純粋テストで固定し、独立レビュー指摘なし。次はM6 `13j-route-extraction-core`。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13hの独立レビュー完了を確認した後、M5の `13i-bottom-sheet-boundary` を開始してください。BottomSheetのURL依存をexpandRequestKey propへ置換し、22/58/82svhのdrag・clamp・nearest・double-click計算を純粋化してpointer終了処理をdrag-zoneへ一本化してください。
+`.agent/PLANS.md` に従い、13iの独立レビュー完了を確認した後、M6の `13j-route-extraction-core` を開始してください。実10 SVGの生成JSON完全一致を先に固定し、解析・検証・transfer生成・serializerを副作用なしcoreへ移してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
