@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { setEventHighlightSearchParams } from "../../app/navigationSearch";
 import { floors, getPlace, mapSheets } from "../../data/places";
-import type { Event as CampusEvent, Place, RouteEdge } from "../../data/types";
+import type { Event as CampusEvent, Place } from "../../data/types";
+import type { RoutePresentation } from "../routing/routePresentation";
 import { extractMapLabels, renderMapLabels } from "./mapLabels";
 import type { MapLabel } from "./mapLabels";
 import {
@@ -12,7 +13,6 @@ import {
 import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
 import { getMeetUserUnitsPerPixel } from "./mapViewportScale";
 import { getPlaceCoordinates, getSvgElementCoordinates } from "./placeLocator";
-import { routeGraph } from "../routing/routeGraph";
 
 interface ViewBox {
   x: number;
@@ -29,7 +29,7 @@ interface MapCanvasProps {
   focusPlace: Place | null;
   focusRequestNonce: number;
   events: CampusEvent[];
-  routeEdges: RouteEdge[];
+  routePresentation: RoutePresentation;
 }
 
 const DEFAULT_FLOOR_ID = "campus";
@@ -56,8 +56,6 @@ const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
   "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
 const ROUTE_TRANSFER_MARKER_RADIUS = 7;
-const routeNodeById = new Map(routeGraph.nodes.map((node) => [node.id, node]));
-
 const floorGroups = [
   ["rq-1f", "rq-2f", "rq-3f"],
   ["sh-1f", "sh-2f"],
@@ -511,7 +509,7 @@ export function MapCanvas({
   focusPlace,
   focusRequestNonce,
   events,
-  routeEdges,
+  routePresentation,
 }: MapCanvasProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -548,22 +546,7 @@ export function MapCanvas({
   const selectableFloorIds = floorGroups.find((group) =>
     group.some((candidate) => candidate === floorId),
   );
-  const routeFloorIds = new Set<string>();
-  for (const edge of routeEdges) {
-    if (edge.kind === "walk") {
-      routeFloorIds.add(edge.floorId);
-      continue;
-    }
-
-    const nodeA = routeNodeById.get(edge.nodeA);
-    const nodeB = routeNodeById.get(edge.nodeB);
-    if (nodeA) {
-      routeFloorIds.add(nodeA.floorId);
-    }
-    if (nodeB) {
-      routeFloorIds.add(nodeB.floorId);
-    }
-  }
+  const routeFloorIds = routePresentation.floorIds;
   const hasVisibleRoute = routeFloorIds.has(floorId);
   const isCampusOnRoute = routeFloorIds.has(DEFAULT_FLOOR_ID);
 
@@ -773,19 +756,11 @@ export function MapCanvas({
       return;
     }
 
-    const transferNodeIds = new Set<string>();
-    for (const edge of routeEdges) {
-      if (edge.kind === "transfer") {
-        for (const nodeId of [edge.nodeA, edge.nodeB]) {
-          if (routeNodeById.get(nodeId)?.floorId === floorId) {
-            transferNodeIds.add(nodeId);
-          }
-        }
-        continue;
-      }
-      if (edge.floorId !== floorId) {
-        continue;
-      }
+    const floorPresentation = routePresentation.floorsById.get(floorId);
+    if (!floorPresentation) {
+      return;
+    }
+    for (const edge of floorPresentation.walkEdges) {
       const path = document.createElementNS(SVG_NAMESPACE, "path");
       path.setAttribute("class", "map-route");
       path.setAttribute("data-route-edge-id", edge.id);
@@ -797,11 +772,7 @@ export function MapCanvas({
     if (userUnitsPerPixel === null) {
       return;
     }
-    for (const nodeId of transferNodeIds) {
-      const node = routeNodeById.get(nodeId);
-      if (!node) {
-        continue;
-      }
+    for (const node of floorPresentation.transferNodes) {
       const marker = document.createElementNS(SVG_NAMESPACE, "circle");
       marker.setAttribute("class", "map-route-transfer");
       marker.setAttribute("data-route-node-id", node.id);
@@ -810,7 +781,7 @@ export function MapCanvas({
       marker.setAttribute("r", String(ROUTE_TRANSFER_MARKER_RADIUS * userUnitsPerPixel));
       routeLayer.append(marker);
     }
-  }, [containerSize, floorId, loading, routeEdges, viewBox]);
+  }, [containerSize, floorId, loading, routePresentation, viewBox]);
 
   // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
   useEffect(() => {

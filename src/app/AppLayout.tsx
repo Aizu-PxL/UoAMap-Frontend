@@ -5,6 +5,7 @@ import { useCampusData } from "../data/DataProvider";
 import { MapCanvas } from "../features/map/MapCanvas";
 import { findShortestRouteBetweenPlaces } from "../features/routing/findShortestRoute";
 import { routeGraph } from "../features/routing/routeGraph";
+import { createRoutePresentation } from "../features/routing/routePresentation";
 import { useNavState } from "./useNavState";
 
 export function AppLayout() {
@@ -26,17 +27,16 @@ export function AppLayout() {
   const appShellStyle = {
     "--bottom-sheet-height": `${bottomSheetHeight}svh`,
   } as CSSProperties;
-  const routeEdges = useMemo(() => {
-    if (!currentPlace || !destinationPlace) {
-      return [];
-    }
-    return (
-      findShortestRouteBetweenPlaces(
-        routeGraph,
-        currentPlace.id,
-        destinationPlace.id,
-      ) ?? []
-    );
+  const routePresentation = useMemo(() => {
+    const routeEdges =
+      currentPlace && destinationPlace
+        ? (findShortestRouteBetweenPlaces(
+            routeGraph,
+            currentPlace.id,
+            destinationPlace.id,
+          ) ?? [])
+        : [];
+    return createRoutePresentation(routeEdges, routeGraph.nodes);
   }, [currentPlace, destinationPlace]);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export function AppLayout() {
         focusPlace={focusPlace}
         focusRequestNonce={focusRequestNonce}
         events={events}
-        routeEdges={routeEdges}
+        routePresentation={routePresentation}
       />
       <BottomSheet onHeightChange={setBottomSheetHeight}>
         <Outlet />

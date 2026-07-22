@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M1完了、M2開始可能**
+状態: **M2完了、M3開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -90,7 +90,7 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 受入: 新規URLテスト（イベントマーカーの `/events?highlight=...` 遷移と既存クエリ保持を含む）、既存QRテスト、build、verify:places、幅402pxで代表ディープリンク。
 
-### M2: 経路の探索結果から表示モデルを作る
+### M2: 経路の探索結果から表示モデルを作る（完了）
 
 - `src/features/routing/routePresentation.ts` 相当の純粋モジュールで、`routeEdges` からroute floor、フロア別walk edge、フロア別transfer nodeを一度だけ導出する。
 - `MapCanvas` から生成 `routeGraph` の直接importとグローバルnode indexを外し、表示モデルを受け取る。
@@ -169,7 +169,11 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: URL characterization testを6件追加。45 tests / 394 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。
 - [x] 2026-07-22: 幅402pxでMapCanvasのP20マーカーから既存 `at` / `to` / `source` を保持したhighlight遷移、目的地設定、`/p`・`/q`着地、console errorなしを確認。
 - [x] 2026-07-22: M1独立レビューのP2（既存highlight置換とクエリ順維持のテスト不足）を修正し、再レビューで指摘なし。
-- [ ] 次: M2用の小スライスを作成し、経路表示モデルのcharacterization testから開始する。
+- [x] 2026-07-22: `docs/tasks/13c-route-presentation.md` を作成し、経路フロア、フロア別walk edge、transfer nodeを `createRoutePresentation` で一度だけ導出する境界を追加。
+- [x] 2026-07-22: 空経路、入力順、transfer-onlyフロア、重複排除、未知endpoint無視、実グラフ正逆経路を4件のcharacterization testで固定。49 tests / 412 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。
+- [x] 2026-07-22: 幅402pxで研究棟1F→3Fのtransfer-only 2F、研究棟3F→講堂の建物横断、講堂→研究棟3Fの逆向きを確認。経路レイヤーを維持しconsole errorなし。
+- [x] 2026-07-22: M2初回独立レビューのP2 2件（walk入力順と逆経路transfer-onlyのassert不足）を修正し、再検証。再レビューのP3（assertion数の記録不一致）をユーザー承認に基づき訂正し、最終レビューで指摘なし。
+- [ ] 次: M3の最初の小スライス `13d-map-viewbox` を作成し、純粋計算のcharacterization testから開始する。
 
 ## 8. 判断と発見
 
@@ -186,12 +190,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M2の `routeEdges` 利用箇所と生成 `routeGraph` への依存を現行コードで再確認し、表示モデル用の小さな `docs/tasks/13c-*.md` を作る。
-4. transfer-onlyフロア、キャンパス戻りインジケータ、正逆経路のcharacterization testを先に追加する。
-5. M2を実装・検証・文書更新し、`fork_turns="none"` の読み取り専用レビューを完了する。
+3. M2の独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13c-route-presentation.md` のSCOPE全体をレビューして閉じる。
+4. M3最初のスライス `docs/tasks/13d-map-viewbox.md` を作り、viewBox解析、fallback、zoom、focus、anchor zoom、pan、フロア間比例変換、文字列化をcharacterization testで固定する。
+5. `getScreenCTM().inverse()` のDOM境界とMapCanvasのgesture/SVG load所有は維持し、純粋計算だけを抽出する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、`.agent/refactor-plan.md` のM2「経路の探索結果から表示モデルを作る」を小さなスライスとして開始してください。現行挙動を維持し、ブリーフ作成、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。gitの変更操作は行わないでください。
+`.agent/PLANS.md` に従い、M2の独立レビュー完了を確認した後、M3の最初の小スライス `13d-map-viewbox` を開始してください。現行挙動とDOM境界を維持し、characterization test、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。
 ```
