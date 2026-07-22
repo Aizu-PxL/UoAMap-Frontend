@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM5完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM6完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -50,7 +50,10 @@
 - M5 13i: BottomSheetのURL依存を `expandRequestKey` propへ置換し、AppLayoutがhighlightを渡す。22/58/82svhのclamp・drag換算・nearest・double-click・展開を純粋化し、window pointer listenerを削除してcapture済みdrag-zone handlerへ集約
 - M5 13i検証: 76 tests / 454 assertions、104 nodes / 112 edges、36 places、build、幅402pxでdouble-click 58→82→22→58、marker highlightで22→58展開、console error 0件。pointer drag計算は純粋テストで上下clamp・snapを確認
 - M5 13iレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M5完了
-- 次の開始位置: M6の `13j-route-extraction-core`
+- M6 13j: `extractRouteGraph({sources,mapSheets,floors,places})` とserializerへ解析・検証・stair/entrance transfer・sortを移し、CLIをI/O・`--check`・表示・終了だけに縮小。`@types/bun@1.3.14` とscripts/tools strict tsconfigをbuildへ追加
+- M6 13j検証: 84 tests / 477 assertions、104 nodes / 112 edges、36 places、build。実10 SVGの生成JSON完全バイト一致、主要な不正fixture、generate後のJSON差分ゼロ、git diff --checkを確認
+- M6 13jレビュー: P3のSCOPE記載漏れを修正し、再レビューで指摘なし。M6完了
+- 次の開始位置: M7の `13k-route-editor-build-config`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

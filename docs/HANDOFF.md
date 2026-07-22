@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM5完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM6完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM5 13i `docs/tasks/13i-bottom-sheet-boundary.md` まで完了。BottomSheetのURL依存を `expandRequestKey` propへ移し、22/58/82svh計算を純粋化、window pointer listenerを削除した。76 tests / 454 assertions、build、36 places、104 nodes / 112 edges、幅402pxのdouble-click循環・highlight展開、console error 0件を確認。pointer drag換算・上下clamp・snapは純粋テストで固定し、独立レビュー指摘なし。次はM6 `13j-route-extraction-core`。
+リポジトリ横断リファクタリングはM6 13j `docs/tasks/13j-route-extraction-core.md` まで完了。Route抽出・検証・transfer生成・serializerを入力注入型coreへ移し、CLIをI/O境界へ縮小した。実10 SVGの104 nodes / 112 edges・生成JSON完全バイト一致と主要な不正fixtureを固定し、scripts/tools strict型検査をbuildへ追加。84 tests / 477 assertions、build、36 places、generate後のJSON差分ゼロ、git diff --checkを確認。P3のSCOPE記載漏れを修正し、再レビューで指摘なし。次はM7 `13k-route-editor-build-config`。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13iの独立レビュー完了を確認した後、M6の `13j-route-extraction-core` を開始してください。実10 SVGの生成JSON完全一致を先に固定し、解析・検証・transfer生成・serializerを副作用なしcoreへ移してください。
+`.agent/PLANS.md` に従い、13jの独立レビュー完了を確認した後、M7の `13k-route-editor-build-config` を開始してください。map設定同期を先に検証し、TS単一ソースからBun IIFEをHTML markerへ埋め込むgenerate/check方式で単一HTMLとfile://動作を維持してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
