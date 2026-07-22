@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams, useSearchParams } from "react-router";
+import { useRepository } from "../data/DataProvider";
 import { getPlace } from "../data/places";
-import { repository } from "../data/repository";
 import {
   setFocusSearchParams,
   setResolvedQrSearchParams,
@@ -13,6 +13,7 @@ import {
  * 目的地(?to=)が既にURLにあれば引き継ぐ。
  */
 export function QrLanding() {
+  const repository = useRepository();
   const { qrId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export function QrLanding() {
     return () => {
       cancelled = true;
     };
-  }, [navigate, qrId, searchParams]);
+  }, [navigate, qrId, repository, searchParams]);
 
   if (error) {
     return (

@@ -6,7 +6,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { repository } from "./repository";
+import type { Repository } from "./repository";
+import { createRepositoryLoader } from "./repositoryLoader";
 import type { Event as CampusEvent, Tag } from "./types";
 
 type CampusData = {
@@ -17,15 +18,16 @@ type CampusData = {
 };
 
 const CampusDataContext = createContext<CampusData | null>(null);
+const RepositoryContext = createContext<Repository | null>(null);
 
-let campusDataPromise: Promise<[CampusEvent[], Tag[]]> | null = null;
-
-function loadCampusData(): Promise<[CampusEvent[], Tag[]]> {
-  campusDataPromise ??= Promise.all([repository.getEvents(), repository.getTags()]);
-  return campusDataPromise;
-}
-
-export function DataProvider({ children }: { children: ReactNode }) {
+export function DataProvider({
+  children,
+  repository,
+}: {
+  children: ReactNode;
+  repository: Repository;
+}) {
+  const loader = useMemo(() => createRepositoryLoader(repository), [repository]);
   const [events, setEvents] = useState<CampusEvent[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
 
-    loadCampusData()
+    loader
+      .loadCampusData()
       .then(([loadedEvents, loadedTags]) => {
         if (cancelled) {
           return;
@@ -56,14 +59,20 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loader]);
 
   const value = useMemo(
     () => ({ events, tags, loading, error }),
     [events, tags, loading, error],
   );
 
-  return <CampusDataContext.Provider value={value}>{children}</CampusDataContext.Provider>;
+  return (
+    <RepositoryContext.Provider value={repository}>
+      <CampusDataContext.Provider value={value}>
+        {children}
+      </CampusDataContext.Provider>
+    </RepositoryContext.Provider>
+  );
 }
 
 export function useCampusData(): CampusData {
@@ -72,4 +81,12 @@ export function useCampusData(): CampusData {
     throw new Error("useCampusData must be used inside DataProvider");
   }
   return data;
+}
+
+export function useRepository(): Repository {
+  const repository = useContext(RepositoryContext);
+  if (!repository) {
+    throw new Error("useRepository must be used inside DataProvider");
+  }
+  return repository;
 }

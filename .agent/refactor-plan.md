@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M3完了、M4開始可能**
+状態: **M4完了、M5開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -182,7 +182,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13f-map-marker-presentation.md` を作成し、座標・floor→sheet・place resolverを注入する `createMapMarkerPresentation` へイベント・建物集約・pin優先・描画順・action決定を抽出。DOM生成とRouter遷移はMapCanvasに維持。
 - [x] 2026-07-22: marker presentation test 4件を追加し、64 tests / 431 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxでキャンパス建物集約、同一placeの先頭イベント代表、floor/event action、既存クエリ保持、pin優先と描画順、console error 0件を確認。
 - [x] 2026-07-22: 13fの会話履歴なし読み取り専用レビューで指摘なし。M3を完了した。
-- [ ] 次: M4の `13g-repository-injection` を開始する。
+- [x] 2026-07-22: `docs/tasks/13g-repository-injection.md` を作成し、Provider単位のmemoized loader、Repository context、`useRepository()` を追加。具体mockの選択をAppへ寄せ、QrLandingも注入された同一Repositoryを使用する構成へ変更。
+- [x] 2026-07-22: 同一loaderの重複防止、loader間の分離、成功・失敗を3件のcharacterization testで固定。67 tests / 438 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxでQR成功・未知QR・注入Repository失敗、既存クエリ保持、console error 0件を確認。
+- [x] 2026-07-22: 13gの会話履歴なし読み取り専用レビューで指摘なし。M4を完了した。
+- [ ] 次: M5の `13h-event-search` を開始する。
 
 ## 8. 判断と発見
 
@@ -199,12 +202,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M3 13fの独立レビューとコミットが完了済みか確認する。
-4. M4の `docs/tasks/13g-repository-injection.md` を作り、Provider単位の取得、成功・失敗、StrictMode相当の重複防止をcharacterization testで固定する。
-5. `DataProvider` とQR着地へ同じRepositoryを注入し、具体実装の選択をAppへ寄せる。Repository interfaceとAPI契約は変更しない。
+3. M4 13gの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13g-repository-injection.md` のSCOPE全体をレビューして閉じる。
+4. M5の `docs/tasks/13h-event-search.md` を作り、ID・タイトル・説明・地点名の部分一致とタグAND条件をcharacterization testで固定する。
+5. highlight/scroll処理は変更せず、地点名resolverを受け取る純粋な検索関数だけを抽出する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13fの独立レビュー完了を確認した後、M4の `13g-repository-injection` を開始してください。Provider単位のmemoized loader、Repository context、QrLandingの同一Repository利用をcharacterization testで固定し、Repository/API契約を維持してください。
+`.agent/PLANS.md` に従い、13gの独立レビュー完了を確認した後、M5の `13h-event-search` を開始してください。地点名resolverを受け取る純粋関数へ部分一致とタグAND条件を抽出し、highlight/scroll処理は変更しないでください。
 ```
