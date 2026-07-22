@@ -10,7 +10,12 @@ import {
   getAnchoredOverlayBounds,
   getAnchoredOverlayTransform,
 } from "./mapOverlayGeometry";
-import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
+import type { OverlayBounds } from "./mapOverlayGeometry";
+import {
+  createMapMarkerPresentation,
+  type EventMarkerPlacement,
+  type MapMarkerPlacement,
+} from "./mapMarkerPresentation";
 import { getMapOverlayRedrawKey } from "./mapOverlayRedraw";
 import {
   focusMapViewBox,
@@ -81,242 +86,8 @@ const buildingLabels: Record<keyof typeof buildingFloorIds, string> = {
   building_LICTiA: "LICTiAを表示",
 };
 
-type CampusBuildingId = keyof typeof buildingFloorIds;
-
-type EventMarkerAction =
-  | { kind: "floor"; floorId: string }
-  | { kind: "event"; eventId: string };
-
-interface EventMarkerPlacement {
-  type: "event";
-  coordinates: OverlayPoint;
-  markerLabel: string;
-  action: EventMarkerAction;
-  placeId?: string;
-  eventId?: string;
-  buildingId?: CampusBuildingId;
-  eventCount?: number;
-}
-
-interface PinMarkerPlacement {
-  type: "pin";
-  coordinates: OverlayPoint;
-  markerKind: "current" | "destination" | "focus";
-  detailPath: string;
-  placeId: string;
-}
-
-type MapMarkerPlacement = EventMarkerPlacement | PinMarkerPlacement;
-
-// Place → Floor → MapSheet を、キャンパス図上の建物アンカーへ束ねる。
-const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
-  rq1f: "building_ResearchQuad",
-  rq2f: "building_ResearchQuad",
-  rq3f: "building_ResearchQuad",
-  sh1f: "building_StudentHall",
-  sh2f: "building_StudentHall",
-  lh1f: "building_LecHall",
-  lh2f: "building_LecHall",
-  ubic: "building_UBIC",
-  lictia: "building_LICTiA",
-};
-
-function resolveCampusBuildingId(place: Place): CampusBuildingId | null {
-  const placeFloor = floors.find((candidate) => candidate.id === place.floorId);
-  if (!placeFloor) {
-    return null;
-  }
-
-  const sheetBuildingId = campusBuildingIdBySheetId[placeFloor.sheetId];
-  if (sheetBuildingId) {
-    return sheetBuildingId;
-  }
-
-  if (
-    placeFloor.sheetId === DEFAULT_FLOOR_ID &&
-    place.mapping === "svg" &&
-    place.svgElementId in buildingFloorIds
-  ) {
-    return place.svgElementId as CampusBuildingId;
-  }
-
-  return null;
-}
-
-function getCampusEventCounts(events: CampusEvent[]) {
-  const eventCountByBuildingId = new Map<CampusBuildingId, number>();
-
-  for (const event of events) {
-    const place = getPlace(event.placeId);
-    const buildingId = place ? resolveCampusBuildingId(place) : null;
-    if (!buildingId) {
-      continue;
-    }
-
-    eventCountByBuildingId.set(
-      buildingId,
-      (eventCountByBuildingId.get(buildingId) ?? 0) + 1,
-    );
-  }
-
-  return eventCountByBuildingId;
-}
-
 function getEventCountWidth(eventCount: number): number {
   return Math.max(14, 8 + String(eventCount).length * 6);
-}
-
-function getMapMarkerPlacements({
-  currentPlace,
-  destinationPlace,
-  events,
-  floorId,
-  focusPlace,
-  svgElement,
-}: {
-  currentPlace: Place | null;
-  destinationPlace: Place | null;
-  events: CampusEvent[];
-  floorId: string;
-  focusPlace: Place | null;
-  svgElement: SVGSVGElement;
-}): MapMarkerPlacement[] {
-  const placements: MapMarkerPlacement[] = [];
-  const eventsByPlaceId = new Map<
-    string,
-    { firstEvent: CampusEvent; eventCount: number }
-  >();
-  const pinPlaceIds = new Set(
-    [currentPlace, destinationPlace, focusPlace]
-      .filter((place): place is Place => place !== null)
-      .map((place) => place.id),
-  );
-
-  for (const event of events) {
-    const eventGroup = eventsByPlaceId.get(event.placeId);
-    eventsByPlaceId.set(event.placeId, {
-      firstEvent: eventGroup?.firstEvent ?? event,
-      eventCount: (eventGroup?.eventCount ?? 0) + 1,
-    });
-  }
-
-  if (floorId === DEFAULT_FLOOR_ID) {
-    const occupiedBuildingIds = new Set(
-      [currentPlace, destinationPlace, focusPlace]
-        .filter(
-          (place): place is Place =>
-            place !== null && place.floorId === DEFAULT_FLOOR_ID,
-        )
-        .map(resolveCampusBuildingId)
-        .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
-    );
-
-    for (const [buildingId, eventCount] of getCampusEventCounts(events)) {
-      if (occupiedBuildingIds.has(buildingId)) {
-        continue;
-      }
-
-      const coordinates = getSvgElementCoordinates(buildingId, svgElement);
-      if (!coordinates) {
-        continue;
-      }
-
-      placements.push({
-        type: "event",
-        coordinates,
-        markerLabel: `${buildingLabels[buildingId].replace(
-          "を表示",
-          "",
-        )}、イベント${eventCount}件。建物を表示`,
-        action: { kind: "floor", floorId: buildingFloorIds[buildingId] },
-        buildingId,
-        eventCount,
-      });
-    }
-
-    for (const [placeId, { firstEvent, eventCount }] of eventsByPlaceId) {
-      const place = getPlace(placeId);
-      if (
-        !place ||
-        place.floorId !== DEFAULT_FLOOR_ID ||
-        resolveCampusBuildingId(place) !== null ||
-        pinPlaceIds.has(placeId)
-      ) {
-        continue;
-      }
-
-      const coordinates = getPlaceCoordinates(place, svgElement);
-      if (!coordinates) {
-        continue;
-      }
-
-      placements.push({
-        type: "event",
-        coordinates,
-        markerLabel: `${place.name}のイベント${eventCount}件を表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
-        placeId: place.id,
-        eventId: firstEvent.id,
-        eventCount,
-      });
-    }
-  } else {
-    for (const [placeId, { firstEvent }] of eventsByPlaceId) {
-      const place = getPlace(placeId);
-      if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
-        continue;
-      }
-
-      const coordinates = getPlaceCoordinates(place, svgElement);
-      if (!coordinates) {
-        continue;
-      }
-
-      placements.push({
-        type: "event",
-        coordinates,
-        markerLabel: `${place.name}のイベントを表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
-        placeId: place.id,
-        eventId: firstEvent.id,
-      });
-    }
-  }
-
-  const pins = [
-    {
-      place: currentPlace,
-      markerKind: "current",
-      detailPath: PERSON_DETAIL_PATH,
-    },
-    {
-      place: destinationPlace,
-      markerKind: "destination",
-      detailPath: LOCATION_DETAIL_PATH,
-    },
-    { place: focusPlace, markerKind: "focus", detailPath: LOCATION_DETAIL_PATH },
-  ] as const;
-
-  for (const pin of pins) {
-    if (!pin.place || pin.place.floorId !== floorId) {
-      continue;
-    }
-
-    const coordinates = getPlaceCoordinates(pin.place, svgElement);
-    if (!coordinates) {
-      continue;
-    }
-
-    placements.push({
-      type: "pin",
-      coordinates,
-      markerKind: pin.markerKind,
-      detailPath: pin.detailPath,
-      placeId: pin.place.id,
-    });
-  }
-
-  return placements;
 }
 
 function getMarkerExclusionBounds(
@@ -739,13 +510,19 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = getMapMarkerPlacements({
+    const markerPlacements = createMapMarkerPresentation({
       currentPlace,
       destinationPlace,
       events,
       floorId,
       focusPlace,
-      svgElement,
+      resolveCoordinates: (target) =>
+        target.kind === "place"
+          ? getPlaceCoordinates(target.place, svgElement)
+          : getSvgElementCoordinates(target.elementId, svgElement),
+      resolveFloorSheetId: (targetFloorId) =>
+        floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
+      resolvePlace: (placeId) => getPlace(placeId) ?? null,
     });
     renderMapLabels({
       layer: labelLayer,
@@ -782,13 +559,19 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = getMapMarkerPlacements({
+    const markerPlacements = createMapMarkerPresentation({
       currentPlace,
       destinationPlace,
       events,
       floorId,
       focusPlace,
-      svgElement,
+      resolveCoordinates: (target) =>
+        target.kind === "place"
+          ? getPlaceCoordinates(target.place, svgElement)
+          : getSvgElementCoordinates(target.elementId, svgElement),
+      resolveFloorSheetId: (targetFloorId) =>
+        floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
+      resolvePlace: (placeId) => getPlace(placeId) ?? null,
     });
 
     const appendEventBadge = (
@@ -917,7 +700,10 @@ export function MapCanvas({
       group.setAttribute("data-anchor-y", String(marker.coordinates.y));
       path.setAttribute("d", PIN_PATH);
       detailPath.setAttribute("class", "map-marker__detail");
-      detailPath.setAttribute("d", marker.detailPath);
+      detailPath.setAttribute(
+        "d",
+        marker.markerKind === "current" ? PERSON_DETAIL_PATH : LOCATION_DETAIL_PATH,
+      );
       group.append(path, detailPath);
       markerLayer.append(group);
     }

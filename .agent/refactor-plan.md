@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M2完了、M3進行中（13d・13e完了、13f開始可能）**
+状態: **M3完了、M4開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -179,7 +179,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13e-map-overlay-redraw.md` を作成し、viewBox width/heightとcontainer寸法だけからoverlay再生成キーを導出。panのx/yでは属性同期だけを行い、route・label・marker effectを再実行しない境界へ変更。
 - [x] 2026-07-22: 再生成キー3件を追加し、60 tests / 427 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。冷間起動した402px/1440×900でpan時の全overlay viewBox同期と子HTML不変、zoom/resize時のmarker transform・transfer半径・label font更新、console error 0件を確認。
 - [x] 2026-07-22: 13eの会話履歴なし読み取り専用レビューで指摘なし。
-- [ ] 次: M3の `13f-map-marker-presentation` を作成し、marker配置モデルのcharacterization testから開始する。
+- [x] 2026-07-22: `docs/tasks/13f-map-marker-presentation.md` を作成し、座標・floor→sheet・place resolverを注入する `createMapMarkerPresentation` へイベント・建物集約・pin優先・描画順・action決定を抽出。DOM生成とRouter遷移はMapCanvasに維持。
+- [x] 2026-07-22: marker presentation test 4件を追加し、64 tests / 431 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxでキャンパス建物集約、同一placeの先頭イベント代表、floor/event action、既存クエリ保持、pin優先と描画順、console error 0件を確認。
+- [x] 2026-07-22: 13fの会話履歴なし読み取り専用レビューで指摘なし。M3を完了した。
+- [ ] 次: M4の `13g-repository-injection` を開始する。
 
 ## 8. 判断と発見
 
@@ -196,12 +199,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M2の独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13c-route-presentation.md` のSCOPE全体をレビューして閉じる。
-4. M3最初のスライス `docs/tasks/13d-map-viewbox.md` を作り、viewBox解析、fallback、zoom、focus、anchor zoom、pan、フロア間比例変換、文字列化をcharacterization testで固定する。
-5. `getScreenCTM().inverse()` のDOM境界とMapCanvasのgesture/SVG load所有は維持し、純粋計算だけを抽出する。
+3. M3 13fの独立レビューとコミットが完了済みか確認する。
+4. M4の `docs/tasks/13g-repository-injection.md` を作り、Provider単位の取得、成功・失敗、StrictMode相当の重複防止をcharacterization testで固定する。
+5. `DataProvider` とQR着地へ同じRepositoryを注入し、具体実装の選択をAppへ寄せる。Repository interfaceとAPI契約は変更しない。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、M2の独立レビュー完了を確認した後、M3の最初の小スライス `13d-map-viewbox` を開始してください。現行挙動とDOM境界を維持し、characterization test、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。
+`.agent/PLANS.md` に従い、13fの独立レビュー完了を確認した後、M4の `13g-repository-injection` を開始してください。Provider単位のmemoized loader、Repository context、QrLandingの同一Repository利用をcharacterization testで固定し、Repository/API契約を維持してください。
 ```

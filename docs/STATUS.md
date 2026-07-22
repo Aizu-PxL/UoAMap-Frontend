@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13e完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM3完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -38,7 +38,10 @@
 - M3 13e: overlay再生成キーをviewBox width/heightとcontainer width/heightだけから導出し、pan中のx/y変更では元SVGと3 overlayのviewBox属性だけを同期
 - M3 13e検証: 60 tests / 427 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900でpan時のroute/label/marker子HTML不変、zoom/resize時の画面固定サイズ更新、console error 0件
 - M3 13eレビュー: 会話履歴なし読み取り専用レビューで指摘なし
-- 次の開始位置: M3の `13f-map-marker-presentation`
+- M3 13f: `createMapMarkerPresentation` へ同一placeの先頭イベント代表、キャンパス建物・屋外place集約、pin優先、event→current→destination→focusの描画順、floor/event actionを抽出。座標・floor→sheet・place resolverを注入し、DOM生成とRouter遷移はMapCanvasに維持
+- M3 13f検証: 64 tests / 431 assertions、104 nodes / 112 edges、36 places、build、幅402pxで建物badge、同一place集約、floor/event action、既存クエリ保持、pin優先と描画順、console error 0件
+- M3 13fレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M3完了
+- 次の開始位置: M4の `13g-repository-injection`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

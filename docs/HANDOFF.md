@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13e完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM3完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM3 13e `docs/tasks/13e-map-overlay-redraw.md` まで完了。overlay再生成キーからx/yを除外し、panではviewBox属性だけを同期する。冷間ブラウザ確認でroute/label/marker子HTML不変とzoom/resize時の画面固定サイズ更新を確認し、独立レビュー指摘なし。次はM3 `13f-map-marker-presentation` を開始する。
+リポジトリ横断リファクタリングはM3 13f `docs/tasks/13f-map-marker-presentation.md` まで完了。`createMapMarkerPresentation` へイベント・建物集約、pin優先、描画順、floor/event actionを抽出し、DOM生成とRouter遷移はMapCanvasに維持した。64 tests / 431 assertions、build、36 places、104 nodes / 112 edges、幅402px、console error 0件を確認し、独立レビュー指摘なし。次はM4 `13g-repository-injection` を開始する。
 
-開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。Codexはgitの変更操作を行わない。
+開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13eの独立レビュー完了を確認した後、M3の `13f-map-marker-presentation` を開始してください。座標resolverを注入し、同一place集約、ピン優先、先頭イベント代表、描画順、floor/event actionをcharacterization testで固定してください。
+`.agent/PLANS.md` に従い、13fの独立レビュー完了を確認した後、M4の `13g-repository-injection` を開始してください。Provider単位のmemoized loader、Repository context、QrLandingの同一Repository利用をcharacterization testで固定し、Repository/API契約を維持してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
