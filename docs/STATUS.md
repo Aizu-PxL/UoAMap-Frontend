@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM4完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM5 13h完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -44,7 +44,10 @@
 - M4 13g: `DataProvider` にRepositoryを注入し、Provider単位のmemoized loader、Repository context、`useRepository()` を追加。Appが`mockRepository`を選択し、QrLandingも同じ注入Repositoryを利用。具体singleton exportを削除
 - M4 13g検証: 67 tests / 438 assertions、104 nodes / 112 edges、36 places、build、幅402pxで `/q/Q003?to=M21` 成功・未知QR・注入Repository失敗、既存クエリ保持、console error 0件
 - M4 13gレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M4完了
-- 次の開始位置: M5の `13h-event-search`
+- M5 13h: 地点名resolverを受け取る `filterEventsByCriteria` へID・タイトル・説明・地点名の部分一致とタグAND条件を抽出。trim、大文字小文字、空白のみ、未知タグ、未知地点、入力順維持を固定し、highlight/scroll処理は不変
+- M5 13h検証: 71 tests / 447 assertions、104 nodes / 112 edges、36 places、build、幅402pxで「AI」7件、研究室公開併用5件、0件表示、`highlight=P20` 対象カード、console error 0件
+- M5 13hレビュー: P3文書参照を修正し、再レビューで指摘なし
+- 次の開始位置: M5の `13i-bottom-sheet-boundary`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

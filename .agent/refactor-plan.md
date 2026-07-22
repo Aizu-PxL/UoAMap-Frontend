@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M4完了、M5開始可能**
+状態: **M4完了、M5進行中（13h完了、13i開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -185,7 +185,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13g-repository-injection.md` を作成し、Provider単位のmemoized loader、Repository context、`useRepository()` を追加。具体mockの選択をAppへ寄せ、QrLandingも注入された同一Repositoryを使用する構成へ変更。
 - [x] 2026-07-22: 同一loaderの重複防止、loader間の分離、成功・失敗を3件のcharacterization testで固定。67 tests / 438 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxでQR成功・未知QR・注入Repository失敗、既存クエリ保持、console error 0件を確認。
 - [x] 2026-07-22: 13gの会話履歴なし読み取り専用レビューで指摘なし。M4を完了した。
-- [ ] 次: M5の `13h-event-search` を開始する。
+- [x] 2026-07-22: `docs/tasks/13h-event-search.md` を作成し、地点名resolverを受け取る `filterEventsByCriteria` へID・タイトル・説明・地点名の部分一致とタグAND条件を抽出。SearchPanelのhighlight/scroll処理は変更していない。
+- [x] 2026-07-22: trim、大文字小文字、空白のみ、複数タグAND、未知タグ、未知地点、入力順維持を4件のcharacterization testで固定。71 tests / 447 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。幅402pxで検索7件、タグ併用5件、0件表示、highlight=P20、console error 0件を確認。
+- [x] 2026-07-22: 13h初回独立レビューのP3（ブリーフのSPEC節番号誤り）を修正し、再レビューで指摘なし。
+- [ ] 次: M5の `13i-bottom-sheet-boundary` を開始する。
 
 ## 8. 判断と発見
 
@@ -202,12 +205,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M4 13gの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13g-repository-injection.md` のSCOPE全体をレビューして閉じる。
-4. M5の `docs/tasks/13h-event-search.md` を作り、ID・タイトル・説明・地点名の部分一致とタグAND条件をcharacterization testで固定する。
-5. highlight/scroll処理は変更せず、地点名resolverを受け取る純粋な検索関数だけを抽出する。
+3. M5 13hの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13h-event-search.md` のSCOPE全体をレビューして閉じる。
+4. M5の `docs/tasks/13i-bottom-sheet-boundary.md` を作り、22/58/82svhのdrag・clamp・nearest・double-click計算をcharacterization testで固定する。
+5. BottomSheetのURL依存を `expandRequestKey` propへ置換し、pointer captureされたdrag-zoneのhandlerへ終了処理を一本化する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13gの独立レビュー完了を確認した後、M5の `13h-event-search` を開始してください。地点名resolverを受け取る純粋関数へ部分一致とタグAND条件を抽出し、highlight/scroll処理は変更しないでください。
+`.agent/PLANS.md` に従い、13hの独立レビュー完了を確認した後、M5の `13i-bottom-sheet-boundary` を開始してください。BottomSheetのURL依存をexpandRequestKey propへ置換し、snap/drag計算を純粋化してpointer終了処理をdrag-zoneへ一本化してください。
 ```
