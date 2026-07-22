@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM2完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13d完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -32,7 +32,10 @@
 - M2テスト: transfer-onlyフロア、transfer node重複排除、未知endpoint無視、実グラフの正逆経路を4件のcharacterization testで固定
 - M2検証: 49 tests / 412 assertions、104 nodes / 112 edges、36 places、build、幅402pxの複数階・建物横断・逆向き、console error 0件
 - M2レビュー: P2 2件と検証件数のP3を解消し、最終独立レビューで指摘なし
-- 次の開始位置: M3の `13d-map-viewbox`
+- M3 13d: `src/features/map/mapViewBox.ts` へviewBox解析・fallback・focus・anchor zoom・pan・フロア間比例変換・文字列化を純粋関数として抽出。`getScreenCTM().inverse()` とgesture/SVG load所有はMapCanvasに維持
+- M3 13d検証: 57 tests / 424 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900 live resize、focus、フロア切替、wheel、Ctrl+wheel pinch相当、pan、console error 0件
+- M3 13dレビュー: 会話履歴なし読み取り専用レビューで指摘なし
+- 次の開始位置: M3の `13e-map-overlay-redraw`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

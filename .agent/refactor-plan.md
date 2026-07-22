@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M2完了、M3開始可能**
+状態: **M2完了、M3進行中（13d完了、13e開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -173,7 +173,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: 空経路、入力順、transfer-onlyフロア、重複排除、未知endpoint無視、実グラフ正逆経路を4件のcharacterization testで固定。49 tests / 412 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。
 - [x] 2026-07-22: 幅402pxで研究棟1F→3Fのtransfer-only 2F、研究棟3F→講堂の建物横断、講堂→研究棟3Fの逆向きを確認。経路レイヤーを維持しconsole errorなし。
 - [x] 2026-07-22: M2初回独立レビューのP2 2件（walk入力順と逆経路transfer-onlyのassert不足）を修正し、再検証。再レビューのP3（assertion数の記録不一致）をユーザー承認に基づき訂正し、最終レビューで指摘なし。
-- [ ] 次: M3の最初の小スライス `13d-map-viewbox` を作成し、純粋計算のcharacterization testから開始する。
+- [x] 2026-07-22: `docs/tasks/13d-map-viewbox.md` を作成し、viewBox解析・fallback・focus・anchor zoom・pan・フロア間比例変換・文字列化を `src/features/map/mapViewBox.ts` へ抽出。DOM行列取得とgesture所有はMapCanvasに維持。
+- [x] 2026-07-22: mapViewBox characterization test 8件を追加。57 tests / 424 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。402pxと1440×900のlive resize、focus、同一建物フロア切替、wheel、Ctrl+wheel pinch相当、pan、overlay同期、console error 0件を確認。
+- [x] 2026-07-22: 13dの会話履歴なし読み取り専用レビューで指摘なし。
+- [ ] 次: M3の `13e-map-overlay-redraw` を作成し、pan時のDOM同一性をcharacterization testで固定する。
 
 ## 8. 判断と発見
 

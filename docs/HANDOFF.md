@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM2完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13d完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM2 `docs/tasks/13c-route-presentation.md` まで完了。M2では `createRoutePresentation` へ経路フロア、フロア別walk edge、transfer nodeの導出を集約し、`MapCanvas` から生成 `routeGraph` の直接参照を除去した。全検証と独立レビューを通過済み。次は [.agent/refactor-plan.md](../.agent/refactor-plan.md) のM3 `13d-map-viewbox` を開始する。
+リポジトリ横断リファクタリングはM3 13d `docs/tasks/13d-map-viewbox.md` まで完了。`mapViewBox.ts` へ解析、fallback、focus、anchor zoom、pan、比例変換、文字列化を抽出し、DOM行列取得とgesture所有はMapCanvasに残した。全検証と独立レビューを通過済み。次はM3 `13e-map-overlay-redraw` を開始する。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。Codexはgitの変更操作を行わない。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、M3の最初の小スライス `13d-map-viewbox` を開始してください。現行挙動とMapCanvasのDOM境界を維持し、characterization test、実装、検証、STATUS/ExecPlan更新、独立レビューまで進めてください。
+`.agent/PLANS.md` に従い、13dの独立レビュー完了を確認した後、M3の `13e-map-overlay-redraw` を開始してください。pan中はoverlayのviewBox属性だけを同期し、route・label・marker DOMとlistenerを再生成しないことをcharacterization testで固定してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。

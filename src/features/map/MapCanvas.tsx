@@ -11,15 +11,17 @@ import {
   getAnchoredOverlayTransform,
 } from "./mapOverlayGeometry";
 import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
+import {
+  focusMapViewBox,
+  getProportionalMapViewBox,
+  panMapViewBox,
+  parseMapViewBox,
+  serializeMapViewBox,
+  zoomMapViewBoxAt,
+} from "./mapViewBox";
+import type { MapViewBox } from "./mapViewBox";
 import { getMeetUserUnitsPerPixel } from "./mapViewportScale";
 import { getPlaceCoordinates, getSvgElementCoordinates } from "./placeLocator";
-
-interface ViewBox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 
 interface MapCanvasProps {
   floorId?: string;
@@ -33,7 +35,7 @@ interface MapCanvasProps {
 }
 
 const DEFAULT_FLOOR_ID = "campus";
-const DEFAULT_VIEW_BOX: ViewBox = {
+const DEFAULT_VIEW_BOX: MapViewBox = {
   x: 0,
   y: 0,
   width: 1000,
@@ -367,54 +369,6 @@ function fetchSvg(svgUrl: string) {
   return svgRequest;
 }
 
-function extractNumericValue(value: string | null): number | null {
-  if (!value) return null;
-  const num = parseFloat(value);
-  return Number.isFinite(num) ? num : null;
-}
-
-function parseViewBox(svgElement: SVGSVGElement): ViewBox {
-  // Try viewBox attribute first
-  const viewBoxAttr = svgElement.getAttribute("viewBox");
-  if (viewBoxAttr !== null) {
-    const values = viewBoxAttr
-      .trim()
-      .split(/[\s,]+/)
-      .map(Number);
-
-    if (
-      values.length === 4 &&
-      values.every((value) => Number.isFinite(value)) &&
-      values[2] > 0 &&
-      values[3] > 0
-    ) {
-      return {
-        x: values[0],
-        y: values[1],
-        width: values[2],
-        height: values[3],
-      };
-    }
-
-    throw new Error("Invalid SVG viewBox");
-  }
-
-  // Fallback: try width/height attributes (e.g., for RQ2F which has no viewBox)
-  const width = extractNumericValue(svgElement.getAttribute("width"));
-  const height = extractNumericValue(svgElement.getAttribute("height"));
-
-  if (width && width > 0 && height && height > 0) {
-    return {
-      x: 0,
-      y: 0,
-      width,
-      height,
-    };
-  }
-
-  throw new Error("Invalid SVG viewBox");
-}
-
 function getFloorLabel(floorId: string) {
   return floorId.slice(floorId.lastIndexOf("-") + 1).toUpperCase();
 }
@@ -450,17 +404,6 @@ function screenPointToSvgWithMatrix(
   return { x: point.x, y: point.y };
 }
 
-function clampViewBoxSize(width: number, originalViewBox: ViewBox) {
-  const minWidth = originalViewBox.width / 8;
-  const maxWidth = originalViewBox.width * 2;
-  const clampedWidth = Math.min(Math.max(width, minWidth), maxWidth);
-
-  return {
-    width: clampedWidth,
-    height: originalViewBox.height * (clampedWidth / originalViewBox.width),
-  };
-}
-
 function isSameBuilding(floorId1: string, floorId2: string): boolean {
   for (const group of floorGroups) {
     const inGroup1 = group.includes(floorId1 as never);
@@ -470,35 +413,6 @@ function isSameBuilding(floorId1: string, floorId2: string): boolean {
     }
   }
   return false;
-}
-
-function getProportionalViewBox(
-  currentViewBox: ViewBox,
-  previousOriginalViewBox: ViewBox,
-  newOriginalViewBox: ViewBox,
-): ViewBox {
-  // Calculate relative position and size as percentages of previous sheet
-  const centerXPercent =
-    (currentViewBox.x + currentViewBox.width / 2 - previousOriginalViewBox.x) /
-    previousOriginalViewBox.width;
-  const centerYPercent =
-    (currentViewBox.y + currentViewBox.height / 2 - previousOriginalViewBox.y) /
-    previousOriginalViewBox.height;
-  const widthPercent = currentViewBox.width / previousOriginalViewBox.width;
-  const heightPercent = currentViewBox.height / previousOriginalViewBox.height;
-
-  // Apply percentages to new sheet
-  const newWidth = widthPercent * newOriginalViewBox.width;
-  const newHeight = heightPercent * newOriginalViewBox.height;
-  const newCenterX = newOriginalViewBox.x + centerXPercent * newOriginalViewBox.width;
-  const newCenterY = newOriginalViewBox.y + centerYPercent * newOriginalViewBox.height;
-
-  return {
-    x: newCenterX - newWidth / 2,
-    y: newCenterY - newHeight / 2,
-    width: newWidth,
-    height: newHeight,
-  };
 }
 
 export function MapCanvas({
@@ -523,7 +437,7 @@ export function MapCanvas({
   const onFloorChangeRef = useRef(onFloorChange);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [viewBox, setViewBox] = useState<ViewBox>(DEFAULT_VIEW_BOX);
+  const [viewBox, setViewBox] = useState<MapViewBox>(DEFAULT_VIEW_BOX);
   const [mapLabels, setMapLabels] = useState<MapLabel[]>([]);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const lastHandledFocusRequestRef = useRef<string | null>(null);
@@ -551,16 +465,16 @@ export function MapCanvas({
   const isCampusOnRoute = routeFloorIds.has(DEFAULT_FLOOR_ID);
 
   // Store original viewBox for zoom clamping calculation
-  const originalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
+  const originalViewBoxRef = useRef<MapViewBox>(DEFAULT_VIEW_BOX);
 
   // Track previous floor and its original viewBox for proportional mapping
   const previousFloorIdRef = useRef<string>(floorId);
-  const previousOriginalViewBoxRef = useRef<ViewBox>(DEFAULT_VIEW_BOX);
+  const previousOriginalViewBoxRef = useRef<MapViewBox>(DEFAULT_VIEW_BOX);
   // Pointer tracking for pan and pinch
   const gestureRef = useRef<{
     isPanning: boolean;
     isPinching: boolean;
-    startViewBox: ViewBox;
+    startViewBox: MapViewBox;
     panStartSvgPoint?: { x: number; y: number };
     panInverseScreenMatrix?: DOMMatrix;
     pinchStartDistance?: number;
@@ -640,7 +554,11 @@ export function MapCanvas({
         }
 
         const svgElement = document.documentElement as unknown as SVGSVGElement;
-        const initialViewBox = parseViewBox(svgElement);
+        const initialViewBox = parseMapViewBox({
+          viewBox: svgElement.getAttribute("viewBox"),
+          width: svgElement.getAttribute("width"),
+          height: svgElement.getAttribute("height"),
+        });
         svgElement.style.width = "100%";
         svgElement.style.height = "100%";
         if (sheet.id === "campus") {
@@ -694,7 +612,7 @@ export function MapCanvas({
           isSameBuilding(previousFloorId, floorIdRef.current)
         ) {
           // Same building floor switch: apply proportional mapping
-          newViewBox = getProportionalViewBox(
+          newViewBox = getProportionalMapViewBox(
             viewBox,
             previousOriginalViewBoxRef.current,
             initialViewBox,
@@ -728,24 +646,13 @@ export function MapCanvas({
 
   // Update SVG viewBox attribute
   useEffect(() => {
+    const serializedViewBox = serializeMapViewBox(viewBox);
     if (svgRef.current) {
-      svgRef.current.setAttribute(
-        "viewBox",
-        `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
-      );
+      svgRef.current.setAttribute("viewBox", serializedViewBox);
     }
-    markerLayerRef.current?.setAttribute(
-      "viewBox",
-      `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
-    );
-    routeLayerRef.current?.setAttribute(
-      "viewBox",
-      `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
-    );
-    labelLayerRef.current?.setAttribute(
-      "viewBox",
-      `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`,
-    );
+    markerLayerRef.current?.setAttribute("viewBox", serializedViewBox);
+    routeLayerRef.current?.setAttribute("viewBox", serializedViewBox);
+    labelLayerRef.current?.setAttribute("viewBox", serializedViewBox);
   }, [viewBox]);
 
   // 生成済みグラフのうち、表示中フロアに属する経路区間だけを描画する。
@@ -806,15 +713,14 @@ export function MapCanvas({
       return;
     }
 
-    const originalViewBox = originalViewBoxRef.current;
-    const focusedWidth = originalViewBox.width * FOCUS_VIEW_BOX_RATIO;
-    const focusedHeight = originalViewBox.height * FOCUS_VIEW_BOX_RATIO;
-    setViewBox({
-      x: coordinates.x - focusedWidth / 2,
-      y: coordinates.y - focusedHeight * FOCUS_VERTICAL_ANCHOR,
-      width: focusedWidth,
-      height: focusedHeight,
-    });
+    setViewBox(
+      focusMapViewBox(
+        originalViewBoxRef.current,
+        coordinates,
+        FOCUS_VIEW_BOX_RATIO,
+        FOCUS_VERTICAL_ANCHOR,
+      ),
+    );
   }, [currentPlace, destinationPlace, floorId, focusPlace, focusRequestKey, loading]);
 
   // 元SVGから抽出したラベルを、routeとmarkerの間の専用レイヤーへ描画する。
@@ -1052,19 +958,14 @@ export function MapCanvas({
         return;
       }
 
-      const anchorX = (zoomCenter.x - viewBox.x) / viewBox.width;
-      const anchorY = (zoomCenter.y - viewBox.y) / viewBox.height;
-      const { width, height } = clampViewBoxSize(
-        viewBox.width * zoomFactor,
-        originalViewBoxRef.current,
+      setViewBox(
+        zoomMapViewBoxAt(
+          viewBox,
+          originalViewBoxRef.current,
+          zoomCenter,
+          zoomFactor,
+        ),
       );
-
-      setViewBox({
-        x: zoomCenter.x - anchorX * width,
-        y: zoomCenter.y - anchorY * height,
-        width,
-        height,
-      });
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
@@ -1110,14 +1011,13 @@ export function MapCanvas({
     );
     if (!currentSvgPoint) return;
 
-    const deltaX = gestureRef.current.panStartSvgPoint.x - currentSvgPoint.x;
-    const deltaY = gestureRef.current.panStartSvgPoint.y - currentSvgPoint.y;
-
-    setViewBox({
-      ...gestureRef.current.startViewBox,
-      x: gestureRef.current.startViewBox.x + deltaX,
-      y: gestureRef.current.startViewBox.y + deltaY,
-    });
+    setViewBox(
+      panMapViewBox(
+        gestureRef.current.startViewBox,
+        gestureRef.current.panStartSvgPoint,
+        currentSvgPoint,
+      ),
+    );
   };
 
   const handlePointerUp = () => {
@@ -1181,19 +1081,14 @@ export function MapCanvas({
     }
 
     const scale = pinchStartDistance / currentDistance;
-    const anchorX = (pinchCenter.x - startViewBox.x) / startViewBox.width;
-    const anchorY = (pinchCenter.y - startViewBox.y) / startViewBox.height;
-    const { width, height } = clampViewBoxSize(
-      startViewBox.width * scale,
-      originalViewBoxRef.current,
+    setViewBox(
+      zoomMapViewBoxAt(
+        startViewBox,
+        originalViewBoxRef.current,
+        pinchCenter,
+        scale,
+      ),
     );
-
-    setViewBox({
-      x: pinchCenter.x - anchorX * width,
-      y: pinchCenter.y - anchorY * height,
-      width,
-      height,
-    });
   };
 
   const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
