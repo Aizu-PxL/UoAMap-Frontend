@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13m完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM7完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM7 13m `docs/tasks/13m-route-editor-history.md` まで完了。history state作成・record・undo・redo・resetとeditable snapshot比較をimmutable pure state machineへ移し、inline editorにはsnapshot採取・復元とdrag/continuous-input境界を残した。no-op、正の整数上限・100件上限、redo破棄、reset、計画読込1操作、nextQrNumber非巻戻しを固定。100 tests / 536 assertions、`verify:route-editor`、build、36 places、104 nodes / 112 edges、git diff --checkがPASS。Vite配信で全10 SVG読込、QR追加→Undo→Redo→Undo、再追加Q002による連番非巻戻し、console error 0件を確認した。初回独立レビューのP3（limit=0上限不整合）を正の整数制約と0/1境界testで修正し、再レビューで指摘なし。次はM7 `13n-route-editor-route-xml`。
+リポジトリ横断リファクタリングはM7 13n `docs/tasks/13n-route-editor-route-xml.md` まで完了。Route group生成、attribute escape、座標3桁format、既存Route置換、未存在時appendをpure coreへ移し、inline editorにはMapState配列化とBlob/downloadだけを残した。属性順、truthy optional属性、node→edge順、unknown endpoint、indent fallback/改行をexact stringで固定。105 tests / 551 assertions、`verify:route-editor`、build、36 places、104 nodes / 112 edges、git diff --checkがPASS。Vite配信で全10 SVG読込、キャンパスSVG download、console error 0件を確認した。初回独立レビューのP3（indent fallback・空optional test不足）を修正し、再レビューで指摘なし。13nとM7を完了し、次はM8 `13o-refactor-final-integration`。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13mの独立レビュー完了を確認した後、M7の `13n-route-editor-route-xml` を開始してください。Route group生成・既存Route置換・未存在時appendをexact-string testで固定してpure coreへ移してください。
+`.agent/PLANS.md` に従い、13nの独立レビュー完了を確認した後、M8の `13o-refactor-final-integration` を開始してください。synthetic testと実グラフcoverageを分離し、verify:all・限定的dead code整理・文書更新後、5b37580以降の累積差分を履歴なし独立レビューしてください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。

@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M6完了、M7進行中（13m完了、13n開始可能）**
+状態: **M7完了、M8開始可能**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -203,7 +203,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13m-route-editor-history.md` を作成し、history state作成・record・undo・redo・resetとeditable snapshot比較を `tools/route-editor/history.ts` のimmutable pure state machineへ抽出。inline editorにはsnapshot採取・復元とイベント境界を維持した。
 - [x] 2026-07-22: no-op非記録、before/after復元、redo破棄、正の整数上限・100件上限、reset、計画JSON読込1操作、nextQrNumber非巻戻し、SVG読込・drag・連続入力境界を6件28 assertionsで固定。全体100 tests / 536 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信で全10 SVG読込、QR追加→Undo→Redo→Undo、再追加がQ002となる非巻戻し、console error 0件を確認した。
 - [x] 2026-07-22: 13m初回独立レビューのP3（limit=0で上限不整合）を、正の整数制約とlimit=0/1境界testで修正。全ゲート再実行後の再レビューで指摘なし。13mを完了した。
-- [ ] 次: M7の `13n-route-editor-route-xml` を開始する。
+- [x] 2026-07-22: `docs/tasks/13n-route-editor-route-xml.md` を作成し、Route group生成、attribute escape、座標format、既存Route置換、未存在時appendを `tools/route-editor/routeXml.ts` へ抽出。inline editorはMapState配列化とBlob/downloadだけを担当する境界へ変更した。
+- [x] 2026-07-22: 属性/optional属性/node→edge順、escape、3桁丸め、unknown endpoint、indent fallback/改行、既存置換、appendを5件15 assertionsのexact-string testで固定。全体105 tests / 551 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信で全10 SVG読込、キャンパスSVG download、console error 0件を確認した。
+- [x] 2026-07-22: 13n初回独立レビューのP3（indent fallbackと空optional属性のtest不足）を3種fallbackのexact assertionで修正。全ゲート再実行後の再レビューで指摘なし。13nとM7を完了した。
+- [ ] 次: M8の `13o-refactor-final-integration` を開始する。
 
 ## 8. 判断と発見
 
@@ -220,12 +223,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M7 13mの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13m-route-editor-history.md` のSCOPE全体をレビューして閉じる。
-4. `docs/tasks/13n-route-editor-route-xml.md` を作り、Route group生成・既存Route置換・未存在時appendのexact stringをcharacterization testで固定する。
-5. partial-loadを許すeditor簡易検証と正式抽出器は無理に共通化せず、XML生成だけをpure coreへ移す。
+3. M7 13nの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13n-route-editor-route-xml.md` のSCOPE全体をレビューして閉じる。
+4. M8の `docs/tasks/13o-refactor-final-integration.md` を作り、syntheticアルゴリズムtestと実グラフcoverageを分離する。
+5. `verify:all`、限定的dead code削除、README/STATUS/HANDOFF/ExecPlan更新を行い、基準コミット`5b37580`以降の累積差分を履歴なし独立レビューする。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13mの独立レビュー完了を確認した後、M7の `13n-route-editor-route-xml` を開始してください。Route group生成・既存Route置換・未存在時appendをexact-string testで固定してpure coreへ移してください。
+`.agent/PLANS.md` に従い、13nの独立レビュー完了を確認した後、M8の `13o-refactor-final-integration` を開始してください。synthetic testと実グラフcoverageを分離し、verify:all・限定的dead code整理・文書更新後、5b37580以降の累積差分を履歴なし独立レビューしてください。
 ```

@@ -549,10 +549,104 @@
     undoEditorHistory
   };
 
+  // tools/route-editor/routeXml.ts
+  function escapeXmlAttribute(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function formatRouteCoordinate(value) {
+    return String(Math.round(value * 1000) / 1000);
+  }
+  function buildRouteGroupXml(input) {
+    const indent = input.routeIndent || "    ";
+    const childIndent = `${indent}  `;
+    const attributes = ['id="Route"'];
+    if (input.groupFloorId) {
+      attributes.push(`data-floor-id="${escapeXmlAttribute(input.groupFloorId)}"`);
+    }
+    attributes.push('style="display:none"');
+    let output = `${indent}<g
+${indent}   ${attributes.join(`
+${indent}   `)}>`;
+    for (const node of input.nodes) {
+      output += `
+${childIndent}<circle`;
+      output += `
+${childIndent}   id="${escapeXmlAttribute(node.id)}"`;
+      output += `
+${childIndent}   data-route-node=""`;
+      output += `
+${childIndent}   data-kind="${escapeXmlAttribute(node.kind)}"`;
+      if (node.placeId) {
+        output += `
+${childIndent}   data-place-id="${escapeXmlAttribute(node.placeId)}"`;
+      }
+      if (node.stairId) {
+        output += `
+${childIndent}   data-stair-id="${escapeXmlAttribute(node.stairId)}"`;
+      }
+      if (node.entranceId) {
+        output += `
+${childIndent}   data-entrance-id="${escapeXmlAttribute(node.entranceId)}"`;
+      }
+      output += `
+${childIndent}   cx="${formatRouteCoordinate(node.x)}"`;
+      output += `
+${childIndent}   cy="${formatRouteCoordinate(node.y)}"`;
+      output += `
+${childIndent}   r="2" />`;
+    }
+    const nodeById = new Map(input.nodes.map((node) => [node.id, node]));
+    for (const edge of input.edges) {
+      const start = nodeById.get(edge.a);
+      const end = nodeById.get(edge.b);
+      const path = start && end ? `M ${formatRouteCoordinate(start.x)} ${formatRouteCoordinate(start.y)} L ${formatRouteCoordinate(end.x)} ${formatRouteCoordinate(end.y)}` : "";
+      output += `
+${childIndent}<path`;
+      output += `
+${childIndent}   id="${escapeXmlAttribute(edge.id)}"`;
+      output += `
+${childIndent}   data-route-edge=""`;
+      output += `
+${childIndent}   data-node-a="${escapeXmlAttribute(edge.a)}"`;
+      output += `
+${childIndent}   data-node-b="${escapeXmlAttribute(edge.b)}"`;
+      output += `
+${childIndent}   d="${path}" />`;
+    }
+    output += `
+${indent}</g>`;
+    return output;
+  }
+  function replaceRouteGroupInSvg(rawSvg, routeXml) {
+    const routePattern = /[ \t]*<g\b[^>]*\bid="Route"[\s\S]*?<\/g>/;
+    if (routePattern.test(rawSvg)) {
+      return rawSvg.replace(routePattern, () => routeXml.replace(/^[ \t]+/, ""));
+    }
+    return rawSvg.replace(/<\/svg>\s*$/, () => `${routeXml}
+</svg>
+`);
+  }
+  function buildFullSvg(input) {
+    return replaceRouteGroupInSvg(input.rawSvg, buildRouteGroupXml({
+      routeIndent: input.routeIndent,
+      groupFloorId: input.groupFloorId,
+      nodes: input.nodes,
+      edges: input.edges
+    }));
+  }
+  var routeEditorRouteXml = {
+    buildFullSvg,
+    buildRouteGroupXml,
+    escapeXmlAttribute,
+    formatRouteCoordinate,
+    replaceRouteGroupInSvg
+  };
+
   // tools/route-editor/configEntry.ts
   globalThis.UOAMAP_ROUTE_EDITOR_CONFIG = routeEditorRuntimeConfig;
   globalThis.UOAMAP_ROUTE_EDITOR_PLAN_IO = routeEditorPlanIo;
   globalThis.UOAMAP_ROUTE_EDITOR_HISTORY = routeEditorHistory;
+  globalThis.UOAMAP_ROUTE_EDITOR_ROUTE_XML = routeEditorRouteXml;
 })();
 </script>
 <!-- route-editor:generated:end -->
@@ -584,6 +678,7 @@ const {
   resetEditorHistory,
   undoEditorHistory,
 } = globalThis.UOAMAP_ROUTE_EDITOR_HISTORY;
+const { buildFullSvg: buildFullSvgCore } = globalThis.UOAMAP_ROUTE_EDITOR_ROUTE_XML;
 
 /* ==== 状態 ==== */
 const state = {
@@ -1501,43 +1596,14 @@ $("exportPlacesBtn").onclick=()=>{
 };
 
 /* ==== 書き出し ==== */
-function buildRouteGroup(ms){
-  const ind = ms.routeIndent || "    ", ind2 = ind + "  ";
-  const attrs = ['id="Route"'];
-  if (ms.groupFloorId) attrs.push(`data-floor-id="${esc(ms.groupFloorId)}"`);
-  attrs.push('style="display:none"');
-  let out = `${ind}<g\n${ind}   ${attrs.join(`\n${ind}   `)}>`;
-  for (const n of ms.nodes.values()){
-    out += `\n${ind2}<circle`;
-    out += `\n${ind2}   id="${esc(n.id)}"`;
-    out += `\n${ind2}   data-route-node=""`;
-    out += `\n${ind2}   data-kind="${esc(n.kind)}"`;
-    if (n.placeId) out += `\n${ind2}   data-place-id="${esc(n.placeId)}"`;
-    if (n.stairId) out += `\n${ind2}   data-stair-id="${esc(n.stairId)}"`;
-    if (n.entranceId) out += `\n${ind2}   data-entrance-id="${esc(n.entranceId)}"`;
-    out += `\n${ind2}   cx="${fmt(n.x)}"`;
-    out += `\n${ind2}   cy="${fmt(n.y)}"`;
-    out += `\n${ind2}   r="2" />`;
-  }
-  for (const e of ms.edges.values()){
-    const a = ms.nodes.get(e.a), b = ms.nodes.get(e.b);
-    const d = (a&&b) ? `M ${fmt(a.x)} ${fmt(a.y)} L ${fmt(b.x)} ${fmt(b.y)}` : "";
-    out += `\n${ind2}<path`;
-    out += `\n${ind2}   id="${esc(e.id)}"`;
-    out += `\n${ind2}   data-route-edge=""`;
-    out += `\n${ind2}   data-node-a="${esc(e.a)}"`;
-    out += `\n${ind2}   data-node-b="${esc(e.b)}"`;
-    out += `\n${ind2}   d="${d}" />`;
-  }
-  out += `\n${ind}</g>`;
-  return out;
-}
 function buildFullSvg(ms){
-  const routeXml = buildRouteGroup(ms);
-  const raw = ms.rawSvg;
-  const re = /[ \t]*<g\b[^>]*\bid="Route"[\s\S]*?<\/g>/;
-  if (re.test(raw)) return raw.replace(re, ()=> routeXml.replace(/^[ \t]+/, ""));
-  return raw.replace(/<\/svg>\s*$/, ()=> `${routeXml}\n</svg>\n`);
+  return buildFullSvgCore({
+    rawSvg:ms.rawSvg,
+    routeIndent:ms.routeIndent,
+    groupFloorId:ms.groupFloorId,
+    nodes:[...ms.nodes.values()],
+    edges:[...ms.edges.values()],
+  });
 }
 function downloadSvg(ms){
   const blob = new Blob([buildFullSvg(ms)], { type:"image/svg+xml" });
