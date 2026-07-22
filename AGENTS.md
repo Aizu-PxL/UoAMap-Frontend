@@ -24,6 +24,13 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 - `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で36件PASSを確認する
 - 開発コマンド: `bun run dev` / `bun run build`(build は tsc -b を含むため型チェックを兼ねる)/ `bun run verify:places`
 
+## ExecPlanとリポジトリ横断リファクタリング
+
+- 重要な機能追加またはリポジトリ横断リファクタリングでは、[.agent/PLANS.md](.agent/PLANS.md) に従うExecPlanを設計から実装完了まで使用する
+- 現在のリファクタリング計画は [.agent/refactor-plan.md](.agent/refactor-plan.md)。新しいスレッドでは実装前に現行コードと基準検証を再確認し、計画が古ければ根拠つきで更新する
+- ExecPlanは上位計画であり、実装は [docs/WORKFLOW.md](docs/WORKFLOW.md) に従って小さな `docs/tasks/13x-*.md` に分け、各スライスで検証・STATUS更新・独立レビューまで完了する
+- 外部挙動、URL・props・Repository・データ形式・SVG IDを維持し、必要性のない依存追加、一括整形、機械的なファイル移動、テストや型検査の弱体化を行わない
+
 ## Review guidelines
 
 - 対象ブリーフと `docs/SPEC.md` の該当節に照合し、仕様逸脱、SCOPE外変更、受入基準の未達、既存ID・React/SVG境界の破壊を優先して探す

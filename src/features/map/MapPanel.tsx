@@ -1,5 +1,9 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { useNavState } from "../../app/useNavState";
+import {
+  createNextMapFocusRequestState,
+  setFocusSearchParams,
+} from "../../app/navigationSearch";
 
 export function MapPanel() {
   const navigate = useNavigate();
@@ -15,15 +19,10 @@ export function MapPanel() {
   } = useNavState();
 
   const focusOn = (placeId: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("focus", placeId);
-    const previousNonce =
-      typeof location.state?.mapFocusRequestNonce === "number"
-        ? location.state.mapFocusRequestNonce
-        : 0;
+    const params = setFocusSearchParams(searchParams, placeId);
     navigate(
       { pathname: "/", search: params.toString() },
-      { state: { mapFocusRequestNonce: previousNonce + 1 } },
+      { state: createNextMapFocusRequestState(location.state) },
     );
   };
 

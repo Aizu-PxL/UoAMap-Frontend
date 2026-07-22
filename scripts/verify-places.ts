@@ -2,9 +2,9 @@ import * as fs from "fs";
 import * as path from "path";
 import { places, mapSheets, floors } from "../src/data/places.js";
 
-type MappedPlace = Exclude<
+type MappedPlace = Extract<
   (typeof places)[number],
-  { mapping: "unmapped" }
+  { mapping: "svg" }
 >;
 
 // places.ts から mapping: "svg" な地点だけをフィルタリング

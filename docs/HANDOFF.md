@@ -1,10 +1,20 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-21(講義棟SVGをフロア別分割)
-対象ブランチ: `feature/takami-makeFront`
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM1〜M8完了)
+対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
+
+リポジトリ横断リファクタリングはM1〜M8まで完了。M8では最短経路の6 synthetic testsと19実グラフcoverage testsを分離し、全体105 tests / 551 assertionsを維持した。`bun run verify:all` はroute editor生成鮮度、scripts/toolsを含むstrict型検査、production build、36 places、104 nodes / 112 edges、git diff --checkまでPASS。安全に削除できる明白なdead codeは参照検索で見つからず、削除していない。幅402pxの代表URLとVite配信のroute editor主要操作はconsole error 0件。基準コミット `5b37580` 以降の累積差分を会話履歴なしで独立レビューし、指摘なし。
+
+開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
+
+開始プロンプト:
+
+```text
+`.agent/refactor-plan.md` のM1〜M8完了を確認し、次に着手する機能を `docs/SPEC.md` と `docs/BACKLOG.md` から選んで別ブリーフを作成してください。本番公開や物理QRの場合は先に `docs/PRODUCTION.md` の人間決定ゲートを確認してください。
+```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
 
@@ -23,7 +33,7 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 | 03g | 講義棟1F/2Fと階段接続 | `84ca52e` |
 | 03h | LICTiAの屋内外ルート | `4ddbd9b` |
 | 03i | 研究棟建物地点・ロボット格納庫・全地点coverage | `0189530` |
-| 08 | 講義棟SVGを1F/2Fへ分割し複数フロア専用処理を撤去 | 未コミット |
+| 08 | 講義棟SVGを1F/2Fへ分割し複数フロア専用処理を撤去 | `d6d7915` |
 
 詳細なSCOPE・設計判断・受入結果は `docs/tasks/03d-*.md`〜`03i-*.md` を参照する。
 
@@ -43,39 +53,39 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 ## 実装上の要点
 
+- URL状態更新は `src/app/navigationSearch.ts` が正。各関数は入力 `URLSearchParams` を変更せず新しいインスタンスを返し、目的地設定、地点focus、QR解決後の現在地、イベントhighlightの保持・削除規則を統一する
+- `MapPanel` の再フォーカスは同モジュールの `createNextMapFocusRequestState` で `mapFocusRequestNonce` を1ずつ増やす。URLが同じでも再フォーカスできる現行挙動を維持する
+- MapCanvasのイベントマーカーは共通関数で既存クエリを保持し、`/events?highlight=:eventId` へ遷移する
 - Routeの正は `public/maps/*.svg` の `Route` グループ。生成物は `src/features/routing/generated/routeGraph.json`
 - `bun run generate:routes` でSVGからグラフを再生成し、`bun run verify:routes` で生成差分と構造を検証する
 - すべての地図を1 SVG = 1 Floorで管理し、Routeグループの`data-floor-id`をシート唯一のFloorと一致させる。詳しい作図契約は [MAP_AUTHORING.md](MAP_AUTHORING.md)
 - 03dで導入した複数フロアSVG抽出は08で廃止した。講義棟は`LH1F_base_plain.svg`と`LH2F_base_plain.svg`が正本
 - 同じ `data-stair-id` の隣接階ノード間にコスト60、同じ `data-entrance-id` の建物側・キャンパス側ノード間にコスト0のtransfer edgeを生成する
 - `MapCanvas` は経路が存在するフロアだけでなく、乗換地点だけを含むフロアも表示対象として扱う
-- 全Place coverage、全ノードの単一連結性、全イベント地点、Q001〜Q003は `src/features/routing/findShortestRoute.test.ts` で固定している
+- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全Place coverage、全ノードの単一連結性、全イベント地点、Q001〜Q003は `src/features/routing/routeGraphCoverage.test.ts` で固定している
 - `campus-all` は意図的な唯一のRoute非収録Place。URLで指定されてもクラッシュせず「位置情報なし」として扱う
 
 ## 最終検証結果
 
-2026-07-21時点で以下を確認済み。
+2026-07-22のM8 13o実装完了時点で以下を確認済み。
 
 ```text
-bun test               36 tests / 0 fail / 367 expect() calls
+bun run verify:all     PASS
+bun test               105 tests / 0 fail / 551 expect() calls
+bun run build          PASS（route editor鮮度、strict型検査、Vite build）
 bun run verify:routes  104 nodes / 112 edges
 bun run verify:places  36件すべてPASS
-bun run build          PASS（tsc -bを含む）
 git diff --check       PASS
 ```
 
 幅402pxのブラウザで学生ホール、UBIC、講義棟、LICTiA、ロボット格納庫について建物内経路と他建物からの横断経路を確認済み。05aでは実QR画像からQ003 URLを復号し、`to=M21`を保持した初回スキャン（`at=lh-large`）と再スキャン（`at=sh-hall`）で経路が講義棟内からキャンパス横断へ更新されること、`focus`解除、カメラ再起動・再試行、コンソールエラーなしを確認した。QR画面は幅320px・402px・430pxで254px正方形を維持し、横スクロールなし。代表URLは [STATUS.md](STATUS.md) の検証表に掲載している。
 
-08では講義棟を1F/2Fの別SVGへ分割し、幅402px・1440×900と再読み込みなしの幅変更で表示・ルート・マーカー・ラベルを確認した。ルート編集ツールは全10マップを読み込み、講義棟1F/2Fを個別に検証できる。Routeグラフは104ノード/112エッジのまま変更なし。
+M8では幅402pxで `/?at=rq1-161&to=P12`、`/events?highlight=P20`、`/q/Q003?to=M21` の経路・highlight・URL正規化を確認した。ルート編集ツールはVite配信1440×900で全10マップ、Undo/Redo、自動採番非巻戻し、キャンパスSVG downloadを確認した。Browser security policyが `file://` を拒否し、ファイル入力APIも提供しないため、`file://` と計画JSON再読込のブラウザ自動操作は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度・pure parse exact testで補完している。
 
 再開時の最低限の健全性確認:
 
 ```bash
-bun test
-bun run verify:routes
-bun run verify:places
-bun run build
-git diff --check
+bun run verify:all
 ```
 
 ## 確定事項と要確認事項

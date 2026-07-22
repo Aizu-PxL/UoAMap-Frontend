@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
   createQrLandingLocation,
-  createResolvedQrSearch,
   extractQrIdFromAppUrl,
 } from "./qrValue";
+import { setResolvedQrSearchParams } from "../../app/navigationSearch";
 
 describe("extractQrIdFromAppUrl", () => {
   const appUrl = "https://map.example.jp/qr?to=M21";
@@ -73,8 +73,9 @@ describe("QRスキャン後のURL状態", () => {
   });
 
   test("初回スキャンは現在地を追加して目的地を保持する", () => {
-    const result = new URLSearchParams(
-      createResolvedQrSearch(new URLSearchParams("to=M21"), "lh-large"),
+    const result = setResolvedQrSearchParams(
+      new URLSearchParams("to=M21"),
+      "lh-large",
     );
 
     expect(result.get("at")).toEqual("lh-large");
@@ -83,11 +84,9 @@ describe("QRスキャン後のURL状態", () => {
   });
 
   test("再スキャンは目的地を変えず現在地だけ更新しfocusを解除する", () => {
-    const result = new URLSearchParams(
-      createResolvedQrSearch(
-        new URLSearchParams("at=sh-hall&to=M21&focus=rq1-161"),
-        "lh-large",
-      ),
+    const result = setResolvedQrSearchParams(
+      new URLSearchParams("at=sh-hall&to=M21&focus=rq1-161"),
+      "lh-large",
     );
 
     expect(result.get("at")).toEqual("lh-large");

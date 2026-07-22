@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-21(ルートエディタ Undo / Redo)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM1〜M8完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -18,6 +18,61 @@
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
 最新ルート実装コミット: `0189530 全案内地点のルート対応を完了`
+
+## リポジトリ横断リファクタリング
+
+本体コードを一括変更せず、小スライスで進めるための準備を `docs/tasks/13a-refactor-preparation.md` で行い、M1を `docs/tasks/13b-navigation-search-refactor.md`、M2を `docs/tasks/13c-route-presentation.md` で完了した。
+
+- ExecPlan規約: `.agent/PLANS.md`
+- 現行コードの監査根拠・実装順・受入基準: `.agent/refactor-plan.md`
+- リポジトリ固有Codex設定の非適用サンプル: `.codex/config.toml.example`
+- M1: `src/app/navigationSearch.ts` に目的地、地点focus、QR解決後の現在地、イベントhighlight、再フォーカスnonceの純粋な更新規則を集約
+- M1テスト: 入力非破壊、無関係なクエリ保持、`to`保持、`focus`削除、MapCanvasから `/events?highlight=...` への遷移規則を6件のcharacterization testで固定
+- M2: `createRoutePresentation(routeEdges, routeNodes)` でroute floor、フロア別walk edge、transfer nodeを一度だけ導出し、`MapCanvas` から生成 `routeGraph` の直接参照を除去
+- M2テスト: transfer-onlyフロア、transfer node重複排除、未知endpoint無視、実グラフの正逆経路を4件のcharacterization testで固定
+- M2検証: 49 tests / 412 assertions、104 nodes / 112 edges、36 places、build、幅402pxの複数階・建物横断・逆向き、console error 0件
+- M2レビュー: P2 2件と検証件数のP3を解消し、最終独立レビューで指摘なし
+- M3 13d: `src/features/map/mapViewBox.ts` へviewBox解析・fallback・focus・anchor zoom・pan・フロア間比例変換・文字列化を純粋関数として抽出。`getScreenCTM().inverse()` とgesture/SVG load所有はMapCanvasに維持
+- M3 13d検証: 57 tests / 424 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900 live resize、focus、フロア切替、wheel、Ctrl+wheel pinch相当、pan、console error 0件
+- M3 13dレビュー: 会話履歴なし読み取り専用レビューで指摘なし
+- M3 13e: overlay再生成キーをviewBox width/heightとcontainer width/heightだけから導出し、pan中のx/y変更では元SVGと3 overlayのviewBox属性だけを同期
+- M3 13e検証: 60 tests / 427 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900でpan時のroute/label/marker子HTML不変、zoom/resize時の画面固定サイズ更新、console error 0件
+- M3 13eレビュー: 会話履歴なし読み取り専用レビューで指摘なし
+- M3 13f: `createMapMarkerPresentation` へ同一placeの先頭イベント代表、キャンパス建物・屋外place集約、pin優先、event→current→destination→focusの描画順、floor/event actionを抽出。座標・floor→sheet・place resolverを注入し、DOM生成とRouter遷移はMapCanvasに維持
+- M3 13f検証: 64 tests / 431 assertions、104 nodes / 112 edges、36 places、build、幅402pxで建物badge、同一place集約、floor/event action、既存クエリ保持、pin優先と描画順、console error 0件
+- M3 13fレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M3完了
+- M4 13g: `DataProvider` にRepositoryを注入し、Provider単位のmemoized loader、Repository context、`useRepository()` を追加。Appが`mockRepository`を選択し、QrLandingも同じ注入Repositoryを利用。具体singleton exportを削除
+- M4 13g検証: 67 tests / 438 assertions、104 nodes / 112 edges、36 places、build、幅402pxで `/q/Q003?to=M21` 成功・未知QR・注入Repository失敗、既存クエリ保持、console error 0件
+- M4 13gレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M4完了
+- M5 13h: 地点名resolverを受け取る `filterEventsByCriteria` へID・タイトル・説明・地点名の部分一致とタグAND条件を抽出。trim、大文字小文字、空白のみ、未知タグ、未知地点、入力順維持を固定し、highlight/scroll処理は不変
+- M5 13h検証: 71 tests / 447 assertions、104 nodes / 112 edges、36 places、build、幅402pxで「AI」7件、研究室公開併用5件、0件表示、`highlight=P20` 対象カード、console error 0件
+- M5 13hレビュー: P3文書参照を修正し、再レビューで指摘なし
+- M5 13i: BottomSheetのURL依存を `expandRequestKey` propへ置換し、AppLayoutがhighlightを渡す。22/58/82svhのclamp・drag換算・nearest・double-click・展開を純粋化し、window pointer listenerを削除してcapture済みdrag-zone handlerへ集約
+- M5 13i検証: 76 tests / 454 assertions、104 nodes / 112 edges、36 places、build、幅402pxでdouble-click 58→82→22→58、marker highlightで22→58展開、console error 0件。pointer drag計算は純粋テストで上下clamp・snapを確認
+- M5 13iレビュー: 会話履歴なし読み取り専用レビューで指摘なし。M5完了
+- M6 13j: `extractRouteGraph({sources,mapSheets,floors,places})` とserializerへ解析・検証・stair/entrance transfer・sortを移し、CLIをI/O・`--check`・表示・終了だけに縮小。`@types/bun@1.3.14` とscripts/tools strict tsconfigをbuildへ追加
+- M6 13j検証: 84 tests / 477 assertions、104 nodes / 112 edges、36 places、build。実10 SVGの生成JSON完全バイト一致、主要な不正fixture、generate後のJSON差分ゼロ、git diff --checkを確認
+- M6 13jレビュー: P3のSCOPE記載漏れを修正し、再レビューで指摘なし。M6完了
+- M7 13k: route editorのmap/floor設定を `tools/route-editor/config.ts` へ移し、places/mapSheets/floors・全10 SVGとの同期を自動検証。Bun IIFEをHTML markerへ埋め込むgenerate/checkとbuild鮮度検証を追加し、単一HTML・外部scriptなしを維持
+- M7 13k検証: 88 tests / 488 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で起動・代表モード切替・console error 0件を確認。Browser security policyとファイル入力API制約により、`file://`と全10 SVGのブラウザ自動取込は未実施。単一HTML、外部scriptなし、全10ファイル同期、生成鮮度は自動検証済み
+- M7 13kレビュー: P2のFloor短縮表示名同期を純粋規則と全Floor assertionで修正し、再レビューで指摘なし。13k完了
+- M7 13l: schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化をpure coreへ移し、generated IIFE globalからinline editorへ接続。情報用floor/x/yは保存するが読込時はSVGノードを正として無視する契約を維持
+- M7 13l検証: plan I/O 6 tests / 20 assertions、全体94 tests / 508 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完
+- M7 13lレビュー: P2のnull要素受理とP3の既知sheet・未知nodeのfloor消失を修正し、再レビューで指摘なし。13l完了
+- M7 13m: history state作成・record・undo・redo・resetとeditable snapshot比較をimmutable pure state machineへ移動。selection/current sheetをno-op判定から除外し、nextQrNumberをsnapshot外のまま維持。inline editorにはsnapshot採取・復元とdrag/continuous-input境界を残した
+- M7 13m検証: history 6 tests / 28 assertions、全体100 tests / 536 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で全10 SVG読込、QR追加→Undo→Redo→Undo、再追加Q002による連番非巻戻し、console error 0件を確認
+- M7 13mレビュー: P3のlimit=0上限不整合を正の整数制約と0/1境界testで修正し、再レビューで指摘なし。13m完了
+- M7 13n: Route group生成、attribute escape、座標3桁format、既存Route置換、未存在時appendをpure coreへ移動。inline editorはMapState配列化とBlob/downloadだけを担当し、partial-load簡易検証と正式抽出器は共通化していない
+- M7 13n検証: Route XML 5 tests / 15 assertions、全体105 tests / 551 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で全10 SVG読込、キャンパスSVG download、console error 0件を確認
+- M7 13nレビュー: P3のindent fallback・空optional test不足を3種fallbackのexact assertionで修正し、再レビューで指摘なし。13nとM7完了
+- M8 13o: 最短経路の6 synthetic testsと、全Place・event・QR・連結性・建物/階段/入口を固定する19実グラフcoverage testsを別ファイルへ分離。test/assertion総数は105 / 551のまま維持
+- M8 13o検証: `bun run verify:all` で全test、route editor鮮度、scripts/toolsを含むstrict型検査、production build、36 places、104 nodes / 112 edges、git diff --checkがPASS。幅402pxで代表3 URL、route editorはVite配信1440×900で全10 SVG・Undo/Redo・自動採番非巻戻し・SVG downloadを確認し、console error 0件
+- M8 13o整理: 全exportと動的参照を検索し、安全に削除できる明白なdead codeがなかったため削除なし。READMEを現行手順へ更新。将来の別SVG機能は追加せず、地図設定と `public/maps/` の同期漏れをtestでFAILさせる境界を維持
+- 自動化制約: Browser security policyにより `file://`、ファイル入力API制約により計画JSON再読込のブラウザ自動操作は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度とpure parse exact testで補完
+- M8 13oレビュー: 基準コミット `5b37580` 以降の累積差分を会話履歴なしで独立レビューし、指摘なし。M1〜M8完了
+- 次の開始位置: リファクタリングの追加作業はなく、SPECロードマップのAPI接続など次機能を別ブリーフで開始する。本番公開・物理QRは `docs/PRODUCTION.md` の人間決定が先
+
+リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 
 ## 本番公開準備
 
@@ -43,6 +98,7 @@ QR候補は歩行可能なRouteノードにのみ置き、既存Placeを再利�
 ## 動作確認手順(検証ゲート)
 
 ```bash
+bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる

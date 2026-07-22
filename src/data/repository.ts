@@ -1,5 +1,4 @@
 import type { Event, QrResolution, Tag } from "./types";
-import { mockRepository } from "./mock/mockRepository";
 
 // docs/API.md の契約に対応するデータ取得層。
 // UIはこのインターフェースだけに依存し、バックエンド完成時は
@@ -13,5 +12,3 @@ export interface Repository {
   /** GET /api/qrs/{qrId} 相当。未知のqrIdはnull */
   resolveQr(qrId: string): Promise<QrResolution | null>;
 }
-
-export const repository: Repository = mockRepository;

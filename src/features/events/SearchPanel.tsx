@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { useCampusData } from "../../data/DataProvider";
 import { getPlace } from "../../data/places";
-import type { Event as CampusEvent } from "../../data/types";
 import { EventCard } from "./EventCard";
+import { filterEventsByCriteria } from "./eventSearch";
 
 export function SearchPanel() {
   const { events, tags, loading, error } = useCampusData();
@@ -20,7 +20,12 @@ export function SearchPanel() {
   }, []);
 
   const filteredEvents = useMemo(
-    () => filterEvents(events, query, activeTagId),
+    () =>
+      filterEventsByCriteria(
+        events,
+        { query, tagIds: activeTagId ? [activeTagId] : [] },
+        (placeId) => getPlace(placeId)?.name ?? null,
+      ),
     [events, query, activeTagId],
   );
 
@@ -131,19 +136,4 @@ export function SearchPanel() {
       </div>
     </div>
   );
-}
-
-function filterEvents(events: CampusEvent[], query: string, tagId: string | null): CampusEvent[] {
-  const normalizedQuery = query.trim().toLowerCase();
-  return events.filter((event) => {
-    if (tagId && !event.tags.includes(tagId)) {
-      return false;
-    }
-    if (normalizedQuery === "") {
-      return true;
-    }
-    const placeName = getPlace(event.placeId)?.name ?? "";
-    const haystack = `${event.id} ${event.title} ${event.description} ${placeName}`.toLowerCase();
-    return haystack.includes(normalizedQuery);
-  });
 }
