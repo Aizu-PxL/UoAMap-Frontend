@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13d完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM3 13e完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -35,7 +35,10 @@
 - M3 13d: `src/features/map/mapViewBox.ts` へviewBox解析・fallback・focus・anchor zoom・pan・フロア間比例変換・文字列化を純粋関数として抽出。`getScreenCTM().inverse()` とgesture/SVG load所有はMapCanvasに維持
 - M3 13d検証: 57 tests / 424 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900 live resize、focus、フロア切替、wheel、Ctrl+wheel pinch相当、pan、console error 0件
 - M3 13dレビュー: 会話履歴なし読み取り専用レビューで指摘なし
-- 次の開始位置: M3の `13e-map-overlay-redraw`
+- M3 13e: overlay再生成キーをviewBox width/heightとcontainer width/heightだけから導出し、pan中のx/y変更では元SVGと3 overlayのviewBox属性だけを同期
+- M3 13e検証: 60 tests / 427 assertions、104 nodes / 112 edges、36 places、build、402px / 1440×900でpan時のroute/label/marker子HTML不変、zoom/resize時の画面固定サイズ更新、console error 0件
+- M3 13eレビュー: 会話履歴なし読み取り専用レビューで指摘なし
+- 次の開始位置: M3の `13f-map-marker-presentation`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

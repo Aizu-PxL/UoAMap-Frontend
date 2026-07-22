@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M2完了、M3進行中（13d完了、13e開始可能）**
+状態: **M2完了、M3進行中（13d・13e完了、13f開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -176,7 +176,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13d-map-viewbox.md` を作成し、viewBox解析・fallback・focus・anchor zoom・pan・フロア間比例変換・文字列化を `src/features/map/mapViewBox.ts` へ抽出。DOM行列取得とgesture所有はMapCanvasに維持。
 - [x] 2026-07-22: mapViewBox characterization test 8件を追加。57 tests / 424 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。402pxと1440×900のlive resize、focus、同一建物フロア切替、wheel、Ctrl+wheel pinch相当、pan、overlay同期、console error 0件を確認。
 - [x] 2026-07-22: 13dの会話履歴なし読み取り専用レビューで指摘なし。
-- [ ] 次: M3の `13e-map-overlay-redraw` を作成し、pan時のDOM同一性をcharacterization testで固定する。
+- [x] 2026-07-22: `docs/tasks/13e-map-overlay-redraw.md` を作成し、viewBox width/heightとcontainer寸法だけからoverlay再生成キーを導出。panのx/yでは属性同期だけを行い、route・label・marker effectを再実行しない境界へ変更。
+- [x] 2026-07-22: 再生成キー3件を追加し、60 tests / 427 assertions、verify:routes 104/112、verify:places 36、build、git diff --checkがPASS。冷間起動した402px/1440×900でpan時の全overlay viewBox同期と子HTML不変、zoom/resize時のmarker transform・transfer半径・label font更新、console error 0件を確認。
+- [x] 2026-07-22: 13eの会話履歴なし読み取り専用レビューで指摘なし。
+- [ ] 次: M3の `13f-map-marker-presentation` を作成し、marker配置モデルのcharacterization testから開始する。
 
 ## 8. 判断と発見
 

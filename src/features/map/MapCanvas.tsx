@@ -11,6 +11,7 @@ import {
   getAnchoredOverlayTransform,
 } from "./mapOverlayGeometry";
 import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
+import { getMapOverlayRedrawKey } from "./mapOverlayRedraw";
 import {
   focusMapViewBox,
   getProportionalMapViewBox,
@@ -441,6 +442,7 @@ export function MapCanvas({
   const [mapLabels, setMapLabels] = useState<MapLabel[]>([]);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const lastHandledFocusRequestRef = useRef<string | null>(null);
+  const overlayRedrawKey = getMapOverlayRedrawKey(viewBox, containerSize);
 
   floorIdRef.current = floorId;
   onFloorChangeRef.current = onFloorChange;
@@ -688,7 +690,7 @@ export function MapCanvas({
       marker.setAttribute("r", String(ROUTE_TRANSFER_MARKER_RADIUS * userUnitsPerPixel));
       routeLayer.append(marker);
     }
-  }, [containerSize, floorId, loading, routePresentation, viewBox]);
+  }, [floorId, loading, overlayRedrawKey, routePresentation]);
 
   // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
   useEffect(() => {
@@ -762,10 +764,7 @@ export function MapCanvas({
     focusPlace,
     loading,
     mapLabels,
-    containerSize.height,
-    containerSize.width,
-    viewBox.height,
-    viewBox.width,
+    overlayRedrawKey,
   ]);
 
   // 元地図とは独立した overlay SVG の DOM を、表示状態ごとに同期する。
@@ -930,8 +929,6 @@ export function MapCanvas({
     };
   }, [
     currentPlace,
-    containerSize.height,
-    containerSize.width,
     destinationPlace,
     events,
     floorId,
@@ -939,7 +936,7 @@ export function MapCanvas({
     loading,
     location.search,
     navigate,
-    viewBox,
+    overlayRedrawKey,
   ]);
 
   // Wheel zoom handler (add via useEffect to handle preventDefault)
