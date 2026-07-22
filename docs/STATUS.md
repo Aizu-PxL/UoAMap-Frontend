@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13k完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13l完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -56,7 +56,10 @@
 - M7 13k: route editorのmap/floor設定を `tools/route-editor/config.ts` へ移し、places/mapSheets/floors・全10 SVGとの同期を自動検証。Bun IIFEをHTML markerへ埋め込むgenerate/checkとbuild鮮度検証を追加し、単一HTML・外部scriptなしを維持
 - M7 13k検証: 88 tests / 488 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で起動・代表モード切替・console error 0件を確認。Browser security policyとファイル入力API制約により、`file://`と全10 SVGのブラウザ自動取込は未実施。単一HTML、外部scriptなし、全10ファイル同期、生成鮮度は自動検証済み
 - M7 13kレビュー: P2のFloor短縮表示名同期を純粋規則と全Floor assertionで修正し、再レビューで指摘なし。13k完了
-- 次の開始位置: M7の `13l-route-editor-plan-io`
+- M7 13l: schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化をpure coreへ移し、generated IIFE globalからinline editorへ接続。情報用floor/x/yは保存するが読込時はSVGノードを正として無視する契約を維持
+- M7 13l検証: plan I/O 6 tests / 20 assertions、全体94 tests / 508 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完
+- M7 13lレビュー: P2のnull要素受理とP3の既知sheet・未知nodeのfloor消失を修正し、再レビューで指摘なし。13l完了
+- 次の開始位置: M7の `13m-route-editor-history`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

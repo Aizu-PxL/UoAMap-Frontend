@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M6完了、M7進行中（13k完了、13l開始可能）**
+状態: **M6完了、M7進行中（13l完了、13m開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -197,7 +197,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13k-route-editor-build-config.md` を作成し、route editorのmap/floor設定をTS単一ソースへ移動。places/mapSheets/floors・全10 SVGとの同期テストと、Bun IIFEをHTML markerへ埋め込むgenerate/check方式を追加した。
 - [x] 2026-07-22: 13kの自動検証は88 tests / 488 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信でeditor起動・代表モード切替・console error 0件を確認した。実行環境のBrowser security policyが`file://`を拒否し、ファイル入力APIも未提供のため、file://と全10 SVGのブラウザ自動取込は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度を自動検証で補完した。
 - [x] 2026-07-22: 13k初回独立レビューのP2（Floor短縮表示名とcanonical名の同期未検証）を、短縮規則の純粋関数化と全Floor assertionで修正。全ゲート再実行後の再レビューで指摘なし。13kを完了した。
-- [ ] 次: M7の `13l-route-editor-plan-io` を開始する。
+- [x] 2026-07-22: `docs/tasks/13l-route-editor-plan-io.md` を作成し、schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化を `tools/route-editor/planIo.ts` へ抽出。generated IIFE globalを通じてinline editorへ接続した。
+- [x] 2026-07-22: QR順、末尾改行とfield順、情報用floor/x/y、trim、CSV quote、読込時文字列化・重複拒否・情報座標無視・nextQrNumberを6件20 assertionsのexact testで固定。全体94 tests / 508 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認した。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完した。
+- [x] 2026-07-22: 13l初回独立レビューのP2（null配列要素の受理）とP3（既知sheet・未知nodeのfloor情報消失）を修正。全ゲート再実行後の再レビューで指摘なし。13lを完了した。
+- [ ] 次: M7の `13m-route-editor-history` を開始する。
 
 ## 8. 判断と発見
 
@@ -214,12 +217,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M7 13kの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13k-route-editor-build-config.md` のSCOPE全体をレビューして閉じる。
-4. `docs/tasks/13l-route-editor-plan-io.md` を作り、schema v1計画JSON・QrCode JSON・CSV・Place案の現行文字列と検証規則をcharacterization testで固定する。
-5. pure coreを同じgenerated IIFEへ追加し、単一HTMLと `file://` 契約を維持する。
+3. M7 13lの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13l-route-editor-plan-io.md` のSCOPE全体をレビューして閉じる。
+4. `docs/tasks/13m-route-editor-history.md` を作り、Undo/Redoをpureなhistory state machineへ移す前にno-op・100件上限・redo破棄・reset・計画読込・nextQrNumber非巻戻しをcharacterization testで固定する。
+5. dragと連続入力が各1操作のままになるよう、HTML側にはgesture/input境界だけを残す。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13kの独立レビュー完了を確認した後、M7の `13l-route-editor-plan-io` を開始してください。計画JSON・QrCode JSON・CSV・Place案の現行入出力をexact testで固定し、pure coreを既存generated IIFEへ追加してください。
+`.agent/PLANS.md` に従い、13lの独立レビュー完了を確認した後、M7の `13m-route-editor-history` を開始してください。Undo/Redoの現行履歴契約をcharacterization testで固定してpure state machineへ移し、dragと連続入力を各1操作のまま維持してください。
 ```

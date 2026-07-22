@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13k完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13l完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM7 13k `docs/tasks/13k-route-editor-build-config.md` まで完了。route editorのmap/floor設定をTS単一ソースへ移し、places/mapSheets/floors・全10 SVGとの同期テストと、Bun IIFEをHTML markerへ埋め込むgenerate/check方式を追加した。88 tests / 488 assertions、`verify:route-editor`、build、36 places、104 nodes / 112 edges、git diff --checkがPASS。Vite配信で起動・代表モード切替・console error 0件を確認した。Browser security policyとファイル入力API制約により、`file://`と全10 SVGのブラウザ自動取込は未実施だが、単一HTML・外部scriptなし・全10ファイル同期・生成鮮度は自動検証済み。初回独立レビューのP2（Floor短縮表示名の同期未検証）を純粋規則と全Floor assertionで修正し、再レビューで指摘なし。次はM7 `13l-route-editor-plan-io`。
+リポジトリ横断リファクタリングはM7 13l `docs/tasks/13l-route-editor-plan-io.md` まで完了。schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化をpure coreへ移し、generated IIFE globalからinline editorへ接続した。QR順、field順、末尾改行、情報用座標、trim、CSV quote、重複拒否、nextQrNumberをexact testで固定。94 tests / 508 assertions、`verify:route-editor`、build、36 places、104 nodes / 112 edges、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認した。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完した。初回独立レビューのP2（null要素受理）とP3（既知sheet・未知nodeのfloor消失）を修正し、再レビューで指摘なし。次はM7 `13m-route-editor-history`。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13kの独立レビュー完了を確認した後、M7の `13l-route-editor-plan-io` を開始してください。計画JSON・QrCode JSON・CSV・Place案の現行入出力をexact testで固定し、pure coreを既存generated IIFEへ追加してください。
+`.agent/PLANS.md` に従い、13lの独立レビュー完了を確認した後、M7の `13m-route-editor-history` を開始してください。Undo/Redoの現行履歴契約をcharacterization testで固定してpure state machineへ移し、dragと連続入力を各1操作のまま維持してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。

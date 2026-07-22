@@ -328,8 +328,163 @@
     FLOOR_NAME: routeEditorFloorNames
   };
 
+  // tools/route-editor/planIo.ts
+  var PLAN_SCHEMA_VERSION = 1;
+  function numericQrPart(qrId) {
+    const match = /^Q(\d+)$/.exec(qrId);
+    return match ? Number(match[1]) : -1;
+  }
+  function compareQrPlacements(left, right) {
+    const leftNumber = numericQrPart(left.qrId);
+    const rightNumber = numericQrPart(right.qrId);
+    return leftNumber === rightNumber ? left.qrId.localeCompare(right.qrId) : leftNumber - rightNumber;
+  }
+  function roundCoordinate(value) {
+    return Math.round(value * 100) / 100;
+  }
+  function resolveInformationalLocation(sheetId, routeNodeId, resolveLocation) {
+    const location = resolveLocation(sheetId, routeNodeId);
+    return location ? {
+      floorId: location.floorId,
+      x: location.x === null ? null : roundCoordinate(location.x),
+      y: location.y === null ? null : roundCoordinate(location.y)
+    } : { floorId: null, x: null, y: null };
+  }
+  function createRouteEditorPlan(input) {
+    return {
+      schemaVersion: PLAN_SCHEMA_VERSION,
+      nextQrNumber: input.nextQrNumber,
+      placements: [...input.placements].sort(compareQrPlacements).map((placement) => ({
+        ...placement,
+        ...resolveInformationalLocation(placement.sheetId, placement.routeNodeId, input.resolveLocation)
+      })),
+      placeProposals: [...input.placeProposals].sort((left, right) => left.id.localeCompare(right.id)).map((proposal) => ({
+        ...proposal,
+        ...resolveInformationalLocation(proposal.sheetId, proposal.routeNodeId, input.resolveLocation)
+      }))
+    };
+  }
+  function createQrMappings(placements) {
+    return [...placements].sort(compareQrPlacements).map((placement) => ({
+      qrId: placement.qrId,
+      placeId: placement.placeId,
+      kind: placement.kind,
+      installationNote: placement.installationNote.trim()
+    }));
+  }
+  function createCoordinatePlaceProposals(proposals, resolveLocation) {
+    const result = [];
+    for (const proposal of [...proposals].sort((left, right) => left.id.localeCompare(right.id))) {
+      const location = resolveLocation(proposal.sheetId, proposal.routeNodeId);
+      if (!location || location.x === null || location.y === null)
+        continue;
+      result.push({
+        id: proposal.id,
+        floorId: location.floorId,
+        name: proposal.name,
+        mapping: "coordinates",
+        coordinates: {
+          x: roundCoordinate(location.x),
+          y: roundCoordinate(location.y)
+        }
+      });
+    }
+    return result;
+  }
+  function serializeJson(value) {
+    return `${JSON.stringify(value, null, 2)}
+`;
+  }
+  function csvCell(value) {
+    const text = String(value ?? "");
+    return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+  function serializeQrMappingsCsv(mappings) {
+    const rows = [
+      ["qrId", "placeId", "kind", "installationNote"],
+      ...mappings.map((mapping) => [
+        mapping.qrId,
+        mapping.placeId,
+        mapping.kind,
+        mapping.installationNote
+      ])
+    ];
+    return `\uFEFF${rows.map((row) => row.map(csvCell).join(",")).join(`\r
+`)}\r
+`;
+  }
+  function asRecord(value) {
+    return value !== null && typeof value === "object" ? value : {};
+  }
+  function asPlanEntry(value) {
+    if (value === null || value === undefined) {
+      throw new TypeError("計画JSONの要素が不正です");
+    }
+    return Object(value);
+  }
+  function existingStringCoercion(value) {
+    return String(value || "");
+  }
+  function parseRouteEditorPlan(data) {
+    const plan = asRecord(data);
+    if (plan.schemaVersion !== PLAN_SCHEMA_VERSION || !Array.isArray(plan.placements) || !Array.isArray(plan.placeProposals)) {
+      throw new Error("対応していない計画JSONです");
+    }
+    const ids = new Set;
+    const placements = [];
+    for (const raw of plan.placements) {
+      const value = asPlanEntry(raw);
+      const placement = {
+        qrId: existingStringCoercion(value.qrId),
+        sheetId: existingStringCoercion(value.sheetId),
+        routeNodeId: existingStringCoercion(value.routeNodeId),
+        placeId: existingStringCoercion(value.placeId),
+        kind: existingStringCoercion(value.kind),
+        installationNote: existingStringCoercion(value.installationNote)
+      };
+      if (ids.has(placement.qrId)) {
+        throw new Error(`QR IDが重複しています: ${placement.qrId}`);
+      }
+      ids.add(placement.qrId);
+      placements.push(placement);
+    }
+    const proposalIds = new Set;
+    const placeProposals = [];
+    for (const raw of plan.placeProposals) {
+      const value = asPlanEntry(raw);
+      const proposal = {
+        id: existingStringCoercion(value.id),
+        name: existingStringCoercion(value.name),
+        sheetId: existingStringCoercion(value.sheetId),
+        routeNodeId: existingStringCoercion(value.routeNodeId)
+      };
+      if (proposalIds.has(proposal.id)) {
+        throw new Error(`Place案IDが重複しています: ${proposal.id}`);
+      }
+      proposalIds.add(proposal.id);
+      placeProposals.push(proposal);
+    }
+    const maxQrNumber = Math.max(0, ...placements.map((placement) => numericQrPart(placement.qrId)));
+    return {
+      placements,
+      placeProposals,
+      nextQrNumber: Math.max(Number(plan.nextQrNumber) || 1, maxQrNumber + 1)
+    };
+  }
+  var routeEditorPlanIo = {
+    compareQrPlacements,
+    createCoordinatePlaceProposals,
+    createQrMappings,
+    createRouteEditorPlan,
+    numericQrPart,
+    parseRouteEditorPlan,
+    serializeJson,
+    serializeQrMappingsCsv
+  };
+
   // tools/route-editor/configEntry.ts
   globalThis.UOAMAP_ROUTE_EDITOR_CONFIG = routeEditorRuntimeConfig;
+  globalThis.UOAMAP_ROUTE_EDITOR_PLAN_IO = routeEditorPlanIo;
 })();
 </script>
 <!-- route-editor:generated:end -->
@@ -338,7 +493,6 @@
 const SVGNS = "http://www.w3.org/2000/svg";
 const ID_RE = /^[A-Za-z][A-Za-z0-9_-]*$/;
 const QR_ID_RE = /^Q\d{3,}$/;
-const PLAN_SCHEMA_VERSION = 1;
 const HISTORY_LIMIT = 100;
 
 /* ==== マップ設定（tools/route-editor/config.ts から生成） ==== */
@@ -346,6 +500,16 @@ const { MAPS, FLOOR_ORDER, FLOOR_NAME } = globalThis.UOAMAP_ROUTE_EDITOR_CONFIG;
 const cfgForSheet = (id) => MAPS.find(m => m.sheetId === id);
 const cfgForFile = (file) => MAPS.find(m => m.file === file);
 const cfgForFloor = (floorId) => MAPS.find(m => m.floor === floorId);
+const {
+  compareQrPlacements: qrSort,
+  createCoordinatePlaceProposals,
+  createQrMappings,
+  createRouteEditorPlan,
+  numericQrPart,
+  parseRouteEditorPlan,
+  serializeJson,
+  serializeQrMappingsCsv,
+} = globalThis.UOAMAP_ROUTE_EDITOR_PLAN_IO;
 
 /* ==== 状態 ==== */
 const state = {
@@ -373,9 +537,7 @@ function fmt(v){ return String(Math.round(v*1000)/1000); }
 function sanitizeId(s){ return String(s).replace(/[^A-Za-z0-9_-]/g,"_"); }
 function resolveFloor(ms){ return ms.groupFloorId || ms.cfg.floor || null; }
 function flash(btn, txt){ const o = btn.textContent; btn.textContent = txt; setTimeout(()=>btn.textContent=o, 1200); }
-function numericQrPart(qrId){ const m = /^Q(\d+)$/.exec(qrId); return m ? Number(m[1]) : -1; }
 function formatQrId(n){ return `Q${String(n).padStart(3,"0")}`; }
-function qrSort(a,b){ const na=numericQrPart(a.qrId), nb=numericQrPart(b.qrId); return na===nb ? a.qrId.localeCompare(b.qrId) : na-nb; }
 function findPlacementNode(qr){ const ms=state.maps.get(qr.sheetId); return { ms, node:ms?.nodes.get(qr.routeNodeId) }; }
 
 /* ==== Undo / Redo ==== */
@@ -1211,34 +1373,27 @@ function validateCross(){
 }
 
 /* ==== QR計画の保存・読込・受け渡し ==== */
+function resolvePlanLocation(sheetId,routeNodeId){
+  const ms=state.maps.get(sheetId), node=ms?.nodes.get(routeNodeId);
+  return ms ? {floorId:resolveFloor(ms),x:node?node.x:null,y:node?node.y:null} : null;
+}
 function currentPlaceProposals(){
-  const result=[];
-  for (const proposal of [...state.placeProposals.values()].sort((a,b)=>a.id.localeCompare(b.id))){
-    const ms=state.maps.get(proposal.sheetId), node=ms?.nodes.get(proposal.routeNodeId); if (!ms||!node) continue;
-    result.push({id:proposal.id,floorId:resolveFloor(ms),name:proposal.name,mapping:"coordinates",coordinates:{x:round(node.x),y:round(node.y)}});
-  }
-  return result;
+  return createCoordinatePlaceProposals([...state.placeProposals.values()],resolvePlanLocation);
 }
 function buildPlanData(){
-  return {
-    schemaVersion:PLAN_SCHEMA_VERSION,
+  return createRouteEditorPlan({
     nextQrNumber:state.nextQrNumber,
-    placements:[...state.qrPlacements.values()].sort(qrSort).map(qr=>{
-      const {ms,node}=findPlacementNode(qr);
-      return {...qr,floorId:ms?resolveFloor(ms):null,x:node?round(node.x):null,y:node?round(node.y):null};
-    }),
-    placeProposals:[...state.placeProposals.values()].sort((a,b)=>a.id.localeCompare(b.id)).map(p=>{
-      const ms=state.maps.get(p.sheetId), node=ms?.nodes.get(p.routeNodeId);
-      return {...p,floorId:ms?resolveFloor(ms):null,x:node?round(node.x):null,y:node?round(node.y):null};
-    }),
-  };
+    placements:[...state.qrPlacements.values()],
+    placeProposals:[...state.placeProposals.values()],
+    resolveLocation:resolvePlanLocation,
+  });
 }
 function downloadText(fileName,text,type="application/json"){
   const blob=new Blob([text],{type:`${type};charset=utf-8`}), a=$("dlAnchor");
   a.href=URL.createObjectURL(blob); a.download=fileName; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500);
 }
 function backendMappings(){
-  return [...state.qrPlacements.values()].sort(qrSort).map(qr=>({qrId:qr.qrId,placeId:qr.placeId,kind:qr.kind,installationNote:qr.installationNote.trim()}));
+  return createQrMappings([...state.qrPlacements.values()]);
 }
 function ensureQrExportable(){
   const issues=collectQrIssues();
@@ -1246,29 +1401,18 @@ function ensureQrExportable(){
   if (issues.length){ alert(`QR設置計画を修正してください:\n- ${issues.slice(0,8).join("\n- ")}`); return false; }
   return true;
 }
-function csvCell(value){ const s=String(value??""); return /[",\r\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s; }
 function importPlanData(data){
-  if (!data||data.schemaVersion!==PLAN_SCHEMA_VERSION||!Array.isArray(data.placements)||!Array.isArray(data.placeProposals)) throw new Error("対応していない計画JSONです");
-  const ids=new Set(), placements=new Map(), proposals=new Map();
-  for (const raw of data.placements){
-    const qr={qrId:String(raw.qrId||""),sheetId:String(raw.sheetId||""),routeNodeId:String(raw.routeNodeId||""),placeId:String(raw.placeId||""),kind:String(raw.kind||""),installationNote:String(raw.installationNote||"")};
-    if (ids.has(qr.qrId)) throw new Error(`QR IDが重複しています: ${qr.qrId}`);
-    ids.add(qr.qrId); placements.set(qr.qrId,qr);
-  }
-  for (const raw of data.placeProposals){
-    const p={id:String(raw.id||""),name:String(raw.name||""),sheetId:String(raw.sheetId||""),routeNodeId:String(raw.routeNodeId||"")};
-    if (proposals.has(p.id)) throw new Error(`Place案IDが重複しています: ${p.id}`); proposals.set(p.id,p);
-  }
-  state.qrPlacements=placements; state.placeProposals=proposals;
-  const maxId=Math.max(0,...[...placements.values()].map(q=>numericQrPart(q.qrId)));
-  state.nextQrNumber=Math.max(Number(data.nextQrNumber)||1,maxId+1);
-  for (const proposal of proposals.values()){
+  const imported=parseRouteEditorPlan(data);
+  state.qrPlacements=new Map(imported.placements.map(qr=>[qr.qrId,qr]));
+  state.placeProposals=new Map(imported.placeProposals.map(proposal=>[proposal.id,proposal]));
+  state.nextQrNumber=imported.nextQrNumber;
+  for (const proposal of state.placeProposals.values()){
     const ms=state.maps.get(proposal.sheetId), node=ms?.nodes.get(proposal.routeNodeId);
     if (ms&&node&&!node.placeId){ node.placeId=proposal.id; markDirty(ms); }
   }
   state.selection=null; render();
 }
-$("savePlanBtn").onclick=()=>downloadText("uoamap-qr-placement-plan.json",JSON.stringify(buildPlanData(),null,2)+"\n");
+$("savePlanBtn").onclick=()=>downloadText("uoamap-qr-placement-plan.json",serializeJson(buildPlanData()));
 $("openPlanBtn").onclick=()=>$("planInput").click();
 $("planInput").onchange=async(e)=>{
   const file=e.target.files[0]; e.target.value=""; if (!file) return;
@@ -1276,15 +1420,14 @@ $("planInput").onchange=async(e)=>{
   try { const data=JSON.parse(await readText(file)); runEdit("計画JSONを読込",()=>importPlanData(data)); }
   catch(err){ alert(`計画JSONを読み込めませんでした: ${err.message}`); }
 };
-$("exportJsonBtn").onclick=()=>{ if (ensureQrExportable()) downloadText("uoamap-qr-mapping.json",JSON.stringify(backendMappings(),null,2)+"\n"); };
+$("exportJsonBtn").onclick=()=>{ if (ensureQrExportable()) downloadText("uoamap-qr-mapping.json",serializeJson(backendMappings())); };
 $("exportCsvBtn").onclick=()=>{
   if (!ensureQrExportable()) return;
-  const rows=[["qrId","placeId","kind","installationNote"],...backendMappings().map(q=>[q.qrId,q.placeId,q.kind,q.installationNote])];
-  downloadText("uoamap-qr-mapping.csv","\ufeff"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n")+"\r\n","text/csv");
+  downloadText("uoamap-qr-mapping.csv",serializeQrMappingsCsv(backendMappings()),"text/csv");
 };
 $("exportPlacesBtn").onclick=()=>{
   if (!ensureQrExportable()) return;
-  downloadText("uoamap-place-proposals.json",JSON.stringify(currentPlaceProposals(),null,2)+"\n");
+  downloadText("uoamap-place-proposals.json",serializeJson(currentPlaceProposals()));
 };
 
 /* ==== 書き出し ==== */
