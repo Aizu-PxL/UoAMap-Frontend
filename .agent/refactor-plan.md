@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M6完了、M7進行中（13l完了、13m開始可能）**
+状態: **M6完了、M7進行中（13m完了、13n開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -200,7 +200,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13l-route-editor-plan-io.md` を作成し、schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化を `tools/route-editor/planIo.ts` へ抽出。generated IIFE globalを通じてinline editorへ接続した。
 - [x] 2026-07-22: QR順、末尾改行とfield順、情報用floor/x/y、trim、CSV quote、読込時文字列化・重複拒否・情報座標無視・nextQrNumberを6件20 assertionsのexact testで固定。全体94 tests / 508 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認した。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完した。
 - [x] 2026-07-22: 13l初回独立レビューのP2（null配列要素の受理）とP3（既知sheet・未知nodeのfloor情報消失）を修正。全ゲート再実行後の再レビューで指摘なし。13lを完了した。
-- [ ] 次: M7の `13m-route-editor-history` を開始する。
+- [x] 2026-07-22: `docs/tasks/13m-route-editor-history.md` を作成し、history state作成・record・undo・redo・resetとeditable snapshot比較を `tools/route-editor/history.ts` のimmutable pure state machineへ抽出。inline editorにはsnapshot採取・復元とイベント境界を維持した。
+- [x] 2026-07-22: no-op非記録、before/after復元、redo破棄、正の整数上限・100件上限、reset、計画JSON読込1操作、nextQrNumber非巻戻し、SVG読込・drag・連続入力境界を6件28 assertionsで固定。全体100 tests / 536 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信で全10 SVG読込、QR追加→Undo→Redo→Undo、再追加がQ002となる非巻戻し、console error 0件を確認した。
+- [x] 2026-07-22: 13m初回独立レビューのP3（limit=0で上限不整合）を、正の整数制約とlimit=0/1境界testで修正。全ゲート再実行後の再レビューで指摘なし。13mを完了した。
+- [ ] 次: M7の `13n-route-editor-route-xml` を開始する。
 
 ## 8. 判断と発見
 
@@ -217,12 +220,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M7 13lの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13l-route-editor-plan-io.md` のSCOPE全体をレビューして閉じる。
-4. `docs/tasks/13m-route-editor-history.md` を作り、Undo/Redoをpureなhistory state machineへ移す前にno-op・100件上限・redo破棄・reset・計画読込・nextQrNumber非巻戻しをcharacterization testで固定する。
-5. dragと連続入力が各1操作のままになるよう、HTML側にはgesture/input境界だけを残す。
+3. M7 13mの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13m-route-editor-history.md` のSCOPE全体をレビューして閉じる。
+4. `docs/tasks/13n-route-editor-route-xml.md` を作り、Route group生成・既存Route置換・未存在時appendのexact stringをcharacterization testで固定する。
+5. partial-loadを許すeditor簡易検証と正式抽出器は無理に共通化せず、XML生成だけをpure coreへ移す。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13lの独立レビュー完了を確認した後、M7の `13m-route-editor-history` を開始してください。Undo/Redoの現行履歴契約をcharacterization testで固定してpure state machineへ移し、dragと連続入力を各1操作のまま維持してください。
+`.agent/PLANS.md` に従い、13mの独立レビュー完了を確認した後、M7の `13n-route-editor-route-xml` を開始してください。Route group生成・既存Route置換・未存在時appendをexact-string testで固定してpure coreへ移してください。
 ```

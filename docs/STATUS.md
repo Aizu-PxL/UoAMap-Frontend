@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13l完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13m完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -59,7 +59,10 @@
 - M7 13l: schema v1計画JSON、QrCode JSON、BOM/CRLF CSV、座標Place案の構築・parse・文字列化をpure coreへ移し、generated IIFE globalからinline editorへ接続。情報用floor/x/yは保存するが読込時はSVGノードを正として無視する契約を維持
 - M7 13l検証: plan I/O 6 tests / 20 assertions、全体94 tests / 508 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信でgenerated core初期化、QRモード切替、空計画JSON保存、console error 0件を確認。Browser file input API制約により計画JSON再読込のブラウザ自動操作は未実施し、pure parse exact testで補完
 - M7 13lレビュー: P2のnull要素受理とP3の既知sheet・未知nodeのfloor消失を修正し、再レビューで指摘なし。13l完了
-- 次の開始位置: M7の `13m-route-editor-history`
+- M7 13m: history state作成・record・undo・redo・resetとeditable snapshot比較をimmutable pure state machineへ移動。selection/current sheetをno-op判定から除外し、nextQrNumberをsnapshot外のまま維持。inline editorにはsnapshot採取・復元とdrag/continuous-input境界を残した
+- M7 13m検証: history 6 tests / 28 assertions、全体100 tests / 536 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で全10 SVG読込、QR追加→Undo→Redo→Undo、再追加Q002による連番非巻戻し、console error 0件を確認
+- M7 13mレビュー: P3のlimit=0上限不整合を正の整数制約と0/1境界testで修正し、再レビューで指摘なし。13m完了
+- 次の開始位置: M7の `13n-route-editor-route-xml`
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 

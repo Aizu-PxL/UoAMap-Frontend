@@ -482,9 +482,77 @@
     serializeQrMappingsCsv
   };
 
+  // tools/route-editor/history.ts
+  var HISTORY_LIMIT = 100;
+  function editableSnapshotKey(snapshot) {
+    return JSON.stringify({
+      maps: snapshot.maps,
+      qrPlacements: snapshot.qrPlacements,
+      placeProposals: snapshot.placeProposals
+    });
+  }
+  function createEditorHistory(limit = HISTORY_LIMIT) {
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new RangeError("履歴上限は1以上の整数で指定してください");
+    }
+    return { limit, undo: [], redo: [] };
+  }
+  function resetEditorHistory(history) {
+    if (history.undo.length === 0 && history.redo.length === 0)
+      return history;
+    return { ...history, undo: [], redo: [] };
+  }
+  function recordEditorHistory(history, label, before, after) {
+    if (editableSnapshotKey(before) === editableSnapshotKey(after)) {
+      return { history, recorded: false };
+    }
+    const undo = [...history.undo, { label, before, after }].slice(-history.limit);
+    return {
+      history: { ...history, undo, redo: [] },
+      recorded: true
+    };
+  }
+  function undoEditorHistory(history) {
+    const entry = history.undo.at(-1) ?? null;
+    if (!entry)
+      return { history, entry: null, snapshot: null };
+    return {
+      history: {
+        ...history,
+        undo: history.undo.slice(0, -1),
+        redo: [...history.redo, entry]
+      },
+      entry,
+      snapshot: entry.before
+    };
+  }
+  function redoEditorHistory(history) {
+    const entry = history.redo.at(-1) ?? null;
+    if (!entry)
+      return { history, entry: null, snapshot: null };
+    return {
+      history: {
+        ...history,
+        undo: [...history.undo, entry],
+        redo: history.redo.slice(0, -1)
+      },
+      entry,
+      snapshot: entry.after
+    };
+  }
+  var routeEditorHistory = {
+    createEditorHistory,
+    editableSnapshotKey,
+    recordEditorHistory,
+    redoEditorHistory,
+    resetEditorHistory,
+    undoEditorHistory
+  };
+
   // tools/route-editor/configEntry.ts
   globalThis.UOAMAP_ROUTE_EDITOR_CONFIG = routeEditorRuntimeConfig;
   globalThis.UOAMAP_ROUTE_EDITOR_PLAN_IO = routeEditorPlanIo;
+  globalThis.UOAMAP_ROUTE_EDITOR_HISTORY = routeEditorHistory;
 })();
 </script>
 <!-- route-editor:generated:end -->
@@ -493,7 +561,6 @@
 const SVGNS = "http://www.w3.org/2000/svg";
 const ID_RE = /^[A-Za-z][A-Za-z0-9_-]*$/;
 const QR_ID_RE = /^Q\d{3,}$/;
-const HISTORY_LIMIT = 100;
 
 /* ==== マップ設定（tools/route-editor/config.ts から生成） ==== */
 const { MAPS, FLOOR_ORDER, FLOOR_NAME } = globalThis.UOAMAP_ROUTE_EDITOR_CONFIG;
@@ -510,6 +577,13 @@ const {
   serializeJson,
   serializeQrMappingsCsv,
 } = globalThis.UOAMAP_ROUTE_EDITOR_PLAN_IO;
+const {
+  createEditorHistory,
+  recordEditorHistory,
+  redoEditorHistory,
+  resetEditorHistory,
+  undoEditorHistory,
+} = globalThis.UOAMAP_ROUTE_EDITOR_HISTORY;
 
 /* ==== 状態 ==== */
 const state = {
@@ -521,7 +595,7 @@ const state = {
   placeProposals: new Map(), // placeId -> 座標Place案
   nextQrNumber: 1,
 };
-const history = { undo: [], redo: [] };
+let history = createEditorHistory();
 let mode = "select";
 const view = { scale: 1, tx: 0, ty: 0 };
 
@@ -559,9 +633,6 @@ function editorSnapshot(){
     selection:state.selection ? {...state.selection} : null,
   };
 }
-function editableSnapshotKey(snapshot){
-  return JSON.stringify({maps:snapshot.maps,qrPlacements:snapshot.qrPlacements,placeProposals:snapshot.placeProposals});
-}
 function refreshDirty(ms){ ms.dirty = routeSignature(ms) !== ms.savedRouteSignature; }
 function updateHistoryButtons(){
   $("undoBtn").disabled = !history.undo.length;
@@ -569,13 +640,12 @@ function updateHistoryButtons(){
   $("undoBtn").title = history.undo.length ? `元に戻す: ${history.undo.at(-1).label} (Ctrl/Cmd + Z)` : "元に戻す (Ctrl/Cmd + Z)";
   $("redoBtn").title = history.redo.length ? `やり直す: ${history.redo.at(-1).label} (Ctrl/Cmd + Shift + Z / Ctrl + Y)` : "やり直す (Ctrl/Cmd + Shift + Z / Ctrl + Y)";
 }
-function resetHistory(){ history.undo.length=0; history.redo.length=0; updateHistoryButtons(); }
+function resetHistory(){ history=resetEditorHistory(history); updateHistoryButtons(); }
 function commitHistory(label,before){
   const after=editorSnapshot();
-  if (editableSnapshotKey(before)===editableSnapshotKey(after)) return false;
-  history.undo.push({label,before,after});
-  if (history.undo.length>HISTORY_LIMIT) history.undo.shift();
-  history.redo.length=0; updateHistoryButtons(); return true;
+  const result=recordEditorHistory(history,label,before,after);
+  if (!result.recorded) return false;
+  history=result.history; updateHistoryButtons(); return true;
 }
 function runEdit(label,mutate){
   const before=editorSnapshot();
@@ -609,12 +679,12 @@ function restoreEditorSnapshot(snapshot){
   render();
 }
 function undo(){
-  const entry=history.undo.pop(); if (!entry) return;
-  history.redo.push(entry); restoreEditorSnapshot(entry.before); updateHistoryButtons();
+  const result=undoEditorHistory(history); if (!result.snapshot) return;
+  history=result.history; restoreEditorSnapshot(result.snapshot); updateHistoryButtons();
 }
 function redo(){
-  const entry=history.redo.pop(); if (!entry) return;
-  history.undo.push(entry); restoreEditorSnapshot(entry.after); updateHistoryButtons();
+  const result=redoEditorHistory(history); if (!result.snapshot) return;
+  history=result.history; restoreEditorSnapshot(result.snapshot); updateHistoryButtons();
 }
 function bindContinuousEdit(element,label,apply){
   let before=null;
