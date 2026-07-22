@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M6完了、M7開始可能**
+状態: **M6完了、M7進行中（13k完了、13l開始可能）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -194,7 +194,10 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13j-route-extraction-core.md` を作成し、`extractRouteGraph({ sources, mapSheets, floors, places })` とserializerへ解析・検証・transfer生成・sortを移動。CLIはファイルI/O・`--check`・表示・終了だけに縮小。
 - [x] 2026-07-22: 実10 SVGの104 nodes / 112 edgesと生成JSON完全バイト一致、Route group/floor/transform、node/edge/ID/registry/重複、stair/entranceを8件23 assertionsで固定。`@types/bun@1.3.14` と `tsconfig.tools.json` を追加し、strict型検査で判明したverify-placesのtype guardを挙動不変で正確化。84 tests / 477 assertions、build、verify:routes/places、generate後のJSON差分ゼロ、git diff --checkがPASS。
 - [x] 2026-07-22: 13j初回独立レビューのP3（verify-places型修正のSCOPE記載漏れ）を修正し、再レビューで指摘なし。M6を完了した。
-- [ ] 次: M7の `13k-route-editor-build-config` を開始する。
+- [x] 2026-07-22: `docs/tasks/13k-route-editor-build-config.md` を作成し、route editorのmap/floor設定をTS単一ソースへ移動。places/mapSheets/floors・全10 SVGとの同期テストと、Bun IIFEをHTML markerへ埋め込むgenerate/check方式を追加した。
+- [x] 2026-07-22: 13kの自動検証は88 tests / 488 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信でeditor起動・代表モード切替・console error 0件を確認した。実行環境のBrowser security policyが`file://`を拒否し、ファイル入力APIも未提供のため、file://と全10 SVGのブラウザ自動取込は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度を自動検証で補完した。
+- [x] 2026-07-22: 13k初回独立レビューのP2（Floor短縮表示名とcanonical名の同期未検証）を、短縮規則の純粋関数化と全Floor assertionで修正。全ゲート再実行後の再レビューで指摘なし。13kを完了した。
+- [ ] 次: M7の `13l-route-editor-plan-io` を開始する。
 
 ## 8. 判断と発見
 
@@ -211,12 +214,12 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M6 13jの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13j-route-extraction-core.md` のSCOPE全体をレビューして閉じる。
-4. M7の `docs/tasks/13k-route-editor-build-config.md` を作り、route editorのmap設定とplaces/mapSheets/floors・全10 SVGの同期検証を先に追加する。
-5. route editorのTS設定を単一ソースとし、Bun IIFEをHTML markerへ埋め込むgenerate/check方式で単一HTMLと `file://` 動作を維持する。
+3. M7 13kの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13k-route-editor-build-config.md` のSCOPE全体をレビューして閉じる。
+4. `docs/tasks/13l-route-editor-plan-io.md` を作り、schema v1計画JSON・QrCode JSON・CSV・Place案の現行文字列と検証規則をcharacterization testで固定する。
+5. pure coreを同じgenerated IIFEへ追加し、単一HTMLと `file://` 契約を維持する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13jの独立レビュー完了を確認した後、M7の `13k-route-editor-build-config` を開始してください。map設定同期を先に検証し、TS単一ソースからBun IIFEをHTML markerへ埋め込むgenerate/check方式で単一HTMLとfile://動作を維持してください。
+`.agent/PLANS.md` に従い、13kの独立レビュー完了を確認した後、M7の `13l-route-editor-plan-io` を開始してください。計画JSON・QrCode JSON・CSV・Place案の現行入出力をexact testで固定し、pure coreを既存generated IIFEへ追加してください。
 ```

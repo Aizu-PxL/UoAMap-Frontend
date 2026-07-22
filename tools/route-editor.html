@@ -233,6 +233,106 @@
 <datalist id="entranceList"></datalist>
 <datalist id="stairList"></datalist>
 
+<!-- route-editor:generated:start -->
+<script>
+(() => {
+  // tools/route-editor/config.ts
+  var routeEditorMaps = [
+    {
+      sheetId: "campus",
+      file: "CampusMap_base_plain.svg",
+      floor: "campus",
+      group: "campus",
+      name: "キャンパス全体"
+    },
+    {
+      sheetId: "rq1f",
+      file: "RQ1F_base_plain.svg",
+      floor: "rq-1f",
+      group: "rq",
+      name: "研究棟 1F"
+    },
+    {
+      sheetId: "rq2f",
+      file: "RQ2F_base_plain.svg",
+      floor: "rq-2f",
+      group: "rq",
+      name: "研究棟 2F"
+    },
+    {
+      sheetId: "rq3f",
+      file: "RQ3F_base_plain.svg",
+      floor: "rq-3f",
+      group: "rq",
+      name: "研究棟 3F"
+    },
+    {
+      sheetId: "lh1f",
+      file: "LH1F_base_plain.svg",
+      floor: "lh-1f",
+      group: "lh",
+      name: "講義棟 1F"
+    },
+    {
+      sheetId: "lh2f",
+      file: "LH2F_base_plain.svg",
+      floor: "lh-2f",
+      group: "lh",
+      name: "講義棟 2F"
+    },
+    {
+      sheetId: "sh1f",
+      file: "SH1F_base_plain.svg",
+      floor: "sh-1f",
+      group: "sh",
+      name: "学生ホール 1F"
+    },
+    {
+      sheetId: "sh2f",
+      file: "SH2F_base_plain.svg",
+      floor: "sh-2f",
+      group: "sh",
+      name: "学生ホール 2F"
+    },
+    {
+      sheetId: "ubic",
+      file: "UBIC_base_plain.svg",
+      floor: "ubic-1f",
+      group: "ubic",
+      name: "UBIC"
+    },
+    {
+      sheetId: "lictia",
+      file: "LICTiA1F_base_plain.svg",
+      floor: "lictia-1f",
+      group: "lictia",
+      name: "LICTiA 1F"
+    }
+  ];
+  var routeEditorFloorOrder = routeEditorMaps.map((config) => config.floor);
+  var routeEditorFloorNames = {
+    campus: "屋外",
+    "rq-1f": "研究棟1F",
+    "rq-2f": "研究棟2F",
+    "rq-3f": "研究棟3F",
+    "lh-1f": "講義棟1F",
+    "lh-2f": "講義棟2F",
+    "sh-1f": "学生ホール1F",
+    "sh-2f": "学生ホール2F",
+    "ubic-1f": "UBIC",
+    "lictia-1f": "LICTiA1F"
+  };
+  var routeEditorRuntimeConfig = {
+    MAPS: routeEditorMaps,
+    FLOOR_ORDER: routeEditorFloorOrder,
+    FLOOR_NAME: routeEditorFloorNames
+  };
+
+  // tools/route-editor/configEntry.ts
+  globalThis.UOAMAP_ROUTE_EDITOR_CONFIG = routeEditorRuntimeConfig;
+})();
+</script>
+<!-- route-editor:generated:end -->
 <script>
 "use strict";
 const SVGNS = "http://www.w3.org/2000/svg";
@@ -241,25 +341,8 @@ const QR_ID_RE = /^Q\d{3,}$/;
 const PLAN_SCHEMA_VERSION = 1;
 const HISTORY_LIMIT = 100;
 
-/* ==== マップ設定（src/data/places.ts のミラー） ==== */
-const MAPS = [
-  { sheetId:"campus", file:"CampusMap_base_plain.svg", floor:"campus", group:"campus", name:"キャンパス全体" },
-  { sheetId:"rq1f", file:"RQ1F_base_plain.svg", floor:"rq-1f", group:"rq", name:"研究棟 1F" },
-  { sheetId:"rq2f", file:"RQ2F_base_plain.svg", floor:"rq-2f", group:"rq", name:"研究棟 2F" },
-  { sheetId:"rq3f", file:"RQ3F_base_plain.svg", floor:"rq-3f", group:"rq", name:"研究棟 3F" },
-  { sheetId:"lh1f", file:"LH1F_base_plain.svg", floor:"lh-1f", group:"lh", name:"講義棟 1F" },
-  { sheetId:"lh2f", file:"LH2F_base_plain.svg", floor:"lh-2f", group:"lh", name:"講義棟 2F" },
-  { sheetId:"sh1f", file:"SH1F_base_plain.svg", floor:"sh-1f", group:"sh", name:"学生ホール 1F" },
-  { sheetId:"sh2f", file:"SH2F_base_plain.svg", floor:"sh-2f", group:"sh", name:"学生ホール 2F" },
-  { sheetId:"ubic", file:"UBIC_base_plain.svg", floor:"ubic-1f", group:"ubic", name:"UBIC" },
-  { sheetId:"lictia", file:"LICTiA1F_base_plain.svg", floor:"lictia-1f", group:"lictia", name:"LICTiA 1F" },
-];
-const FLOOR_ORDER = ["campus","rq-1f","rq-2f","rq-3f","lh-1f","lh-2f","sh-1f","sh-2f","ubic-1f","lictia-1f"];
-const FLOOR_NAME = {
-  "campus":"屋外","rq-1f":"研究棟1F","rq-2f":"研究棟2F","rq-3f":"研究棟3F",
-  "lh-1f":"講義棟1F","lh-2f":"講義棟2F","sh-1f":"学生ホール1F","sh-2f":"学生ホール2F",
-  "ubic-1f":"UBIC","lictia-1f":"LICTiA1F"
-};
+/* ==== マップ設定（tools/route-editor/config.ts から生成） ==== */
+const { MAPS, FLOOR_ORDER, FLOOR_NAME } = globalThis.UOAMAP_ROUTE_EDITOR_CONFIG;
 const cfgForSheet = (id) => MAPS.find(m => m.sheetId === id);
 const cfgForFile = (file) => MAPS.find(m => m.file === file);
 const cfgForFloor = (floorId) => MAPS.find(m => m.floor === floorId);

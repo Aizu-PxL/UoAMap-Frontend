@@ -1,19 +1,19 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM6完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM7 13k完了)
 対象ブランチ: `codex/repository-wide-refactor`
 ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM6 13j `docs/tasks/13j-route-extraction-core.md` まで完了。Route抽出・検証・transfer生成・serializerを入力注入型coreへ移し、CLIをI/O境界へ縮小した。実10 SVGの104 nodes / 112 edges・生成JSON完全バイト一致と主要な不正fixtureを固定し、scripts/tools strict型検査をbuildへ追加。84 tests / 477 assertions、build、36 places、generate後のJSON差分ゼロ、git diff --checkを確認。P3のSCOPE記載漏れを修正し、再レビューで指摘なし。次はM7 `13k-route-editor-build-config`。
+リポジトリ横断リファクタリングはM7 13k `docs/tasks/13k-route-editor-build-config.md` まで完了。route editorのmap/floor設定をTS単一ソースへ移し、places/mapSheets/floors・全10 SVGとの同期テストと、Bun IIFEをHTML markerへ埋め込むgenerate/check方式を追加した。88 tests / 488 assertions、`verify:route-editor`、build、36 places、104 nodes / 112 edges、git diff --checkがPASS。Vite配信で起動・代表モード切替・console error 0件を確認した。Browser security policyとファイル入力API制約により、`file://`と全10 SVGのブラウザ自動取込は未実施だが、単一HTML・外部scriptなし・全10ファイル同期・生成鮮度は自動検証済み。初回独立レビューのP2（Floor短縮表示名の同期未検証）を純粋規則と全Floor assertionで修正し、再レビューで指摘なし。次はM7 `13l-route-editor-plan-io`。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
 開始プロンプト:
 
 ```text
-`.agent/PLANS.md` に従い、13jの独立レビュー完了を確認した後、M7の `13k-route-editor-build-config` を開始してください。map設定同期を先に検証し、TS単一ソースからBun IIFEをHTML markerへ埋め込むgenerate/check方式で単一HTMLとfile://動作を維持してください。
+`.agent/PLANS.md` に従い、13kの独立レビュー完了を確認した後、M7の `13l-route-editor-plan-io` を開始してください。計画JSON・QrCode JSON・CSV・Place案の現行入出力をexact testで固定し、pure coreを既存generated IIFEへ追加してください。
 ```
 
 SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。

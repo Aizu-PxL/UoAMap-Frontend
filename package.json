@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "bun run verify:route-editor && tsc -b && vite build",
     "preview": "vite preview",
     "generate:routes": "bun run scripts/extract-routes.ts",
+    "generate:route-editor": "bun run scripts/build-route-editor.ts",
+    "verify:route-editor": "bun run scripts/build-route-editor.ts --check",
     "verify:routes": "bun run scripts/extract-routes.ts --check",
     "verify:places": "bun run scripts/verify-places.ts"
   },
