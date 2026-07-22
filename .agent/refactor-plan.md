@@ -1,6 +1,6 @@
 # UoAMap リポジトリ横断リファクタリング ExecPlan
 
-状態: **M7完了、M8開始可能**
+状態: **M8完了（リポジトリ横断リファクタリング完遂）**
 作成日: 2026-07-22
 対象ブランチ: `codex/repository-wide-refactor`（作成・切替はユーザーが管理）
 
@@ -206,7 +206,11 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - [x] 2026-07-22: `docs/tasks/13n-route-editor-route-xml.md` を作成し、Route group生成、attribute escape、座標format、既存Route置換、未存在時appendを `tools/route-editor/routeXml.ts` へ抽出。inline editorはMapState配列化とBlob/downloadだけを担当する境界へ変更した。
 - [x] 2026-07-22: 属性/optional属性/node→edge順、escape、3桁丸め、unknown endpoint、indent fallback/改行、既存置換、appendを5件15 assertionsのexact-string testで固定。全体105 tests / 551 assertions、`verify:route-editor`、build、verify:routes 104/112、verify:places 36、git diff --checkがPASS。Vite配信で全10 SVG読込、キャンパスSVG download、console error 0件を確認した。
 - [x] 2026-07-22: 13n初回独立レビューのP3（indent fallbackと空optional属性のtest不足）を3種fallbackのexact assertionで修正。全ゲート再実行後の再レビューで指摘なし。13nとM7を完了した。
-- [ ] 次: M8の `13o-refactor-final-integration` を開始する。
+- [x] 2026-07-22: `docs/tasks/13o-refactor-final-integration.md` を作成し、最短経路の6 synthetic testsと実生成グラフの19 coverage testsを別ファイルへ分離。全体105 tests / 551 assertionsを維持した。
+- [x] 2026-07-22: `bun run verify:all` を追加し、105 tests / 551 assertions、route editor生成鮮度、scripts/toolsを含むstrict型検査、production build、verify:places 36、verify:routes 104/112、git diff --checkが一括PASSした。
+- [x] 2026-07-22: exportと動的参照を検索し、strict型検査と照合した結果、安全に削除できる明白なdead codeはなかったため削除を行わなかった。READMEを現行の起動・検証・Route編集手順へ更新した。
+- [x] 2026-07-22: 幅402pxで `/?at=rq1-161&to=P12`、`/events?highlight=P20`、`/q/Q003?to=M21` を確認し、URL正規化、経路・highlight表示、console error 0件を確認した。route editorはVite配信1440×900で全10 SVG読込、Undo/Redo・自動採番非巻戻し、SVG download、console error 0件を確認済み。
+- [x] 2026-07-22: 基準コミット `5b37580` 以降の累積差分と13o未コミット差分を会話履歴なしの読み取り専用レビューへ渡し、指摘なし。M8とリポジトリ横断リファクタリングを完了した。
 
 ## 8. 判断と発見
 
@@ -218,17 +222,20 @@ routeとmarkerのeffectは `viewBox` 全体に依存するため、x/yだけが�
 - アクティブな `.codex/config.toml` は実行権限を永続変更するため自動追加せず、レビュー用の `.codex/config.toml.example` だけを置いた。
 - 設定サンプルの `gpt-5.6` は、2026-07-22取得の現行Codexマニュアルと公式sample configの推奨例に合わせた。ローカルCLIの版番号だけからモデルカタログを推測しない。
 - 既存コードの見直しでは、現行10枚以外のSVGへ同種機能を適用する可能性を設計観点として持つ。ただし要件は未確定なので、将来機能や汎用化層を先行実装しない。各スライスでは現行SVGファイル名への不要な結合を増やさず、複数の実例から共通境界が立証された場合だけ抽象化する。
+- route editorの設定と `public/maps/` の同期テストにより、将来SVGを追加・削除した際の設定漏れはFAILする。未確定の別SVG対応機能そのものは実装していない。
+- 現在のBrowser実行環境はsecurity policyで `file://` を拒否し、ファイル入力APIも提供しない。単一HTML・外部scriptなし・生成鮮度・全10ファイル同期は自動テストで、主要操作はVite配信で検証したが、`file://` と計画JSON再読込のブラウザ自動操作は未実施である。
+- 全exportの参照検索では、定義ファイル内だけで使われる型・テスト補助exportは見つかったが、外部契約を変えず安全に削除できるruntime dead codeはなかった。行数削減を目的化せず、M8では削除しない判断とした。
 
 ## 9. 次スレッドへの開始指示
 
 1. `AGENTS.md`、`docs/STATUS.md`、`docs/HANDOFF.md`、`docs/SPEC.md`、`docs/WORKFLOW.md`、`.agent/PLANS.md`、このファイルを読む。
 2. `git status --short` と基準コマンドを実行する。
-3. M7 13nの独立レビューとコミットが完了済みか確認する。未完了なら `docs/tasks/13n-route-editor-route-xml.md` のSCOPE全体をレビューして閉じる。
-4. M8の `docs/tasks/13o-refactor-final-integration.md` を作り、syntheticアルゴリズムtestと実グラフcoverageを分離する。
-5. `verify:all`、限定的dead code削除、README/STATUS/HANDOFF/ExecPlan更新を行い、基準コミット`5b37580`以降の累積差分を履歴なし独立レビューする。
+3. M1〜M8と基準コミット `5b37580` 以降の累積独立レビューが完了済みであることを確認する。
+4. リファクタリングの追加作業は行わず、次の機能は別ブリーフで開始する。現行候補はSPECロードマップのAPI接続である。
+5. 本番公開や物理QRへ進む場合は `docs/PRODUCTION.md` の人間決定ゲートを先に完了する。
 
 開始プロンプトは次でよい。
 
 ```text
-`.agent/PLANS.md` に従い、13nの独立レビュー完了を確認した後、M8の `13o-refactor-final-integration` を開始してください。synthetic testと実グラフcoverageを分離し、verify:all・限定的dead code整理・文書更新後、5b37580以降の累積差分を履歴なし独立レビューしてください。
+`.agent/refactor-plan.md` のM1〜M8完了を確認し、次に着手する機能を `docs/SPEC.md` と `docs/BACKLOG.md` から選んで別ブリーフを作成してください。本番公開や物理QRの場合は先に `docs/PRODUCTION.md` の人間決定ゲートを確認してください。
 ```

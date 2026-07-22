@@ -10,7 +10,8 @@
     "generate:route-editor": "bun run scripts/build-route-editor.ts",
     "verify:route-editor": "bun run scripts/build-route-editor.ts --check",
     "verify:routes": "bun run scripts/extract-routes.ts --check",
-    "verify:places": "bun run scripts/verify-places.ts"
+    "verify:places": "bun run scripts/verify-places.ts",
+    "verify:all": "bun test && bun run build && bun run verify:places && bun run verify:routes && git diff --check"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

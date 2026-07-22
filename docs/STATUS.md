@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM7完了)
+最終更新: 2026-07-22(リポジトリ横断リファクタリングM1〜M8完了)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -65,7 +65,12 @@
 - M7 13n: Route group生成、attribute escape、座標3桁format、既存Route置換、未存在時appendをpure coreへ移動。inline editorはMapState配列化とBlob/downloadだけを担当し、partial-load簡易検証と正式抽出器は共通化していない
 - M7 13n検証: Route XML 5 tests / 15 assertions、全体105 tests / 551 assertions、`verify:route-editor`、104 nodes / 112 edges、36 places、build、git diff --checkがPASS。Vite配信で全10 SVG読込、キャンパスSVG download、console error 0件を確認
 - M7 13nレビュー: P3のindent fallback・空optional test不足を3種fallbackのexact assertionで修正し、再レビューで指摘なし。13nとM7完了
-- 次の開始位置: M8の `13o-refactor-final-integration`
+- M8 13o: 最短経路の6 synthetic testsと、全Place・event・QR・連結性・建物/階段/入口を固定する19実グラフcoverage testsを別ファイルへ分離。test/assertion総数は105 / 551のまま維持
+- M8 13o検証: `bun run verify:all` で全test、route editor鮮度、scripts/toolsを含むstrict型検査、production build、36 places、104 nodes / 112 edges、git diff --checkがPASS。幅402pxで代表3 URL、route editorはVite配信1440×900で全10 SVG・Undo/Redo・自動採番非巻戻し・SVG downloadを確認し、console error 0件
+- M8 13o整理: 全exportと動的参照を検索し、安全に削除できる明白なdead codeがなかったため削除なし。READMEを現行手順へ更新。将来の別SVG機能は追加せず、地図設定と `public/maps/` の同期漏れをtestでFAILさせる境界を維持
+- 自動化制約: Browser security policyにより `file://`、ファイル入力API制約により計画JSON再読込のブラウザ自動操作は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度とpure parse exact testで補完
+- M8 13oレビュー: 基準コミット `5b37580` 以降の累積差分を会話履歴なしで独立レビューし、指摘なし。M1〜M8完了
+- 次の開始位置: リファクタリングの追加作業はなく、SPECロードマップのAPI接続など次機能を別ブリーフで開始する。本番公開・物理QRは `docs/PRODUCTION.md` の人間決定が先
 
 リファクタリングは外部仕様、URL状態、Repository/API契約、Figma UI、SVG ID、生成データ形式を変更しない。マイルストーンごとに `docs/tasks/13x-*.md` を作り、通常の検証ゲートと独立レビューを完了してから次へ進む。
 
@@ -93,6 +98,7 @@ QR候補は歩行可能なRouteノードにのみ置き、既存Placeを再利�
 ## 動作確認手順(検証ゲート)
 
 ```bash
+bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる
