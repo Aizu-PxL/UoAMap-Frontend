@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "nextQrNumber": 71,
+  "nextQrNumber": 75,
   "placements": [
     {
       "qrId": "Q001",
@@ -771,9 +771,89 @@
       "floorId": "rq-3f",
       "x": 431,
       "y": 617
+    },
+    {
+      "qrId": "Q071",
+      "sheetId": "lh1f",
+      "routeNodeId": "lh_node_1f_6",
+      "placeId": "lh_node_1f_6",
+      "kind": "fixed",
+      "installationNote": "講義棟通路西１階",
+      "floorId": "lh-1f",
+      "x": 170,
+      "y": 457
+    },
+    {
+      "qrId": "Q072",
+      "sheetId": "lh1f",
+      "routeNodeId": "lh_node_1f_7",
+      "placeId": "lh_node_1f_7",
+      "kind": "fixed",
+      "installationNote": "講義棟通路東１階",
+      "floorId": "lh-1f",
+      "x": 252,
+      "y": 457
+    },
+    {
+      "qrId": "Q073",
+      "sheetId": "lh2f",
+      "routeNodeId": "lh_node_2f_3",
+      "placeId": "lh_node_2f_3",
+      "kind": "fixed",
+      "installationNote": "講義棟通路西２階",
+      "floorId": "lh-2f",
+      "x": 150,
+      "y": 67
+    },
+    {
+      "qrId": "Q074",
+      "sheetId": "lh2f",
+      "routeNodeId": "lh_node_2f_5",
+      "placeId": "lh_node_2f_5",
+      "kind": "fixed",
+      "installationNote": "講義棟通路東２階",
+      "floorId": "lh-2f",
+      "x": 262,
+      "y": 67
     }
   ],
   "placeProposals": [
+    {
+      "id": "lh_node_1f_6",
+      "name": "講義棟通路西１階",
+      "sheetId": "lh1f",
+      "routeNodeId": "lh_node_1f_6",
+      "floorId": "lh-1f",
+      "x": 170,
+      "y": 457
+    },
+    {
+      "id": "lh_node_1f_7",
+      "name": "講義棟通路東１階",
+      "sheetId": "lh1f",
+      "routeNodeId": "lh_node_1f_7",
+      "floorId": "lh-1f",
+      "x": 252,
+      "y": 457
+    },
+    {
+      "id": "lh_node_2f_3",
+      "name": "講義棟通路西２階",
+      "sheetId": "lh2f",
+      "routeNodeId": "lh_node_2f_3",
+      "floorId": "lh-2f",
+      "x": 150,
+      "y": 67
+    },
+    {
+      "id": "lh_node_2f_5",
+      "name": "講義棟通路東２階",
+      "sheetId": "lh2f",
+      "routeNodeId": "lh_node_2f_5",
+      "floorId": "lh-2f",
+      "x": 262,
+      "y": 67
+    },
     {
       "id": "lh_stairs_northeast_1f",
       "name": "学生ホールエレベーター前１階",
