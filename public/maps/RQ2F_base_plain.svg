@@ -2403,768 +2403,950 @@
     </g>
   </g>
 <g
-       id="Route"
-       data-floor-id="rq-2f"
-       style="display:none">
-      <circle
-         id="rq_stairs_southwest_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_southwest_2f"
-         data-stair-id="rq_southwest"
-         cx="80"
-         cy="623"
-         r="2" />
-      <circle
-         id="rq_stairs_northwest_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_northwest_2f"
-         data-stair-id="rq_northwest"
-         cx="79"
-         cy="70"
-         r="2" />
-      <circle
-         id="rq_stairs_midwest_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_midwest_2f"
-         data-stair-id="rq_midwest"
-         cx="61"
-         cy="341"
-         r="2" />
-      <circle
-         id="rq_stairs_northeast_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_northeast_2f"
-         data-stair-id="rq_northeast"
-         cx="452"
-         cy="76"
-         r="2" />
-      <circle
-         id="rq_stairs_mideast_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_mideast_2f"
-         data-stair-id="rq_mideast"
-         cx="452"
-         cy="340"
-         r="2" />
-      <circle
-         id="rq_stairs_southeast_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_southeast_2f"
-         data-stair-id="rq_southeast"
-         cx="452"
-         cy="617"
-         r="2" />
-      <circle
-         id="rq_stairs_southmid_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_southmid_2f"
-         data-stair-id="rq_southmid"
-         cx="240"
-         cy="630"
-         r="2" />
-      <circle
-         id="rq_stairs_midmid_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_midmid_2f"
-         data-stair-id="rq_midmid"
-         cx="242"
-         cy="353"
-         r="2" />
-      <circle
-         id="rq_stairs_northmid_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-place-id="rq_stairs_northmid_2f"
-         data-stair-id="rq_northmid"
-         cx="242"
-         cy="76"
-         r="2" />
-      <circle
-         id="rq_stairs_midcenter_2f"
-         data-route-node=""
-         data-kind="stairs"
-         data-stair-id="rq_midcenter"
-         cx="118"
-         cy="291"
-         r="2" />
-      <circle
-         id="rq_room_201f"
-         data-route-node=""
-         data-kind="corridor"
-         cx="439"
-         cy="44"
-         r="2" />
-      <circle
-         id="rq_room_243b"
-         data-route-node=""
-         data-kind="corridor"
-         cx="175"
-         cy="598"
-         r="2" />
-      <circle
-         id="rq_room_267"
-         data-route-node=""
-         data-kind="corridor"
-         cx="127"
-         cy="372"
-         r="2" />
-      <circle
-         id="rq_room_268"
-         data-route-node=""
-         data-kind="corridor"
-         cx="85"
-         cy="372"
-         r="2" />
-      <circle
-         id="rq_room_s1"
-         data-route-node=""
-         data-kind="corridor"
-         cx="61"
-         cy="125"
-         r="2" />
-      <circle
-         id="rq_room_s4"
-         data-route-node=""
-         data-kind="corridor"
-         cx="61"
-         cy="233"
-         r="2" />
-      <circle
-         id="rq_node_2f_1"
-         data-route-node=""
-         data-kind="corridor"
-         cx="88"
-         cy="48"
-         r="2" />
-      <circle
-         id="rq_node_2f_2"
-         data-route-node=""
-         data-kind="corridor"
-         cx="88"
-         cy="89"
-         r="2" />
-      <circle
-         id="rq_node_2f_3"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="48"
-         r="2" />
-      <circle
-         id="rq_node_2f_4"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="89"
-         r="2" />
-      <circle
-         id="rq_node_2f_5"
-         data-route-node=""
-         data-kind="corridor"
-         cx="458"
-         cy="48"
-         r="2" />
-      <circle
-         id="rq_node_2f_6"
-         data-route-node=""
-         data-kind="corridor"
-         cx="458"
-         cy="89"
-         r="2" />
-      <circle
-         id="rq_node_2f_7"
-         data-route-node=""
-         data-kind="corridor"
-         cx="70"
-         cy="97"
-         r="2" />
-      <circle
-         id="rq_node_2f_8"
-         data-route-node=""
-         data-kind="corridor"
-         cx="70"
-         cy="326"
-         r="2" />
-      <circle
-         id="rq_node_2f_9"
-         data-route-node=""
-         data-kind="corridor"
-         cx="70"
-         cy="366"
-         r="2" />
-      <circle
-         id="rq_node_2f_10"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="326"
-         r="2" />
-      <circle
-         id="rq_node_2f_11"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="366"
-         r="2" />
-      <circle
-         id="rq_node_2f_12"
-         data-route-node=""
-         data-kind="corridor"
-         cx="458"
-         cy="326"
-         r="2" />
-      <circle
-         id="rq_node_2f_13"
-         data-route-node=""
-         data-kind="corridor"
-         cx="458"
-         cy="366"
-         r="2" />
-      <circle
-         id="rq_node_2f_14"
-         data-route-node=""
-         data-kind="corridor"
-         cx="71"
-         cy="597"
-         r="2" />
-      <circle
-         id="rq_node_2f_15"
-         data-route-node=""
-         data-kind="corridor"
-         cx="89"
-         cy="605"
-         r="2" />
-      <circle
-         id="rq_node_2f_16"
-         data-route-node=""
-         data-kind="corridor"
-         cx="89"
-         cy="644"
-         r="2" />
-      <circle
-         id="rq_node_2f_17"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="604"
-         r="2" />
-      <circle
-         id="rq_node_2f_18"
-         data-route-node=""
-         data-kind="corridor"
-         cx="238"
-         cy="644"
-         r="2" />
-      <circle
-         id="rq_node_2f_19"
-         data-route-node=""
-         data-kind="corridor"
-         cx="459"
-         cy="603"
-         r="2" />
-      <circle
-         id="rq_node_2f_20"
-         data-route-node=""
-         data-kind="corridor"
-         cx="459"
-         cy="644"
-         r="2" />
-      <circle
-         id="rq_node_2f_21"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="48"
-         r="2" />
-      <circle
-         id="rq_node_2f_22"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="89"
-         r="2" />
-      <circle
-         id="rq_node_2f_23"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="326"
-         r="2" />
-      <circle
-         id="rq_node_2f_24"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="366"
-         r="2" />
-      <circle
-         id="rq_node_2f_25"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="604"
-         r="2" />
-      <circle
-         id="rq_node_2f_26"
-         data-route-node=""
-         data-kind="corridor"
-         cx="415"
-         cy="643"
-         r="2" />
-      <circle
-         id="rq_node_2f_27"
-         data-route-node=""
-         data-kind="corridor"
-         cx="70"
-         cy="182"
-         r="2" />
-      <circle
-         id="rq_node_2f_28"
-         data-route-node=""
-         data-kind="corridor"
-         cx="106"
-         cy="366"
-         r="2" />
-      <circle
-         id="rq_node_2f_29"
-         data-route-node=""
-         data-kind="corridor"
-         cx="70"
-         cy="292"
-         r="2" />
-      <path
-         id="route_edge_rq_node_2f_1_to_rq_node_2f_3"
-         data-route-edge=""
-         data-node-a="rq_node_2f_1"
-         data-node-b="rq_node_2f_3"
-         d="M 88 48 L 238 48" />
-      <path
-         id="route_edge_rq_node_2f_5_to_rq_node_2f_6"
-         data-route-edge=""
-         data-node-a="rq_node_2f_5"
-         data-node-b="rq_node_2f_6"
-         d="M 458 48 L 458 89" />
-      <path
-         id="route_edge_rq_node_2f_4_to_rq_node_2f_3"
-         data-route-edge=""
-         data-node-a="rq_node_2f_4"
-         data-node-b="rq_node_2f_3"
-         d="M 238 89 L 238 48" />
-      <path
-         id="route_edge_rq_node_2f_4_to_rq_node_2f_2"
-         data-route-edge=""
-         data-node-a="rq_node_2f_4"
-         data-node-b="rq_node_2f_2"
-         d="M 238 89 L 88 89" />
-      <path
-         id="route_edge_rq_node_2f_2_to_rq_node_2f_7"
-         data-route-edge=""
-         data-node-a="rq_node_2f_2"
-         data-node-b="rq_node_2f_7"
-         d="M 88 89 L 70 97" />
-      <path
-         id="route_edge_rq_node_2f_8_to_rq_node_2f_9"
-         data-route-edge=""
-         data-node-a="rq_node_2f_8"
-         data-node-b="rq_node_2f_9"
-         d="M 70 326 L 70 366" />
-      <path
-         id="route_edge_rq_node_2f_9_to_rq_node_2f_14"
-         data-route-edge=""
-         data-node-a="rq_node_2f_9"
-         data-node-b="rq_node_2f_14"
-         d="M 70 366 L 71 597" />
-      <path
-         id="route_edge_rq_node_2f_14_to_rq_node_2f_15"
-         data-route-edge=""
-         data-node-a="rq_node_2f_14"
-         data-node-b="rq_node_2f_15"
-         d="M 71 597 L 89 605" />
-      <path
-         id="route_edge_rq_node_2f_15_to_rq_node_2f_16"
-         data-route-edge=""
-         data-node-a="rq_node_2f_15"
-         data-node-b="rq_node_2f_16"
-         d="M 89 605 L 89 644" />
-      <path
-         id="route_edge_rq_node_2f_16_to_rq_node_2f_18"
-         data-route-edge=""
-         data-node-a="rq_node_2f_16"
-         data-node-b="rq_node_2f_18"
-         d="M 89 644 L 238 644" />
-      <path
-         id="route_edge_rq_node_2f_20_to_rq_node_2f_19"
-         data-route-edge=""
-         data-node-a="rq_node_2f_20"
-         data-node-b="rq_node_2f_19"
-         d="M 459 644 L 459 603" />
-      <path
-         id="route_edge_rq_node_2f_17_to_rq_node_2f_18"
-         data-route-edge=""
-         data-node-a="rq_node_2f_17"
-         data-node-b="rq_node_2f_18"
-         d="M 238 604 L 238 644" />
-      <path
-         id="route_edge_rq_node_2f_17_to_rq_node_2f_15"
-         data-route-edge=""
-         data-node-a="rq_node_2f_17"
-         data-node-b="rq_node_2f_15"
-         d="M 238 604 L 89 605" />
-      <path
-         id="route_edge_rq_node_2f_19_to_rq_node_2f_13"
-         data-route-edge=""
-         data-node-a="rq_node_2f_19"
-         data-node-b="rq_node_2f_13"
-         d="M 459 603 L 458 366" />
-      <path
-         id="route_edge_rq_node_2f_13_to_rq_node_2f_12"
-         data-route-edge=""
-         data-node-a="rq_node_2f_13"
-         data-node-b="rq_node_2f_12"
-         d="M 458 366 L 458 326" />
-      <path
-         id="route_edge_rq_node_2f_12_to_rq_node_2f_6"
-         data-route-edge=""
-         data-node-a="rq_node_2f_12"
-         data-node-b="rq_node_2f_6"
-         d="M 458 326 L 458 89" />
-      <path
-         id="route_edge_rq_node_2f_10_to_rq_node_2f_11"
-         data-route-edge=""
-         data-node-a="rq_node_2f_10"
-         data-node-b="rq_node_2f_11"
-         d="M 238 326 L 238 366" />
-      <path
-         id="route_edge_rq_node_2f_10_to_rq_node_2f_8"
-         data-route-edge=""
-         data-node-a="rq_node_2f_10"
-         data-node-b="rq_node_2f_8"
-         d="M 238 326 L 70 326" />
-      <path
-         id="route_edge_rq_node_2f_1_to_rq_node_2f_2"
-         data-route-edge=""
-         data-node-a="rq_node_2f_1"
-         data-node-b="rq_node_2f_2"
-         d="M 88 48 L 88 89" />
-      <path
-         id="route_edge_rq_node_2f_3_to_rq_node_2f_21"
-         data-route-edge=""
-         data-node-a="rq_node_2f_3"
-         data-node-b="rq_node_2f_21"
-         d="M 238 48 L 415 48" />
-      <path
-         id="route_edge_rq_node_2f_21_to_rq_node_2f_5"
-         data-route-edge=""
-         data-node-a="rq_node_2f_21"
-         data-node-b="rq_node_2f_5"
-         d="M 415 48 L 458 48" />
-      <path
-         id="route_edge_rq_node_2f_4_to_rq_node_2f_22"
-         data-route-edge=""
-         data-node-a="rq_node_2f_4"
-         data-node-b="rq_node_2f_22"
-         d="M 238 89 L 415 89" />
-      <path
-         id="route_edge_rq_node_2f_22_to_rq_node_2f_6"
-         data-route-edge=""
-         data-node-a="rq_node_2f_22"
-         data-node-b="rq_node_2f_6"
-         d="M 415 89 L 458 89" />
-      <path
-         id="route_edge_rq_node_2f_22_to_rq_node_2f_21"
-         data-route-edge=""
-         data-node-a="rq_node_2f_22"
-         data-node-b="rq_node_2f_21"
-         d="M 415 89 L 415 48" />
-      <path
-         id="route_edge_rq_node_2f_10_to_rq_node_2f_23"
-         data-route-edge=""
-         data-node-a="rq_node_2f_10"
-         data-node-b="rq_node_2f_23"
-         d="M 238 326 L 415 326" />
-      <path
-         id="route_edge_rq_node_2f_23_to_rq_node_2f_12"
-         data-route-edge=""
-         data-node-a="rq_node_2f_23"
-         data-node-b="rq_node_2f_12"
-         d="M 415 326 L 458 326" />
-      <path
-         id="route_edge_rq_node_2f_11_to_rq_node_2f_24"
-         data-route-edge=""
-         data-node-a="rq_node_2f_11"
-         data-node-b="rq_node_2f_24"
-         d="M 238 366 L 415 366" />
-      <path
-         id="route_edge_rq_node_2f_24_to_rq_node_2f_13"
-         data-route-edge=""
-         data-node-a="rq_node_2f_24"
-         data-node-b="rq_node_2f_13"
-         d="M 415 366 L 458 366" />
-      <path
-         id="route_edge_rq_node_2f_24_to_rq_node_2f_23"
-         data-route-edge=""
-         data-node-a="rq_node_2f_24"
-         data-node-b="rq_node_2f_23"
-         d="M 415 366 L 415 326" />
-      <path
-         id="route_edge_rq_node_2f_17_to_rq_node_2f_25"
-         data-route-edge=""
-         data-node-a="rq_node_2f_17"
-         data-node-b="rq_node_2f_25"
-         d="M 238 604 L 415 604" />
-      <path
-         id="route_edge_rq_node_2f_25_to_rq_node_2f_19"
-         data-route-edge=""
-         data-node-a="rq_node_2f_25"
-         data-node-b="rq_node_2f_19"
-         d="M 415 604 L 459 603" />
-      <path
-         id="route_edge_rq_node_2f_18_to_rq_node_2f_26"
-         data-route-edge=""
-         data-node-a="rq_node_2f_18"
-         data-node-b="rq_node_2f_26"
-         d="M 238 644 L 415 643" />
-      <path
-         id="route_edge_rq_node_2f_26_to_rq_node_2f_20"
-         data-route-edge=""
-         data-node-a="rq_node_2f_26"
-         data-node-b="rq_node_2f_20"
-         d="M 415 643 L 459 644" />
-      <path
-         id="route_edge_rq_node_2f_26_to_rq_node_2f_25"
-         data-route-edge=""
-         data-node-a="rq_node_2f_26"
-         data-node-b="rq_node_2f_25"
-         d="M 415 643 L 415 604" />
-      <path
-         id="route_edge_rq_stairs_northwest_2f_to_rq_node_2f_2"
-         data-route-edge=""
-         data-node-a="rq_stairs_northwest_2f"
-         data-node-b="rq_node_2f_2"
-         d="M 79 70 L 88 89" />
-      <path
-         id="route_edge_rq_node_2f_1_to_rq_stairs_northwest_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_1"
-         data-node-b="rq_stairs_northwest_2f"
-         d="M 88 48 L 79 70" />
-      <path
-         id="route_edge_rq_node_2f_8_to_rq_stairs_midwest_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_8"
-         data-node-b="rq_stairs_midwest_2f"
-         d="M 70 326 L 61 341" />
-      <path
-         id="route_edge_rq_stairs_midwest_2f_to_rq_node_2f_9"
-         data-route-edge=""
-         data-node-a="rq_stairs_midwest_2f"
-         data-node-b="rq_node_2f_9"
-         d="M 61 341 L 70 366" />
-      <path
-         id="route_edge_rq_node_2f_15_to_rq_stairs_southwest_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_15"
-         data-node-b="rq_stairs_southwest_2f"
-         d="M 89 605 L 80 623" />
-      <path
-         id="route_edge_rq_stairs_southwest_2f_to_rq_node_2f_16"
-         data-route-edge=""
-         data-node-a="rq_stairs_southwest_2f"
-         data-node-b="rq_node_2f_16"
-         d="M 80 623 L 89 644" />
-      <path
-         id="route_edge_rq_node_2f_19_to_rq_stairs_southeast_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_19"
-         data-node-b="rq_stairs_southeast_2f"
-         d="M 459 603 L 452 617" />
-      <path
-         id="route_edge_rq_stairs_southeast_2f_to_rq_node_2f_20"
-         data-route-edge=""
-         data-node-a="rq_stairs_southeast_2f"
-         data-node-b="rq_node_2f_20"
-         d="M 452 617 L 459 644" />
-      <path
-         id="route_edge_rq_stairs_southmid_2f_to_rq_node_2f_18"
-         data-route-edge=""
-         data-node-a="rq_stairs_southmid_2f"
-         data-node-b="rq_node_2f_18"
-         d="M 240 630 L 238 644" />
-      <path
-         id="route_edge_rq_node_2f_17_to_rq_stairs_southmid_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_17"
-         data-node-b="rq_stairs_southmid_2f"
-         d="M 238 604 L 240 630" />
-      <path
-         id="route_edge_rq_node_2f_10_to_rq_stairs_midmid_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_10"
-         data-node-b="rq_stairs_midmid_2f"
-         d="M 238 326 L 242 353" />
-      <path
-         id="route_edge_rq_stairs_midmid_2f_to_rq_node_2f_11"
-         data-route-edge=""
-         data-node-a="rq_stairs_midmid_2f"
-         data-node-b="rq_node_2f_11"
-         d="M 242 353 L 238 366" />
-      <path
-         id="route_edge_rq_stairs_mideast_2f_to_rq_node_2f_13"
-         data-route-edge=""
-         data-node-a="rq_stairs_mideast_2f"
-         data-node-b="rq_node_2f_13"
-         d="M 452 340 L 458 366" />
-      <path
-         id="route_edge_rq_stairs_mideast_2f_to_rq_node_2f_12"
-         data-route-edge=""
-         data-node-a="rq_stairs_mideast_2f"
-         data-node-b="rq_node_2f_12"
-         d="M 452 340 L 458 326" />
-      <path
-         id="route_edge_rq_node_2f_5_to_rq_stairs_northeast_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_5"
-         data-node-b="rq_stairs_northeast_2f"
-         d="M 458 48 L 452 76" />
-      <path
-         id="route_edge_rq_stairs_northeast_2f_to_rq_node_2f_6"
-         data-route-edge=""
-         data-node-a="rq_stairs_northeast_2f"
-         data-node-b="rq_node_2f_6"
-         d="M 452 76 L 458 89" />
-      <path
-         id="route_edge_rq_stairs_northmid_2f_to_rq_node_2f_4"
-         data-route-edge=""
-         data-node-a="rq_stairs_northmid_2f"
-         data-node-b="rq_node_2f_4"
-         d="M 242 76 L 238 89" />
-      <path
-         id="route_edge_rq_stairs_northmid_2f_to_rq_node_2f_3"
-         data-route-edge=""
-         data-node-a="rq_stairs_northmid_2f"
-         data-node-b="rq_node_2f_3"
-         d="M 242 76 L 238 48" />
-      <path
-         id="route_edge_rq_room_201f_to_rq_node_2f_21"
-         data-route-edge=""
-         data-node-a="rq_room_201f"
-         data-node-b="rq_node_2f_21"
-         d="M 439 44 L 415 48" />
-      <path
-         id="route_edge_rq_room_201f_to_rq_node_2f_5"
-         data-route-edge=""
-         data-node-a="rq_room_201f"
-         data-node-b="rq_node_2f_5"
-         d="M 439 44 L 458 48" />
-      <path
-         id="route_edge_rq_node_2f_15_to_rq_room_243b"
-         data-route-edge=""
-         data-node-a="rq_node_2f_15"
-         data-node-b="rq_room_243b"
-         d="M 89 605 L 175 598" />
-      <path
-         id="route_edge_rq_room_243b_to_rq_node_2f_17"
-         data-route-edge=""
-         data-node-a="rq_room_243b"
-         data-node-b="rq_node_2f_17"
-         d="M 175 598 L 238 604" />
-      <path
-         id="route_edge_rq_node_2f_9_to_rq_room_268"
-         data-route-edge=""
-         data-node-a="rq_node_2f_9"
-         data-node-b="rq_room_268"
-         d="M 70 366 L 85 372" />
-      <path
-         id="route_edge_rq_room_267_to_rq_node_2f_11"
-         data-route-edge=""
-         data-node-a="rq_room_267"
-         data-node-b="rq_node_2f_11"
-         d="M 127 372 L 238 366" />
-      <path
-         id="route_edge_rq_node_2f_9_to_rq_node_2f_28"
-         data-route-edge=""
-         data-node-a="rq_node_2f_9"
-         data-node-b="rq_node_2f_28"
-         d="M 70 366 L 106 366" />
-      <path
-         id="route_edge_rq_node_2f_28_to_rq_node_2f_11"
-         data-route-edge=""
-         data-node-a="rq_node_2f_28"
-         data-node-b="rq_node_2f_11"
-         d="M 106 366 L 238 366" />
-      <path
-         id="route_edge_rq_room_268_to_rq_node_2f_28"
-         data-route-edge=""
-         data-node-a="rq_room_268"
-         data-node-b="rq_node_2f_28"
-         d="M 85 372 L 106 366" />
-      <path
-         id="route_edge_rq_node_2f_28_to_rq_room_267"
-         data-route-edge=""
-         data-node-a="rq_node_2f_28"
-         data-node-b="rq_room_267"
-         d="M 106 366 L 127 372" />
-      <path
-         id="route_edge_rq_node_2f_27_to_rq_node_2f_7"
-         data-route-edge=""
-         data-node-a="rq_node_2f_27"
-         data-node-b="rq_node_2f_7"
-         d="M 70 182 L 70 97" />
-      <path
-         id="route_edge_rq_node_2f_7_to_rq_room_s1"
-         data-route-edge=""
-         data-node-a="rq_node_2f_7"
-         data-node-b="rq_room_s1"
-         d="M 70 97 L 61 125" />
-      <path
-         id="route_edge_rq_room_s1_to_rq_node_2f_27"
-         data-route-edge=""
-         data-node-a="rq_room_s1"
-         data-node-b="rq_node_2f_27"
-         d="M 61 125 L 70 182" />
-      <path
-         id="route_edge_rq_node_2f_27_to_rq_room_s4"
-         data-route-edge=""
-         data-node-a="rq_node_2f_27"
-         data-node-b="rq_room_s4"
-         d="M 70 182 L 61 233" />
-      <path
-         id="route_edge_rq_node_2f_8_to_rq_stairs_midcenter_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_8"
-         data-node-b="rq_stairs_midcenter_2f"
-         d="M 70 326 L 118 291" />
-      <path
-         id="route_edge_rq_room_s4_to_rq_node_2f_29"
-         data-route-edge=""
-         data-node-a="rq_room_s4"
-         data-node-b="rq_node_2f_29"
-         d="M 61 233 L 70 292" />
-      <path
-         id="route_edge_rq_node_2f_29_to_rq_stairs_midcenter_2f"
-         data-route-edge=""
-         data-node-a="rq_node_2f_29"
-         data-node-b="rq_stairs_midcenter_2f"
-         d="M 70 292 L 118 291" />
-      <path
-         id="route_edge_rq_node_2f_29_to_rq_node_2f_8"
-         data-route-edge=""
-         data-node-a="rq_node_2f_29"
-         data-node-b="rq_node_2f_8"
-         d="M 70 292 L 70 326" />
-      <path
-         id="route_edge_rq_node_2f_27_to_rq_node_2f_29"
-         data-route-edge=""
-         data-node-a="rq_node_2f_27"
-         data-node-b="rq_node_2f_29"
-         d="M 70 182 L 70 292" />
-    </g>
+         id="Route"
+         data-floor-id="rq-2f"
+         style="display:none">
+        <circle
+           id="rq_stairs_southwest_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_southwest_2f"
+           data-stair-id="rq_southwest"
+           cx="80"
+           cy="623"
+           r="2" />
+        <circle
+           id="rq_stairs_northwest_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_northwest_2f"
+           data-stair-id="rq_northwest"
+           cx="79"
+           cy="70"
+           r="2" />
+        <circle
+           id="rq_stairs_midwest_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_midwest_2f"
+           data-stair-id="rq_midwest"
+           cx="61"
+           cy="341"
+           r="2" />
+        <circle
+           id="rq_stairs_northeast_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_northeast_2f"
+           data-stair-id="rq_northeast"
+           cx="452"
+           cy="75"
+           r="2" />
+        <circle
+           id="rq_stairs_mideast_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_mideast_2f"
+           data-stair-id="rq_mideast"
+           cx="452"
+           cy="339"
+           r="2" />
+        <circle
+           id="rq_stairs_southeast_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_southeast_2f"
+           data-stair-id="rq_southeast"
+           cx="452"
+           cy="617"
+           r="2" />
+        <circle
+           id="rq_stairs_southmid_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_southmid_2f"
+           data-stair-id="rq_southmid"
+           cx="238"
+           cy="631"
+           r="2" />
+        <circle
+           id="rq_stairs_midmid_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_midmid_2f"
+           data-stair-id="rq_midmid"
+           cx="238"
+           cy="353"
+           r="2" />
+        <circle
+           id="rq_stairs_northmid_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="rq_stairs_northmid_2f"
+           data-stair-id="rq_northmid"
+           cx="238"
+           cy="76"
+           r="2" />
+        <circle
+           id="rq_stairs_midcenter_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-stair-id="rq_midcenter"
+           cx="116"
+           cy="292"
+           r="2" />
+        <circle
+           id="rq_room_201f"
+           data-route-node=""
+           data-kind="corridor"
+           cx="439"
+           cy="44"
+           r="2" />
+        <circle
+           id="rq_room_s1"
+           data-route-node=""
+           data-kind="corridor"
+           cx="61"
+           cy="125"
+           r="2" />
+        <circle
+           id="rq_room_s4"
+           data-route-node=""
+           data-kind="corridor"
+           cx="61"
+           cy="233"
+           r="2" />
+        <circle
+           id="rq_node_2f_1"
+           data-route-node=""
+           data-kind="corridor"
+           cx="88"
+           cy="48"
+           r="2" />
+        <circle
+           id="rq_node_2f_2"
+           data-route-node=""
+           data-kind="corridor"
+           cx="88"
+           cy="89"
+           r="2" />
+        <circle
+           id="rq_node_2f_3"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="48"
+           r="2" />
+        <circle
+           id="rq_node_2f_4"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="89"
+           r="2" />
+        <circle
+           id="rq_node_2f_5"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="48"
+           r="2" />
+        <circle
+           id="rq_node_2f_6"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="89"
+           r="2" />
+        <circle
+           id="rq_node_2f_7"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="97"
+           r="2" />
+        <circle
+           id="rq_node_2f_8"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="326"
+           r="2" />
+        <circle
+           id="rq_node_2f_9"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_10"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="326"
+           r="2" />
+        <circle
+           id="rq_node_2f_11"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_12"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="326"
+           r="2" />
+        <circle
+           id="rq_node_2f_13"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_14"
+           data-route-node=""
+           data-kind="corridor"
+           cx="71"
+           cy="597"
+           r="2" />
+        <circle
+           id="rq_node_2f_15"
+           data-route-node=""
+           data-kind="corridor"
+           cx="89"
+           cy="604"
+           r="2" />
+        <circle
+           id="rq_node_2f_16"
+           data-route-node=""
+           data-kind="corridor"
+           cx="89"
+           cy="644"
+           r="2" />
+        <circle
+           id="rq_node_2f_17"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="604"
+           r="2" />
+        <circle
+           id="rq_node_2f_18"
+           data-route-node=""
+           data-kind="corridor"
+           cx="238"
+           cy="644"
+           r="2" />
+        <circle
+           id="rq_node_2f_19"
+           data-route-node=""
+           data-kind="corridor"
+           cx="459"
+           cy="604"
+           r="2" />
+        <circle
+           id="rq_node_2f_20"
+           data-route-node=""
+           data-kind="corridor"
+           cx="459"
+           cy="644"
+           r="2" />
+        <circle
+           id="rq_node_2f_21"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="48"
+           r="2" />
+        <circle
+           id="rq_node_2f_22"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="89"
+           r="2" />
+        <circle
+           id="rq_node_2f_23"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="326"
+           r="2" />
+        <circle
+           id="rq_node_2f_24"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_25"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="604"
+           r="2" />
+        <circle
+           id="rq_node_2f_26"
+           data-route-node=""
+           data-kind="corridor"
+           cx="415"
+           cy="644"
+           r="2" />
+        <circle
+           id="rq_node_2f_27"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="125"
+           r="2" />
+        <circle
+           id="rq_node_2f_28"
+           data-route-node=""
+           data-kind="corridor"
+           cx="135"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_29"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="292"
+           r="2" />
+        <circle
+           id="route_node_1"
+           data-route-node=""
+           data-kind="corridor"
+           cx="41"
+           cy="115"
+           r="2" />
+        <circle
+           id="route_node_3"
+           data-route-node=""
+           data-kind="corridor"
+           cx="41"
+           cy="225"
+           r="2" />
+        <circle
+           id="route_node_5"
+           data-route-node=""
+           data-kind="corridor"
+           cx="60"
+           cy="105"
+           r="2" />
+        <circle
+           id="route_node_6"
+           data-route-node=""
+           data-kind="corridor"
+           cx="60"
+           cy="215"
+           r="2" />
+        <circle
+           id="route_node_7"
+           data-route-node=""
+           data-kind="corridor"
+           cx="439"
+           cy="23"
+           r="2" />
+        <circle
+           id="rq_node_2f_30"
+           data-route-node=""
+           data-kind="corridor"
+           cx="88"
+           cy="70"
+           r="2" />
+        <circle
+           id="rq_node_2f_32"
+           data-route-node=""
+           data-kind="corridor"
+           cx="439"
+           cy="48"
+           r="2" />
+        <circle
+           id="rq_node_2f_34"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="215"
+           r="2" />
+        <circle
+           id="rq_node_2f_35"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="233"
+           r="2" />
+        <circle
+           id="rq_node_2f_36"
+           data-route-node=""
+           data-kind="corridor"
+           cx="70"
+           cy="341"
+           r="2" />
+        <circle
+           id="rq_node_2f_37"
+           data-route-node=""
+           data-kind="corridor"
+           cx="99"
+           cy="366"
+           r="2" />
+        <circle
+           id="rq_node_2f_38"
+           data-route-node=""
+           data-kind="corridor"
+           cx="116"
+           cy="326"
+           r="2" />
+        <circle
+           id="rq_door_268"
+           data-route-node=""
+           data-kind="corridor"
+           cx="99"
+           cy="372"
+           r="2" />
+        <circle
+           id="rq_room_268"
+           data-route-node=""
+           data-kind="corridor"
+           cx="99"
+           cy="394"
+           r="2" />
+        <circle
+           id="rq_door_267"
+           data-route-node=""
+           data-kind="corridor"
+           cx="135"
+           cy="373"
+           r="2" />
+        <circle
+           id="rq_room_267"
+           data-route-node=""
+           data-kind="corridor"
+           cx="135"
+           cy="393"
+           r="2" />
+        <circle
+           id="rq_node_2f_39"
+           data-route-node=""
+           data-kind="corridor"
+           cx="89"
+           cy="623"
+           r="2" />
+        <circle
+           id="rq_node_2f_40"
+           data-route-node=""
+           data-kind="corridor"
+           cx="175"
+           cy="604"
+           r="2" />
+        <circle
+           id="rq_door_243b"
+           data-route-node=""
+           data-kind="corridor"
+           cx="175"
+           cy="599"
+           r="2" />
+        <circle
+           id="rq_room_243b"
+           data-route-node=""
+           data-kind="corridor"
+           cx="175"
+           cy="577"
+           r="2" />
+        <circle
+           id="rq_node_2f_41"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="75"
+           r="2" />
+        <circle
+           id="rq_node_2f_42"
+           data-route-node=""
+           data-kind="corridor"
+           cx="459"
+           cy="617"
+           r="2" />
+        <circle
+           id="rq_node_2f_43"
+           data-route-node=""
+           data-kind="corridor"
+           cx="458"
+           cy="339"
+           r="2" />
+        <path
+           id="route_edge_rq_node_2f_1_to_rq_node_2f_3"
+           data-route-edge=""
+           data-node-a="rq_node_2f_1"
+           data-node-b="rq_node_2f_3"
+           d="M 88 48 L 238 48" />
+        <path
+           id="route_edge_rq_node_2f_4_to_rq_node_2f_2"
+           data-route-edge=""
+           data-node-a="rq_node_2f_4"
+           data-node-b="rq_node_2f_2"
+           d="M 238 89 L 88 89" />
+        <path
+           id="route_edge_rq_node_2f_2_to_rq_node_2f_7"
+           data-route-edge=""
+           data-node-a="rq_node_2f_2"
+           data-node-b="rq_node_2f_7"
+           d="M 88 89 L 70 97" />
+        <path
+           id="route_edge_rq_node_2f_9_to_rq_node_2f_14"
+           data-route-edge=""
+           data-node-a="rq_node_2f_9"
+           data-node-b="rq_node_2f_14"
+           d="M 70 366 L 71 597" />
+        <path
+           id="route_edge_rq_node_2f_14_to_rq_node_2f_15"
+           data-route-edge=""
+           data-node-a="rq_node_2f_14"
+           data-node-b="rq_node_2f_15"
+           d="M 71 597 L 89 604" />
+        <path
+           id="route_edge_rq_node_2f_16_to_rq_node_2f_18"
+           data-route-edge=""
+           data-node-a="rq_node_2f_16"
+           data-node-b="rq_node_2f_18"
+           d="M 89 644 L 238 644" />
+        <path
+           id="route_edge_rq_node_2f_19_to_rq_node_2f_13"
+           data-route-edge=""
+           data-node-a="rq_node_2f_19"
+           data-node-b="rq_node_2f_13"
+           d="M 459 604 L 458 366" />
+        <path
+           id="route_edge_rq_node_2f_12_to_rq_node_2f_6"
+           data-route-edge=""
+           data-node-a="rq_node_2f_12"
+           data-node-b="rq_node_2f_6"
+           d="M 458 326 L 458 89" />
+        <path
+           id="route_edge_rq_node_2f_3_to_rq_node_2f_21"
+           data-route-edge=""
+           data-node-a="rq_node_2f_3"
+           data-node-b="rq_node_2f_21"
+           d="M 238 48 L 415 48" />
+        <path
+           id="route_edge_rq_node_2f_4_to_rq_node_2f_22"
+           data-route-edge=""
+           data-node-a="rq_node_2f_4"
+           data-node-b="rq_node_2f_22"
+           d="M 238 89 L 415 89" />
+        <path
+           id="route_edge_rq_node_2f_22_to_rq_node_2f_6"
+           data-route-edge=""
+           data-node-a="rq_node_2f_22"
+           data-node-b="rq_node_2f_6"
+           d="M 415 89 L 458 89" />
+        <path
+           id="route_edge_rq_node_2f_22_to_rq_node_2f_21"
+           data-route-edge=""
+           data-node-a="rq_node_2f_22"
+           data-node-b="rq_node_2f_21"
+           d="M 415 89 L 415 48" />
+        <path
+           id="route_edge_rq_node_2f_10_to_rq_node_2f_23"
+           data-route-edge=""
+           data-node-a="rq_node_2f_10"
+           data-node-b="rq_node_2f_23"
+           d="M 238 326 L 415 326" />
+        <path
+           id="route_edge_rq_node_2f_23_to_rq_node_2f_12"
+           data-route-edge=""
+           data-node-a="rq_node_2f_23"
+           data-node-b="rq_node_2f_12"
+           d="M 415 326 L 458 326" />
+        <path
+           id="route_edge_rq_node_2f_11_to_rq_node_2f_24"
+           data-route-edge=""
+           data-node-a="rq_node_2f_11"
+           data-node-b="rq_node_2f_24"
+           d="M 238 366 L 415 366" />
+        <path
+           id="route_edge_rq_node_2f_24_to_rq_node_2f_13"
+           data-route-edge=""
+           data-node-a="rq_node_2f_24"
+           data-node-b="rq_node_2f_13"
+           d="M 415 366 L 458 366" />
+        <path
+           id="route_edge_rq_node_2f_24_to_rq_node_2f_23"
+           data-route-edge=""
+           data-node-a="rq_node_2f_24"
+           data-node-b="rq_node_2f_23"
+           d="M 415 366 L 415 326" />
+        <path
+           id="route_edge_rq_node_2f_17_to_rq_node_2f_25"
+           data-route-edge=""
+           data-node-a="rq_node_2f_17"
+           data-node-b="rq_node_2f_25"
+           d="M 238 604 L 415 604" />
+        <path
+           id="route_edge_rq_node_2f_25_to_rq_node_2f_19"
+           data-route-edge=""
+           data-node-a="rq_node_2f_25"
+           data-node-b="rq_node_2f_19"
+           d="M 415 604 L 459 604" />
+        <path
+           id="route_edge_rq_node_2f_18_to_rq_node_2f_26"
+           data-route-edge=""
+           data-node-a="rq_node_2f_18"
+           data-node-b="rq_node_2f_26"
+           d="M 238 644 L 415 644" />
+        <path
+           id="route_edge_rq_node_2f_26_to_rq_node_2f_20"
+           data-route-edge=""
+           data-node-a="rq_node_2f_26"
+           data-node-b="rq_node_2f_20"
+           d="M 415 644 L 459 644" />
+        <path
+           id="route_edge_rq_node_2f_26_to_rq_node_2f_25"
+           data-route-edge=""
+           data-node-a="rq_node_2f_26"
+           data-node-b="rq_node_2f_25"
+           d="M 415 644 L 415 604" />
+        <path
+           id="route_edge_rq_node_2f_29_to_rq_stairs_midcenter_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_29"
+           data-node-b="rq_stairs_midcenter_2f"
+           d="M 70 292 L 116 292" />
+        <path
+           id="route_edge_rq_node_2f_29_to_rq_node_2f_8"
+           data-route-edge=""
+           data-node-a="rq_node_2f_29"
+           data-node-b="rq_node_2f_8"
+           d="M 70 292 L 70 326" />
+        <path
+           id="route_edge_rq_node_2f_7_to_5"
+           data-route-edge=""
+           data-node-a="rq_node_2f_7"
+           data-node-b="route_node_5"
+           d="M 70 97 L 60 105" />
+        <path
+           id="route_edge_rq_node_2f_7_to_rq_node_2f_27"
+           data-route-edge=""
+           data-node-a="rq_node_2f_7"
+           data-node-b="rq_node_2f_27"
+           d="M 70 97 L 70 125" />
+        <path
+           id="route_edge_rq_node_2f_27_to_rq_room_s1"
+           data-route-edge=""
+           data-node-a="rq_node_2f_27"
+           data-node-b="rq_room_s1"
+           d="M 70 125 L 61 125" />
+        <path
+           id="route_edge_rq_room_s1_to_1"
+           data-route-edge=""
+           data-node-a="rq_room_s1"
+           data-node-b="route_node_1"
+           d="M 61 125 L 41 115" />
+        <path
+           id="route_edge_1_to_5"
+           data-route-edge=""
+           data-node-a="route_node_1"
+           data-node-b="route_node_5"
+           d="M 41 115 L 60 105" />
+        <path
+           id="route_edge_rq_node_2f_27_to_rq_node_2f_34"
+           data-route-edge=""
+           data-node-a="rq_node_2f_27"
+           data-node-b="rq_node_2f_34"
+           d="M 70 125 L 70 215" />
+        <path
+           id="route_edge_rq_node_2f_34_to_rq_node_2f_35"
+           data-route-edge=""
+           data-node-a="rq_node_2f_34"
+           data-node-b="rq_node_2f_35"
+           d="M 70 215 L 70 233" />
+        <path
+           id="route_edge_rq_node_2f_35_to_rq_node_2f_29"
+           data-route-edge=""
+           data-node-a="rq_node_2f_35"
+           data-node-b="rq_node_2f_29"
+           d="M 70 233 L 70 292" />
+        <path
+           id="route_edge_rq_node_2f_35_to_rq_room_s4"
+           data-route-edge=""
+           data-node-a="rq_node_2f_35"
+           data-node-b="rq_room_s4"
+           d="M 70 233 L 61 233" />
+        <path
+           id="route_edge_rq_room_s4_to_3"
+           data-route-edge=""
+           data-node-a="rq_room_s4"
+           data-node-b="route_node_3"
+           d="M 61 233 L 41 225" />
+        <path
+           id="route_edge_3_to_6"
+           data-route-edge=""
+           data-node-a="route_node_3"
+           data-node-b="route_node_6"
+           d="M 41 225 L 60 215" />
+        <path
+           id="route_edge_6_to_rq_node_2f_34"
+           data-route-edge=""
+           data-node-a="route_node_6"
+           data-node-b="rq_node_2f_34"
+           d="M 60 215 L 70 215" />
+        <path
+           id="route_edge_rq_node_2f_5_to_rq_node_2f_32"
+           data-route-edge=""
+           data-node-a="rq_node_2f_5"
+           data-node-b="rq_node_2f_32"
+           d="M 458 48 L 439 48" />
+        <path
+           id="route_edge_rq_node_2f_32_to_rq_node_2f_21"
+           data-route-edge=""
+           data-node-a="rq_node_2f_32"
+           data-node-b="rq_node_2f_21"
+           d="M 439 48 L 415 48" />
+        <path
+           id="route_edge_rq_node_2f_32_to_rq_room_201f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_32"
+           data-node-b="rq_room_201f"
+           d="M 439 48 L 439 44" />
+        <path
+           id="route_edge_rq_room_201f_to_7"
+           data-route-edge=""
+           data-node-a="rq_room_201f"
+           data-node-b="route_node_7"
+           d="M 439 44 L 439 23" />
+        <path
+           id="route_edge_rq_node_2f_1_to_rq_node_2f_30"
+           data-route-edge=""
+           data-node-a="rq_node_2f_1"
+           data-node-b="rq_node_2f_30"
+           d="M 88 48 L 88 70" />
+        <path
+           id="route_edge_rq_node_2f_30_to_rq_node_2f_2"
+           data-route-edge=""
+           data-node-a="rq_node_2f_30"
+           data-node-b="rq_node_2f_2"
+           d="M 88 70 L 88 89" />
+        <path
+           id="route_edge_rq_node_2f_30_to_rq_stairs_northwest_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_30"
+           data-node-b="rq_stairs_northwest_2f"
+           d="M 88 70 L 79 70" />
+        <path
+           id="route_edge_rq_node_2f_3_to_rq_stairs_northmid_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_3"
+           data-node-b="rq_stairs_northmid_2f"
+           d="M 238 48 L 238 76" />
+        <path
+           id="route_edge_rq_stairs_northmid_2f_to_rq_node_2f_4"
+           data-route-edge=""
+           data-node-a="rq_stairs_northmid_2f"
+           data-node-b="rq_node_2f_4"
+           d="M 238 76 L 238 89" />
+        <path
+           id="route_edge_rq_node_2f_8_to_rq_node_2f_38"
+           data-route-edge=""
+           data-node-a="rq_node_2f_8"
+           data-node-b="rq_node_2f_38"
+           d="M 70 326 L 116 326" />
+        <path
+           id="route_edge_rq_node_2f_38_to_rq_node_2f_10"
+           data-route-edge=""
+           data-node-a="rq_node_2f_38"
+           data-node-b="rq_node_2f_10"
+           d="M 116 326 L 238 326" />
+        <path
+           id="route_edge_rq_node_2f_10_to_rq_stairs_midmid_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_10"
+           data-node-b="rq_stairs_midmid_2f"
+           d="M 238 326 L 238 353" />
+        <path
+           id="route_edge_rq_stairs_midmid_2f_to_rq_node_2f_11"
+           data-route-edge=""
+           data-node-a="rq_stairs_midmid_2f"
+           data-node-b="rq_node_2f_11"
+           d="M 238 353 L 238 366" />
+        <path
+           id="route_edge_rq_room_267_to_rq_node_2f_28"
+           data-route-edge=""
+           data-node-a="rq_door_267"
+           data-node-b="rq_node_2f_28"
+           d="M 135 373 L 135 366" />
+        <path
+           id="route_edge_rq_node_2f_37_to_rq_node_2f_28"
+           data-route-edge=""
+           data-node-a="rq_node_2f_37"
+           data-node-b="rq_node_2f_28"
+           d="M 99 366 L 135 366" />
+        <path
+           id="route_edge_rq_room_268_to_rq_node_2f_37"
+           data-route-edge=""
+           data-node-a="rq_door_268"
+           data-node-b="rq_node_2f_37"
+           d="M 99 372 L 99 366" />
+        <path
+           id="route_edge_rq_node_2f_37_to_rq_node_2f_9"
+           data-route-edge=""
+           data-node-a="rq_node_2f_37"
+           data-node-b="rq_node_2f_9"
+           d="M 99 366 L 70 366" />
+        <path
+           id="route_edge_rq_node_2f_9_to_rq_node_2f_36"
+           data-route-edge=""
+           data-node-a="rq_node_2f_9"
+           data-node-b="rq_node_2f_36"
+           d="M 70 366 L 70 341" />
+        <path
+           id="route_edge_rq_node_2f_36_to_rq_node_2f_8"
+           data-route-edge=""
+           data-node-a="rq_node_2f_36"
+           data-node-b="rq_node_2f_8"
+           d="M 70 341 L 70 326" />
+        <path
+           id="route_edge_rq_stairs_midwest_2f_to_rq_node_2f_36"
+           data-route-edge=""
+           data-node-a="rq_stairs_midwest_2f"
+           data-node-b="rq_node_2f_36"
+           d="M 61 341 L 70 341" />
+        <path
+           id="route_edge_rq_node_2f_11_to_rq_node_2f_28"
+           data-route-edge=""
+           data-node-a="rq_node_2f_11"
+           data-node-b="rq_node_2f_28"
+           d="M 238 366 L 135 366" />
+        <path
+           id="route_edge_rq_stairs_midcenter_2f_to_rq_node_2f_38"
+           data-route-edge=""
+           data-node-a="rq_stairs_midcenter_2f"
+           data-node-b="rq_node_2f_38"
+           d="M 116 292 L 116 326" />
+        <path
+           id="route_edge_rq_room_268_to_rq_door_268"
+           data-route-edge=""
+           data-node-a="rq_room_268"
+           data-node-b="rq_door_268"
+           d="M 99 394 L 99 372" />
+        <path
+           id="route_edge_rq_door_267_to_rq_room_267"
+           data-route-edge=""
+           data-node-a="rq_door_267"
+           data-node-b="rq_room_267"
+           d="M 135 373 L 135 393" />
+        <path
+           id="route_edge_rq_stairs_southwest_2f_to_25"
+           data-route-edge=""
+           data-node-a="rq_stairs_southwest_2f"
+           data-node-b="rq_node_2f_39"
+           d="M 80 623 L 89 623" />
+        <path
+           id="route_edge_25_to_rq_node_2f_16"
+           data-route-edge=""
+           data-node-a="rq_node_2f_39"
+           data-node-b="rq_node_2f_16"
+           d="M 89 623 L 89 644" />
+        <path
+           id="route_edge_25_to_rq_node_2f_15"
+           data-route-edge=""
+           data-node-a="rq_node_2f_39"
+           data-node-b="rq_node_2f_15"
+           d="M 89 623 L 89 604" />
+        <path
+           id="route_edge_rq_node_2f_15_to_rq_node_2f_40"
+           data-route-edge=""
+           data-node-a="rq_node_2f_15"
+           data-node-b="rq_node_2f_40"
+           d="M 89 604 L 175 604" />
+        <path
+           id="route_edge_rq_node_2f_40_to_rq_node_2f_17"
+           data-route-edge=""
+           data-node-a="rq_node_2f_40"
+           data-node-b="rq_node_2f_17"
+           d="M 175 604 L 238 604" />
+        <path
+           id="route_edge_rq_node_2f_17_to_rq_stairs_southmid_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_17"
+           data-node-b="rq_stairs_southmid_2f"
+           d="M 238 604 L 238 631" />
+        <path
+           id="route_edge_rq_stairs_southmid_2f_to_rq_node_2f_18"
+           data-route-edge=""
+           data-node-a="rq_stairs_southmid_2f"
+           data-node-b="rq_node_2f_18"
+           d="M 238 631 L 238 644" />
+        <path
+           id="route_edge_24_to_rq_room_243b"
+           data-route-edge=""
+           data-node-a="rq_room_243b"
+           data-node-b="rq_door_243b"
+           d="M 175 577 L 175 599" />
+        <path
+           id="route_edge_rq_room_243b_to_rq_node_2f_40"
+           data-route-edge=""
+           data-node-a="rq_door_243b"
+           data-node-b="rq_node_2f_40"
+           d="M 175 599 L 175 604" />
+        <path
+           id="route_edge_rq_node_2f_5_to_rq_node_2f_41"
+           data-route-edge=""
+           data-node-a="rq_node_2f_5"
+           data-node-b="rq_node_2f_41"
+           d="M 458 48 L 458 75" />
+        <path
+           id="route_edge_rq_node_2f_41_to_rq_stairs_northeast_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_41"
+           data-node-b="rq_stairs_northeast_2f"
+           d="M 458 75 L 452 75" />
+        <path
+           id="route_edge_rq_node_2f_41_to_rq_node_2f_6"
+           data-route-edge=""
+           data-node-a="rq_node_2f_41"
+           data-node-b="rq_node_2f_6"
+           d="M 458 75 L 458 89" />
+        <path
+           id="route_edge_rq_node_2f_12_to_rq_node_2f_43"
+           data-route-edge=""
+           data-node-a="rq_node_2f_12"
+           data-node-b="rq_node_2f_43"
+           d="M 458 326 L 458 339" />
+        <path
+           id="route_edge_rq_node_2f_43_to_rq_stairs_mideast_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_43"
+           data-node-b="rq_stairs_mideast_2f"
+           d="M 458 339 L 452 339" />
+        <path
+           id="route_edge_rq_node_2f_43_to_rq_node_2f_13"
+           data-route-edge=""
+           data-node-a="rq_node_2f_43"
+           data-node-b="rq_node_2f_13"
+           d="M 458 339 L 458 366" />
+        <path
+           id="route_edge_rq_node_2f_19_to_rq_node_2f_42"
+           data-route-edge=""
+           data-node-a="rq_node_2f_19"
+           data-node-b="rq_node_2f_42"
+           d="M 459 604 L 459 617" />
+        <path
+           id="route_edge_rq_node_2f_42_to_rq_node_2f_20"
+           data-route-edge=""
+           data-node-a="rq_node_2f_42"
+           data-node-b="rq_node_2f_20"
+           d="M 459 617 L 459 644" />
+        <path
+           id="route_edge_rq_node_2f_42_to_rq_stairs_southeast_2f"
+           data-route-edge=""
+           data-node-a="rq_node_2f_42"
+           data-node-b="rq_stairs_southeast_2f"
+           d="M 459 617 L 452 617" />
+      </g>
 </svg>

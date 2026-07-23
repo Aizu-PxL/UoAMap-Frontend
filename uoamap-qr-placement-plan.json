@@ -131,7 +131,7 @@
       "kind": "fixed",
       "installationNote": "中央渡り廊下",
       "floorId": "campus",
-      "x": 420,
+      "x": 421,
       "y": 328
     },
     {
@@ -142,7 +142,7 @@
       "kind": "fixed",
       "installationNote": "中央階段前",
       "floorId": "campus",
-      "x": 395,
+      "x": 398,
       "y": 364
     },
     {
@@ -252,7 +252,7 @@
       "kind": "fixed",
       "installationNote": "研究棟北西出口",
       "floorId": "rq-1f",
-      "x": 65,
+      "x": 77,
       "y": 174
     },
     {
@@ -263,7 +263,7 @@
       "kind": "fixed",
       "installationNote": "研究棟南西出口",
       "floorId": "rq-1f",
-      "x": 64,
+      "x": 77,
       "y": 476
     },
     {
@@ -286,7 +286,7 @@
       "installationNote": "LICTiA中",
       "floorId": "lictia-1f",
       "x": 97,
-      "y": 49
+      "y": 52
     },
     {
       "qrId": "Q027",
@@ -329,8 +329,8 @@
       "kind": "fixed",
       "installationNote": "学生ホール階段前２階",
       "floorId": "sh-2f",
-      "x": 43,
-      "y": 57
+      "x": 44,
+      "y": 59
     },
     {
       "qrId": "Q031",
@@ -351,7 +351,7 @@
       "kind": "fixed",
       "installationNote": "講義棟西階段前１階",
       "floorId": "lh-1f",
-      "x": 109,
+      "x": 107,
       "y": 519
     },
     {
@@ -362,7 +362,7 @@
       "kind": "fixed",
       "installationNote": "講義棟東階段前１階",
       "floorId": "lh-1f",
-      "x": 302,
+      "x": 305,
       "y": 514
     },
     {
@@ -396,7 +396,7 @@
       "installationNote": "講義棟東階段前２階",
       "floorId": "lh-2f",
       "x": 342,
-      "y": 136
+      "y": 133
     },
     {
       "qrId": "Q037",
@@ -406,8 +406,8 @@
       "kind": "fixed",
       "installationNote": "講義棟西階段前２階",
       "floorId": "lh-2f",
-      "x": 110,
-      "y": 88
+      "x": 113,
+      "y": 93
     },
     {
       "qrId": "Q038",
@@ -428,8 +428,8 @@
       "kind": "fixed",
       "installationNote": "研究棟中央エレベーター１階",
       "floorId": "rq-1f",
-      "x": 37,
-      "y": 320
+      "x": 38,
+      "y": 323
     },
     {
       "qrId": "Q040",
@@ -440,7 +440,7 @@
       "installationNote": "研究棟北エレベーター１階",
       "floorId": "rq-1f",
       "x": 54,
-      "y": 65
+      "y": 66
     },
     {
       "qrId": "Q041",
@@ -461,7 +461,7 @@
       "kind": "fixed",
       "installationNote": "研究棟北東トイレ１階",
       "floorId": "rq-1f",
-      "x": 306,
+      "x": 318,
       "y": 66
     },
     {
@@ -472,8 +472,8 @@
       "kind": "fixed",
       "installationNote": "研究棟中央東トイレ１階",
       "floorId": "rq-1f",
-      "x": 305,
-      "y": 325
+      "x": 318,
+      "y": 324
     },
     {
       "qrId": "Q044",
@@ -483,7 +483,7 @@
       "kind": "fixed",
       "installationNote": "研究棟南東トイレ１階",
       "floorId": "rq-1f",
-      "x": 306,
+      "x": 318,
       "y": 584
     },
     {
@@ -528,7 +528,7 @@
       "installationNote": "研究棟北東階段１階",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 69
+      "y": 70
     },
     {
       "qrId": "Q049",
@@ -539,7 +539,7 @@
       "installationNote": "研究棟中央東階段１階",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 319
+      "y": 320
     },
     {
       "qrId": "Q050",
@@ -550,7 +550,7 @@
       "installationNote": "研究棟南東階段１階",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 579
+      "y": 580
     },
     {
       "qrId": "Q051",
@@ -615,7 +615,7 @@
       "kind": "fixed",
       "installationNote": "研究棟北中央階段２階",
       "floorId": "rq-2f",
-      "x": 242,
+      "x": 238,
       "y": 76
     },
     {
@@ -626,7 +626,7 @@
       "kind": "fixed",
       "installationNote": "研究棟中央階段２階",
       "floorId": "rq-2f",
-      "x": 242,
+      "x": 238,
       "y": 353
     },
     {
@@ -637,8 +637,8 @@
       "kind": "fixed",
       "installationNote": "研究棟南中央階段２階",
       "floorId": "rq-2f",
-      "x": 240,
-      "y": 630
+      "x": 238,
+      "y": 631
     },
     {
       "qrId": "Q059",
@@ -649,7 +649,7 @@
       "installationNote": "研究棟北東階段２階",
       "floorId": "rq-2f",
       "x": 452,
-      "y": 76
+      "y": 75
     },
     {
       "qrId": "Q060",
@@ -660,7 +660,7 @@
       "installationNote": "研究棟中央東階段２階",
       "floorId": "rq-2f",
       "x": 452,
-      "y": 340
+      "y": 339
     },
     {
       "qrId": "Q061",
@@ -714,8 +714,8 @@
       "kind": "fixed",
       "installationNote": "研究棟北中央階段３階",
       "floorId": "rq-3f",
-      "x": 255,
-      "y": 75
+      "x": 259,
+      "y": 77
     },
     {
       "qrId": "Q066",
@@ -725,8 +725,8 @@
       "kind": "fixed",
       "installationNote": "研究棟中央階段３階",
       "floorId": "rq-3f",
-      "x": 255,
-      "y": 354
+      "x": 259,
+      "y": 355
     },
     {
       "qrId": "Q067",
@@ -736,7 +736,7 @@
       "kind": "fixed",
       "installationNote": "研究棟南中央階段３階",
       "floorId": "rq-3f",
-      "x": 255,
+      "x": 259,
       "y": 631
     },
     {
@@ -780,8 +780,8 @@
       "kind": "fixed",
       "installationNote": "講義棟通路西１階",
       "floorId": "lh-1f",
-      "x": 170,
-      "y": 457
+      "x": 171,
+      "y": 468
     },
     {
       "qrId": "Q072",
@@ -791,8 +791,8 @@
       "kind": "fixed",
       "installationNote": "講義棟通路東１階",
       "floorId": "lh-1f",
-      "x": 252,
-      "y": 457
+      "x": 250,
+      "y": 469
     },
     {
       "qrId": "Q073",
@@ -803,7 +803,7 @@
       "installationNote": "講義棟通路西２階",
       "floorId": "lh-2f",
       "x": 150,
-      "y": 67
+      "y": 74
     },
     {
       "qrId": "Q074",
@@ -814,7 +814,7 @@
       "installationNote": "講義棟通路東２階",
       "floorId": "lh-2f",
       "x": 262,
-      "y": 67
+      "y": 74
     }
   ],
   "placeProposals": [
@@ -824,8 +824,8 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_node_1f_6",
       "floorId": "lh-1f",
-      "x": 170,
-      "y": 457
+      "x": 171,
+      "y": 468
     },
     {
       "id": "lh_node_1f_7",
@@ -833,8 +833,8 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_node_1f_7",
       "floorId": "lh-1f",
-      "x": 252,
-      "y": 457
+      "x": 250,
+      "y": 469
     },
     {
       "id": "lh_node_2f_3",
@@ -843,7 +843,7 @@
       "routeNodeId": "lh_node_2f_3",
       "floorId": "lh-2f",
       "x": 150,
-      "y": 67
+      "y": 74
     },
     {
       "id": "lh_node_2f_5",
@@ -852,7 +852,7 @@
       "routeNodeId": "lh_node_2f_5",
       "floorId": "lh-2f",
       "x": 262,
-      "y": 67
+      "y": 74
     },
     {
       "id": "lh_stairs_northeast_1f",
@@ -878,7 +878,7 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_stairs_southeast_1f",
       "floorId": "lh-1f",
-      "x": 302,
+      "x": 305,
       "y": 514
     },
     {
@@ -888,7 +888,7 @@
       "routeNodeId": "lh_stairs_southeast_2f",
       "floorId": "lh-2f",
       "x": 342,
-      "y": 136
+      "y": 133
     },
     {
       "id": "lh_stairs_west_1f",
@@ -896,7 +896,7 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_stairs_west_1f",
       "floorId": "lh-1f",
-      "x": 109,
+      "x": 107,
       "y": 519
     },
     {
@@ -905,8 +905,8 @@
       "sheetId": "lh2f",
       "routeNodeId": "lh_stairs_west_2f",
       "floorId": "lh-2f",
-      "x": 110,
-      "y": 88
+      "x": 113,
+      "y": 93
     },
     {
       "id": "lictia_node_1",
@@ -915,7 +915,7 @@
       "routeNodeId": "lictia_node_1",
       "floorId": "lictia-1f",
       "x": 97,
-      "y": 49
+      "y": 52
     },
     {
       "id": "main_auditorium",
@@ -1004,7 +1004,7 @@
       "sheetId": "campus",
       "routeNodeId": "main_node_22",
       "floorId": "campus",
-      "x": 395,
+      "x": 398,
       "y": 364
     },
     {
@@ -1049,7 +1049,7 @@
       "sheetId": "campus",
       "routeNodeId": "main_node_9",
       "floorId": "campus",
-      "x": 420,
+      "x": 421,
       "y": 328
     },
     {
@@ -1130,7 +1130,7 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_node_1f_12",
       "floorId": "rq-1f",
-      "x": 306,
+      "x": 318,
       "y": 66
     },
     {
@@ -1139,7 +1139,7 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_node_1f_17",
       "floorId": "rq-1f",
-      "x": 64,
+      "x": 77,
       "y": 476
     },
     {
@@ -1157,7 +1157,7 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_node_1f_21",
       "floorId": "rq-1f",
-      "x": 306,
+      "x": 318,
       "y": 584
     },
     {
@@ -1166,8 +1166,8 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_node_1f_3",
       "floorId": "rq-1f",
-      "x": 305,
-      "y": 325
+      "x": 318,
+      "y": 324
     },
     {
       "id": "rq_node_1f_8",
@@ -1175,7 +1175,7 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_node_1f_8",
       "floorId": "rq-1f",
-      "x": 65,
+      "x": 77,
       "y": 174
     },
     {
@@ -1194,7 +1194,7 @@
       "routeNodeId": "rq_stairs_mideast_1f",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 319
+      "y": 320
     },
     {
       "id": "rq_stairs_mideast_2f",
@@ -1203,7 +1203,7 @@
       "routeNodeId": "rq_stairs_mideast_2f",
       "floorId": "rq-2f",
       "x": 452,
-      "y": 340
+      "y": 339
     },
     {
       "id": "rq_stairs_mideast_3f",
@@ -1229,7 +1229,7 @@
       "sheetId": "rq2f",
       "routeNodeId": "rq_stairs_midmid_2f",
       "floorId": "rq-2f",
-      "x": 242,
+      "x": 238,
       "y": 353
     },
     {
@@ -1238,8 +1238,8 @@
       "sheetId": "rq3f",
       "routeNodeId": "rq_stairs_midmid_3f",
       "floorId": "rq-3f",
-      "x": 255,
-      "y": 354
+      "x": 259,
+      "y": 355
     },
     {
       "id": "rq_stairs_midwest_1f",
@@ -1247,8 +1247,8 @@
       "sheetId": "rq1f",
       "routeNodeId": "rq_stairs_midwest_1f",
       "floorId": "rq-1f",
-      "x": 37,
-      "y": 320
+      "x": 38,
+      "y": 323
     },
     {
       "id": "rq_stairs_midwest_2f",
@@ -1275,7 +1275,7 @@
       "routeNodeId": "rq_stairs_northeast_1f",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 69
+      "y": 70
     },
     {
       "id": "rq_stairs_northeast_2f",
@@ -1284,7 +1284,7 @@
       "routeNodeId": "rq_stairs_northeast_2f",
       "floorId": "rq-2f",
       "x": 452,
-      "y": 76
+      "y": 75
     },
     {
       "id": "rq_stairs_northeast_3f",
@@ -1310,7 +1310,7 @@
       "sheetId": "rq2f",
       "routeNodeId": "rq_stairs_northmid_2f",
       "floorId": "rq-2f",
-      "x": 242,
+      "x": 238,
       "y": 76
     },
     {
@@ -1319,8 +1319,8 @@
       "sheetId": "rq3f",
       "routeNodeId": "rq_stairs_northmid_3f",
       "floorId": "rq-3f",
-      "x": 255,
-      "y": 75
+      "x": 259,
+      "y": 77
     },
     {
       "id": "rq_stairs_northwest_1f",
@@ -1329,7 +1329,7 @@
       "routeNodeId": "rq_stairs_northwest_1f",
       "floorId": "rq-1f",
       "x": 54,
-      "y": 65
+      "y": 66
     },
     {
       "id": "rq_stairs_northwest_2f",
@@ -1356,7 +1356,7 @@
       "routeNodeId": "rq_stairs_southeast_1f",
       "floorId": "rq-1f",
       "x": 403,
-      "y": 579
+      "y": 580
     },
     {
       "id": "rq_stairs_southeast_2f",
@@ -1391,8 +1391,8 @@
       "sheetId": "rq2f",
       "routeNodeId": "rq_stairs_southmid_2f",
       "floorId": "rq-2f",
-      "x": 240,
-      "y": 630
+      "x": 238,
+      "y": 631
     },
     {
       "id": "rq_stairs_southmid_3f",
@@ -1400,7 +1400,7 @@
       "sheetId": "rq3f",
       "routeNodeId": "rq_stairs_southmid_3f",
       "floorId": "rq-3f",
-      "x": 255,
+      "x": 259,
       "y": 631
     },
     {
@@ -1463,8 +1463,8 @@
       "sheetId": "sh2f",
       "routeNodeId": "sh_stairs_main_1_2f",
       "floorId": "sh-2f",
-      "x": 43,
-      "y": 57
+      "x": 44,
+      "y": 59
     },
     {
       "id": "sh_stairs_main_2_1f",

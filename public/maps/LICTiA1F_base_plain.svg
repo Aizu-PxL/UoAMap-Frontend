@@ -506,62 +506,95 @@
          id="mark_1F_toiletM-1"
          d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" /></g></g>
 <g
-       id="Route"
-       data-floor-id="lictia-1f"
-       style="display:none">
-      <circle
-         id="lictia_entrance"
-         data-route-node=""
-         data-kind="entrance"
-         data-entrance-id="lictia"
-         cx="118"
-         cy="57"
-         r="2" />
-      <circle
-         id="lictia_room_is"
-         data-route-node=""
-         data-kind="corridor"
-         cx="78"
-         cy="33"
-         r="2" />
-      <circle
-         id="lictia_room_cswr"
-         data-route-node=""
-         data-kind="corridor"
-         cx="40"
-         cy="51"
-         r="2" />
-      <circle
-         id="lictia_node_1"
-         data-route-node=""
-         data-kind="corridor"
-         data-place-id="lictia_node_1"
-         cx="97"
-         cy="49"
-         r="2" />
-      <path
-         id="route_edge_lictia_room_cswr_to_lictia_room_is"
-         data-route-edge=""
-         data-node-a="lictia_room_cswr"
-         data-node-b="lictia_room_is"
-         d="M 40 51 L 78 33" />
-      <path
-         id="route_edge_lictia_room_is_to_lictia_node_1"
-         data-route-edge=""
-         data-node-a="lictia_room_is"
-         data-node-b="lictia_node_1"
-         d="M 78 33 L 97 49" />
-      <path
-         id="route_edge_lictia_node_1_to_lictia_room_cswr"
-         data-route-edge=""
-         data-node-a="lictia_node_1"
-         data-node-b="lictia_room_cswr"
-         d="M 97 49 L 40 51" />
-      <path
-         id="route_edge_lictia_node_1_to_lictia_entrance"
-         data-route-edge=""
-         data-node-a="lictia_node_1"
-         data-node-b="lictia_entrance"
-         d="M 97 49 L 118 57" />
-    </g>
+         id="Route"
+         data-floor-id="lictia-1f"
+         style="display:none">
+        <circle
+           id="lictia_entrance"
+           data-route-node=""
+           data-kind="entrance"
+           data-entrance-id="lictia"
+           cx="118"
+           cy="57"
+           r="2" />
+        <circle
+           id="lictia_room_is"
+           data-route-node=""
+           data-kind="corridor"
+           cx="78"
+           cy="33"
+           r="2" />
+        <circle
+           id="lictia_room_cswr"
+           data-route-node=""
+           data-kind="corridor"
+           cx="28"
+           cy="76"
+           r="2" />
+        <circle
+           id="lictia_node_1"
+           data-route-node=""
+           data-kind="corridor"
+           data-place-id="lictia_node_1"
+           cx="97"
+           cy="52"
+           r="2" />
+        <circle
+           id="lictia_node_2"
+           data-route-node=""
+           data-kind="corridor"
+           cx="32"
+           cy="48"
+           r="2" />
+        <circle
+           id="lictia_node_3"
+           data-route-node=""
+           data-kind="corridor"
+           cx="78"
+           cy="48"
+           r="2" />
+        <circle
+           id="lictia_node_4"
+           data-route-node=""
+           data-kind="corridor"
+           cx="112"
+           cy="52"
+           r="2" />
+        <path
+           id="route_edge_lictia_node_2_to_lictia_room_cswr"
+           data-route-edge=""
+           data-node-a="lictia_node_2"
+           data-node-b="lictia_room_cswr"
+           d="M 32 48 L 28 76" />
+        <path
+           id="route_edge_lictia_node_4_to_lictia_entrance"
+           data-route-edge=""
+           data-node-a="lictia_node_4"
+           data-node-b="lictia_entrance"
+           d="M 112 52 L 118 57" />
+        <path
+           id="route_edge_lictia_node_4_to_lictia_node_1"
+           data-route-edge=""
+           data-node-a="lictia_node_4"
+           data-node-b="lictia_node_1"
+           d="M 112 52 L 97 52" />
+        <path
+           id="route_edge_lictia_node_1_to_lictia_node_3"
+           data-route-edge=""
+           data-node-a="lictia_node_1"
+           data-node-b="lictia_node_3"
+           d="M 97 52 L 78 48" />
+        <path
+           id="route_edge_lictia_room_is_to_lictia_node_3"
+           data-route-edge=""
+           data-node-a="lictia_room_is"
+           data-node-b="lictia_node_3"
+           d="M 78 33 L 78 48" />
+        <path
+           id="route_edge_lictia_node_3_to_lictia_node_2"
+           data-route-edge=""
+           data-node-a="lictia_node_3"
+           data-node-b="lictia_node_2"
+           d="M 78 48 L 32 48" />
+      </g>
 </svg>
