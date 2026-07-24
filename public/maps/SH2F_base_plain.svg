@@ -513,30 +513,132 @@
        style="display:inline;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.3175;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#ArrowWide-01-7);marker-end:url(#marker29-8-57)"
        d="M 131.81207,8.0244733 C 129.85025,8.0511733 127.88846,7.9886733 125.92674,8.0244733"
        id="mark_2F_entrance1" /></g>
-  <g
-     id="Route"
-     data-floor-id="sh-2f"
-     style="display:none">
-    <circle
-       id="route_node_sh_stairs_central"
-       data-route-node=""
-       data-kind="stairs"
-       data-stair-id="sh-stairs-central"
-       cx="47.95"
-       cy="57.52"
-       r="2" />
-    <circle
-       id="route_node_sh2_south_landing"
-       data-route-node=""
-       data-kind="corridor"
-       cx="47.95"
-       cy="62"
-       r="2" />
-    <path
-       id="route_edge_sh2_stairs_to_south_landing"
-       data-route-edge=""
-       data-node-a="route_node_sh_stairs_central"
-       data-node-b="route_node_sh2_south_landing"
-       d="M 47.95 57.52 L 47.95 62" />
-  </g>
+<g
+         id="Route"
+         data-floor-id="sh-2f"
+         style="display:none">
+        <circle
+           id="sh_entrance_south2f"
+           data-route-node=""
+           data-kind="entrance"
+           data-entrance-id="sh_south2f"
+           cx="44"
+           cy="67"
+           r="2" />
+        <circle
+           id="sh_entrance_east"
+           data-route-node=""
+           data-kind="entrance"
+           data-entrance-id="sh_east"
+           cx="125"
+           cy="3"
+           r="2" />
+        <circle
+           id="sh_node_2f_1"
+           data-route-node=""
+           data-kind="corridor"
+           data-place-id="sh_node_2f_1"
+           cx="46"
+           cy="3"
+           r="2" />
+        <circle
+           id="sh_node_2f_2"
+           data-route-node=""
+           data-kind="corridor"
+           cx="46"
+           cy="27"
+           r="2" />
+        <circle
+           id="sh_node_2f_3"
+           data-route-node=""
+           data-kind="corridor"
+           cx="30"
+           cy="51"
+           r="2" />
+        <circle
+           id="sh_node_2f_4"
+           data-route-node=""
+           data-kind="corridor"
+           cx="39"
+           cy="64"
+           r="2" />
+        <circle
+           id="sh_node_2f_5"
+           data-route-node=""
+           data-kind="corridor"
+           cx="34"
+           cy="35"
+           r="2" />
+        <circle
+           id="sh_stairs_main_1_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="sh_stairs_main_1_2f"
+           data-stair-id="sh_main_1"
+           cx="44"
+           cy="59"
+           r="2" />
+        <circle
+           id="sh_stairs_main_2_2f"
+           data-route-node=""
+           data-kind="stairs"
+           data-stair-id="sh_main_2"
+           cx="25"
+           cy="64"
+           r="2" />
+        <path
+           id="route_edge_sh_node_2f_1_to_sh_entrance_east"
+           data-route-edge=""
+           data-node-a="sh_node_2f_1"
+           data-node-b="sh_entrance_east"
+           d="M 46 3 L 125 3" />
+        <path
+           id="route_edge_sh_node_2f_1_to_sh_node_2f_2"
+           data-route-edge=""
+           data-node-a="sh_node_2f_1"
+           data-node-b="sh_node_2f_2"
+           d="M 46 3 L 46 27" />
+        <path
+           id="route_edge_sh_node_2f_3_to_sh_node_2f_4"
+           data-route-edge=""
+           data-node-a="sh_node_2f_3"
+           data-node-b="sh_node_2f_4"
+           d="M 30 51 L 39 64" />
+        <path
+           id="route_edge_sh_node_2f_4_to_sh_entrance_south2f"
+           data-route-edge=""
+           data-node-a="sh_node_2f_4"
+           data-node-b="sh_entrance_south2f"
+           d="M 39 64 L 44 67" />
+        <path
+           id="route_edge_sh_stairs_main_1_to_sh_node_2f_4"
+           data-route-edge=""
+           data-node-a="sh_stairs_main_1_2f"
+           data-node-b="sh_node_2f_4"
+           d="M 44 59 L 39 64" />
+        <path
+           id="route_edge_sh_entrance_south2f_to_sh_stairs_main_1"
+           data-route-edge=""
+           data-node-a="sh_entrance_south2f"
+           data-node-b="sh_stairs_main_1_2f"
+           d="M 44 67 L 44 59" />
+        <path
+           id="route_edge_sh_stairs_main_2_to_sh_node_2f_4"
+           data-route-edge=""
+           data-node-a="sh_stairs_main_2_2f"
+           data-node-b="sh_node_2f_4"
+           d="M 25 64 L 39 64" />
+        <path
+           id="route_edge_sh_node_2f_2_to_sh_node_2f_5"
+           data-route-edge=""
+           data-node-a="sh_node_2f_2"
+           data-node-b="sh_node_2f_5"
+           d="M 46 27 L 34 35" />
+        <path
+           id="route_edge_sh_node_2f_5_to_sh_node_2f_3"
+           data-route-edge=""
+           data-node-a="sh_node_2f_5"
+           data-node-b="sh_node_2f_3"
+           d="M 34 35 L 30 51" />
+      </g>
 </svg>

@@ -658,100 +658,230 @@
          style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.10549"
          id="mark_1F_toilet1M-1"
          d="M 299.01045,323.86734 A 1.5051739,1.5051709 0 0 1 297.50877,325.37251 1.5051739,1.5051709 0 0 1 296.00012,323.87432 1.5051739,1.5051709 0 0 1 297.49481,322.36221 1.5051739,1.5051709 0 0 1 299.01039,323.85338" /></g></g>
-  <g
-     id="Route"
-     data-floor-id="sh-1f"
-     style="display:none">
-    <circle
-       id="route_node_sh_main"
-       data-route-node=""
-       data-kind="entrance"
-       data-entrance-id="sh-main"
-       cx="51.13"
-       cy="84.63"
-       r="2" />
-    <circle
-       id="route_node_sh_shop"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="sh-shop"
-       cx="47"
-       cy="84.63"
-       r="2" />
-    <circle
-       id="route_node_sh_south_landing"
-       data-route-node=""
-       data-kind="corridor"
-       cx="54.8"
-       cy="68"
-       r="2" />
-    <circle
-       id="route_node_sh_hall"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="sh-hall"
-       cx="51.13"
-       cy="49.7"
-       r="2" />
-    <circle
-       id="route_node_sh_reception"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="sh-reception"
-       cx="66.5"
-       cy="46.5"
-       r="2" />
-    <circle
-       id="route_node_sh_cafeteria"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="sh-cafeteria"
-       cx="72"
-       cy="45"
-       r="2" />
-    <circle
-       id="route_node_sh_stairs_central"
-       data-route-node=""
-       data-kind="stairs"
-       data-stair-id="sh-stairs-central"
-       cx="40.13"
-       cy="49.7"
-       r="2" />
-    <path
-       id="route_edge_sh_main_to_shop"
-       data-route-edge=""
-       data-node-a="route_node_sh_main"
-       data-node-b="route_node_sh_shop"
-       d="M 51.13 84.63 L 47 84.63" />
-    <path
-       id="route_edge_sh_main_to_south_landing"
-       data-route-edge=""
-       data-node-a="route_node_sh_main"
-       data-node-b="route_node_sh_south_landing"
-       d="M 51.13 84.63 L 54.8 68" />
-    <path
-       id="route_edge_sh_south_landing_to_hall"
-       data-route-edge=""
-       data-node-a="route_node_sh_south_landing"
-       data-node-b="route_node_sh_hall"
-       d="M 54.8 68 L 51.13 49.7" />
-    <path
-       id="route_edge_sh_hall_to_reception"
-       data-route-edge=""
-       data-node-a="route_node_sh_hall"
-       data-node-b="route_node_sh_reception"
-       d="M 51.13 49.7 L 66.5 46.5" />
-    <path
-       id="route_edge_sh_reception_to_cafeteria"
-       data-route-edge=""
-       data-node-a="route_node_sh_reception"
-       data-node-b="route_node_sh_cafeteria"
-       d="M 66.5 46.5 L 72 45" />
-    <path
-       id="route_edge_sh_hall_to_stairs"
-       data-route-edge=""
-       data-node-a="route_node_sh_hall"
-       data-node-b="route_node_sh_stairs_central"
-       d="M 51.13 49.7 L 40.13 49.7" />
-  </g>
+<g
+         id="Route"
+         data-floor-id="sh-1f"
+         style="display:none">
+        <circle
+           id="sh_entrance_north"
+           data-route-node=""
+           data-kind="entrance"
+           data-entrance-id="sh_north"
+           cx="55"
+           cy="4"
+           r="2" />
+        <circle
+           id="sh_entrance_main"
+           data-route-node=""
+           data-kind="entrance"
+           data-place-id="sh_entrance_main"
+           data-entrance-id="sh_main"
+           cx="62"
+           cy="60"
+           r="2" />
+        <circle
+           id="sh_entrance_south1f"
+           data-route-node=""
+           data-kind="entrance"
+           data-entrance-id="sh_south1f"
+           cx="51"
+           cy="85"
+           r="2" />
+        <circle
+           id="sh_room_cafeteria"
+           data-route-node=""
+           data-kind="corridor"
+           cx="92"
+           cy="27"
+           r="2" />
+        <circle
+           id="sh_room_kitchen"
+           data-route-node=""
+           data-kind="corridor"
+           cx="32"
+           cy="50"
+           r="2" />
+        <circle
+           id="sh_room_shop"
+           data-route-node=""
+           data-kind="corridor"
+           cx="32"
+           cy="85"
+           r="2" />
+        <circle
+           id="sh_node_1f_1"
+           data-route-node=""
+           data-kind="corridor"
+           cx="32"
+           cy="60"
+           r="2" />
+        <circle
+           id="sh_node_1f_2"
+           data-route-node=""
+           data-kind="corridor"
+           cx="52"
+           cy="50"
+           r="2" />
+        <circle
+           id="sh_node_1f_3"
+           data-route-node=""
+           data-kind="corridor"
+           cx="55"
+           cy="27"
+           r="2" />
+        <circle
+           id="sh_stairs_main_1_1f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="sh_stairs_main_1_1f"
+           data-stair-id="sh_main_1"
+           cx="51"
+           cy="36"
+           r="2" />
+        <circle
+           id="sh_stairs_main_2_1f"
+           data-route-node=""
+           data-kind="stairs"
+           data-place-id="sh_stairs_main_2_1f"
+           data-stair-id="sh_main_2"
+           cx="28"
+           cy="67"
+           r="2" />
+        <circle
+           id="sh_node_1f_5"
+           data-route-node=""
+           data-kind="corridor"
+           cx="32"
+           cy="67"
+           r="2" />
+        <circle
+           id="sh_node_1f_6"
+           data-route-node=""
+           data-kind="corridor"
+           cx="61"
+           cy="39"
+           r="2" />
+        <circle
+           id="sh_node_1f_4"
+           data-route-node=""
+           data-kind="corridor"
+           cx="55"
+           cy="36"
+           r="2" />
+        <circle
+           id="sh_node_1f_7"
+           data-route-node=""
+           data-kind="corridor"
+           cx="55"
+           cy="13"
+           r="2" />
+        <path
+           id="route_edge_sh_room_shop_to_sh_entrance_south1f"
+           data-route-edge=""
+           data-node-a="sh_room_shop"
+           data-node-b="sh_entrance_south1f"
+           d="M 32 85 L 51 85" />
+        <path
+           id="route_edge_sh_node_1f_1_to_sh_room_kitchen"
+           data-route-edge=""
+           data-node-a="sh_node_1f_1"
+           data-node-b="sh_room_kitchen"
+           d="M 32 60 L 32 50" />
+        <path
+           id="route_edge_sh_node_1f_1_to_sh_node_1f_2"
+           data-route-edge=""
+           data-node-a="sh_node_1f_1"
+           data-node-b="sh_node_1f_2"
+           d="M 32 60 L 52 50" />
+        <path
+           id="route_edge_sh_node_1f_3_to_sh_room_cafeteria"
+           data-route-edge=""
+           data-node-a="sh_node_1f_3"
+           data-node-b="sh_room_cafeteria"
+           d="M 55 27 L 92 27" />
+        <path
+           id="route_edge_sh_node_1f_2_to_sh_entrance_main"
+           data-route-edge=""
+           data-node-a="sh_node_1f_2"
+           data-node-b="sh_entrance_main"
+           d="M 52 50 L 62 60" />
+        <path
+           id="route_edge_sh_node_1f_5_to_sh_room_shop"
+           data-route-edge=""
+           data-node-a="sh_node_1f_5"
+           data-node-b="sh_room_shop"
+           d="M 32 67 L 32 85" />
+        <path
+           id="route_edge_sh_node_1f_5_to_sh_node_1f_1"
+           data-route-edge=""
+           data-node-a="sh_node_1f_5"
+           data-node-b="sh_node_1f_1"
+           d="M 32 67 L 32 60" />
+        <path
+           id="route_edge_sh_node_1f_5_to_sh_stairs_main_2_1f"
+           data-route-edge=""
+           data-node-a="sh_node_1f_5"
+           data-node-b="sh_stairs_main_2_1f"
+           d="M 32 67 L 28 67" />
+        <path
+           id="route_edge_sh_node_1f_2_to_sh_node_1f_6"
+           data-route-edge=""
+           data-node-a="sh_node_1f_2"
+           data-node-b="sh_node_1f_6"
+           d="M 52 50 L 61 39" />
+        <path
+           id="route_edge_sh_node_1f_6_to_sh_room_cafeteria"
+           data-route-edge=""
+           data-node-a="sh_node_1f_6"
+           data-node-b="sh_room_cafeteria"
+           d="M 61 39 L 92 27" />
+        <path
+           id="route_edge_sh_node_1f_3_to_sh_node_1f_6"
+           data-route-edge=""
+           data-node-a="sh_node_1f_3"
+           data-node-b="sh_node_1f_6"
+           d="M 55 27 L 61 39" />
+        <path
+           id="route_edge_sh_node_1f_3_to_sh_node_1f_4"
+           data-route-edge=""
+           data-node-a="sh_node_1f_3"
+           data-node-b="sh_node_1f_4"
+           d="M 55 27 L 55 36" />
+        <path
+           id="route_edge_sh_node_1f_4_to_sh_node_1f_6"
+           data-route-edge=""
+           data-node-a="sh_node_1f_4"
+           data-node-b="sh_node_1f_6"
+           d="M 55 36 L 61 39" />
+        <path
+           id="route_edge_sh_node_1f_4_to_sh_node_1f_2"
+           data-route-edge=""
+           data-node-a="sh_node_1f_4"
+           data-node-b="sh_node_1f_2"
+           d="M 55 36 L 52 50" />
+        <path
+           id="route_edge_sh_node_1f_4_to_sh_stairs_main_1_1f"
+           data-route-edge=""
+           data-node-a="sh_node_1f_4"
+           data-node-b="sh_stairs_main_1_1f"
+           d="M 55 36 L 51 36" />
+        <path
+           id="route_edge_sh_entrance_north_to_sh_node_1f_7"
+           data-route-edge=""
+           data-node-a="sh_entrance_north"
+           data-node-b="sh_node_1f_7"
+           d="M 55 4 L 55 13" />
+        <path
+           id="route_edge_sh_node_1f_7_to_sh_node_1f_3"
+           data-route-edge=""
+           data-node-a="sh_node_1f_7"
+           data-node-b="sh_node_1f_3"
+           d="M 55 13 L 55 27" />
+        <path
+           id="route_edge_sh_node_1f_7_to_sh_room_cafeteria"
+           data-route-edge=""
+           data-node-a="sh_node_1f_7"
+           data-node-b="sh_room_cafeteria"
+           d="M 55 13 L 92 27" />
+      </g>
 </svg>

@@ -658,118 +658,343 @@
       </g>
     </g>
   </g>
-  <g
-     id="Route"
-     data-floor-id="lh-1f"
-     style="display:none">
-    <circle
-       id="route_node_lh_1f_entrance_main"
-       data-route-node=""
-       data-kind="entrance"
-       data-entrance-id="lh-main"
-       cx="306"
-       cy="486"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_junction_south"
-       data-route-node=""
-       data-kind="corridor"
-       cx="306"
-       cy="476"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_large"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="lh-large"
-       cx="120"
-       cy="476"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_corridor_west"
-       data-route-node=""
-       data-kind="corridor"
-       cx="120"
-       cy="450"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_m8"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="lh-m8"
-       cx="200"
-       cy="450"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_corridor_east"
-       data-route-node=""
-       data-kind="corridor"
-       cx="306"
-       cy="450"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_m10"
-       data-route-node=""
-       data-kind="corridor"
-       data-place-id="lh-m10"
-       cx="318"
-       cy="450"
-       r="2" />
-    <circle
-       id="route_node_lh_1f_stairs_east"
-       data-route-node=""
-       data-kind="stairs"
-       data-stair-id="lh-stairs-east"
-       cx="322"
-       cy="518"
-       r="2" />
-    <path
-       id="route_edge_lh_1f_entrance_to_junction"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_entrance_main"
-       data-node-b="route_node_lh_1f_junction_south"
-       d="M 306 486 L 306 476" />
-    <path
-       id="route_edge_lh_1f_junction_to_large"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_junction_south"
-       data-node-b="route_node_lh_1f_large"
-       d="M 306 476 L 120 476" />
-    <path
-       id="route_edge_lh_1f_large_to_corridor_west"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_large"
-       data-node-b="route_node_lh_1f_corridor_west"
-       d="M 120 476 L 120 450" />
-    <path
-       id="route_edge_lh_1f_corridor_west_to_m8"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_corridor_west"
-       data-node-b="route_node_lh_1f_m8"
-       d="M 120 450 L 200 450" />
-    <path
-       id="route_edge_lh_1f_m8_to_corridor_east"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_m8"
-       data-node-b="route_node_lh_1f_corridor_east"
-       d="M 200 450 L 306 450" />
-    <path
-       id="route_edge_lh_1f_corridor_east_to_m10"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_corridor_east"
-       data-node-b="route_node_lh_1f_m10"
-       d="M 306 450 L 318 450" />
-    <path
-       id="route_edge_lh_1f_corridor_east_to_junction"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_corridor_east"
-       data-node-b="route_node_lh_1f_junction_south"
-       d="M 306 450 L 306 476" />
-    <path
-       id="route_edge_lh_1f_entrance_to_stairs_east"
-       data-route-edge=""
-       data-node-a="route_node_lh_1f_entrance_main"
-       data-node-b="route_node_lh_1f_stairs_east"
-       d="M 306 486 L 322 518" />
-  </g>
+<g
+           id="Route"
+           data-floor-id="lh-1f"
+           style="display:none">
+          <circle
+             id="lh_entrance_west"
+             data-route-node=""
+             data-kind="entrance"
+             data-entrance-id="lh-west"
+             cx="116"
+             cy="475"
+             r="2" />
+          <circle
+             id="lh_entrance_east1f"
+             data-route-node=""
+             data-kind="entrance"
+             data-entrance-id="lh_east1f"
+             cx="301"
+             cy="486"
+             r="2" />
+          <circle
+             id="lh_stairs_west_1f"
+             data-route-node=""
+             data-kind="stairs"
+             data-place-id="lh_stairs_west_1f"
+             data-stair-id="lh_west"
+             cx="107"
+             cy="519"
+             r="2" />
+          <circle
+             id="lh_stairs_northeast_1f"
+             data-route-node=""
+             data-kind="stairs"
+             data-place-id="lh_stairs_northeast_1f"
+             data-stair-id="lh_northeast"
+             cx="367"
+             cy="475"
+             r="2" />
+          <circle
+             id="lh_stairs_southeast_1f"
+             data-route-node=""
+             data-kind="stairs"
+             data-place-id="lh_stairs_southeast_1f"
+             data-stair-id="lh_southeast"
+             cx="305"
+             cy="514"
+             r="2" />
+          <circle
+             id="lh_node_1f_1"
+             data-route-node=""
+             data-kind="corridor"
+             cx="97"
+             cy="519"
+             r="2" />
+          <circle
+             id="lh_node_1f_2"
+             data-route-node=""
+             data-kind="corridor"
+             cx="107"
+             cy="457"
+             r="2" />
+          <circle
+             id="lh_node_1f_3"
+             data-route-node=""
+             data-kind="corridor"
+             cx="329"
+             cy="457"
+             r="2" />
+          <circle
+             id="lh_node_1f_4"
+             data-route-node=""
+             data-kind="corridor"
+             cx="329"
+             cy="505"
+             r="2" />
+          <circle
+             id="lh_node_1f_5"
+             data-route-node=""
+             data-kind="corridor"
+             cx="297"
+             cy="457"
+             r="2" />
+          <circle
+             id="lh_node_1f_6"
+             data-route-node=""
+             data-kind="corridor"
+             data-place-id="lh_node_1f_6"
+             cx="171"
+             cy="468"
+             r="2" />
+          <circle
+             id="lh_node_1f_7"
+             data-route-node=""
+             data-kind="corridor"
+             data-place-id="lh_node_1f_7"
+             cx="250"
+             cy="469"
+             r="2" />
+          <circle
+             id="lh_room_m10"
+             data-route-node=""
+             data-kind="corridor"
+             cx="319"
+             cy="418"
+             r="2" />
+          <circle
+             id="lh_door_m10_1"
+             data-route-node=""
+             data-kind="corridor"
+             cx="297"
+             cy="443"
+             r="2" />
+          <circle
+             id="lh_door_m10_2"
+             data-route-node=""
+             data-kind="corridor"
+             cx="340"
+             cy="443"
+             r="2" />
+          <circle
+             id="lh_door_lth_1"
+             data-route-node=""
+             data-kind="corridor"
+             cx="25"
+             cy="480"
+             r="2" />
+          <circle
+             id="lh_room_lth_1"
+             data-route-node=""
+             data-kind="corridor"
+             cx="49"
+             cy="522"
+             r="2" />
+          <circle
+             id="lh_node_1f_8"
+             data-route-node=""
+             data-kind="corridor"
+             cx="329"
+             cy="486"
+             r="2" />
+          <circle
+             id="lh_node_1f_9"
+             data-route-node=""
+             data-kind="corridor"
+             cx="25"
+             cy="457"
+             r="2" />
+          <circle
+             id="lh_node_1f_10"
+             data-route-node=""
+             data-kind="corridor"
+             cx="107"
+             cy="475"
+             r="2" />
+          <circle
+             id="lh_node_1f_11"
+             data-route-node=""
+             data-kind="corridor"
+             cx="25"
+             cy="475"
+             r="2" />
+          <circle
+             id="lh_node_1f_12"
+             data-route-node=""
+             data-kind="corridor"
+             cx="329"
+             cy="475"
+             r="2" />
+          <circle
+             id="lh_node_1f_13"
+             data-route-node=""
+             data-kind="corridor"
+             cx="171"
+             cy="457"
+             r="2" />
+          <circle
+             id="lh_node_1f_14"
+             data-route-node=""
+             data-kind="corridor"
+             cx="250"
+             cy="457"
+             r="2" />
+          <path
+             id="route_edge_lh_node_1f_1_to_lh_stairs_west_1f"
+             data-route-edge=""
+             data-node-a="lh_node_1f_1"
+             data-node-b="lh_stairs_west_1f"
+             d="M 97 519 L 107 519" />
+          <path
+             id="route_edge_lh_node_1f_4_to_lh_stairs_southeast_1f"
+             data-route-edge=""
+             data-node-a="lh_node_1f_4"
+             data-node-b="lh_stairs_southeast_1f"
+             d="M 329 505 L 305 514" />
+          <path
+             id="route_edge_lh_node_1f_5_to_lh_node_1f_3"
+             data-route-edge=""
+             data-node-a="lh_node_1f_5"
+             data-node-b="lh_node_1f_3"
+             d="M 297 457 L 329 457" />
+          <path
+             id="route_edge_lh_node_1f_5_to_lh_room_m10"
+             data-route-edge=""
+             data-node-a="lh_node_1f_5"
+             data-node-b="lh_door_m10_1"
+             d="M 297 457 L 297 443" />
+          <path
+             id="route_edge_lh_room_m10_2_to_lh_node_1f_3"
+             data-route-edge=""
+             data-node-a="lh_door_m10_2"
+             data-node-b="lh_node_1f_3"
+             d="M 340 443 L 329 457" />
+          <path
+             id="route_edge_lh_door_m10_1_to_lh_room_m10"
+             data-route-edge=""
+             data-node-a="lh_door_m10_1"
+             data-node-b="lh_room_m10"
+             d="M 297 443 L 319 418" />
+          <path
+             id="route_edge_lh_room_m10_to_lh_door_m10_2"
+             data-route-edge=""
+             data-node-a="lh_room_m10"
+             data-node-b="lh_door_m10_2"
+             d="M 319 418 L 340 443" />
+          <path
+             id="route_edge_lh_door_lth_1_to_lh_room_lth_1"
+             data-route-edge=""
+             data-node-a="lh_door_lth_1"
+             data-node-b="lh_room_lth_1"
+             d="M 25 480 L 49 522" />
+          <path
+             id="route_edge_lh_node_1f_8_to_lh_node_1f_4"
+             data-route-edge=""
+             data-node-a="lh_node_1f_8"
+             data-node-b="lh_node_1f_4"
+             d="M 329 486 L 329 505" />
+          <path
+             id="route_edge_lh_node_1f_8_to_lh_stairs_northeast_1f"
+             data-route-edge=""
+             data-node-a="lh_node_1f_8"
+             data-node-b="lh_stairs_northeast_1f"
+             d="M 329 486 L 367 475" />
+          <path
+             id="route_edge_lh_node_1f_8_to_lh_entrance_east1f"
+             data-route-edge=""
+             data-node-a="lh_node_1f_8"
+             data-node-b="lh_entrance_east1f"
+             d="M 329 486 L 301 486" />
+          <path
+             id="route_edge_lh_node_1f_9_to_lh_node_1f_2"
+             data-route-edge=""
+             data-node-a="lh_node_1f_9"
+             data-node-b="lh_node_1f_2"
+             d="M 25 457 L 107 457" />
+          <path
+             id="route_edge_lh_node_1f_10_to_lh_entrance_west"
+             data-route-edge=""
+             data-node-a="lh_node_1f_10"
+             data-node-b="lh_entrance_west"
+             d="M 107 475 L 116 475" />
+          <path
+             id="route_edge_lh_node_1f_10_to_lh_node_1f_2"
+             data-route-edge=""
+             data-node-a="lh_node_1f_10"
+             data-node-b="lh_node_1f_2"
+             d="M 107 475 L 107 457" />
+          <path
+             id="route_edge_lh_node_1f_10_to_lh_node_1f_1"
+             data-route-edge=""
+             data-node-a="lh_node_1f_10"
+             data-node-b="lh_node_1f_1"
+             d="M 107 475 L 97 519" />
+          <path
+             id="route_edge_lh_node_1f_9_to_lh_node_1f_11"
+             data-route-edge=""
+             data-node-a="lh_node_1f_9"
+             data-node-b="lh_node_1f_11"
+             d="M 25 457 L 25 475" />
+          <path
+             id="route_edge_lh_node_1f_11_to_lh_door_lth_1"
+             data-route-edge=""
+             data-node-a="lh_node_1f_11"
+             data-node-b="lh_door_lth_1"
+             d="M 25 475 L 25 480" />
+          <path
+             id="route_edge_lh_node_1f_11_to_lh_node_1f_10"
+             data-route-edge=""
+             data-node-a="lh_node_1f_11"
+             data-node-b="lh_node_1f_10"
+             d="M 25 475 L 107 475" />
+          <path
+             id="route_edge_lh_node_1f_3_to_lh_node_1f_12"
+             data-route-edge=""
+             data-node-a="lh_node_1f_3"
+             data-node-b="lh_node_1f_12"
+             d="M 329 457 L 329 475" />
+          <path
+             id="route_edge_lh_node_1f_12_to_lh_node_1f_8"
+             data-route-edge=""
+             data-node-a="lh_node_1f_12"
+             data-node-b="lh_node_1f_8"
+             d="M 329 475 L 329 486" />
+          <path
+             id="route_edge_lh_node_1f_12_to_lh_stairs_northeast_1f"
+             data-route-edge=""
+             data-node-a="lh_node_1f_12"
+             data-node-b="lh_stairs_northeast_1f"
+             d="M 329 475 L 367 475" />
+          <path
+             id="route_edge_lh_node_1f_2_to_lh_node_1f_13"
+             data-route-edge=""
+             data-node-a="lh_node_1f_2"
+             data-node-b="lh_node_1f_13"
+             d="M 107 457 L 171 457" />
+          <path
+             id="route_edge_lh_node_1f_13_to_lh_node_1f_14"
+             data-route-edge=""
+             data-node-a="lh_node_1f_13"
+             data-node-b="lh_node_1f_14"
+             d="M 171 457 L 250 457" />
+          <path
+             id="route_edge_lh_node_1f_14_to_lh_node_1f_5"
+             data-route-edge=""
+             data-node-a="lh_node_1f_14"
+             data-node-b="lh_node_1f_5"
+             d="M 250 457 L 297 457" />
+          <path
+             id="route_edge_lh_node_1f_7_to_lh_node_1f_14"
+             data-route-edge=""
+             data-node-a="lh_node_1f_7"
+             data-node-b="lh_node_1f_14"
+             d="M 250 469 L 250 457" />
+          <path
+             id="route_edge_lh_node_1f_13_to_lh_node_1f_6"
+             data-route-edge=""
+             data-node-a="lh_node_1f_13"
+             data-node-b="lh_node_1f_6"
+             d="M 171 457 L 171 468" />
+        </g>
 </svg>
