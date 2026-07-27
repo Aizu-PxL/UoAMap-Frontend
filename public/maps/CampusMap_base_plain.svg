@@ -1448,6 +1448,7 @@
            id="main_robothangar"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="main_robothangar"
            cx="259"
            cy="389"
            r="2" />

@@ -2483,6 +2483,7 @@
            id="rq_room_144f"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="rq_room_144f"
            cx="394"
            cy="629"
            r="2" />
@@ -2497,6 +2498,7 @@
            id="rq_room_141E"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="rq_room_141E"
            cx="365"
            cy="542"
            r="2" />
@@ -2511,6 +2513,7 @@
            id="rq_room_127"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="rq_room_127"
            cx="166"
            cy="368"
            r="2" />
@@ -2525,6 +2528,7 @@
            id="rq_room_104f"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="rq_room_104f"
            cx="390"
            cy="109"
            r="2" />
@@ -2560,6 +2564,7 @@
            id="rq_room_161"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="rq_room_161"
            cx="35"
            cy="247"
            r="2" />

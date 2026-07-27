@@ -705,6 +705,7 @@
            id="ubic_room_RLA"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="ubic_room_RLA"
            cx="118"
            cy="54"
            r="2" />
@@ -719,6 +720,7 @@
            id="ubic_room_mar"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="ubic_room_mar"
            cx="161"
            cy="59"
            r="2" />
@@ -729,6 +731,20 @@
            cx="143"
            cy="45"
            r="2" />
+        <circle
+           id="ubic_room_3dtheater"
+           data-route-node=""
+           data-kind="corridor"
+           data-place-id="ubic_room_3dtheater"
+           cx="39"
+           cy="49"
+           r="2" />
+        <path
+           id="route_edge_ubic_room_3dtheater_to_ubic_node_2"
+           data-route-edge=""
+           data-node-a="ubic_room_3dtheater"
+           data-node-b="ubic_node_2"
+           d="M 39 49 L 39 57" />
         <path
            id="route_edge_ubic_node_1_to_ubic_room_RLA"
            data-route-edge=""

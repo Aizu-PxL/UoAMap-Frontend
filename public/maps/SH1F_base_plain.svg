@@ -691,6 +691,7 @@
            id="sh_room_cafeteria"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="sh_room_cafeteria"
            cx="92"
            cy="27"
            r="2" />
@@ -705,6 +706,7 @@
            id="sh_room_shop"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="sh_room_shop"
            cx="32"
            cy="85"
            r="2" />
@@ -775,6 +777,20 @@
            cx="55"
            cy="13"
            r="2" />
+        <circle
+           id="sh_reception"
+           data-route-node=""
+           data-kind="corridor"
+           data-place-id="sh_reception"
+           cx="66.5"
+           cy="46.5"
+           r="2" />
+        <path
+           id="route_edge_sh_reception_to_sh_node_1f_6"
+           data-route-edge=""
+           data-node-a="sh_reception"
+           data-node-b="sh_node_1f_6"
+           d="M 66.5 46.5 L 61 39" />
         <path
            id="route_edge_sh_room_shop_to_sh_entrance_south1f"
            data-route-edge=""

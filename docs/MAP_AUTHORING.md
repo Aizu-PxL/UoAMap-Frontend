@@ -137,4 +137,4 @@ bun run verify:routes
 - Routeグラフ全体での`data-place-id`重複
 - SVGからの抽出結果とコミット済みグラフJSONの差異
 
-既存SVGを編集した後は、あわせて`bun run verify:places`を実行し、既存36地点のIDが保全されていることを確認する。
+既存SVGを編集した後は、あわせて`bun run verify:places`を実行し、109 Place・74 QR・60 Eventの参照と座標範囲が保全されていることを確認する。

@@ -1,5 +1,6 @@
 import type { Repository } from "../repository";
 import type { QrCode, Tag } from "../types";
+import qrMappingsJson from "../../../uoamap-qr-mappings.json";
 import { mockEvents } from "./events";
 
 const mockTags: Tag[] = [
@@ -12,27 +13,18 @@ const mockTags: Tag[] = [
   { id: "service", label: "休憩・買物" },
 ];
 
-// QR対応表のモック。実際の設置地点・採番はSPEC.md 7章の未決事項
-const mockQrCodes: QrCode[] = [
-  {
-    qrId: "Q001",
-    placeId: "sh-hall",
-    kind: "fixed",
-    installationNote: "学生ホール ホール入口",
-  },
-  {
-    qrId: "Q002",
-    placeId: "ubic",
-    kind: "variable",
-    installationNote: "UBIC受付",
-  },
-  {
-    qrId: "Q003",
-    placeId: "lh-large",
-    kind: "variable",
-    installationNote: "講義棟 大講義室前",
-  },
-];
+function qrKind(value: string): QrCode["kind"] {
+  if (value === "fixed" || value === "variable") return value;
+  throw new TypeError(`不正なQR種別です: ${value}`);
+}
+
+// Route Editor計画から今回手動出力したQR対応表。物理QRの印刷承認とは分離する。
+const mockQrCodes: QrCode[] = qrMappingsJson.map((mapping) => ({
+  qrId: mapping.qrId,
+  placeId: mapping.placeId,
+  kind: qrKind(mapping.kind),
+  installationNote: mapping.installationNote,
+}));
 
 export const mockRepository: Repository = {
   getEvents: async () => mockEvents,

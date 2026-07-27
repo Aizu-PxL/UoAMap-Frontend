@@ -1,0 +1,742 @@
+[
+  {
+    "id": "lh_node_1f_6",
+    "floorId": "lh-1f",
+    "name": "講義棟通路西１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 171,
+      "y": 468
+    }
+  },
+  {
+    "id": "lh_node_1f_7",
+    "floorId": "lh-1f",
+    "name": "講義棟通路東１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 250,
+      "y": 469
+    }
+  },
+  {
+    "id": "lh_node_2f_3",
+    "floorId": "lh-2f",
+    "name": "講義棟通路西２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 150,
+      "y": 74
+    }
+  },
+  {
+    "id": "lh_node_2f_5",
+    "floorId": "lh-2f",
+    "name": "講義棟通路東２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 262,
+      "y": 74
+    }
+  },
+  {
+    "id": "lh_stairs_northeast_1f",
+    "floorId": "lh-1f",
+    "name": "講義棟エレベーター前１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 367,
+      "y": 475
+    }
+  },
+  {
+    "id": "lh_stairs_northeast_2f",
+    "floorId": "lh-2f",
+    "name": "講義棟エレベーター前２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 368,
+      "y": 85
+    }
+  },
+  {
+    "id": "lh_stairs_southeast_1f",
+    "floorId": "lh-1f",
+    "name": "講義棟東階段前１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 305,
+      "y": 514
+    }
+  },
+  {
+    "id": "lh_stairs_southeast_2f",
+    "floorId": "lh-2f",
+    "name": "講義棟東階段前２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 342,
+      "y": 133
+    }
+  },
+  {
+    "id": "lh_stairs_west_1f",
+    "floorId": "lh-1f",
+    "name": "講義棟西階段前１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 107,
+      "y": 519
+    }
+  },
+  {
+    "id": "lh_stairs_west_2f",
+    "floorId": "lh-2f",
+    "name": "講義棟西階段前２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 113,
+      "y": 93
+    }
+  },
+  {
+    "id": "lictia_node_1",
+    "floorId": "lictia-1f",
+    "name": "LICTiA中",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 97,
+      "y": 52
+    }
+  },
+  {
+    "id": "main_auditorium",
+    "floorId": "campus",
+    "name": "講堂",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 353,
+      "y": 563
+    }
+  },
+  {
+    "id": "main_lh_entrance_east1f",
+    "floorId": "campus",
+    "name": "講義棟東口１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 394,
+      "y": 269
+    }
+  },
+  {
+    "id": "main_lh_entrance_east2f",
+    "floorId": "campus",
+    "name": "講義棟東口２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 421,
+      "y": 286
+    }
+  },
+  {
+    "id": "main_lh_entrance_west",
+    "floorId": "campus",
+    "name": "講義棟西口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 342,
+      "y": 268
+    }
+  },
+  {
+    "id": "main_library",
+    "floorId": "campus",
+    "name": "図書館",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 338,
+      "y": 443
+    }
+  },
+  {
+    "id": "main_node_11",
+    "floorId": "campus",
+    "name": "駐車場北",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 300,
+      "y": 310
+    }
+  },
+  {
+    "id": "main_node_15",
+    "floorId": "campus",
+    "name": "道路北",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 454,
+      "y": 214
+    }
+  },
+  {
+    "id": "main_node_19",
+    "floorId": "campus",
+    "name": "LICTiA前",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 618,
+      "y": 281
+    }
+  },
+  {
+    "id": "main_node_2",
+    "floorId": "campus",
+    "name": "池前南",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 367,
+      "y": 489
+    }
+  },
+  {
+    "id": "main_node_22",
+    "floorId": "campus",
+    "name": "中央階段前",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 398,
+      "y": 364
+    }
+  },
+  {
+    "id": "main_node_4",
+    "floorId": "campus",
+    "name": "駐車場南",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 299,
+      "y": 494
+    }
+  },
+  {
+    "id": "main_node_5",
+    "floorId": "campus",
+    "name": "学生ホール南口２階前",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 328,
+      "y": 407
+    }
+  },
+  {
+    "id": "main_node_6",
+    "floorId": "campus",
+    "name": "池前北",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 367,
+      "y": 407
+    }
+  },
+  {
+    "id": "main_node_8",
+    "floorId": "campus",
+    "name": "駐車場",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 300,
+      "y": 371
+    }
+  },
+  {
+    "id": "main_node_9",
+    "floorId": "campus",
+    "name": "中央渡り廊下",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 421,
+      "y": 328
+    }
+  },
+  {
+    "id": "main_rq_entrance_northeast",
+    "floorId": "campus",
+    "name": "研究棟北東口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 610,
+      "y": 349
+    }
+  },
+  {
+    "id": "main_rq_entrance_northwest",
+    "floorId": "campus",
+    "name": "研究棟北西口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 470,
+      "y": 328
+    }
+  },
+  {
+    "id": "main_rq_entrance_southeast",
+    "floorId": "campus",
+    "name": "研究棟南東口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 610,
+      "y": 393
+    }
+  },
+  {
+    "id": "main_rq_entrance_southwest",
+    "floorId": "campus",
+    "name": "研究棟南西口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 470,
+      "y": 414
+    }
+  },
+  {
+    "id": "main_sh_entrance_east",
+    "floorId": "campus",
+    "name": "学生ホール東口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 388,
+      "y": 328
+    }
+  },
+  {
+    "id": "main_sh_entrance_main",
+    "floorId": "campus",
+    "name": "学生ホール中央１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 343,
+      "y": 360
+    }
+  },
+  {
+    "id": "main_sh_entrance_north",
+    "floorId": "campus",
+    "name": "学生ホール北口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 332,
+      "y": 321
+    }
+  },
+  {
+    "id": "main_ubic_entrance",
+    "floorId": "campus",
+    "name": "UBIC",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 483,
+      "y": 268
+    }
+  },
+  {
+    "id": "rq_node_1f_12",
+    "floorId": "rq-1f",
+    "name": "研究棟北東トイレ１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 318,
+      "y": 66
+    }
+  },
+  {
+    "id": "rq_node_1f_17",
+    "floorId": "rq-1f",
+    "name": "研究棟南西出口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 77,
+      "y": 476
+    }
+  },
+  {
+    "id": "rq_node_1f_18",
+    "floorId": "rq-1f",
+    "name": "研究棟南東出口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 410,
+      "y": 400
+    }
+  },
+  {
+    "id": "rq_node_1f_21",
+    "floorId": "rq-1f",
+    "name": "研究棟南東トイレ１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 318,
+      "y": 584
+    }
+  },
+  {
+    "id": "rq_node_1f_3",
+    "floorId": "rq-1f",
+    "name": "研究棟中央東トイレ１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 318,
+      "y": 324
+    }
+  },
+  {
+    "id": "rq_node_1f_8",
+    "floorId": "rq-1f",
+    "name": "研究棟北西出口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 77,
+      "y": 174
+    }
+  },
+  {
+    "id": "rq_node_1f_9",
+    "floorId": "rq-1f",
+    "name": "研究棟北東出口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 410,
+      "y": 249
+    }
+  },
+  {
+    "id": "rq_stairs_mideast_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟中央東階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 403,
+      "y": 320
+    }
+  },
+  {
+    "id": "rq_stairs_mideast_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟中央東階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 452,
+      "y": 339
+    }
+  },
+  {
+    "id": "rq_stairs_mideast_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟中央東階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 431,
+      "y": 338
+    }
+  },
+  {
+    "id": "rq_stairs_midmid_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟中央階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 163,
+      "y": 333
+    }
+  },
+  {
+    "id": "rq_stairs_midmid_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟中央階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 238,
+      "y": 353
+    }
+  },
+  {
+    "id": "rq_stairs_midmid_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟中央階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 259,
+      "y": 355
+    }
+  },
+  {
+    "id": "rq_stairs_midwest_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟中央エレベーター１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 38,
+      "y": 323
+    }
+  },
+  {
+    "id": "rq_stairs_midwest_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟中央エレベーター２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 61,
+      "y": 341
+    }
+  },
+  {
+    "id": "rq_stairs_midwest_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟中央エレベーター３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 39,
+      "y": 341
+    }
+  },
+  {
+    "id": "rq_stairs_northeast_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟北東階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 403,
+      "y": 70
+    }
+  },
+  {
+    "id": "rq_stairs_northeast_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟北東階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 452,
+      "y": 75
+    }
+  },
+  {
+    "id": "rq_stairs_northeast_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟北東階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 431,
+      "y": 75
+    }
+  },
+  {
+    "id": "rq_stairs_northmid_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟北中央階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 162,
+      "y": 72
+    }
+  },
+  {
+    "id": "rq_stairs_northmid_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟北中央階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 238,
+      "y": 76
+    }
+  },
+  {
+    "id": "rq_stairs_northmid_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟北中央階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 259,
+      "y": 77
+    }
+  },
+  {
+    "id": "rq_stairs_northwest_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟北エレベーター１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 54,
+      "y": 66
+    }
+  },
+  {
+    "id": "rq_stairs_northwest_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟北エレベーター２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 79,
+      "y": 70
+    }
+  },
+  {
+    "id": "rq_stairs_northwest_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟北エレベーター３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 58,
+      "y": 69
+    }
+  },
+  {
+    "id": "rq_stairs_southeast_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟南東階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 403,
+      "y": 580
+    }
+  },
+  {
+    "id": "rq_stairs_southeast_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟南東階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 452,
+      "y": 617
+    }
+  },
+  {
+    "id": "rq_stairs_southeast_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟南東階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 431,
+      "y": 617
+    }
+  },
+  {
+    "id": "rq_stairs_southmid_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟南中央階段１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 163,
+      "y": 592
+    }
+  },
+  {
+    "id": "rq_stairs_southmid_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟南中央階段２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 238,
+      "y": 631
+    }
+  },
+  {
+    "id": "rq_stairs_southmid_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟南中央階段３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 259,
+      "y": 631
+    }
+  },
+  {
+    "id": "rq_stairs_southwest_1f",
+    "floorId": "rq-1f",
+    "name": "研究棟南エレベーター１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 54,
+      "y": 583
+    }
+  },
+  {
+    "id": "rq_stairs_southwest_2f",
+    "floorId": "rq-2f",
+    "name": "研究棟南エレベーター２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 80,
+      "y": 623
+    }
+  },
+  {
+    "id": "rq_stairs_southwest_3f",
+    "floorId": "rq-3f",
+    "name": "研究棟南エレベーター３階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 58,
+      "y": 623
+    }
+  },
+  {
+    "id": "sh_entrance_main",
+    "floorId": "sh-1f",
+    "name": "学生ホール中央出口",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 62,
+      "y": 60
+    }
+  },
+  {
+    "id": "sh_node_2f_1",
+    "floorId": "sh-2f",
+    "name": "学生ホール２階北",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 46,
+      "y": 3
+    }
+  },
+  {
+    "id": "sh_stairs_main_1_1f",
+    "floorId": "sh-1f",
+    "name": "学生ホール階段前１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 51,
+      "y": 36
+    }
+  },
+  {
+    "id": "sh_stairs_main_1_2f",
+    "floorId": "sh-2f",
+    "name": "学生ホール階段前２階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 44,
+      "y": 59
+    }
+  },
+  {
+    "id": "sh_stairs_main_2_1f",
+    "floorId": "sh-1f",
+    "name": "学生ホールエレベーター前１階",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 28,
+      "y": 67
+    }
+  },
+  {
+    "id": "ubic_node_1",
+    "floorId": "ubic-1f",
+    "name": "UBIC中",
+    "mapping": "coordinates",
+    "coordinates": {
+      "x": 69,
+      "y": 35
+    }
+  }
+]

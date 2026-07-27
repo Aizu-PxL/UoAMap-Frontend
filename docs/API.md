@@ -24,7 +24,7 @@
       "id": "L1",                          // 公式タイムテーブルの記号
       "title": "入試説明会",
       "description": "……",
-      "placeId": "lh-large",               // フロントのPlace ID(SVG由来レジストリと一致必須)
+      "placeId": "lh_room_lth_1",          // フロントのPlace ID(SVG由来レジストリと一致必須)
       "tags": ["briefing"],
       "timeSlots": [
         { "start": "2026-08-08T10:20:00+09:00", "end": "2026-08-08T10:50:00+09:00" }
@@ -54,7 +54,7 @@ QR IDを地点に解決する。QRの貼り替え・再割当はこの表の更�
 
 ```jsonc
 // 200
-{ "qrId": "Q001", "placeId": "sh-hall" }
+{ "qrId": "Q001", "placeId": "main_node_11" }
 
 // 404: 未知のqrId → フロントはエラー表示(地図はデフォルト表示)
 { "error": "QR_NOT_FOUND", "qrId": "Q999" }

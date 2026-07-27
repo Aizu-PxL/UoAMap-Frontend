@@ -760,6 +760,7 @@
              id="lh_room_m10"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m10"
              cx="319"
              cy="418"
              r="2" />
@@ -788,6 +789,7 @@
              id="lh_room_lth_1"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_lth_1"
              cx="49"
              cy="522"
              r="2" />
@@ -840,6 +842,20 @@
              cx="250"
              cy="457"
              r="2" />
+          <circle
+             id="lh_room_m8"
+             data-route-node=""
+             data-kind="corridor"
+             data-place-id="lh_room_m8"
+             cx="200"
+             cy="450"
+             r="2" />
+          <path
+             id="route_edge_lh_room_m8_to_lh_node_1f_13"
+             data-route-edge=""
+             data-node-a="lh_room_m8"
+             data-node-b="lh_node_1f_13"
+             d="M 200 450 L 171 457" />
           <path
              id="route_edge_lh_node_1f_1_to_lh_stairs_west_1f"
              data-route-edge=""

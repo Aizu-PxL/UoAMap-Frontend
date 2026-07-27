@@ -1,0 +1,446 @@
+[
+  {
+    "qrId": "Q001",
+    "placeId": "main_node_11",
+    "kind": "fixed",
+    "installationNote": "駐車場北"
+  },
+  {
+    "qrId": "Q002",
+    "placeId": "main_sh_entrance_north",
+    "kind": "fixed",
+    "installationNote": "学生ホール北口"
+  },
+  {
+    "qrId": "Q003",
+    "placeId": "main_lh_entrance_west",
+    "kind": "fixed",
+    "installationNote": "講義棟西口"
+  },
+  {
+    "qrId": "Q004",
+    "placeId": "main_lh_entrance_east1f",
+    "kind": "fixed",
+    "installationNote": "講義棟東口１階"
+  },
+  {
+    "qrId": "Q005",
+    "placeId": "main_lh_entrance_east2f",
+    "kind": "fixed",
+    "installationNote": "講義棟東口２階"
+  },
+  {
+    "qrId": "Q006",
+    "placeId": "main_sh_entrance_east",
+    "kind": "fixed",
+    "installationNote": "学生ホール東口"
+  },
+  {
+    "qrId": "Q007",
+    "placeId": "main_rq_entrance_northwest",
+    "kind": "fixed",
+    "installationNote": "研究棟北西口"
+  },
+  {
+    "qrId": "Q008",
+    "placeId": "main_rq_entrance_southwest",
+    "kind": "fixed",
+    "installationNote": "研究棟南西口"
+  },
+  {
+    "qrId": "Q009",
+    "placeId": "main_sh_entrance_main",
+    "kind": "fixed",
+    "installationNote": "学生ホール中央１階"
+  },
+  {
+    "qrId": "Q010",
+    "placeId": "main_library",
+    "kind": "fixed",
+    "installationNote": "図書館"
+  },
+  {
+    "qrId": "Q011",
+    "placeId": "main_auditorium",
+    "kind": "fixed",
+    "installationNote": "講堂"
+  },
+  {
+    "qrId": "Q012",
+    "placeId": "main_node_9",
+    "kind": "fixed",
+    "installationNote": "中央渡り廊下"
+  },
+  {
+    "qrId": "Q013",
+    "placeId": "main_node_22",
+    "kind": "fixed",
+    "installationNote": "中央階段前"
+  },
+  {
+    "qrId": "Q014",
+    "placeId": "main_node_6",
+    "kind": "fixed",
+    "installationNote": "池前北"
+  },
+  {
+    "qrId": "Q015",
+    "placeId": "main_node_5",
+    "kind": "fixed",
+    "installationNote": "学生ホール南口２階前"
+  },
+  {
+    "qrId": "Q016",
+    "placeId": "main_node_2",
+    "kind": "fixed",
+    "installationNote": "池前南"
+  },
+  {
+    "qrId": "Q017",
+    "placeId": "main_node_15",
+    "kind": "fixed",
+    "installationNote": "道路北"
+  },
+  {
+    "qrId": "Q018",
+    "placeId": "main_node_19",
+    "kind": "fixed",
+    "installationNote": "LICTiA前"
+  },
+  {
+    "qrId": "Q019",
+    "placeId": "main_rq_entrance_northeast",
+    "kind": "fixed",
+    "installationNote": "研究棟北東口"
+  },
+  {
+    "qrId": "Q020",
+    "placeId": "main_rq_entrance_southeast",
+    "kind": "fixed",
+    "installationNote": "研究棟南東口"
+  },
+  {
+    "qrId": "Q021",
+    "placeId": "main_ubic_entrance",
+    "kind": "fixed",
+    "installationNote": "UBIC"
+  },
+  {
+    "qrId": "Q022",
+    "placeId": "main_node_8",
+    "kind": "fixed",
+    "installationNote": "駐車場"
+  },
+  {
+    "qrId": "Q023",
+    "placeId": "rq_node_1f_8",
+    "kind": "fixed",
+    "installationNote": "研究棟北西出口"
+  },
+  {
+    "qrId": "Q024",
+    "placeId": "rq_node_1f_17",
+    "kind": "fixed",
+    "installationNote": "研究棟南西出口"
+  },
+  {
+    "qrId": "Q025",
+    "placeId": "ubic_node_1",
+    "kind": "fixed",
+    "installationNote": "UBIC中"
+  },
+  {
+    "qrId": "Q026",
+    "placeId": "lictia_node_1",
+    "kind": "fixed",
+    "installationNote": "LICTiA中"
+  },
+  {
+    "qrId": "Q027",
+    "placeId": "sh_stairs_main_2_1f",
+    "kind": "fixed",
+    "installationNote": "学生ホールエレベーター前１階"
+  },
+  {
+    "qrId": "Q028",
+    "placeId": "sh_stairs_main_1_1f",
+    "kind": "fixed",
+    "installationNote": "学生ホール階段前１階"
+  },
+  {
+    "qrId": "Q029",
+    "placeId": "sh_entrance_main",
+    "kind": "fixed",
+    "installationNote": "学生ホール中央出口"
+  },
+  {
+    "qrId": "Q030",
+    "placeId": "sh_stairs_main_1_2f",
+    "kind": "fixed",
+    "installationNote": "学生ホール階段前２階"
+  },
+  {
+    "qrId": "Q031",
+    "placeId": "sh_node_2f_1",
+    "kind": "fixed",
+    "installationNote": "学生ホール２階北"
+  },
+  {
+    "qrId": "Q032",
+    "placeId": "lh_stairs_west_1f",
+    "kind": "fixed",
+    "installationNote": "講義棟西階段前１階"
+  },
+  {
+    "qrId": "Q033",
+    "placeId": "lh_stairs_southeast_1f",
+    "kind": "fixed",
+    "installationNote": "講義棟東階段前１階"
+  },
+  {
+    "qrId": "Q034",
+    "placeId": "lh_stairs_northeast_1f",
+    "kind": "fixed",
+    "installationNote": "講義棟エレベーター前１階"
+  },
+  {
+    "qrId": "Q035",
+    "placeId": "lh_stairs_northeast_2f",
+    "kind": "fixed",
+    "installationNote": "講義棟エレベーター前２階"
+  },
+  {
+    "qrId": "Q036",
+    "placeId": "lh_stairs_southeast_2f",
+    "kind": "fixed",
+    "installationNote": "講義棟東階段前２階"
+  },
+  {
+    "qrId": "Q037",
+    "placeId": "lh_stairs_west_2f",
+    "kind": "fixed",
+    "installationNote": "講義棟西階段前２階"
+  },
+  {
+    "qrId": "Q038",
+    "placeId": "main_node_4",
+    "kind": "fixed",
+    "installationNote": "駐車場南"
+  },
+  {
+    "qrId": "Q039",
+    "placeId": "rq_stairs_midwest_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央エレベーター１階"
+  },
+  {
+    "qrId": "Q040",
+    "placeId": "rq_stairs_northwest_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟北エレベーター１階"
+  },
+  {
+    "qrId": "Q041",
+    "placeId": "rq_stairs_southwest_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟南エレベーター１階"
+  },
+  {
+    "qrId": "Q042",
+    "placeId": "rq_node_1f_12",
+    "kind": "fixed",
+    "installationNote": "研究棟北東トイレ１階"
+  },
+  {
+    "qrId": "Q043",
+    "placeId": "rq_node_1f_3",
+    "kind": "fixed",
+    "installationNote": "研究棟中央東トイレ１階"
+  },
+  {
+    "qrId": "Q044",
+    "placeId": "rq_node_1f_21",
+    "kind": "fixed",
+    "installationNote": "研究棟南東トイレ１階"
+  },
+  {
+    "qrId": "Q045",
+    "placeId": "rq_stairs_northmid_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟北中央階段１階"
+  },
+  {
+    "qrId": "Q046",
+    "placeId": "rq_stairs_midmid_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央階段１階"
+  },
+  {
+    "qrId": "Q047",
+    "placeId": "rq_stairs_southmid_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟南中央階段１階"
+  },
+  {
+    "qrId": "Q048",
+    "placeId": "rq_stairs_northeast_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟北東階段１階"
+  },
+  {
+    "qrId": "Q049",
+    "placeId": "rq_stairs_mideast_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央東階段１階"
+  },
+  {
+    "qrId": "Q050",
+    "placeId": "rq_stairs_southeast_1f",
+    "kind": "fixed",
+    "installationNote": "研究棟南東階段１階"
+  },
+  {
+    "qrId": "Q051",
+    "placeId": "rq_node_1f_9",
+    "kind": "fixed",
+    "installationNote": "研究棟北東出口"
+  },
+  {
+    "qrId": "Q052",
+    "placeId": "rq_node_1f_18",
+    "kind": "fixed",
+    "installationNote": "研究棟南東出口"
+  },
+  {
+    "qrId": "Q053",
+    "placeId": "rq_stairs_midwest_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央エレベーター２階"
+  },
+  {
+    "qrId": "Q054",
+    "placeId": "rq_stairs_northwest_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟北エレベーター２階"
+  },
+  {
+    "qrId": "Q055",
+    "placeId": "rq_stairs_southwest_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟南エレベーター２階"
+  },
+  {
+    "qrId": "Q056",
+    "placeId": "rq_stairs_northmid_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟北中央階段２階"
+  },
+  {
+    "qrId": "Q057",
+    "placeId": "rq_stairs_midmid_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央階段２階"
+  },
+  {
+    "qrId": "Q058",
+    "placeId": "rq_stairs_southmid_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟南中央階段２階"
+  },
+  {
+    "qrId": "Q059",
+    "placeId": "rq_stairs_northeast_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟北東階段２階"
+  },
+  {
+    "qrId": "Q060",
+    "placeId": "rq_stairs_mideast_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央東階段２階"
+  },
+  {
+    "qrId": "Q061",
+    "placeId": "rq_stairs_southeast_2f",
+    "kind": "fixed",
+    "installationNote": "研究棟南東階段２階"
+  },
+  {
+    "qrId": "Q062",
+    "placeId": "rq_stairs_northwest_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟北エレベーター３階"
+  },
+  {
+    "qrId": "Q063",
+    "placeId": "rq_stairs_midwest_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央エレベーター３階"
+  },
+  {
+    "qrId": "Q064",
+    "placeId": "rq_stairs_southwest_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟南エレベーター３階"
+  },
+  {
+    "qrId": "Q065",
+    "placeId": "rq_stairs_northmid_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟北中央階段３階"
+  },
+  {
+    "qrId": "Q066",
+    "placeId": "rq_stairs_midmid_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央階段３階"
+  },
+  {
+    "qrId": "Q067",
+    "placeId": "rq_stairs_southmid_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟南中央階段３階"
+  },
+  {
+    "qrId": "Q068",
+    "placeId": "rq_stairs_northeast_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟北東階段３階"
+  },
+  {
+    "qrId": "Q069",
+    "placeId": "rq_stairs_mideast_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟中央東階段３階"
+  },
+  {
+    "qrId": "Q070",
+    "placeId": "rq_stairs_southeast_3f",
+    "kind": "fixed",
+    "installationNote": "研究棟南東階段３階"
+  },
+  {
+    "qrId": "Q071",
+    "placeId": "lh_node_1f_6",
+    "kind": "fixed",
+    "installationNote": "講義棟通路西１階"
+  },
+  {
+    "qrId": "Q072",
+    "placeId": "lh_node_1f_7",
+    "kind": "fixed",
+    "installationNote": "講義棟通路東１階"
+  },
+  {
+    "qrId": "Q073",
+    "placeId": "lh_node_2f_3",
+    "kind": "fixed",
+    "installationNote": "講義棟通路西２階"
+  },
+  {
+    "qrId": "Q074",
+    "placeId": "lh_node_2f_5",
+    "kind": "fixed",
+    "installationNote": "講義棟通路東２階"
+  }
+]
