@@ -521,6 +521,7 @@
            id="lictia_room_is"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="lictia_room_is"
            cx="78"
            cy="33"
            r="2" />
@@ -528,6 +529,7 @@
            id="lictia_room_cswr"
            data-route-node=""
            data-kind="corridor"
+           data-place-id="lictia_room_cswr"
            cx="28"
            cy="76"
            r="2" />

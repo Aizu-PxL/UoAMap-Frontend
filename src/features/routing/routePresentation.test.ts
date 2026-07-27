@@ -92,13 +92,13 @@ describe("createRoutePresentation", () => {
   test("実グラフの正逆経路でtransfer-onlyフロアとcampusを維持する", () => {
     const forward = findShortestRouteBetweenPlaces(
       routeGraph,
-      "rq3-325f",
-      "auditorium",
+      "rq_room_325f",
+      "main_auditorium",
     );
     const reverse = findShortestRouteBetweenPlaces(
       routeGraph,
-      "auditorium",
-      "rq3-325f",
+      "main_auditorium",
+      "rq_room_325f",
     );
 
     expect(forward === null).toEqual(false);

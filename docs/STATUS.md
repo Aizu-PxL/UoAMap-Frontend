@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM1〜M8完了)
+最終更新: 2026-07-28(Place・Route・QR計画JSON統合)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -11,13 +11,21 @@
 |---|---|---|---|
 | 1 | 土台(型・モック・リポジトリ層・Router・feature構成) | ✅ 完了 | |
 | 2 | 地図表示 | ✅ 完了 | ブリーフ: docs/tasks/02a〜02d + UI修正02e〜02h(建物枠線・フロア切替viewBox維持・イベントマーカー・視認性とピン置換)。各レビュー指摘も修正済み。ビジュアル刷新04〜06、横長固定サイズ補正07、講義棟フロア別SVG化08、パン座標補正09、オーバーレイアンカー固定10も完了 |
-| 3 | ルート | ✅ 完了 | 03a〜03i。`campus-all`(全域概念)を除く全38 Placeを104ノード/112エッジの単一連結グラフへ収録。全イベント地点・Q001〜Q003地点をcoverageテストで固定 |
+| 3 | ルート | ✅ 完了 | 03a〜03i + 14。`campus-all`(全域概念)を除く全108 Placeを336ノード/425エッジの単一連結グラフへ収録。全60イベント地点・Q001〜Q074地点をcoverageテストで固定 |
 | 4 | イベント検索 | ✅ 完了 | 検索・タグ絞り込み・詳細・「ここへ行く」 |
 | 5 | QR/ディープリンク | ✅ 完了 | `/q`・`/p`・`/e` の正規化、アプリ内カメラスキャン、`to`保持での再スキャン、エラー復旧を実装 |
 | 6 | スケジュール | ✅ 完了 | PDF画像表示(public/schedule/) |
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
-最新ルート実装コミット: `0189530 全案内地点のルート対応を完了`
+最新ルート実装: `docs/tasks/14-place-route-qr-integration.md`（未コミット）
+
+## Place・Route・QR計画JSON統合
+
+Route Editor出力の74 Place案とQ001〜Q074対応表をフロントの正式モックへ反映し、60イベントの会場参照を新Routeノード形式のPlace IDへ移行した。Placeは74 QR地点 + 34イベント会場 + `campus-all`の109件。`campus-all`以外の108件は、336ノード／425エッジ（walk 387 / transfer 38）の単一連結グラフに収録される。
+
+計画JSON、Place案JSON、QR対応表はランタイムで自動連動せず手動同期する。`verify:places`が74件のID・座標・名称、Q001〜Q074、60イベント参照を照合し、不一致を自動修正せずFAILさせる。Q034は「講義棟エレベーター前１階」に統一済み。物理QRの印刷・設置承認は引き続き対象外。
+
+自動検証は107 tests / 927 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、production build、git diff checkがPASS。幅402pxでQ001→M21、Q034→U1、受付、3Dシアター、P1 highlight、未知QRを確認し、console error 0件。
 
 ## リポジトリ横断リファクタリング
 
@@ -102,7 +110,7 @@ bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる
-bun run verify:places  # places.tsのSVG紐付け検証。36件PASSが正常
+bun run verify:places  # 109 Place / 74 QR / 60 Eventと計画JSONの整合検証
 bun run verify:routes  # SVGのRouteグラフが生成結果と一致することを確認
 ```
 
@@ -113,25 +121,20 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 |---|---|
 | `/` | キャンパス全体図。パン・ズーム可。建物(研究棟/学生ホール/講義棟/UBIC/LICTiA)タップで建物フロアへ |
 | `/?to=A1` | 講堂へフォーカス+赤ピン(目的地)。シートに「目的地へ」ボタン |
-| `/?at=sh-cafeteria` | 学生ホール1Fへ自動切替+現在地ピン(人型) |
-| `/?focus=lh-m8` | 講義棟1FのM8へフォーカス+アクセント色ピン |
+| `/?at=sh_room_cafeteria` | 学生ホール1Fへ自動切替+現在地ピン(人型) |
+| `/?focus=lh_room_m8` | 講義棟1FのM8へフォーカス+アクセント色ピン |
 | `/?at=campus-all` | unmapped地点。クラッシュせず「(位置情報なし)」表示 |
-| `/?at=rq1-161&to=P1` | 研究棟1Fへ切替し、161から104Fまでの最短ルート線+両ピン |
-| `/?at=rq1-127&to=P3` | 研究棟1Fへ切替し、127から144Fまでの最短ルート線+両ピン |
-| `/?at=rq1-161&to=P12` | 研究棟3Fへ切替し、1F→2F→3Fの最短経路。表示中フロアのルート線+乗換マーカー、1F/2F/3Fボタンすべてにルートインジケータ |
-| `/?at=rq3-325f&to=A1` | キャンパス図へ切替し、研究棟3F→階段→西側出入口→屋外歩行者路→講堂の最短経路。研究棟を開くと1F/2F/3Fとキャンパス戻りにルートインジケータ |
-| `/?at=auditorium&to=P12` | 研究棟3Fへ切替し、講堂から研究棟3F 325Fまで同じキャンパス横断経路を逆方向に表示 |
-| `/?at=sh-hall&to=S` | 学生ホール1Fでホールから売店までの室内ルート線を表示 |
-| `/?at=rq1-161&to=W` | 学生ホール1Fへ切替し、研究棟161から食堂まで研究棟入口・キャンパス・学生ホール入口を通る経路を表示 |
-| `/?at=ubic-3d-theater&to=P18` | UBIC内で3Dシアターから研究ラボエリアまでの室内ルート線を表示 |
-| `/?at=rq1-161&to=P19` | UBICへ切替し、研究棟161から運動解析ルームまで研究棟入口・キャンパス・UBIC入口を通る経路を表示 |
-| `/q/Q003?to=M21` | `at=lh-large`へ正規化し、講義棟1F大講義室から2F M2まで東側階段を通る経路を表示。1F/2F双方にインジケータ |
-| `/qr?to=M21` | 背面カメラを起動。Q003を読むと`at=lh-large`でルート表示。QRタブへ戻ってQ001を読むと`to=M21`のまま`at=sh-hall`へ更新し、キャンパス横断ルートを再計算 |
-| `/?at=rq1-161&to=M21` | 講義棟2Fへ切替し、研究棟161からM2まで研究棟入口・キャンパス・講義棟入口・階段を通る経路を表示 |
-| `/?at=lictia-innovation&to=P20` | LICTiA内でイノベーション創出スペースから箱庭チャンバー室までの室内ルート線と両ピンを表示 |
-| `/?at=rq1-161&to=P21` | LICTiAへ切替し、研究棟161からイノベーション創出スペースまでキャンパス北側経路を通って表示 |
-| `/?at=rq1-161&to=P22` | キャンパス図へ切替し、研究棟161からロボット格納庫まで屋外経路を表示 |
-| `/?at=robot-garage&to=P12` | 研究棟3Fへ切替し、ロボット格納庫から研究棟325Fまで逆方向の屋外・入口・階段経路を表示 |
+| `/?at=rq_room_161&to=P1` | 研究棟1Fへ切替し、161から104Fまでの最短ルート線+両ピン |
+| `/?at=rq_room_127&to=P3` | 研究棟1Fへ切替し、127から144Fまでの最短ルート線+両ピン |
+| `/?at=rq_room_161&to=P12` | 研究棟3Fへ切替し、1F→2F→3Fの最短経路。表示中フロアのルート線+乗換マーカー、1F/2F/3Fボタンすべてにルートインジケータ |
+| `/?at=rq_room_325f&to=A1` | キャンパス図へ切替し、研究棟3F→階段→出入口→屋外歩行者路→講堂の最短経路。研究棟を開くと1F/2F/3Fとキャンパス戻りにルートインジケータ |
+| `/?at=main_auditorium&to=P12` | 研究棟3Fへ切替し、講堂から研究棟3F 325Fまで同じキャンパス横断経路を逆方向に表示 |
+| `/q/Q001?to=M21` | `at=main_node_11`へ正規化し、駐車場北から講義棟2F M2までの経路を表示 |
+| `/q/Q034?to=U1` | `at=lh_stairs_northeast_1f`へ正規化し、講義棟1Fエレベーター前からM8までの経路を表示 |
+| `/q/Q001?to=C` | 駐車場北から学生ホール受付までの経路を表示 |
+| `/q/Q001?to=G1` | 駐車場北からUBIC 3Dシアターまでの経路を表示 |
+| `/?at=lictia_room_is&to=P20` | LICTiA内でイノベーション創出スペースから箱庭チャンバー室までの室内ルート線と両ピンを表示 |
+| `/?at=rq_room_161&to=P22` | キャンパス図へ切替し、研究棟161からロボット格納庫まで屋外経路を表示 |
 | `/events` | 検索タブ。テキスト+タグで絞り込み、カード→詳細→「ここへ行く」 |
 | `/events?highlight=T3` | 該当イベントカードがアクセント色枠で強調され、リスト内の位置まで自動スクロール |
 | `/` のイベントマーカー | 開催地(表示中フロア)に白背景の黒い人型バッジ。タップで `/events?highlight=:id` へ(at/to保持)。同じ地点に現在地・目的地・注目ピンがあればピンだけ表示 |
@@ -143,18 +146,18 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」の再フォーカスも `focus=` クエリを書く方式(コンポーネントstateに逃がさない)
 - **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一origin・`BASE_URL`配下の`/q/:qrId`だけを受理する。読み取り後は既存クエリを保持して`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱時はscannerをdestroyし、カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
-- **places.ts が地点語彙の正**: 全39 Placeの内訳はSVG要素への紐付け36件、座標アンカー2件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
+- **places.ts が地点語彙の正**: 全109 Placeの内訳はQR座標地点74件、イベント会場34件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
 - **マーカー**: React非管理のオーバーレイSVGレイヤー。イベント円の中心／水滴ピンの先端をPlace座標へ固定し、画面px固定の位置オフセットは加えない。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。タップで `/events?highlight=:eventId`(先頭イベント代表)へ遷移し、同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
-- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全38 Placeを104ノード/112エッジの単一連結グラフへ収録し、全イベント地点とQ001〜Q003をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
+- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全108 Placeを336ノード/425エッジの単一連結グラフへ収録し、全60イベント地点とQ001〜Q074をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
 - **フロア切替のviewBox引き継ぎ**: 同一建物内の切替は「シート全体に対する相対位置・相対ズーム」を比例マッピングして維持(フロア間で座標系が揃っていないため絶対座標は使えない)。キャンパス⇄建物は全体表示リセット。RQ2FはviewBox属性が無いためwidth/height属性からフォールバック構成
 - **scrollIntoViewは `behavior:"auto"`**: smoothはバックグラウンドタブでアニメーションが進まず止まることがあるため使わない
 
 ## 既知の注意(再発防止ルール)
 
-- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で36件PASSを必ず確認する
+- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で109 Place / 74 QR / 60 EventのPASSを必ず確認する
 - SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)
 - カメラは本番ではHTTPSのsecure contextが必須。`qr-scanner`のMIT通知は`public/THIRD_PARTY_NOTICES.txt`として配布物へ同梱する(アプリ内ライセンス画面は不要)

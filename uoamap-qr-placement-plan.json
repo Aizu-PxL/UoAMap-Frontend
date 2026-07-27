@@ -371,7 +371,7 @@
       "routeNodeId": "lh_stairs_northeast_1f",
       "placeId": "lh_stairs_northeast_1f",
       "kind": "fixed",
-      "installationNote": "学生ホールエレベーター前１階",
+      "installationNote": "講義棟エレベーター前１階",
       "floorId": "lh-1f",
       "x": 367,
       "y": 475
@@ -856,7 +856,7 @@
     },
     {
       "id": "lh_stairs_northeast_1f",
-      "name": "学生ホールエレベーター前１階",
+      "name": "講義棟エレベーター前１階",
       "sheetId": "lh1f",
       "routeNodeId": "lh_stairs_northeast_1f",
       "floorId": "lh-1f",

@@ -64,32 +64,32 @@ describe("QRスキャン後のURL状態", () => {
     expect(
       createQrLandingLocation(
         "Q003",
-        "?at=sh-hall&to=M21&focus=rq1-161",
+        "?at=sh_reception&to=M21&focus=rq_room_161",
       ),
     ).toEqual({
       pathname: "/q/Q003",
-      search: "?at=sh-hall&to=M21&focus=rq1-161",
+      search: "?at=sh_reception&to=M21&focus=rq_room_161",
     });
   });
 
   test("初回スキャンは現在地を追加して目的地を保持する", () => {
     const result = setResolvedQrSearchParams(
       new URLSearchParams("to=M21"),
-      "lh-large",
+      "lh_room_lth_1",
     );
 
-    expect(result.get("at")).toEqual("lh-large");
+    expect(result.get("at")).toEqual("lh_room_lth_1");
     expect(result.get("to")).toEqual("M21");
     expect(result.has("focus")).toEqual(false);
   });
 
   test("再スキャンは目的地を変えず現在地だけ更新しfocusを解除する", () => {
     const result = setResolvedQrSearchParams(
-      new URLSearchParams("at=sh-hall&to=M21&focus=rq1-161"),
-      "lh-large",
+      new URLSearchParams("at=sh_reception&to=M21&focus=rq_room_161"),
+      "lh_room_lth_1",
     );
 
-    expect(result.get("at")).toEqual("lh-large");
+    expect(result.get("at")).toEqual("lh_room_lth_1");
     expect(result.get("to")).toEqual("M21");
     expect(result.has("focus")).toEqual(false);
   });

@@ -1,12 +1,12 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-07-22(リポジトリ横断リファクタリングM1〜M8完了)
-対象ブランチ: `codex/repository-wide-refactor`
-ルート実装の基準コミット: `0189530 全案内地点のルート対応を完了`
+最終更新: 2026-07-28(Place・Route・QR計画JSON統合)
+対象ブランチ: `feature/setMap`
+最新実装ブリーフ: `docs/tasks/14-place-route-qr-integration.md`（未コミット）
 
 ## 現在地
 
-リポジトリ横断リファクタリングはM1〜M8まで完了。M8では最短経路の6 synthetic testsと19実グラフcoverage testsを分離し、全体105 tests / 551 assertionsを維持した。`bun run verify:all` はroute editor生成鮮度、scripts/toolsを含むstrict型検査、production build、36 places、104 nodes / 112 edges、git diff --checkまでPASS。安全に削除できる明白なdead codeは参照検索で見つからず、削除していない。幅402pxの代表URLとVite配信のroute editor主要操作はconsole error 0件。基準コミット `5b37580` 以降の累積差分を会話履歴なしで独立レビューし、指摘なし。
+74件のQR Place案、34件のイベント会場、`campus-all`を109 Placeへ統合した。60イベントは内容・時刻を維持して新Routeノード形式のPlace IDへ移行し、Q001〜Q074をフロントの正式モックとして採用した。`campus-all`以外の108 Placeは336ノード・425エッジ（walk 387 / transfer 38）の単一連結グラフに収録される。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・座標・名称の不一致を自動修正せずFAILさせる。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
@@ -16,7 +16,7 @@
 `.agent/refactor-plan.md` のM1〜M8完了を確認し、次に着手する機能を `docs/SPEC.md` と `docs/BACKLOG.md` から選んで別ブリーフを作成してください。本番公開や物理QRの場合は先に `docs/PRODUCTION.md` の人間決定ゲートを確認してください。
 ```
 
-SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全38 Placeが、104ノード・112エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
+SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全108 Placeが、336ノード・425エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
 
 次のロードマップ実装候補はステップ7の `docs/API.md` 契約に沿ったAPI接続。
 並行する公開準備は [PRODUCTION.md](PRODUCTION.md) を正とし、実装前に人間が本番origin、base path、ホスティング所有者、API構成、QR台帳責任者を確定する。URL凍結前にQRを量産しない。
@@ -62,25 +62,25 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 - 03dで導入した複数フロアSVG抽出は08で廃止した。講義棟は`LH1F_base_plain.svg`と`LH2F_base_plain.svg`が正本
 - 同じ `data-stair-id` の隣接階ノード間にコスト60、同じ `data-entrance-id` の建物側・キャンパス側ノード間にコスト0のtransfer edgeを生成する
 - `MapCanvas` は経路が存在するフロアだけでなく、乗換地点だけを含むフロアも表示対象として扱う
-- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全Place coverage、全ノードの単一連結性、全イベント地点、Q001〜Q003は `src/features/routing/routeGraphCoverage.test.ts` で固定している
+- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全108 Route対応Place、全ノードの単一連結性、全60イベント地点、Q001〜Q074は `src/features/routing/routeGraphCoverage.test.ts` で固定している
 - `campus-all` は意図的な唯一のRoute非収録Place。URLで指定されてもクラッシュせず「位置情報なし」として扱う
 
 ## 最終検証結果
 
-2026-07-22のM8 13o実装完了時点で以下を確認済み。
+2026-07-28のPlace・Route・QR計画JSON統合で以下を確認済み。
 
 ```text
 bun run verify:all     PASS
-bun test               105 tests / 0 fail / 551 expect() calls
+bun test               107 tests / 0 fail / 927 expect() calls
 bun run build          PASS（route editor鮮度、strict型検査、Vite build）
-bun run verify:routes  104 nodes / 112 edges
-bun run verify:places  36件すべてPASS
+bun run verify:routes  336 nodes / 425 edges
+bun run verify:places  109 Place / 74 QR / 60 Event
 git diff --check       PASS
 ```
 
-幅402pxのブラウザで学生ホール、UBIC、講義棟、LICTiA、ロボット格納庫について建物内経路と他建物からの横断経路を確認済み。05aでは実QR画像からQ003 URLを復号し、`to=M21`を保持した初回スキャン（`at=lh-large`）と再スキャン（`at=sh-hall`）で経路が講義棟内からキャンパス横断へ更新されること、`focus`解除、カメラ再起動・再試行、コンソールエラーなしを確認した。QR画面は幅320px・402px・430pxで254px正方形を維持し、横スクロールなし。代表URLは [STATUS.md](STATUS.md) の検証表に掲載している。
+幅402pxのブラウザで `/q/Q001?to=M21` は `at=main_node_11`、`/q/Q034?to=U1` は `at=lh_stairs_northeast_1f` へ正規化され、経路を表示した。Q001から受付（`to=C`）とUBIC 3Dシアター（`to=G1`）への経路、`/events?highlight=P1` の強調、`/q/Q999` の登録なし案内も確認し、console errorは0件。
 
-M8では幅402pxで `/?at=rq1-161&to=P12`、`/events?highlight=P20`、`/q/Q003?to=M21` の経路・highlight・URL正規化を確認した。ルート編集ツールはVite配信1440×900で全10マップ、Undo/Redo、自動採番非巻戻し、キャンパスSVG downloadを確認した。Browser security policyが `file://` を拒否し、ファイル入力APIも提供しないため、`file://` と計画JSON再読込のブラウザ自動操作は未実施。単一HTML・外部scriptなし・全10ファイル同期・生成鮮度・pure parse exact testで補完している。
+会話履歴なしの独立レビューでP2のEvent ID重複検出漏れが見つかり、`verify:places`へ追加して`verify:all`を再実行した。別コンテキストの再レビューは指摘なし。
 
 再開時の最低限の健全性確認:
 
@@ -95,8 +95,8 @@ bun run verify:all
 - `campus-all` は面を表す概念地点なのでRoute対象外
 - 学生ホール2Fには選択可能なPlaceがなく、中央階段の着地点だけをRouteへ収録
 - v1は各建物につき代表となる来場者入口1か所でキャンパスRouteと接続。別入口を追加する場合、SVGごとに座標単位が異なるため、建物内・屋外コストの正規化を先に設計する
-- `lictia-chamber` は現SVG上の「検証室」と判断した中心座標 `(32.5, 54.6)` に割り当てた。公開前に公式の会場配置と一致するか確認する
-- Q002のPlace `ubic` は、現時点ではUBICのキャンパス側代表入口へ案内する。QRの実設置位置が決まったら屋内の正確な現在地に変更するか判断する
+- `lictia_room_cswr` は現SVG上の「検証室」と判断した中心座標 `(32.5, 54.6)` に割り当てた。公開前に公式の会場配置と一致するか確認する
+- Q001〜Q074はフロント用モックとして確定したが、物理QRの量産・設置承認ではない。本番originと現地受入は`docs/PRODUCTION.md`のゲートに従う
 - テキストによる曲がり方・所要時間案内はSPEC上の将来拡張であり、ステップ3の未実装ではない
 
 ## SVG編集時の注意

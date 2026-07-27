@@ -819,6 +819,7 @@
              id="lh_room_m2"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m2"
              cx="93"
              cy="29"
              r="2" />
@@ -826,6 +827,7 @@
              id="lh_room_m3"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m3"
              cx="150"
              cy="29"
              r="2" />
@@ -833,6 +835,7 @@
              id="lh_room_m4"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m4"
              cx="207"
              cy="29"
              r="2" />
@@ -840,6 +843,7 @@
              id="lh_room_m5"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m5"
              cx="263"
              cy="29"
              r="2" />
@@ -847,6 +851,7 @@
              id="lh_room_m6"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m6"
              cx="321"
              cy="29"
              r="2" />
@@ -1001,6 +1006,7 @@
              id="lh_room_m7"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="lh_room_m7"
              cx="440"
              cy="29"
              r="2" />
