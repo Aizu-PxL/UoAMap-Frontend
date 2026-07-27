@@ -5,17 +5,61 @@ import type { Floor, MapSheet, Place } from "./types";
 // QR座標地点はRoute Editor出力JSON、イベント会場は背景SVG要素／専用座標で管理する。
 // placeId の語彙はこのファイルから公開するplacesが正。
 
+const publicBaseUrl = import.meta.env.BASE_URL ?? "/";
+const publicUrl = (relativePath: string) =>
+  `${publicBaseUrl}${relativePath.replace(/^\/+/u, "")}`;
+
 export const mapSheets: MapSheet[] = [
-  { id: "campus", name: "キャンパス全体", svgUrl: "/maps/CampusMap_base_plain.svg" },
-  { id: "rq1f", name: "研究棟 1F", svgUrl: "/maps/RQ1F_base_plain.svg" },
-  { id: "rq2f", name: "研究棟 2F", svgUrl: "/maps/RQ2F_base_plain.svg" },
-  { id: "rq3f", name: "研究棟 3F", svgUrl: "/maps/RQ3F_base_plain.svg" },
-  { id: "lh1f", name: "講義棟 1F", svgUrl: "/maps/LH1F_base_plain.svg" },
-  { id: "lh2f", name: "講義棟 2F", svgUrl: "/maps/LH2F_base_plain.svg" },
-  { id: "sh1f", name: "学生ホール 1F", svgUrl: "/maps/SH1F_base_plain.svg" },
-  { id: "sh2f", name: "学生ホール 2F", svgUrl: "/maps/SH2F_base_plain.svg" },
-  { id: "ubic", name: "UBIC", svgUrl: "/maps/UBIC_base_plain.svg" },
-  { id: "lictia", name: "LICTiA 1F", svgUrl: "/maps/LICTiA1F_base_plain.svg" },
+  {
+    id: "campus",
+    name: "キャンパス全体",
+    svgUrl: publicUrl("maps/CampusMap_base_plain.svg"),
+  },
+  {
+    id: "rq1f",
+    name: "研究棟 1F",
+    svgUrl: publicUrl("maps/RQ1F_base_plain.svg"),
+  },
+  {
+    id: "rq2f",
+    name: "研究棟 2F",
+    svgUrl: publicUrl("maps/RQ2F_base_plain.svg"),
+  },
+  {
+    id: "rq3f",
+    name: "研究棟 3F",
+    svgUrl: publicUrl("maps/RQ3F_base_plain.svg"),
+  },
+  {
+    id: "lh1f",
+    name: "講義棟 1F",
+    svgUrl: publicUrl("maps/LH1F_base_plain.svg"),
+  },
+  {
+    id: "lh2f",
+    name: "講義棟 2F",
+    svgUrl: publicUrl("maps/LH2F_base_plain.svg"),
+  },
+  {
+    id: "sh1f",
+    name: "学生ホール 1F",
+    svgUrl: publicUrl("maps/SH1F_base_plain.svg"),
+  },
+  {
+    id: "sh2f",
+    name: "学生ホール 2F",
+    svgUrl: publicUrl("maps/SH2F_base_plain.svg"),
+  },
+  {
+    id: "ubic",
+    name: "UBIC",
+    svgUrl: publicUrl("maps/UBIC_base_plain.svg"),
+  },
+  {
+    id: "lictia",
+    name: "LICTiA 1F",
+    svgUrl: publicUrl("maps/LICTiA1F_base_plain.svg"),
+  },
 ];
 
 export const floors: Floor[] = [

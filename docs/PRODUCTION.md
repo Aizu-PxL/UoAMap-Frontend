@@ -7,7 +7,7 @@
 本番URLの決定、ホスティング設定、バックエンド接続、QRの印刷・設置、実機受入、当日運用を一つの手順で管理する。
 アプリの機能仕様は [SPEC.md](SPEC.md)、API契約は [API.md](API.md)、通常の実装・検証手順は [WORKFLOW.md](WORKFLOW.md) を正とし、この文書は**公開作業と現地受入の正**とする。
 
-現時点では計画のみで、ホスティング先・本番URL・QR設置一覧は未確定。本番公開済みではない。
+現時点では本番計画のみで、ホスティング先・本番URL・QR設置一覧は未確定。本番公開済みではない。GitHub Pagesはモック確認用の暫定公開先として設定するが、本番originの決定や物理QR印刷の承認には使用しない。
 
 ## 1. 公開の基本方針
 
@@ -64,6 +64,14 @@ QR:               <production-origin><base-path>q/<qrId>
 ```
 
 base pathは `/`、または `/uoamap/` のように先頭・末尾を `/` に揃える。`www`有無、HTTP→HTTPS、仮ホスト名から本番ホスト名への転送も統一する。印刷QRには転送前の仮URLではなく、利用者に保証する正規URLを格納する。
+
+### 暫定GitHub PagesとCloudflare Pages移行
+
+- GitHub PagesはモックRepositoryの動作確認専用とする。Pagesのbase pathをビルド時に`APP_BASE_PATH`へ渡し、Vite `base`、Router `basename`、公開アセットURLを揃える。
+- GitHub Pagesだけに必要なSPA用`404.html`はActionsの成果物内で生成し、リポジトリの`public/`には置かない。
+- 将来Cloudflare Pagesへ移行するときは、Build commandを`bun run build`、Build output directoryを`dist`、`BUN_VERSION=1.3.14`、`APP_BASE_PATH`は未設定または`/`とする。
+- Cloudflare Pagesではトップレベル`404.html`を含めず、標準のSPAフォールバックを使う。API接続後も同一origin `/api` または限定CORSの条件は§4に従う。
+- どちらの暫定URLも、§3の本番値が凍結されるまでは印刷QRへ格納しない。
 
 ## 4. ホスティング選定条件
 
