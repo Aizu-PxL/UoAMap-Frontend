@@ -21,7 +21,7 @@ Viteの表示URLをスマートフォン幅（基準402px）で開いて確認�
 bun run verify:all
 ```
 
-このコマンドはunit test、TypeScript strict型検査とproduction build、route editor生成物鮮度、36件のSVG地点紐付け、104 nodes / 112 edgesのRouteグラフ、`git diff --check`を順に検証します。
+このコマンドはunit test、TypeScript strict型検査とproduction build、route editor生成物鮮度、109 Place / 74 QR / 60 Event、336 nodes / 425 edgesのRouteグラフ、`git diff --check`を順に検証します。
 
 個別コマンド:
 
@@ -32,6 +32,23 @@ bun run verify:places
 bun run verify:routes
 bun run verify:route-editor
 ```
+
+## GitHub Pagesでモックを公開
+
+GitHubのリポジトリ設定で **Settings → Pages → Source: GitHub Actions** を選ぶと、`main`へのpushまたはActions画面からの手動実行でモック版を公開できます。ワークフローはPagesのbase pathへViteとReact Routerを揃え、SPAの直接リンク用`404.html`を成果物内だけに生成します。
+
+公開版も`src/data/mock/mockRepository.ts`を使用します。GitHub PagesのURLを物理QRへ印刷する本番URLとしては扱わないでください。
+
+## 将来Cloudflare Pagesへ移行
+
+Cloudflare Pagesでは、ルート配信を前提に次を設定します。
+
+- Build command: `bun run build`
+- Build output directory: `dist`
+- Environment variable: `BUN_VERSION=1.3.14`
+- `APP_BASE_PATH`: 未設定（または`/`）
+
+トップレベルの`404.html`はリポジトリへ追加していないため、Cloudflare Pagesの標準SPAフォールバックを利用できます。API接続は別スライスでRepository層だけを差し替えます。
 
 ## 地図とRoute editor
 

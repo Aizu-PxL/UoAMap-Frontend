@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-28(Place・Route・QR計画JSON統合)
+最終更新: 2026-07-28(GitHub Pagesモック公開設定)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -18,6 +18,16 @@
 | 7 | API接続 | ⬜ 未着手 | 契約は docs/API.md。現在はモック(src/data/mock/) |
 
 最新ルート実装: `docs/tasks/14-place-route-qr-integration.md`（未コミット）
+
+最新公開設定ブリーフ: `docs/tasks/15-github-pages-mock-deployment.md`（未コミット）
+
+## GitHub Pagesモック公開
+
+GitHub Actionsで`main`または手動実行からGitHub Pagesへ現行モックを公開する設定を追加した。Pagesが返すbase pathをVite `base`とReact Router `basename`へ反映し、地図SVG・スケジュール画像も同じbase pathから取得する。GitHub Pages用の`404.html`は成果物内だけで生成し、将来Cloudflare Pagesへルート配信するときは通常の`bun run build`と標準SPAフォールバックを使える。
+
+公開版のデータは引き続き`mockRepository`であり、GitHub Pages URLは本番URL・物理QR印刷の承認ではない。実際の公開には、GitHub側でPagesのSourceをGitHub Actionsに設定し、この変更を`main`へ反映する人間作業が残る。
+
+検証は`bun run verify:all`（107 tests / 927 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges）、`APP_BASE_PATH=/UoAMap-Frontend/ bun run build`、Pages成果物の`index.html`/`404.html`一致をPASS。幅402pxでトップ、`/q/Q001?to=M21`、`/schedule`をサブパス配信し、Q001→`at=main_node_11`、地図SVG、Schedule画像、console error 0件を確認した。GitHub上の実デプロイは未実施。
 
 ## Place・Route・QR計画JSON統合
 
