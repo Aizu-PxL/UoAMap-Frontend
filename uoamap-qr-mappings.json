@@ -9,61 +9,61 @@
     "qrId": "Q002",
     "placeId": "main_sh_entrance_north",
     "kind": "fixed",
-    "installationNote": "学生ホール北口"
+    "installationNote": "学生ホール北口入口"
   },
   {
     "qrId": "Q003",
     "placeId": "main_lh_entrance_west",
     "kind": "fixed",
-    "installationNote": "講義棟西口"
+    "installationNote": "講義棟西口入口"
   },
   {
     "qrId": "Q004",
     "placeId": "main_lh_entrance_east1f",
     "kind": "fixed",
-    "installationNote": "講義棟東口１階"
+    "installationNote": "講義棟東口１階入口"
   },
   {
     "qrId": "Q005",
     "placeId": "main_lh_entrance_east2f",
     "kind": "fixed",
-    "installationNote": "講義棟東口２階"
+    "installationNote": "講義棟東口２階入口"
   },
   {
     "qrId": "Q006",
     "placeId": "main_sh_entrance_east",
     "kind": "fixed",
-    "installationNote": "学生ホール東口"
+    "installationNote": "学生ホール東口入口"
   },
   {
     "qrId": "Q007",
     "placeId": "main_rq_entrance_northwest",
     "kind": "fixed",
-    "installationNote": "研究棟北西口"
+    "installationNote": "研究棟北西口入口"
   },
   {
     "qrId": "Q008",
     "placeId": "main_rq_entrance_southwest",
     "kind": "fixed",
-    "installationNote": "研究棟南西口"
+    "installationNote": "研究棟南西口入口"
   },
   {
     "qrId": "Q009",
     "placeId": "main_sh_entrance_main",
     "kind": "fixed",
-    "installationNote": "学生ホール中央１階"
+    "installationNote": "学生ホール中央入口"
   },
   {
     "qrId": "Q010",
     "placeId": "main_library",
     "kind": "fixed",
-    "installationNote": "図書館"
+    "installationNote": "図書館前"
   },
   {
     "qrId": "Q011",
     "placeId": "main_auditorium",
     "kind": "fixed",
-    "installationNote": "講堂"
+    "installationNote": "講堂前"
   },
   {
     "qrId": "Q012",
@@ -87,7 +87,7 @@
     "qrId": "Q015",
     "placeId": "main_node_5",
     "kind": "fixed",
-    "installationNote": "学生ホール南口２階前"
+    "installationNote": "学生ホール南口前"
   },
   {
     "qrId": "Q016",
@@ -102,34 +102,28 @@
     "installationNote": "道路北"
   },
   {
-    "qrId": "Q018",
-    "placeId": "main_node_19",
-    "kind": "fixed",
-    "installationNote": "LICTiA前"
-  },
-  {
     "qrId": "Q019",
     "placeId": "main_rq_entrance_northeast",
     "kind": "fixed",
-    "installationNote": "研究棟北東口"
+    "installationNote": "研究棟北東口入口"
   },
   {
     "qrId": "Q020",
     "placeId": "main_rq_entrance_southeast",
     "kind": "fixed",
-    "installationNote": "研究棟南東口"
+    "installationNote": "研究棟南東口入口"
   },
   {
     "qrId": "Q021",
     "placeId": "main_ubic_entrance",
     "kind": "fixed",
-    "installationNote": "UBIC"
+    "installationNote": "UBIC入口"
   },
   {
     "qrId": "Q022",
     "placeId": "main_node_8",
     "kind": "fixed",
-    "installationNote": "駐車場"
+    "installationNote": "駐車場中央"
   },
   {
     "qrId": "Q023",
@@ -442,5 +436,89 @@
     "placeId": "lh_node_2f_5",
     "kind": "fixed",
     "installationNote": "講義棟通路東２階"
+  },
+  {
+    "qrId": "Q075",
+    "placeId": "main_dormitory",
+    "kind": "fixed",
+    "installationNote": "創明寮前"
+  },
+  {
+    "qrId": "Q076",
+    "placeId": "main_lictia_entrance",
+    "kind": "fixed",
+    "installationNote": "LICTiA入口"
+  },
+  {
+    "qrId": "Q077",
+    "placeId": "main_gym",
+    "kind": "fixed",
+    "installationNote": "体育館前"
+  },
+  {
+    "qrId": "Q078",
+    "placeId": "main_node_32",
+    "kind": "fixed",
+    "installationNote": "メイン通路管理棟前"
+  },
+  {
+    "qrId": "Q079",
+    "placeId": "main_node_34",
+    "kind": "fixed",
+    "installationNote": "メイン通路講堂前"
+  },
+  {
+    "qrId": "Q080",
+    "placeId": "main_node_36",
+    "kind": "fixed",
+    "installationNote": "正門"
+  },
+  {
+    "qrId": "Q081",
+    "placeId": "lh_entrance_west",
+    "kind": "fixed",
+    "installationNote": "講義棟西口出口"
+  },
+  {
+    "qrId": "Q082",
+    "placeId": "sh_entrance_south1f",
+    "kind": "fixed",
+    "installationNote": "学生ホール売店出口"
+  },
+  {
+    "qrId": "Q083",
+    "placeId": "sh_entrance_east",
+    "kind": "fixed",
+    "installationNote": "学生ホール東口出口"
+  },
+  {
+    "qrId": "Q084",
+    "placeId": "ubic_node_2",
+    "kind": "fixed",
+    "installationNote": "UBIC出口"
+  },
+  {
+    "qrId": "Q085",
+    "placeId": "lictia_node_4",
+    "kind": "fixed",
+    "installationNote": "LICTiA出口"
+  },
+  {
+    "qrId": "Q086",
+    "placeId": "main_sh_entrance_south2f",
+    "kind": "fixed",
+    "installationNote": "学生ホール南口入口"
+  },
+  {
+    "qrId": "Q087",
+    "placeId": "main_sh_entrance_south1f",
+    "kind": "fixed",
+    "installationNote": "学生ホール売店入口"
+  },
+  {
+    "qrId": "Q088",
+    "placeId": "sh_entrance_north",
+    "kind": "fixed",
+    "installationNote": "学生ホール北口出口"
   }
 ]
