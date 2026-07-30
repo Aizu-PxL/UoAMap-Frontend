@@ -5,8 +5,8 @@
     "name": "講義棟通路西１階",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 171,
-      "y": 468
+      "x": 166,
+      "y": 457
     }
   },
   {
@@ -15,8 +15,8 @@
     "name": "講義棟通路東１階",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 250,
-      "y": 469
+      "x": 252,
+      "y": 457
     }
   },
   {
@@ -25,8 +25,8 @@
     "name": "講義棟通路西２階",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 150,
-      "y": 74
+      "x": 157,
+      "y": 67
     }
   },
   {
@@ -35,8 +35,8 @@
     "name": "講義棟通路東２階",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 262,
-      "y": 74
+      "x": 258,
+      "y": 67
     }
   },
   {
@@ -105,14 +105,14 @@
     "name": "LICTiA中",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 97,
-      "y": 52
+      "x": 78,
+      "y": 48
     }
   },
   {
     "id": "main_auditorium",
     "floorId": "campus",
-    "name": "講堂",
+    "name": "講堂前",
     "mapping": "coordinates",
     "coordinates": {
       "x": 353,
@@ -152,7 +152,7 @@
   {
     "id": "main_library",
     "floorId": "campus",
-    "name": "図書館",
+    "name": "図書館前",
     "mapping": "coordinates",
     "coordinates": {
       "x": 338,
@@ -177,16 +177,6 @@
     "coordinates": {
       "x": 454,
       "y": 214
-    }
-  },
-  {
-    "id": "main_node_19",
-    "floorId": "campus",
-    "name": "LICTiA前",
-    "mapping": "coordinates",
-    "coordinates": {
-      "x": 618,
-      "y": 281
     }
   },
   {
@@ -222,7 +212,7 @@
   {
     "id": "main_node_5",
     "floorId": "campus",
-    "name": "学生ホール南口２階前",
+    "name": "学生ホール南口前",
     "mapping": "coordinates",
     "coordinates": {
       "x": 328,
