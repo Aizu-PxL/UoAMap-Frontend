@@ -80,7 +80,7 @@ export function EventDetail() {
         <svg viewBox="0 0 35 35" aria-hidden="true">
           <path d="M23.33 32.08 8.75 17.5 23.33 2.92l2.59 2.59L13.93 17.5l11.99 11.99-2.59 2.59Z" />
         </svg>
-        マップに戻る
+        リストに戻る
       </Link>
       <h2>{event.title}</h2>
       <p className="event-detail__meta">
