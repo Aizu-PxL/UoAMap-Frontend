@@ -4,10 +4,10 @@ export type MapFocusRequestState = {
 
 export function setDestinationSearchParams(
   currentSearch: URLSearchParams,
-  eventId: string,
+  eventKey: string,
 ): URLSearchParams {
   const params = new URLSearchParams(currentSearch);
-  params.set("to", eventId);
+  params.set("to", eventKey);
   params.delete("focus");
   return params;
 }
@@ -33,10 +33,10 @@ export function setResolvedQrSearchParams(
 
 export function setEventHighlightSearchParams(
   currentSearch: URLSearchParams,
-  eventId: string,
+  eventKey: string,
 ): URLSearchParams {
   const params = new URLSearchParams(currentSearch);
-  params.set("highlight", eventId);
+  params.set("highlight", eventKey);
   return params;
 }
 

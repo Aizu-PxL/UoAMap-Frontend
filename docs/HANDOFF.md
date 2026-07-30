@@ -55,7 +55,7 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 - URL状態更新は `src/app/navigationSearch.ts` が正。各関数は入力 `URLSearchParams` を変更せず新しいインスタンスを返し、目的地設定、地点focus、QR解決後の現在地、イベントhighlightの保持・削除規則を統一する
 - `MapPanel` の再フォーカスは同モジュールの `createNextMapFocusRequestState` で `mapFocusRequestNonce` を1ずつ増やす。URLが同じでも再フォーカスできる現行挙動を維持する
-- MapCanvasのイベントマーカーは共通関数で既存クエリを保持し、`/events?highlight=:eventId` へ遷移する
+- MapCanvasのイベントマーカーは共通関数で既存クエリを保持し、`/events?highlight=:eventKey` へ遷移する
 - Routeの正は `public/maps/*.svg` の `Route` グループ。生成物は `src/features/routing/generated/routeGraph.json`
 - `bun run generate:routes` でSVGからグラフを再生成し、`bun run verify:routes` で生成差分と構造を検証する
 - すべての地図を1 SVG = 1 Floorで管理し、Routeグループの`data-floor-id`をシート唯一のFloorと一致させる。詳しい作図契約は [MAP_AUTHORING.md](MAP_AUTHORING.md)
@@ -78,7 +78,7 @@ bun run verify:places  109 Place / 74 QR / 60 Event
 git diff --check       PASS
 ```
 
-幅402pxのブラウザで `/q/Q001?to=M21` は `at=main_node_11`、`/q/Q034?to=U1` は `at=lh_stairs_northeast_1f` へ正規化され、経路を表示した。Q001から受付（`to=C`）とUBIC 3Dシアター（`to=G1`）への経路、`/events?highlight=P1` の強調、`/q/Q999` の登録なし案内も確認し、console errorは0件。
+幅402pxのブラウザで `/q/Q001?to=M21` は `at=main_node_11`、`/q/Q034?to=U1` は `at=lh_stairs_northeast_1f` へ正規化され、経路を表示した。Q001から受付（現在の内部keyは`to=service-reception`）とUBIC 3Dシアター（`to=G1`）への経路、`/events?highlight=P1` の強調、`/q/Q999` の登録なし案内も確認し、console errorは0件。
 
 会話履歴なしの独立レビューでP2のEvent ID重複検出漏れが見つかり、`verify:places`へ追加して`verify:all`を再実行した。別コンテキストの再レビューは指摘なし。
 

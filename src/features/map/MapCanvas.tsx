@@ -606,6 +606,9 @@ export function MapCanvas({
       if (marker.placeId) {
         group.setAttribute("data-place-id", marker.placeId);
       }
+      if (marker.eventKey) {
+        group.setAttribute("data-event-key", marker.eventKey);
+      }
       if (marker.eventId) {
         group.setAttribute("data-event-id", marker.eventId);
       }
@@ -672,7 +675,7 @@ export function MapCanvas({
 
           const searchParams = setEventHighlightSearchParams(
             new URLSearchParams(location.search),
-            marker.action.eventId,
+            marker.action.eventKey,
           );
           void navigate({
             pathname: "/events",

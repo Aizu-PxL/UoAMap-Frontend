@@ -4,25 +4,42 @@ import placeProposals from "../uoamap-place-proposals.json";
 import qrMappings from "../uoamap-qr-mappings.json";
 import qrPlacementPlan from "../uoamap-qr-placement-plan.json";
 import { mockEvents } from "../src/data/mock/events.js";
+import { mockRepository } from "../src/data/mock/mockRepository.js";
 import { floors, mapSheets, places } from "../src/data/places.js";
 
 const EXPECTED_PLACE_COUNT = 109;
 const EXPECTED_QR_COUNT = 74;
 const EXPECTED_EVENT_COUNT = 60;
-const EVENT_CATEGORY_IDS = new Set([
-  "info",
-  "briefing",
-  "tour",
-  "openlab",
-  "trial",
-  "consult",
-  "service",
+const EXPECTED_EVENT_ID_COUNT = 55;
+const EXPECTED_EVENT_CATEGORIES = [
+  ["A", "大学説明会"],
+  ["L", "入試説明会"],
+  ["E", "早期（飛び）入試説明会"],
+  ["U", "保護者向け説明会"],
+  ["P", "研究室公開"],
+  ["T", "キャンパスツアー"],
+  ["M", "体験授業"],
+  ["G", "なんでも相談会"],
+  ["R", "受験勉強相談"],
+] as const;
+const EVENT_CATEGORY_IDS: ReadonlySet<string> = new Set(
+  EXPECTED_EVENT_CATEGORIES.map(([id]) => id),
+);
+const IDLESS_EVENT_KEYS = new Set([
+  "service-reception",
+  "service-self-guided-tour",
+  "service-rest-area",
+  "service-lunch",
+  "service-shop",
 ]);
+const EVENT_TIME_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\+09:00$/;
 
 const errors: string[] = [];
 const floorById = new Map(floors.map((floor) => [floor.id, floor]));
 const sheetById = new Map(mapSheets.map((sheet) => [sheet.id, sheet]));
 const placeById = new Map(places.map((place) => [place.id, place]));
+const mockTags = await mockRepository.getTags();
 
 function fail(message: string) {
   errors.push(message);
@@ -202,38 +219,84 @@ for (let index = 0; index < EXPECTED_QR_COUNT; index += 1) {
 if (mockEvents.length !== EXPECTED_EVENT_COUNT) {
   fail(`Event件数: ${mockEvents.length}（期待値 ${EXPECTED_EVENT_COUNT}）`);
 }
-for (const duplicate of findDuplicates(mockEvents.map((event) => event.id))) {
+if (
+  JSON.stringify(mockTags.map(({ id, label }) => [id, label])) !==
+  JSON.stringify(EXPECTED_EVENT_CATEGORIES)
+) {
+  fail("EventカテゴリはA/L/E/U/P/T/M/G/RのID・表示名・順序との完全一致が必要です");
+}
+for (const duplicate of findDuplicates(mockEvents.map((event) => event.key))) {
+  fail(`Event key重複: ${duplicate}`);
+}
+const eventIds = mockEvents.flatMap((event) => (event.id ? [event.id] : []));
+if (eventIds.length !== EXPECTED_EVENT_ID_COUNT) {
+  fail(`正式Event ID件数: ${eventIds.length}（期待値 ${EXPECTED_EVENT_ID_COUNT}）`);
+}
+for (const duplicate of findDuplicates(eventIds)) {
   fail(`Event ID重複: ${duplicate}`);
 }
 for (const event of mockEvents) {
-  if (!placeById.has(event.placeId)) fail(`${event.id}: 未登録Place ${event.placeId}`);
-  if (event.tags.length !== 1 || !EVENT_CATEGORY_IDS.has(event.tags[0])) {
-    fail(`${event.id}: Event.tagsは既存7カテゴリのいずれか1件が必要です`);
+  if (!placeById.has(event.placeId)) fail(`${event.key}: 未登録Place ${event.placeId}`);
+  if (event.id === undefined) {
+    if (!IDLESS_EVENT_KEYS.has(event.key)) {
+      fail(`${event.key}: 正式IDなしEventの内部keyが許可一覧にありません`);
+    }
+    if (event.tags.length !== 0) {
+      fail(`${event.key}: 正式IDなしEventのtagsは空配列が必要です`);
+    }
+  } else {
+    if (!/^[ALEUPTMGR]\d+$/.test(event.id)) {
+      fail(`${event.key}: 正式Event IDはA/L/E/U/P/T/M/G/R + 数字が必要です`);
+    }
+    if (event.key !== event.id) {
+      fail(`${event.key}: 正式IDありEventはkeyとidの一致が必要です`);
+    }
+    const expectedTagId = event.id[0];
+    if (
+      event.tags.length !== 1 ||
+      event.tags[0] !== expectedTagId ||
+      !EVENT_CATEGORY_IDS.has(expectedTagId)
+    ) {
+      fail(`${event.key}: Event.tagsは正式IDの先頭文字1件との一致が必要です`);
+    }
   }
-  if (event.timeSlots.length === 0) fail(`${event.id}: timeSlotsが空です`);
+  if (event.timeSlots.length === 0) fail(`${event.key}: timeSlotsが空です`);
 
   let previousEnd = Number.NEGATIVE_INFINITY;
   for (const [index, timeSlot] of event.timeSlots.entries()) {
-    const start = Date.parse(timeSlot.start);
-    const end = timeSlot.end === undefined ? undefined : Date.parse(timeSlot.end);
+    const start = EVENT_TIME_PATTERN.test(timeSlot.start)
+      ? Date.parse(timeSlot.start)
+      : Number.NaN;
+    const end =
+      timeSlot.end === undefined
+        ? undefined
+        : EVENT_TIME_PATTERN.test(timeSlot.end)
+          ? Date.parse(timeSlot.end)
+          : Number.NaN;
     if (!Number.isFinite(start)) {
-      fail(`${event.id}: timeSlots[${index}].startがISO 8601時刻ではありません`);
+      fail(`${event.key}: timeSlots[${index}].startは+09:00付きISO 8601時刻が必要です`);
       continue;
     }
     if (end !== undefined && (!Number.isFinite(end) || end <= start)) {
-      fail(`${event.id}: timeSlots[${index}].endが開始時刻より後ではありません`);
+      fail(`${event.key}: timeSlots[${index}].endが不正か開始時刻より後ではありません`);
     }
     if (start < previousEnd) {
-      fail(`${event.id}: timeSlotsが時刻順でないか重複しています`);
+      fail(`${event.key}: timeSlotsが時刻順でないか重複しています`);
     }
     previousEnd = end ?? start;
-    const isStartOnlyConsultation = /^R[1-9]$/.test(event.id);
+    const isStartOnlyConsultation = /^R[1-9]$/.test(event.id ?? "");
     if (isStartOnlyConsultation && end !== undefined) {
-      fail(`${event.id}: 公式終了時刻がないためendは省略が必要です`);
+      fail(`${event.key}: 公式終了時刻がないためendは省略が必要です`);
     }
     if (end === undefined && !isStartOnlyConsultation) {
-      fail(`${event.id}: 終了時刻を省略できるのはR1〜R9だけです`);
+      fail(`${event.key}: 終了時刻を省略できるのはR1〜R9だけです`);
     }
+  }
+}
+
+for (const key of IDLESS_EVENT_KEYS) {
+  if (!mockEvents.some((event) => event.key === key && event.id === undefined)) {
+    fail(`${key}: 正式IDなしEventがありません`);
   }
 }
 

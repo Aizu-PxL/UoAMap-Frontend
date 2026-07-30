@@ -4,13 +4,15 @@ import qrMappingsJson from "../../../uoamap-qr-mappings.json";
 import { mockEvents } from "./events";
 
 const mockTags: Tag[] = [
-  { id: "info", label: "総合案内" },
-  { id: "briefing", label: "説明会" },
-  { id: "tour", label: "見学" },
-  { id: "openlab", label: "研究室公開" },
-  { id: "trial", label: "体験授業" },
-  { id: "consult", label: "相談" },
-  { id: "service", label: "休憩・買物" },
+  { id: "A", label: "大学説明会" },
+  { id: "L", label: "入試説明会" },
+  { id: "E", label: "早期（飛び）入試説明会" },
+  { id: "U", label: "保護者向け説明会" },
+  { id: "P", label: "研究室公開" },
+  { id: "T", label: "キャンパスツアー" },
+  { id: "M", label: "体験授業" },
+  { id: "G", label: "なんでも相談会" },
+  { id: "R", label: "受験勉強相談" },
 ];
 
 function qrKind(value: string): QrCode["kind"] {

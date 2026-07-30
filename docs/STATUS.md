@@ -27,17 +27,19 @@
 
 ## オープンキャンパス2026最新データ
 
-2026-07-31確認済みの `uoa_open_campus_2026.json` を現行Eventへ変換し、37プログラムの55枠と5運営サービスを60 Eventへ反映した。タイトル・説明・会場・開催時刻を最新化し、研究室公開の明示された昼休憩は複数`timeSlots`へ展開した。新JSONの詳細タグ101種類はユーザー判断により対象外とし、既存の7カテゴリだけを維持している。
+2026-07-31確認済みの `uoa_open_campus_2026.json` を現行Eventへ変換し、37プログラムの55枠と5運営サービスを60 Eventへ反映した。タイトル・説明・会場・開催時刻を最新化し、研究室公開の明示された昼休憩は複数`timeSlots`へ展開した。新JSONの詳細タグ101種類はユーザー判断により対象外とし、正式IDの先頭文字に対応する9カテゴリ（A/L/E/U/P/T/M/G/R）だけを使う。
 
-受験勉強相談R1〜R9は公式情報に終了時刻がないため、架空の20分枠を廃止した。`TimeSlot.end`は公式終了時刻がない場合だけ省略でき、一覧と詳細では「9:40〜」のように開始時刻だけを表示する。`verify:places`はEventの7カテゴリ、ISO時刻、開始・終了順、複数枠の重複、終了時刻省略対象も検証する。
+Eventは全60件で必須の内部`key`を持ち、公式プログラム55件だけが正式`id`を持つ。総合案内・自由見学・休憩所・ランチ営業・売店営業は正式IDとTagを持たず、`service-*`内部keyにより一覧カード、`/events/:eventKey`詳細、「ここへ行く」、地図マーカーhighlightを利用できる。正式IDの外部詳細URL `/e/:eventId` は維持する。
 
-新JSONとの一時照合は60 Event / 37 programs / 5 servicesでPASSした。`bun run verify:all`は110 tests / 930 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、build、git diff checkをPASS。幅402pxでカテゴリチップ7件、相談フィルタ11件、R1の一覧・詳細「9:40〜」、横方向overflowなし、console error 0件を確認した。
+受験勉強相談R1〜R9は公式情報に終了時刻がないため、架空の20分枠を廃止した。`TimeSlot.end`は公式終了時刻がない場合だけ省略でき、一覧と詳細では「9:40〜」のように開始時刻だけを表示する。`verify:places`はEventのkey/ID件数と一意性、9カテゴリとID先頭文字の一致、IDなし5件、厳密なISO時刻、開始・終了順、複数枠の重複、終了時刻省略対象も検証する。
+
+新JSONとの一時照合は正式ID 55件 / 5 services / 60 EventでPASSした。`bun run verify:all`は112 tests / 934 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、build、git diff checkをPASS。幅402pxでカテゴリチップ9件・カード60件、IDなしランチカードの詳細と`to=service-lunch`、検索タブ選択、正式ID `/e/P1`、`highlight=service-shop`、R1の「9:40〜」、横方向overflowなし、ランタイムエラー表示なしを確認した。
 
 ## Figma UX Demo
 
 Figma「UoAmap」に `🧪 UX Demo`（page `192:338`）を追加し、現行React実装のコアフロー9、地図・BottomSheet 5、QR 8、検索・詳細8の計30状態を402×874pxで配置した。各状態は画面ID、URL、開始条件、想定遷移先を持ち、既存コンポーネントとSchedule画像を再利用している。正式な `📱 Screens` の5画面と `🧩 Components` の21ノードは変更していない。
 
-Flow Notes（`192:346`）には、地図・検索・QR・Schedule間、カード→詳細、「ここへ行く」、QR成功・失敗、`/q`・`/p`・`/e`、22／58／82svh、`at`／`to`／`focus` の契約を記録した。詳細の表示文言「マップに戻る」が現行実装では `/events` へ戻る点、SPEC §5.2の外部 `/e/:eventId` は`to`設定を求める一方で現行実装は詳細表示だけでは`to`を設定しない点、正式Mapが固定例で実装は3段階のシート状態を持つ点は、修正せず挙動不一致として注記した。
+Flow Notes（`192:346`）には、地図・検索・QR・Schedule間、カード→詳細、「ここへ行く」、QR成功・失敗、`/q`・`/p`・`/e`、22／58／82svh、`at`／`to`／`focus` の契約を記録した。詳細の表示文言「マップに戻る」が現行実装では `/events` へ戻る点、正式Mapが固定例で実装は3段階のシート状態を持つ点は、修正せず挙動不一致として注記した。作成時に注記した外部 `/e/:eventId` と`to`設定の差は、ブリーフ17でSPECを現行実装の「詳細→ここへ行く」に統一して解消した。
 
 Scheduleは実アプリの一時キャプチャとFigma部品の画像ハッシュ一致を確認し、キャプチャを削除した。30画面はPrototypeで巨大な資料ボード1枚として扱われないよう、4つのトップレベルSection（`216:1361`〜`216:1364`）直下へ移動し、資料ボード `192:339` は右側へ分離した。Prototype reactionの初回接続と `C01 Screen — 地図初期状態` のFlow starting point指定は未実施で、ユーザーが接続後にPresent操作とreaction構造を別スライスでレビューする。UX合意前は `📱 Screens`、SPEC、Reactの遷移契約を変更しない。
 
@@ -163,13 +165,13 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 | `/?at=main_auditorium&to=P12` | 研究棟3Fへ切替し、講堂から研究棟3F 325Fまで同じキャンパス横断経路を逆方向に表示 |
 | `/q/Q001?to=M21` | `at=main_node_11`へ正規化し、駐車場北から講義棟2F M2までの経路を表示 |
 | `/q/Q034?to=U1` | `at=lh_stairs_northeast_1f`へ正規化し、講義棟1Fエレベーター前からM8までの経路を表示 |
-| `/q/Q001?to=C` | 駐車場北から学生ホール受付までの経路を表示 |
+| `/q/Q001?to=service-reception` | 駐車場北から学生ホール受付までの経路を表示 |
 | `/q/Q001?to=G1` | 駐車場北からUBIC 3Dシアターまでの経路を表示 |
 | `/?at=lictia_room_is&to=P20` | LICTiA内でイノベーション創出スペースから箱庭チャンバー室までの室内ルート線と両ピンを表示 |
 | `/?at=rq_room_161&to=P22` | キャンパス図へ切替し、研究棟161からロボット格納庫まで屋外経路を表示 |
 | `/events` | 検索タブ。テキスト+タグで絞り込み、カード→詳細→「ここへ行く」 |
-| `/events?highlight=T3` | 該当イベントカードがアクセント色枠で強調され、リスト内の位置まで自動スクロール |
-| `/` のイベントマーカー | 開催地(表示中フロア)に白背景の黒い人型バッジ。タップで `/events?highlight=:id` へ(at/to保持)。同じ地点に現在地・目的地・注目ピンがあればピンだけ表示 |
+| `/events?highlight=T3` | 内部Event keyが一致するカードがアクセント色枠で強調され、リスト内の位置まで自動スクロール |
+| `/` のイベントマーカー | 開催地(表示中フロア)に白背景の黒い人型バッジ。タップで `/events?highlight=:eventKey` へ(at/to保持)。同じ地点に現在地・目的地・注目ピンがあればピンだけ表示 |
 | `/schedule` | タイムスケジュールPDF画像 |
 
 ## アーキテクチャ要点(触る前に知るべきこと)
@@ -182,7 +184,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
-- **マーカー**: React非管理のオーバーレイSVGレイヤー。イベント円の中心／水滴ピンの先端をPlace座標へ固定し、画面px固定の位置オフセットは加えない。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。タップで `/events?highlight=:eventId`(先頭イベント代表)へ遷移し、同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
+- **マーカー**: React非管理のオーバーレイSVGレイヤー。イベント円の中心／水滴ピンの先端をPlace座標へ固定し、画面px固定の位置オフセットは加えない。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。タップで `/events?highlight=:eventKey`(先頭イベント代表)へ遷移し、同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
 - **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全108 Placeを336ノード/425エッジの単一連結グラフへ収録し、全60イベント地点とQ001〜Q074をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
 - **フロア切替のviewBox引き継ぎ**: 同一建物内の切替は「シート全体に対する相対位置・相対ズーム」を比例マッピングして維持(フロア間で座標系が揃っていないため絶対座標は使えない)。キャンパス⇄建物は全体表示リセット。RQ2FはviewBox属性が無いためwidth/height属性からフォールバック構成
 - **scrollIntoViewは `behavior:"auto"`**: smoothはバックグラウンドタブでアニメーションが進まず止まることがあるため使わない

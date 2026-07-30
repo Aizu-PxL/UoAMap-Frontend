@@ -21,7 +21,7 @@ export function filterEventsByCriteria(
     }
 
     const placeName = resolvePlaceName(event.placeId) ?? "";
-    const haystack = [event.id, event.title, event.description, placeName]
+    const haystack = [event.id ?? "", event.title, event.description, placeName]
       .join(" ")
       .toLowerCase();
     return haystack.includes(normalizedQuery);

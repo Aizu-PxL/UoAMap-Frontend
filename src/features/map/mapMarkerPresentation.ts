@@ -27,7 +27,7 @@ const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
 
 export type EventMarkerAction =
   | { kind: "floor"; floorId: string }
-  | { kind: "event"; eventId: string };
+  | { kind: "event"; eventKey: string };
 
 export type EventMarkerPlacement = {
   type: "event";
@@ -35,6 +35,7 @@ export type EventMarkerPlacement = {
   markerLabel: string;
   action: EventMarkerAction;
   placeId?: string;
+  eventKey?: string;
   eventId?: string;
   buildingId?: CampusBuildingId;
   eventCount?: number;
@@ -175,8 +176,9 @@ export function createMapMarkerPresentation({
         type: "event",
         coordinates,
         markerLabel: `${place.name}のイベント${eventCount}件を表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
+        action: { kind: "event", eventKey: firstEvent.key },
         placeId: place.id,
+        eventKey: firstEvent.key,
         eventId: firstEvent.id,
         eventCount,
       });
@@ -195,8 +197,9 @@ export function createMapMarkerPresentation({
         type: "event",
         coordinates,
         markerLabel: `${place.name}のイベントを表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
+        action: { kind: "event", eventKey: firstEvent.key },
         placeId: place.id,
+        eventKey: firstEvent.key,
         eventId: firstEvent.id,
       });
     }

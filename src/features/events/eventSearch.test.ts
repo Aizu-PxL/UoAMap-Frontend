@@ -4,27 +4,30 @@ import { filterEventsByCriteria } from "./eventSearch";
 
 const events: CampusEvent[] = [
   {
-    id: "A1",
+    key: "P1",
+    id: "P1",
     title: "Open Lab",
     description: "AI Research",
     placeId: "research-place",
-    tags: ["openlab", "info"],
+    tags: ["P", "A"],
     timeSlots: [],
   },
   {
-    id: "B2",
+    key: "T2",
+    id: "T2",
     title: "キャンパス案内",
     description: "Campus Tour",
     placeId: "student-place",
-    tags: ["info", "tour"],
+    tags: ["A", "T"],
     timeSlots: [],
   },
   {
-    id: "C3",
+    key: "M3",
+    id: "M3",
     title: "AI体験",
     description: "Hands-on",
     placeId: "unknown-place",
-    tags: ["trial", "info"],
+    tags: ["M", "A"],
     timeSlots: [],
   },
 ];
@@ -39,27 +42,27 @@ const resolvePlaceName = (placeId: string) => placeNames[placeId] ?? null;
 describe("filterEventsByCriteria", () => {
   test("ID・タイトル・説明・地点名へtrimと大文字小文字非依存で部分一致する", () => {
     expect(
-      filterEventsByCriteria(events, { query: " a1 ", tagIds: [] }, resolvePlaceName).map(
+      filterEventsByCriteria(events, { query: " p1 ", tagIds: [] }, resolvePlaceName).map(
         (event) => event.id,
       ),
-    ).toEqual(["A1"]);
+    ).toEqual(["P1"]);
     expect(
       filterEventsByCriteria(events, { query: "OPEN LAB", tagIds: [] }, resolvePlaceName).map(
         (event) => event.id,
       ),
-    ).toEqual(["A1"]);
+    ).toEqual(["P1"]);
     expect(
       filterEventsByCriteria(events, { query: "campus tour", tagIds: [] }, resolvePlaceName).map(
         (event) => event.id,
       ),
-    ).toEqual(["B2"]);
+    ).toEqual(["T2"]);
     expect(
       filterEventsByCriteria(
         events,
         { query: "research quad", tagIds: [] },
         resolvePlaceName,
       ).map((event) => event.id),
-    ).toEqual(["A1"]);
+    ).toEqual(["P1"]);
   });
 
   test("空白だけのqueryは全件を入力順で返す", () => {
@@ -67,24 +70,24 @@ describe("filterEventsByCriteria", () => {
       filterEventsByCriteria(events, { query: "  \t ", tagIds: [] }, resolvePlaceName).map(
         (event) => event.id,
       ),
-    ).toEqual(["A1", "B2", "C3"]);
+    ).toEqual(["P1", "T2", "M3"]);
   });
 
   test("複数タグはANDで絞り、queryとの併用でも入力順を維持する", () => {
     expect(
       filterEventsByCriteria(
         events,
-        { query: "ai", tagIds: ["info"] },
+        { query: "ai", tagIds: ["A"] },
         resolvePlaceName,
       ).map((event) => event.id),
-    ).toEqual(["A1", "C3"]);
+    ).toEqual(["P1", "M3"]);
     expect(
       filterEventsByCriteria(
         events,
-        { query: "", tagIds: ["info", "tour"] },
+        { query: "", tagIds: ["A", "T"] },
         resolvePlaceName,
       ).map((event) => event.id),
-    ).toEqual(["B2"]);
+    ).toEqual(["T2"]);
   });
 
   test("未知タグは0件になり、未知地点は他フィールドだけを検索する", () => {
@@ -101,6 +104,6 @@ describe("filterEventsByCriteria", () => {
         { query: "hands", tagIds: [] },
         resolvePlaceName,
       ).map((event) => event.id),
-    ).toEqual(["C3"]);
+    ).toEqual(["M3"]);
   });
 });

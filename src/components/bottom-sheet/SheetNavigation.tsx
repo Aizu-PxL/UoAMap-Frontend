@@ -43,8 +43,12 @@ export function SheetNavigation({ onNavigate }: SheetNavigationProps) {
   );
 }
 
-function getActiveTab(pathname: string): Tab["id"] | null {
-  if (pathname === "/events" || pathname.startsWith("/e/")) {
+export function getActiveTab(pathname: string): Tab["id"] | null {
+  if (
+    pathname === "/events" ||
+    pathname.startsWith("/events/") ||
+    pathname.startsWith("/e/")
+  ) {
     return "search";
   }
   if (pathname === "/qr" || pathname.startsWith("/q/")) {

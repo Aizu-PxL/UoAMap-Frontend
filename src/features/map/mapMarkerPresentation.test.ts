@@ -18,8 +18,20 @@ const places: Place[] = [
 
 function event(id: string, placeId: string): Event {
   return {
+    key: id,
     id,
     title: `イベント${id}`,
+    description: "説明",
+    placeId,
+    tags: [],
+    timeSlots: [],
+  };
+}
+
+function idlessEvent(key: string, placeId: string): Event {
+  return {
+    key,
+    title: `イベント${key}`,
     description: "説明",
     placeId,
     tags: [],
@@ -70,6 +82,25 @@ function createPresentation(options: {
 }
 
 describe("createMapMarkerPresentation", () => {
+  test("正式IDなしイベントも内部keyでmarker actionを作る", () => {
+    expect(
+      createPresentation({
+        events: [idlessEvent("service-lunch", "room-a")],
+        floorId: "rq-1f",
+      }),
+    ).toEqual([
+      {
+        type: "event",
+        coordinates: { x: 1, y: 2 },
+        markerLabel: "研究棟 Aのイベントを表示: イベントservice-lunch",
+        action: { kind: "event", eventKey: "service-lunch" },
+        placeId: "room-a",
+        eventKey: "service-lunch",
+        eventId: undefined,
+      },
+    ]);
+  });
+
   test("同一placeを先頭イベントで代表し入力place順を維持する", () => {
     const presentation = createPresentation({
       events: [event("E2", "room-b"), event("E1", "room-a"), event("E3", "room-a")],
@@ -80,16 +111,18 @@ describe("createMapMarkerPresentation", () => {
         type: "event",
         coordinates: { x: 3, y: 4 },
         markerLabel: "研究棟 Bのイベントを表示: イベントE2",
-        action: { kind: "event", eventId: "E2" },
+        action: { kind: "event", eventKey: "E2" },
         placeId: "room-b",
+        eventKey: "E2",
         eventId: "E2",
       },
       {
         type: "event",
         coordinates: { x: 1, y: 2 },
         markerLabel: "研究棟 Aのイベントを表示: イベントE1",
-        action: { kind: "event", eventId: "E1" },
+        action: { kind: "event", eventKey: "E1" },
         placeId: "room-a",
+        eventKey: "E1",
         eventId: "E1",
       },
     ]);
@@ -108,8 +141,9 @@ describe("createMapMarkerPresentation", () => {
         type: "event",
         coordinates: { x: 9, y: 10 },
         markerLabel: "研究棟 Dのイベントを表示: イベントED",
-        action: { kind: "event", eventId: "ED" },
+        action: { kind: "event", eventKey: "ED" },
         placeId: "room-d",
+        eventKey: "ED",
         eventId: "ED",
       },
       { type: "pin", coordinates: { x: 1, y: 2 }, markerKind: "current", placeId: "room-a" },
@@ -143,8 +177,9 @@ describe("createMapMarkerPresentation", () => {
         type: "event",
         coordinates: { x: 70, y: 80 },
         markerLabel: "屋外展示のイベント2件を表示: イベントO1",
-        action: { kind: "event", eventId: "O1" },
+        action: { kind: "event", eventKey: "O1" },
         placeId: "outdoor",
+        eventKey: "O1",
         eventId: "O1",
         eventCount: 2,
       },

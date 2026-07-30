@@ -6,11 +6,14 @@ import { getPlace } from "../../data/places";
 import { setDestinationSearchParams } from "../../app/navigationSearch";
 
 export function EventDetail() {
-  const { eventId } = useParams();
+  const { eventId, eventKey } = useParams();
   const { events, tags, loading, error } = useCampusData();
   const location = useLocation();
   const navigate = useNavigate();
-  const event = events.find((candidate) => candidate.id === eventId);
+  const event = eventId
+    ? events.find((candidate) => candidate.id === eventId)
+    : events.find((candidate) => candidate.key === eventKey);
+  const requestedEvent = eventId ?? eventKey;
 
   // 一覧からイベントを開いただけでは地図を動かさない(目的地・フォーカスは
   // 「ここへ行く」を押したときだけ)。そのため詳細表示時の自動 `to` セットは行わない。
@@ -30,7 +33,7 @@ export function EventDetail() {
   if (!event) {
     return (
       <div className="landing-message" role="alert">
-        <p>イベント「{eventId}」が見つかりません。</p>
+        <p>イベント「{requestedEvent}」が見つかりません。</p>
         <Link to={{ pathname: "/events", search: location.search }}>検索へ戻る</Link>
       </div>
     );
@@ -44,7 +47,7 @@ export function EventDetail() {
   const setDestination = () => {
     const params = setDestinationSearchParams(
       new URLSearchParams(location.search),
-      event.id,
+      event.key,
     );
     navigate({ pathname: "/", search: params.toString() });
   };

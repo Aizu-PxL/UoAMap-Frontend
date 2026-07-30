@@ -3,7 +3,7 @@ import type { Event as CampusEvent, TimeSlot } from "../types";
 // 会津大学オープンキャンパス2026 夏ステージ（2026-08-08）の
 // 2026-07-31確認済みデータを現行Eventへ変換したもの。
 // 元データのprograms[].tags（詳細タグ101種類）はユーザー判断により取り込まず、
-// categoryに対応する既存7カテゴリだけをEvent.tagsへ保持する。
+// 正式IDの先頭文字に対応する9カテゴリだけをEvent.tagsへ保持する。
 const DAY = "2026-08-08";
 
 function slot(start: string, end?: string): TimeSlot {
@@ -13,14 +13,26 @@ function slot(start: string, end?: string): TimeSlot {
 }
 
 function event(
-  id: string,
+  id: string | undefined,
   title: string,
   description: string,
   placeId: string,
   tags: string[],
   timeSlots: TimeSlot[],
+  key = id,
 ): CampusEvent {
-  return { id, title, description, placeId, tags, timeSlots };
+  if (!key) {
+    throw new TypeError("Eventの内部keyが必要です");
+  }
+  return {
+    key,
+    ...(id === undefined ? {} : { id }),
+    title,
+    description,
+    placeId,
+    tags,
+    timeSlots,
+  };
 }
 
 type Occurrence = {
@@ -55,7 +67,7 @@ const openLabEvents: CampusEvent[] = [
     "半導体集積回路の設計自動化技術（小平 行秀）",
     "設計規模が非常に大きい集積回路を自動設計する技術を紹介し、代表的な設計問題でコンピュータとの対戦も体験できます。",
     "rq_room_104f",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -63,7 +75,7 @@ const openLabEvents: CampusEvent[] = [
     "オンラインジャッジシステムと知的ソフトウェア工学（渡部 有隆）",
     "LLMやコーディングエージェント、教育支援システム、Aizu Online Judgeを基盤とする研究開発を紹介します。",
     "rq_room_141E",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -71,7 +83,7 @@ const openLabEvents: CampusEvent[] = [
     "知識体験デザイン：人とAIが共創するシステムを創る（吉岡 廉太郎）",
     "人がAIの出力を理解・評価し、判断や創造へつなげるインタラクション技術と、スマートミュージアム・スマートキャンパスへの応用を展示します。",
     "rq_room_144f",
-    ["openlab"],
+    ["P"],
     [slot("10:30", "14:30")],
   ),
   event(
@@ -79,7 +91,7 @@ const openLabEvents: CampusEvent[] = [
     "地域から世界へ、世界から地域へ：会津大学の国際交流（川口 立喜）",
     "海外大学との共同研究、学生派遣、留学経験者の体験、外国人留学生との交流を通じて国際交流を紹介します。",
     "rq_room_127",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "15:00")],
   ),
   event(
@@ -87,7 +99,7 @@ const openLabEvents: CampusEvent[] = [
     "ものづくり体験、イノベーション創業教育プログラムの紹介（齋藤 広幸）",
     "レーザーカッターによるネームプレート制作と、Aizu Geek Dojoで行うイノベーション・創業教育を紹介します。",
     "rq_room_161",
-    ["openlab"],
+    ["P"],
     [slot("09:30", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -95,7 +107,7 @@ const openLabEvents: CampusEvent[] = [
     "AIで走行するラジコンカー（奥山 祐市）",
     "AIカーレース用車両の展示と、シミュレータ上でのAI走行デモを行います。",
     "rq_room_201f",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "15:00")],
   ),
   event(
@@ -103,7 +115,7 @@ const openLabEvents: CampusEvent[] = [
     "デジタルアート＆クラフト＆ゲーム（池本 淳一）",
     "社会学とデジタルエンターテインメントを組み合わせ、地域・社会への貢献を目指すアート、クラフト、ゲームを展示します。",
     "rq_room_243b",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -111,7 +123,7 @@ const openLabEvents: CampusEvent[] = [
     "Reading Research Using Eye Tracking（リングル ウイリアム）",
     "英語文章の読解時に行われる推論を、毎秒1000回の視線データで調べる研究を紹介し、希望者は短いデモを体験できます。",
     "rq_room_267",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:30")],
   ),
   event(
@@ -119,7 +131,7 @@ const openLabEvents: CampusEvent[] = [
     "音声学研究（ウイルソン イアン）",
     "音声生成・発音・知覚の研究を、Praat、舌運動を可視化する超音波装置、反応時間計測環境などとともに紹介します。",
     "rq_room_268",
-    ["openlab"],
+    ["P"],
     [slot("12:30", "15:00")],
   ),
   event(
@@ -127,7 +139,7 @@ const openLabEvents: CampusEvent[] = [
     "低消費電力センシングシステムの研究（ダン ナム カイン）",
     "Raspberry Piとサーマルカメラによる人検出、FPGAとイベントカメラによるリアルタイム動体検出を展示します。",
     "rq_room_s1",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -135,7 +147,7 @@ const openLabEvents: CampusEvent[] = [
     "AIだってウソをつく ～壊れない＆だまされないを目指して～（富岡 洋一）",
     "故障・攻撃・宇宙環境に耐えるAIと、顔写真から作られるディープフェイクへの防御技術を紹介します。",
     "rq_room_s4",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -143,7 +155,7 @@ const openLabEvents: CampusEvent[] = [
     "日常健康管理のための生体情報のシームレスモニタリングと総括的な解析（陳 文西）",
     "生体情報を継続計測する技術と、IoT・AIを用いた長期データ解析を日常の安全確保・健康管理へ応用する事例を紹介します。",
     "rq_room_325f",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -151,7 +163,7 @@ const openLabEvents: CampusEvent[] = [
     "XR Lab（ナッサーニ アラディン）",
     "Apple Vision ProやMiRZA、心拍・脳波を用いた適応型VR、360度映像・3D点群による遠隔操作、宇宙船操作やVR弓道などを体験できます。",
     "rq_room_328E",
-    ["openlab"],
+    ["P"],
     [slot("13:00", "15:00")],
   ),
   event(
@@ -159,7 +171,7 @@ const openLabEvents: CampusEvent[] = [
     "サイバーセキュリティ：進化する脅威と防御（中村 章人）",
     "AI時代に拡大するサイバー攻撃を踏まえ、情報システムの防御技術、利用者へのリスク啓発、サイバー犯罪対策活動を紹介します。",
     "rq_room_342a",
-    ["openlab"],
+    ["P"],
     [slot("12:00", "15:00")],
   ),
   event(
@@ -167,7 +179,7 @@ const openLabEvents: CampusEvent[] = [
     "人間の目や耳を使って計算する暗号（渡辺 曜大）",
     "視覚復号型・聴覚復号型の秘密分散法など、人の視覚や聴覚を復号処理に利用する暗号技術を紹介します。",
     "rq_room_348e",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -175,7 +187,7 @@ const openLabEvents: CampusEvent[] = [
     "AIを用いたパターン認識 Advanced Pattern Recognition using AI（シン ジュンピル）",
     "文字・署名認識、疾患や発達特性の検出、非接触インターフェース、Webカメラによる行動・手話認識などを紹介します。",
     "rq_room_m11",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "12:00"), slot("13:00", "15:00")],
   ),
   event(
@@ -183,7 +195,7 @@ const openLabEvents: CampusEvent[] = [
     "エッジAIデバイスの研究と地域課題への応用（齋藤 寛・仙波 翔吾）",
     "小型・省エネルギーなエッジAIデバイスと、野生動物検出、電気柵見回り、除雪、果実収穫など地域課題への応用を展示します。",
     "lh_room_m10",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "14:00")],
   ),
   event(
@@ -191,7 +203,7 @@ const openLabEvents: CampusEvent[] = [
     "社会美容科学 ～ネイルデザインの美的選好介入アプリ～（畠 圭佑）",
     "ITと美容を組み合わせ、利用者がまだ見たことのない好みのネイルデザインを提示するアプリを体験できます。",
     "ubic_room_RLA",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "15:00")],
   ),
   event(
@@ -199,7 +211,7 @@ const openLabEvents: CampusEvent[] = [
     "身体の見えないコツを可視化する（中澤 謙）",
     "VICON、床反力計、アイトラッカーで身体動作・地面反力・視線を測定し、暗黙知の共有や安全・健康・学習支援への応用を紹介します。",
     "ubic_room_mar",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "15:00")],
   ),
   event(
@@ -207,7 +219,7 @@ const openLabEvents: CampusEvent[] = [
     "地上に月面環境を作る！ （月火星箱庭プログラム）（出村 裕英）",
     "月面の真空、温度、電磁環境や砂塵問題を地上で再現する大型熱真空チャンバーの整備と研究を紹介します。",
     "lictia_room_cswr",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "12:00")],
   ),
   event(
@@ -215,7 +227,7 @@ const openLabEvents: CampusEvent[] = [
     "宇宙を拓く！ （ARC-Spaceの深宇宙探査）（金丸 仁明）",
     "はやぶさ、Hera、Ramses、かぐや、SLIM、LUPEX、MMXなど、ARC-Spaceが関わる深宇宙探査とICT研究を紹介します。",
     "lictia_room_is",
-    ["openlab"],
+    ["P"],
     [slot("09:00", "12:00")],
   ),
   event(
@@ -223,7 +235,7 @@ const openLabEvents: CampusEvent[] = [
     "災害対応ロボット（成瀬 継太郎）",
     "クローラ移動機構とロボットアームを備えた災害対応ロボットの実演を行います。",
     "main_robothangar",
-    ["openlab"],
+    ["P"],
     [slot("10:00", "15:00")],
   ),
 ];
@@ -232,7 +244,7 @@ const consultationEvents = repeatedEvents(
   "受験勉強相談",
   "会津大学の学生が、受験勉強や大学生活に関する個別相談に応じます。公式ページでは各枠の終了時刻は明示されていません。",
   "sh_room_cafeteria",
-  "consult",
+  "R",
   [
     { id: "R1", start: "09:40" },
     { id: "R2", start: "10:10" },
@@ -249,18 +261,19 @@ const consultationEvents = repeatedEvents(
 
 export const mockEvents: CampusEvent[] = [
   event(
-    "C",
+    undefined,
     "総合案内・受付",
     "オープンキャンパスの受付と総合案内です。",
     "sh_reception",
-    ["info"],
+    [],
     [slot("09:00", "15:00")],
+    "service-reception",
   ),
   ...repeatedEvents(
     "大学説明会",
     "学長のメッセージと、会津大学の特色・教育内容を紹介します。",
     "main_auditorium",
-    "briefing",
+    "A",
     [
       { id: "A1", start: "09:30", end: "10:00" },
       { id: "A2", start: "13:00", end: "13:30" },
@@ -271,7 +284,7 @@ export const mockEvents: CampusEvent[] = [
     "入試説明会",
     "2026年度に実施する入試の科目・配点、前年度結果、出願時の要点を説明します。",
     "lh_room_lth_1",
-    "briefing",
+    "L",
     [
       { id: "L1", start: "10:20", end: "10:50" },
       { id: "L2", start: "12:00", end: "12:30" },
@@ -283,14 +296,14 @@ export const mockEvents: CampusEvent[] = [
     "早期（飛び）入試説明会",
     "高校2年生で受験できる早期入学制度について、教員と同制度で入学した在学生が説明します。",
     "lh_room_lth_1",
-    ["briefing"],
+    ["E"],
     [slot("13:00", "13:30")],
   ),
   ...repeatedEvents(
     "保護者向け説明会",
     "学費、奨学金、一人暮らし、就職、入試など、保護者から質問の多い事項を扱います。",
     "lh_room_m8",
-    "briefing",
+    "U",
     [
       { id: "U1", start: "09:30", end: "10:00" },
       { id: "U2", start: "11:10", end: "11:40" },
@@ -298,19 +311,20 @@ export const mockEvents: CampusEvent[] = [
     true,
   ),
   event(
-    "campus-free-tour",
+    undefined,
     "キャンパス自由見学",
     "キャンパス内を自由に見学できます。",
     "campus-all",
-    ["tour"],
+    [],
     [slot("09:00", "15:00")],
+    "service-self-guided-tour",
   ),
   ...openLabEvents,
   ...repeatedEvents(
     "キャンパスツアー",
     "在学生の案内で、学生生活に使う主要施設を巡ります。動きやすい服装が推奨されています。",
     "main_ubic_entrance",
-    "tour",
+    "T",
     [
       { id: "T1", start: "09:30", end: "10:00" },
       { id: "T2", start: "11:10", end: "11:40" },
@@ -322,7 +336,7 @@ export const mockEvents: CampusEvent[] = [
     "賽投げの確率幾何から紐解くガウス和ヤコビ和（可知 靖之）",
     "高校数学の確率問題を出発点に、母関数、漸化式、有限体上の乗法、ガウス和・ヤコビ和へ進む数学講義です。",
     "lh_room_m2",
-    "trial",
+    "M",
     [
       { id: "M21", start: "11:00", end: "11:50" },
       { id: "M22", start: "14:00", end: "14:50" },
@@ -333,7 +347,7 @@ export const mockEvents: CampusEvent[] = [
     "英語を話す練習をしましょう！（キルパトリック アレクサンダー）",
     "日本語と英語の発音差、発音練習の方法、会津大学の英語カリキュラムを扱います。授業は英語で行われます。",
     "lh_room_m3",
-    ["trial"],
+    ["M"],
     [slot("11:00", "11:50")],
   ),
   event(
@@ -341,7 +355,7 @@ export const mockEvents: CampusEvent[] = [
     "英語授業を体験してみよう!（カー ニコラス）",
     "英語カリキュラムの概要と、1年次授業で使うアクティビティを体験します。授業は英語で行われます。",
     "lh_room_m3",
-    ["trial"],
+    ["M"],
     [slot("13:00", "13:50")],
   ),
   event(
@@ -349,7 +363,7 @@ export const mockEvents: CampusEvent[] = [
     "会津大の英語―英語の授業をのぞいてみよう！（金子 恵美子）",
     "1・2年次の授業映像を交え、会津大学の英語教育と英語で学ぶコンピュータ科目への接続を日本語で紹介します。",
     "lh_room_m4",
-    ["trial"],
+    ["M"],
     [slot("12:00", "12:50")],
   ),
   event(
@@ -357,14 +371,14 @@ export const mockEvents: CampusEvent[] = [
     "脳波でわかる「あれ、アクセント違わない？」（陳 姿因）",
     "EEGを用いた言語研究を題材に、アクセントを不自然に感じる際の認知処理を学びます。一部は英語で実施されます。",
     "lh_room_m4",
-    ["trial"],
+    ["M"],
     [slot("14:00", "14:50")],
   ),
   ...repeatedEvents(
     "会津大学では何を学ぶのか ― ソフトウェアの視点から（渡部 有隆）",
     "プログラミング、ソフトウェア工学、AIを含む技術動向、会津大学のプログラミング教育やコンテスト活動を紹介します。",
     "lh_room_m5",
-    "trial",
+    "M",
     [
       { id: "M51", start: "12:00", end: "12:50" },
       { id: "M52", start: "13:00", end: "13:50" },
@@ -374,7 +388,7 @@ export const mockEvents: CampusEvent[] = [
     "AIの仕組み―物体認識と画像生成（富岡 洋一）",
     "難しい数式を避けながら、AIによる物体認識、画像生成、対話などの基本的な仕組みと応用例を紹介します。",
     "lh_room_m6",
-    "trial",
+    "M",
     [
       { id: "M61", start: "11:00", end: "11:50" },
       { id: "M62", start: "13:00", end: "13:50" },
@@ -384,7 +398,7 @@ export const mockEvents: CampusEvent[] = [
     "はやぶさ／はやぶさ2、月火星その先へ（出村 裕英）",
     "はやぶさ・はやぶさ2や月探査を中心に、会津大学の教員・学生が関わった宇宙探査成果を紹介します。",
     "lh_room_m7",
-    "trial",
+    "M",
     [
       { id: "M71", start: "12:00", end: "12:50" },
       { id: "M72", start: "14:00", end: "14:50" },
@@ -394,7 +408,7 @@ export const mockEvents: CampusEvent[] = [
     "なんでも相談会",
     "会津大学の女子学生が、受験生や保護者からの質問に答えます。",
     "ubic_room_3dtheater",
-    "consult",
+    "G",
     [
       { id: "G1", start: "10:20", end: "10:50" },
       { id: "G2", start: "13:00", end: "13:30" },
@@ -403,27 +417,30 @@ export const mockEvents: CampusEvent[] = [
   ),
   ...consultationEvents,
   event(
-    "W",
+    undefined,
     "休憩所",
     "学生ホール食堂を休憩所として利用できます。",
     "sh_room_cafeteria",
-    ["service"],
+    [],
     [slot("09:00", "11:00"), slot("13:30", "15:00")],
+    "service-rest-area",
   ),
   event(
-    "P",
+    undefined,
     "ランチ営業（Rat-a-tat）",
     "学生ホール食堂でランチを提供します。",
     "sh_room_cafeteria",
-    ["service"],
+    [],
     [slot("11:00", "13:30")],
+    "service-lunch",
   ),
   event(
-    "S",
+    undefined,
     "売店営業",
     "学生ホール売店を利用できます。",
     "sh_room_shop",
-    ["service"],
+    [],
     [slot("09:00", "15:00")],
+    "service-shop",
   ),
 ];

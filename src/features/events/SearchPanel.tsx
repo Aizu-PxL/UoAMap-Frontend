@@ -14,7 +14,7 @@ export function SearchPanel() {
     useState<HTMLAnchorElement | null>(null);
   const previousHighlightRef = useRef<string | null>(null);
   const lastScrolledElementRef = useRef<HTMLAnchorElement | null>(null);
-  const highlightedEventId = searchParams.get("highlight");
+  const highlightedEventKey = searchParams.get("highlight");
   const highlightedCardRef = useCallback((element: HTMLAnchorElement | null) => {
     setHighlightedCardElement(element);
   }, []);
@@ -35,24 +35,24 @@ export function SearchPanel() {
   );
 
   useEffect(() => {
-    if (highlightedEventId === previousHighlightRef.current) {
+    if (highlightedEventKey === previousHighlightRef.current) {
       return;
     }
 
-    previousHighlightRef.current = highlightedEventId;
+    previousHighlightRef.current = highlightedEventKey;
     lastScrolledElementRef.current = null;
-    if (highlightedEventId) {
+    if (highlightedEventKey) {
       // A marker selection starts from the unfiltered list so its card is visible.
       setQuery("");
       setActiveTagId(null);
     }
-  }, [highlightedEventId]);
+  }, [highlightedEventKey]);
 
   // 対象カードのDOM要素が(再)出現するたびにスクロールする。
   // ロード完了時のリスト再マウントでsmoothスクロールが中断されても、
   // 新しい要素インスタンスに対して再実行される。
   useEffect(() => {
-    if (!highlightedEventId) {
+    if (!highlightedEventKey) {
       lastScrolledElementRef.current = null;
       return;
     }
@@ -60,7 +60,7 @@ export function SearchPanel() {
       loading ||
       !highlightedCardElement ||
       !highlightedCardElement.isConnected ||
-      highlightedCardElement.dataset.eventId !== highlightedEventId ||
+      highlightedCardElement.dataset.eventKey !== highlightedEventKey ||
       lastScrolledElementRef.current === highlightedCardElement
     ) {
       return;
@@ -78,7 +78,7 @@ export function SearchPanel() {
     const correctionTimer = window.setTimeout(scrollToCard, 250);
     lastScrolledElementRef.current = highlightedCardElement;
     return () => window.clearTimeout(correctionTimer);
-  }, [highlightedCardElement, highlightedEventId, loading]);
+  }, [highlightedCardElement, highlightedEventKey, loading]);
 
   return (
     <div className="search-panel">
@@ -125,11 +125,11 @@ export function SearchPanel() {
         ) : (
           filteredEvents.map((event) => (
             <EventCard
-              key={event.id}
+              key={event.key}
               event={event}
               tagLabel={event.tags.map((id) => tagLabelById.get(id) ?? id).join(" / ")}
-              highlighted={event.id === highlightedEventId}
-              cardRef={event.id === highlightedEventId ? highlightedCardRef : undefined}
+              highlighted={event.key === highlightedEventKey}
+              cardRef={event.key === highlightedEventKey ? highlightedCardRef : undefined}
             />
           ))
         )}

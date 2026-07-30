@@ -5,6 +5,7 @@ import type { Event, Tag } from "./types";
 
 const events: Event[] = [
   {
+    key: "event-1",
     id: "event-1",
     title: "イベント",
     description: "説明",
