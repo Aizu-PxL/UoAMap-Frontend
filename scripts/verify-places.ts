@@ -9,6 +9,15 @@ import { floors, mapSheets, places } from "../src/data/places.js";
 const EXPECTED_PLACE_COUNT = 109;
 const EXPECTED_QR_COUNT = 74;
 const EXPECTED_EVENT_COUNT = 60;
+const EVENT_CATEGORY_IDS = new Set([
+  "info",
+  "briefing",
+  "tour",
+  "openlab",
+  "trial",
+  "consult",
+  "service",
+]);
 
 const errors: string[] = [];
 const floorById = new Map(floors.map((floor) => [floor.id, floor]));
@@ -198,6 +207,34 @@ for (const duplicate of findDuplicates(mockEvents.map((event) => event.id))) {
 }
 for (const event of mockEvents) {
   if (!placeById.has(event.placeId)) fail(`${event.id}: 未登録Place ${event.placeId}`);
+  if (event.tags.length !== 1 || !EVENT_CATEGORY_IDS.has(event.tags[0])) {
+    fail(`${event.id}: Event.tagsは既存7カテゴリのいずれか1件が必要です`);
+  }
+  if (event.timeSlots.length === 0) fail(`${event.id}: timeSlotsが空です`);
+
+  let previousEnd = Number.NEGATIVE_INFINITY;
+  for (const [index, timeSlot] of event.timeSlots.entries()) {
+    const start = Date.parse(timeSlot.start);
+    const end = timeSlot.end === undefined ? undefined : Date.parse(timeSlot.end);
+    if (!Number.isFinite(start)) {
+      fail(`${event.id}: timeSlots[${index}].startがISO 8601時刻ではありません`);
+      continue;
+    }
+    if (end !== undefined && (!Number.isFinite(end) || end <= start)) {
+      fail(`${event.id}: timeSlots[${index}].endが開始時刻より後ではありません`);
+    }
+    if (start < previousEnd) {
+      fail(`${event.id}: timeSlotsが時刻順でないか重複しています`);
+    }
+    previousEnd = end ?? start;
+    const isStartOnlyConsultation = /^R[1-9]$/.test(event.id);
+    if (isStartOnlyConsultation && end !== undefined) {
+      fail(`${event.id}: 公式終了時刻がないためendは省略が必要です`);
+    }
+    if (end === undefined && !isStartOnlyConsultation) {
+      fail(`${event.id}: 終了時刻を省略できるのはR1〜R9だけです`);
+    }
+  }
 }
 
 if (errors.length > 0) {

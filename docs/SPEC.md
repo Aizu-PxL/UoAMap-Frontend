@@ -175,7 +175,7 @@ Floor     … シートに対応するフロア(id, sheetId, name)。1 MapSheet�
 Place     … 地点(id, floorId, svgElementId または座標, name)
              ← QRの地点ID・イベント会場・建物出入口はすべてPlace
 Event     … イベント(id, title, description, placeId, tags,
-              timeSlots: [{start, end}] ← 複数回開催・休憩を挟む場合は複数スロット)
+              timeSlots: [{start, end?}] ← 複数回開催・休憩を挟む場合は複数スロット)
 Tag       … カテゴリ(id, label)
 QrCode    … QR対応表(qrId, placeId, 種別: 固定/可変, 設置場所メモ)
 RouteNode … 経路ノード(id, floorId, x, y, 種別: 通路点/階段/出入口)
@@ -188,6 +188,7 @@ RouteEdge … 経路エッジ(nodeA, nodeB, 距離)。フロア間・シート�
 - ステップ1の仮Placeは `mapping: unmapped` を明示して位置アンカー未確定を許容する。ステップ2で全地点をSVG要素または座標へ解決し、未紐付けを検証エラーにする
 - **Event.id は公式タイムテーブルの記号をそのまま使う**(例: `A1` 大学説明会, `L1`・`L2` 入試説明会, `P1` 研究室公開, `M21` 体験授業, `R3` 受験勉強相談, `G1` なんでも相談会, `T1` キャンパスツアー)。外部リンク `/e/L1` がそのまま人間にも読める。公式記号がないイベントは衝突しない英小文字slug(例: `campus-free-tour`)を定義する。複数回開催は公式に別記号があれば別Eventとし、休憩を挟む開催はtimeSlotsの複数要素で表現する
 - `timeSlots` を配列にするのは「10:00〜15:00(休憩12:00〜13:00)」のような帯とスケジュールタイムライン化(3.6)の両方に対応するため
+- 公式情報に終了時刻がない枠は`timeSlots[].end`を省略し、開始時刻だけを表示する。推測した終了時刻は補完しない
 - 年度更新はイベントデータとQR配置の総入れ替えで行う(スキーマは年度非依存に保つ)
 
 ## 5. 技術方針

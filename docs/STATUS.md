@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-28(GitHub Pagesモック公開設定)
+最終更新: 2026-07-31(オープンキャンパス2026最新データ反映)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -20,6 +20,28 @@
 最新ルート実装: `docs/tasks/14-place-route-qr-integration.md`（未コミット）
 
 最新公開設定ブリーフ: `docs/tasks/15-github-pages-mock-deployment.md`（未コミット）
+
+最新UX検討ブリーフ: `docs/tasks/16-figma-ux-demo.md`（未コミット）
+
+最新イベントデータブリーフ: `docs/tasks/17-open-campus-2026-data.md`（未コミット）
+
+## オープンキャンパス2026最新データ
+
+2026-07-31確認済みの `uoa_open_campus_2026.json` を現行Eventへ変換し、37プログラムの55枠と5運営サービスを60 Eventへ反映した。タイトル・説明・会場・開催時刻を最新化し、研究室公開の明示された昼休憩は複数`timeSlots`へ展開した。新JSONの詳細タグ101種類はユーザー判断により対象外とし、既存の7カテゴリだけを維持している。
+
+受験勉強相談R1〜R9は公式情報に終了時刻がないため、架空の20分枠を廃止した。`TimeSlot.end`は公式終了時刻がない場合だけ省略でき、一覧と詳細では「9:40〜」のように開始時刻だけを表示する。`verify:places`はEventの7カテゴリ、ISO時刻、開始・終了順、複数枠の重複、終了時刻省略対象も検証する。
+
+新JSONとの一時照合は60 Event / 37 programs / 5 servicesでPASSした。`bun run verify:all`は110 tests / 930 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、build、git diff checkをPASS。幅402pxでカテゴリチップ7件、相談フィルタ11件、R1の一覧・詳細「9:40〜」、横方向overflowなし、console error 0件を確認した。
+
+## Figma UX Demo
+
+Figma「UoAmap」に `🧪 UX Demo`（page `192:338`）を追加し、現行React実装のコアフロー9、地図・BottomSheet 5、QR 8、検索・詳細8の計30状態を402×874pxで配置した。各状態は画面ID、URL、開始条件、想定遷移先を持ち、既存コンポーネントとSchedule画像を再利用している。正式な `📱 Screens` の5画面と `🧩 Components` の21ノードは変更していない。
+
+Flow Notes（`192:346`）には、地図・検索・QR・Schedule間、カード→詳細、「ここへ行く」、QR成功・失敗、`/q`・`/p`・`/e`、22／58／82svh、`at`／`to`／`focus` の契約を記録した。詳細の表示文言「マップに戻る」が現行実装では `/events` へ戻る点、SPEC §5.2の外部 `/e/:eventId` は`to`設定を求める一方で現行実装は詳細表示だけでは`to`を設定しない点、正式Mapが固定例で実装は3段階のシート状態を持つ点は、修正せず挙動不一致として注記した。
+
+Scheduleは実アプリの一時キャプチャとFigma部品の画像ハッシュ一致を確認し、キャプチャを削除した。30画面はPrototypeで巨大な資料ボード1枚として扱われないよう、4つのトップレベルSection（`216:1361`〜`216:1364`）直下へ移動し、資料ボード `192:339` は右側へ分離した。Prototype reactionの初回接続と `C01 Screen — 地図初期状態` のFlow starting point指定は未実施で、ユーザーが接続後にPresent操作とreaction構造を別スライスでレビューする。UX合意前は `📱 Screens`、SPEC、Reactの遷移契約を変更しない。
+
+会話履歴なしの読み取り専用レビューでは、QR着地、検索・詳細の置換状態、`/e`仕様差、詳細のAppLayoutシェル再現などの指摘を解消し、最終再レビューで指摘なしを確認した。
 
 ## GitHub Pagesモック公開
 

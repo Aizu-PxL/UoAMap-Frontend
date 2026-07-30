@@ -45,7 +45,8 @@ export type Place = PlaceBase &
 export type TimeSlot = {
   /** ISO 8601 */
   start: string;
-  end: string;
+  /** 公式情報に終了時刻がない場合は省略する */
+  end?: string;
 };
 
 export type Event = {

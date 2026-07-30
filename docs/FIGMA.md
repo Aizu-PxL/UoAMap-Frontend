@@ -1,6 +1,6 @@
 # FIGMA — デザインファイルの構造と運用
 
-最終更新: 2026-07-19
+最終更新: 2026-07-30
 **更新タイミング**: Figma側の構造変更(ページ・コンポーネント追加/改名、トークン変更)をしたら更新する。
 
 - ファイル: 「UoAmap」 fileKey **`eexOndb459l2FxWkhGvxbV`**
@@ -14,6 +14,7 @@
 | Page 1 | **レガシー**。手作業の元デザイン(iPhone 17 - 1〜5)。参照用で実装対象外 |
 | 🧩 Components | 再構築済みコンポーネント群+Tokens。**部品の正** |
 | 📱 Screens | 再構築済み画面(Screen/01〜05)。**UIの正**(SPEC §2) |
+| 🧪 UX Demo | 現行React実装の状態・例外・遷移注記。UX検討専用で、**UIの正ではない** |
 
 ## 主要ノードID対応表
 
@@ -39,6 +40,17 @@
 | Icon/Back / Icon/WhereToVote | `120:571` / `120:574` | 詳細画面用 |
 | Icon/PersonPin / Icon/LocationPin / Icon/QrStartMarker | `78:365` / `78:368` / `78:371` | 地図マーカー用 |
 | TimelineItem | `91:413` | タイムライン版の部品(不採用・保管) |
+| 🧪 UX Demo(page) | `192:338` | 正式ページを変更せず、現行挙動を検討するページ |
+| UX Inventory & Flow Notes | `192:339` | 状態一覧・注記専用。Prototypeの再生対象にはしない |
+| 🎬 Core Flow — Prototype Screens | `216:1361` | 9個の402×874px画面を直下に持つSection |
+| 🎬 Map & Sheet — Prototype Screens | `216:1362` | 5個の402×874px画面を直下に持つSection |
+| 🎬 QR Exceptions — Prototype Screens | `216:1363` | 8個の402×874px画面を直下に持つSection |
+| 🎬 Search & Detail — Prototype Screens | `216:1364` | 8個の402×874px画面を直下に持つSection |
+| 01 Core Flow | `192:342` | 地図→検索→詳細→目的地→QR→経路→Scheduleの9状態 |
+| 02 Map & Sheet States | `192:343` | 22／58／82svh、現在地のみ、不正指定の5状態 |
+| 03 QR States | `192:344` | 起動・読取・対象外・HTTPS・非対応・権限・未登録・API失敗の8状態 |
+| 04 Search & Detail States | `192:345` | タグ・強調・0件・読込・失敗・詳細読込・不存在の8状態 |
+| 05 Flow Notes | `192:346` | 現行遷移、URL保持契約、既存Figmaとの差分分類 |
 
 注: `MapCanvas` 内の `Marker/Event`(旧 Marker/Arrow、`79:364`)は**イベント開催地マーカー**。タップで検索タブ+該当イベント強調(SPEC §3.1/§3.4)。
 
@@ -65,3 +77,6 @@ Figmaの `Tokens` コレクション(`VariableCollectionId:78:340`)と `src/styl
 2. 新しい画面パネルは `Panel/<名前>` コンポーネントを作り、BottomSheetインスタンスの Content スロットにスワップする(構造を複製しない)
 3. アイコンを実装に持ち込むときは Figmaから `exportAsync({format:'SVG_STRING'})` で正確なパスを取得する(手描き近似をしない)
 4. Web実装との対応: TabBarは固定354px中央寄せ、QRタブはアクティブ時のみアクセント色(TabBarのActiveバリアントと1対1)
+5. `🧪 UX Demo` はUX検討用。各画面本体は402×874pxで、外側のメタ情報に画面ID・URL・開始条件・想定遷移先を記録する。UX合意前に `📱 Screens` やReactへ反映しない
+6. UX Demoの30画面は4つの `🎬 ... Prototype Screens` Section直下に置く。`192:339` の資料ボードを開始画面にせず、最初に `C01 Screen — 地図初期状態` をFlow starting pointへ指定する
+7. UX DemoのPrototype reactionはユーザーが初回接続する。Codexは接続後にPresent操作とreaction構造をレビューし、URL・Repository・カメラ状態などFigmaだけで再現できない条件はFlow Notesで扱う
