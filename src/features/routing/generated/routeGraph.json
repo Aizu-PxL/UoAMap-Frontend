@@ -45,7 +45,8 @@
       "floorId": "campus",
       "x": 610,
       "y": 264,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "main_lictia_entrance"
     },
     {
       "id": "campus:main_node_1",
@@ -103,7 +104,8 @@
       "floorId": "campus",
       "x": 604,
       "y": 214,
-      "kind": "corridor"
+      "kind": "corridor",
+      "placeId": "main_dormitory"
     },
     {
       "id": "campus:main_node_17",
@@ -122,10 +124,9 @@
     {
       "id": "campus:main_node_19",
       "floorId": "campus",
-      "x": 618,
+      "x": 619,
       "y": 281,
-      "kind": "corridor",
-      "placeId": "main_node_19"
+      "kind": "corridor"
     },
     {
       "id": "campus:main_node_2",
@@ -200,10 +201,77 @@
       "kind": "corridor"
     },
     {
+      "id": "campus:main_node_29",
+      "floorId": "campus",
+      "x": 416,
+      "y": 435,
+      "kind": "corridor"
+    },
+    {
       "id": "campus:main_node_3",
       "floorId": "campus",
       "x": 342,
       "y": 489,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:main_node_30",
+      "floorId": "campus",
+      "x": 390,
+      "y": 435,
+      "kind": "corridor",
+      "placeId": "main_gym"
+    },
+    {
+      "id": "campus:main_node_31",
+      "floorId": "campus",
+      "x": 390,
+      "y": 489,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:main_node_32",
+      "floorId": "campus",
+      "x": 390,
+      "y": 528,
+      "kind": "corridor",
+      "placeId": "main_node_32"
+    },
+    {
+      "id": "campus:main_node_33",
+      "floorId": "campus",
+      "x": 367,
+      "y": 528,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:main_node_34",
+      "floorId": "campus",
+      "x": 367,
+      "y": 590,
+      "kind": "corridor",
+      "placeId": "main_node_34"
+    },
+    {
+      "id": "campus:main_node_35",
+      "floorId": "campus",
+      "x": 390,
+      "y": 590,
+      "kind": "corridor"
+    },
+    {
+      "id": "campus:main_node_36",
+      "floorId": "campus",
+      "x": 378,
+      "y": 655,
+      "kind": "corridor",
+      "placeId": "main_node_36"
+    },
+    {
+      "id": "campus:main_node_37",
+      "floorId": "campus",
+      "x": 619,
+      "y": 349,
       "kind": "corridor"
     },
     {
@@ -270,6 +338,13 @@
       "placeId": "main_rq_entrance_northeast"
     },
     {
+      "id": "campus:main_rq_entrance_northlounge",
+      "floorId": "campus",
+      "x": 610,
+      "y": 277,
+      "kind": "entrance"
+    },
+    {
       "id": "campus:main_rq_entrance_northwest",
       "floorId": "campus",
       "x": 470,
@@ -322,14 +397,16 @@
       "floorId": "campus",
       "x": 335,
       "y": 378,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "main_sh_entrance_south1f"
     },
     {
       "id": "campus:main_sh_entrance_south2f",
       "floorId": "campus",
       "x": 332,
       "y": 363,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "main_sh_entrance_south2f"
     },
     {
       "id": "campus:main_ubic_entrance",
@@ -361,6 +438,20 @@
       "kind": "corridor"
     },
     {
+      "id": "lh-1f:lh_door_m8_1",
+      "floorId": "lh-1f",
+      "x": 182,
+      "y": 443,
+      "kind": "corridor"
+    },
+    {
+      "id": "lh-1f:lh_door_m8_2",
+      "floorId": "lh-1f",
+      "x": 219,
+      "y": 443,
+      "kind": "corridor"
+    },
+    {
       "id": "lh-1f:lh_entrance_east1f",
       "floorId": "lh-1f",
       "x": 301,
@@ -372,7 +463,8 @@
       "floorId": "lh-1f",
       "x": 116,
       "y": 475,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "lh_entrance_west"
     },
     {
       "id": "lh-1f:lh_node_1f_1",
@@ -405,14 +497,14 @@
     {
       "id": "lh-1f:lh_node_1f_13",
       "floorId": "lh-1f",
-      "x": 171,
+      "x": 182,
       "y": 457,
       "kind": "corridor"
     },
     {
       "id": "lh-1f:lh_node_1f_14",
       "floorId": "lh-1f",
-      "x": 250,
+      "x": 219,
       "y": 457,
       "kind": "corridor"
     },
@@ -447,16 +539,16 @@
     {
       "id": "lh-1f:lh_node_1f_6",
       "floorId": "lh-1f",
-      "x": 171,
-      "y": 468,
+      "x": 166,
+      "y": 457,
       "kind": "corridor",
       "placeId": "lh_node_1f_6"
     },
     {
       "id": "lh-1f:lh_node_1f_7",
       "floorId": "lh-1f",
-      "x": 250,
-      "y": 469,
+      "x": 252,
+      "y": 457,
       "kind": "corridor",
       "placeId": "lh_node_1f_7"
     },
@@ -493,8 +585,8 @@
     {
       "id": "lh-1f:lh_room_m8",
       "floorId": "lh-1f",
-      "x": 200,
-      "y": 450,
+      "x": 201,
+      "y": 418,
       "kind": "corridor",
       "placeId": "lh_room_m8"
     },
@@ -521,13 +613,6 @@
       "y": 519,
       "kind": "stairs",
       "placeId": "lh_stairs_west_1f"
-    },
-    {
-      "id": "lh-2f:lh_door_lth_2",
-      "floorId": "lh-2f",
-      "x": 99,
-      "y": 107,
-      "kind": "corridor"
     },
     {
       "id": "lh-2f:lh_door_m2_2",
@@ -684,24 +769,10 @@
       "kind": "corridor"
     },
     {
-      "id": "lh-2f:lh_node_2f_22",
-      "floorId": "lh-2f",
-      "x": 150,
-      "y": 67,
-      "kind": "corridor"
-    },
-    {
-      "id": "lh-2f:lh_node_2f_23",
-      "floorId": "lh-2f",
-      "x": 262,
-      "y": 67,
-      "kind": "corridor"
-    },
-    {
       "id": "lh-2f:lh_node_2f_3",
       "floorId": "lh-2f",
-      "x": 150,
-      "y": 74,
+      "x": 157,
+      "y": 67,
       "kind": "corridor",
       "placeId": "lh_node_2f_3"
     },
@@ -715,8 +786,8 @@
     {
       "id": "lh-2f:lh_node_2f_5",
       "floorId": "lh-2f",
-      "x": 262,
-      "y": 74,
+      "x": 258,
+      "y": 67,
       "kind": "corridor",
       "placeId": "lh_node_2f_5"
     },
@@ -746,13 +817,6 @@
       "floorId": "lh-2f",
       "x": 352,
       "y": 126,
-      "kind": "corridor"
-    },
-    {
-      "id": "lh-2f:lh_room_lth_2",
-      "floorId": "lh-2f",
-      "x": 48,
-      "y": 128,
       "kind": "corridor"
     },
     {
@@ -844,8 +908,8 @@
     {
       "id": "lictia-1f:lictia_node_1",
       "floorId": "lictia-1f",
-      "x": 97,
-      "y": 52,
+      "x": 78,
+      "y": 48,
       "kind": "corridor",
       "placeId": "lictia_node_1"
     },
@@ -859,8 +923,8 @@
     {
       "id": "lictia-1f:lictia_node_3",
       "floorId": "lictia-1f",
-      "x": 78,
-      "y": 48,
+      "x": 96,
+      "y": 52,
       "kind": "corridor"
     },
     {
@@ -868,7 +932,8 @@
       "floorId": "lictia-1f",
       "x": 112,
       "y": 52,
-      "kind": "corridor"
+      "kind": "corridor",
+      "placeId": "lictia_node_4"
     },
     {
       "id": "lictia-1f:lictia_room_cswr",
@@ -926,6 +991,13 @@
       "floorId": "rq-1f",
       "x": 440,
       "y": 249,
+      "kind": "entrance"
+    },
+    {
+      "id": "rq-1f:rq_entrance_northLounge",
+      "floorId": "rq-1f",
+      "x": 409,
+      "y": 16,
       "kind": "entrance"
     },
     {
@@ -1328,38 +1400,10 @@
       "placeId": "rq_stairs_southwest_1f"
     },
     {
-      "id": "rq-2f:route_node_1",
-      "floorId": "rq-2f",
-      "x": 41,
-      "y": 115,
-      "kind": "corridor"
-    },
-    {
-      "id": "rq-2f:route_node_3",
-      "floorId": "rq-2f",
-      "x": 41,
-      "y": 225,
-      "kind": "corridor"
-    },
-    {
-      "id": "rq-2f:route_node_5",
-      "floorId": "rq-2f",
-      "x": 60,
-      "y": 105,
-      "kind": "corridor"
-    },
-    {
-      "id": "rq-2f:route_node_6",
-      "floorId": "rq-2f",
-      "x": 60,
-      "y": 215,
-      "kind": "corridor"
-    },
-    {
-      "id": "rq-2f:route_node_7",
+      "id": "rq-2f:rq_door_201f",
       "floorId": "rq-2f",
       "x": 439,
-      "y": 23,
+      "y": 43,
       "kind": "corridor"
     },
     {
@@ -1381,6 +1425,34 @@
       "floorId": "rq-2f",
       "x": 99,
       "y": 372,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-2f:rq_door_s1_1",
+      "floorId": "rq-2f",
+      "x": 60,
+      "y": 105,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-2f:rq_door_s1_2",
+      "floorId": "rq-2f",
+      "x": 60,
+      "y": 125,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-2f:rq_door_s4_1",
+      "floorId": "rq-2f",
+      "x": 60,
+      "y": 215,
+      "kind": "corridor"
+    },
+    {
+      "id": "rq-2f:rq_door_s4_2",
+      "floorId": "rq-2f",
+      "x": 60,
+      "y": 233,
       "kind": "corridor"
     },
     {
@@ -1674,7 +1746,7 @@
       "id": "rq-2f:rq_room_201f",
       "floorId": "rq-2f",
       "x": 439,
-      "y": 44,
+      "y": 23,
       "kind": "corridor",
       "placeId": "rq_room_201f"
     },
@@ -1705,16 +1777,16 @@
     {
       "id": "rq-2f:rq_room_s1",
       "floorId": "rq-2f",
-      "x": 61,
-      "y": 125,
+      "x": 41,
+      "y": 115,
       "kind": "corridor",
       "placeId": "rq_room_s1"
     },
     {
       "id": "rq-2f:rq_room_s4",
       "floorId": "rq-2f",
-      "x": 61,
-      "y": 233,
+      "x": 41,
+      "y": 225,
       "kind": "corridor",
       "placeId": "rq_room_s4"
     },
@@ -2237,14 +2309,16 @@
       "floorId": "sh-1f",
       "x": 55,
       "y": 4,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "sh_entrance_north"
     },
     {
       "id": "sh-1f:sh_entrance_south1f",
       "floorId": "sh-1f",
       "x": 51,
       "y": 85,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "sh_entrance_south1f"
     },
     {
       "id": "sh-1f:sh_node_1f_1",
@@ -2298,8 +2372,8 @@
     {
       "id": "sh-1f:sh_reception",
       "floorId": "sh-1f",
-      "x": 66.5,
-      "y": 46.5,
+      "x": 92,
+      "y": 29,
       "kind": "corridor",
       "placeId": "sh_reception"
     },
@@ -2347,7 +2421,8 @@
       "floorId": "sh-2f",
       "x": 125,
       "y": 3,
-      "kind": "entrance"
+      "kind": "entrance",
+      "placeId": "sh_entrance_east"
     },
     {
       "id": "sh-2f:sh_entrance_south2f",
@@ -2408,6 +2483,20 @@
       "kind": "stairs"
     },
     {
+      "id": "ubic-1f:route_node_1",
+      "floorId": "ubic-1f",
+      "x": 49,
+      "y": 49,
+      "kind": "corridor"
+    },
+    {
+      "id": "ubic-1f:ubic_door_3dt",
+      "floorId": "ubic-1f",
+      "x": 44,
+      "y": 43,
+      "kind": "corridor"
+    },
+    {
       "id": "ubic-1f:ubic_door_mar",
       "floorId": "ubic-1f",
       "x": 143,
@@ -2434,13 +2523,14 @@
       "floorId": "ubic-1f",
       "x": 39,
       "y": 57,
-      "kind": "corridor"
+      "kind": "corridor",
+      "placeId": "ubic_node_2"
     },
     {
       "id": "ubic-1f:ubic_room_3dtheater",
       "floorId": "ubic-1f",
-      "x": 39,
-      "y": 49,
+      "x": 26,
+      "y": 26,
       "kind": "corridor",
       "placeId": "ubic_room_3dtheater"
     },
@@ -2462,6 +2552,87 @@
     }
   ],
   "edges": [
+    {
+      "id": "campus:route_edge_1_to_3",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_30",
+      "nodeB": "campus:main_node_31",
+      "distance": 54,
+      "pathD": "M 390 435 L 390 489"
+    },
+    {
+      "id": "campus:route_edge_2_to_1",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_29",
+      "nodeB": "campus:main_node_30",
+      "distance": 26,
+      "pathD": "M 416 435 L 390 435"
+    },
+    {
+      "id": "campus:route_edge_3_to_4",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_31",
+      "nodeB": "campus:main_node_32",
+      "distance": 39,
+      "pathD": "M 390 489 L 390 528"
+    },
+    {
+      "id": "campus:route_edge_4_to_7",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_32",
+      "nodeB": "campus:main_node_35",
+      "distance": 62,
+      "pathD": "M 390 528 L 390 590"
+    },
+    {
+      "id": "campus:route_edge_6_to_main_node_1",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_34",
+      "nodeB": "campus:main_node_1",
+      "distance": 27,
+      "pathD": "M 367 590 L 367 563"
+    },
+    {
+      "id": "campus:route_edge_7_to_6",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_35",
+      "nodeB": "campus:main_node_34",
+      "distance": 23,
+      "pathD": "M 390 590 L 367 590"
+    },
+    {
+      "id": "campus:route_edge_7_to_8",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_35",
+      "nodeB": "campus:main_node_36",
+      "distance": 66.09841147864296,
+      "pathD": "M 390 590 L 378 655"
+    },
+    {
+      "id": "campus:route_edge_8_to_6",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_36",
+      "nodeB": "campus:main_node_34",
+      "distance": 65.92419889539804,
+      "pathD": "M 378 655 L 367 590"
+    },
+    {
+      "id": "campus:route_edge_9_to_4",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_33",
+      "nodeB": "campus:main_node_32",
+      "distance": 23,
+      "pathD": "M 367 528 L 390 528"
+    },
     {
       "id": "campus:route_edge_main_auditorium_to_main_node_1",
       "kind": "walk",
@@ -2499,13 +2670,22 @@
       "pathD": "M 338 443 L 328 407"
     },
     {
-      "id": "campus:route_edge_main_node_1_to_main_node_2",
+      "id": "campus:route_edge_main_lictia_entrance_to_main_rq_entrance_northlounge",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_lictia_entrance",
+      "nodeB": "campus:main_rq_entrance_northlounge",
+      "distance": 13,
+      "pathD": "M 610 264 L 610 277"
+    },
+    {
+      "id": "campus:route_edge_main_node_1_to_9",
       "kind": "walk",
       "floorId": "campus",
       "nodeA": "campus:main_node_1",
-      "nodeB": "campus:main_node_2",
-      "distance": 74,
-      "pathD": "M 367 563 L 367 489"
+      "nodeB": "campus:main_node_33",
+      "distance": 35,
+      "pathD": "M 367 563 L 367 528"
     },
     {
       "id": "campus:route_edge_main_node_10_to_main_node_14",
@@ -2621,8 +2801,8 @@
       "floorId": "campus",
       "nodeA": "campus:main_node_18",
       "nodeB": "campus:main_node_19",
-      "distance": 16,
-      "pathD": "M 634 281 L 618 281"
+      "distance": 15,
+      "pathD": "M 634 281 L 619 281"
     },
     {
       "id": "campus:route_edge_main_node_19_to_main_lictia_entrance",
@@ -2630,17 +2810,26 @@
       "floorId": "campus",
       "nodeA": "campus:main_node_19",
       "nodeB": "campus:main_lictia_entrance",
-      "distance": 18.788294228055936,
-      "pathD": "M 618 281 L 610 264"
+      "distance": 19.235384061671343,
+      "pathD": "M 619 281 L 610 264"
     },
     {
-      "id": "campus:route_edge_main_node_19_to_main_rq_entrance_northeast",
+      "id": "campus:route_edge_main_node_2_to_3",
       "kind": "walk",
       "floorId": "campus",
-      "nodeA": "campus:main_node_19",
-      "nodeB": "campus:main_rq_entrance_northeast",
-      "distance": 68.46897107449476,
-      "pathD": "M 618 281 L 610 349"
+      "nodeA": "campus:main_node_2",
+      "nodeB": "campus:main_node_31",
+      "distance": 23,
+      "pathD": "M 367 489 L 390 489"
+    },
+    {
+      "id": "campus:route_edge_main_node_2_to_9",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_2",
+      "nodeB": "campus:main_node_33",
+      "distance": 39,
+      "pathD": "M 367 489 L 367 528"
     },
     {
       "id": "campus:route_edge_main_node_2_to_main_node_3",
@@ -2659,15 +2848,6 @@
       "nodeB": "campus:main_node_18",
       "distance": 68,
       "pathD": "M 634 349 L 634 281"
-    },
-    {
-      "id": "campus:route_edge_main_node_20_to_main_rq_entrance_northeast",
-      "kind": "walk",
-      "floorId": "campus",
-      "nodeA": "campus:main_node_20",
-      "nodeB": "campus:main_rq_entrance_northeast",
-      "distance": 24,
-      "pathD": "M 634 349 L 610 349"
     },
     {
       "id": "campus:route_edge_main_node_21_to_main_node_20",
@@ -2704,6 +2884,15 @@
       "nodeB": "campus:main_node_4",
       "distance": 43,
       "pathD": "M 342 494 L 299 494"
+    },
+    {
+      "id": "campus:route_edge_main_node_24_to_2",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_24",
+      "nodeB": "campus:main_node_29",
+      "distance": 21,
+      "pathD": "M 416 414 L 416 435"
     },
     {
       "id": "campus:route_edge_main_node_24_to_main_node_22",
@@ -2814,6 +3003,24 @@
       "pathD": "M 421 314 L 421 328"
     },
     {
+      "id": "campus:route_edge_main_node_37_to_main_node_19",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_37",
+      "nodeB": "campus:main_node_19",
+      "distance": 68,
+      "pathD": "M 619 349 L 619 281"
+    },
+    {
+      "id": "campus:route_edge_main_node_37_to_main_node_20",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_37",
+      "nodeB": "campus:main_node_20",
+      "distance": 15,
+      "pathD": "M 619 349 L 634 349"
+    },
+    {
       "id": "campus:route_edge_main_node_4_to_main_node_8",
       "kind": "walk",
       "floorId": "campus",
@@ -2839,6 +3046,15 @@
       "nodeB": "campus:main_sh_entrance_south2f",
       "distance": 44.181444068749045,
       "pathD": "M 328 407 L 332 363"
+    },
+    {
+      "id": "campus:route_edge_main_node_6_to_1",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_node_6",
+      "nodeB": "campus:main_node_30",
+      "distance": 36.235341863986875,
+      "pathD": "M 367 407 L 390 435"
     },
     {
       "id": "campus:route_edge_main_node_6_to_main_node_22",
@@ -2931,6 +3147,24 @@
       "pathD": "M 259 389 L 300 371"
     },
     {
+      "id": "campus:route_edge_main_rq_entrance_northeast_to_main_node_37",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_rq_entrance_northeast",
+      "nodeB": "campus:main_node_37",
+      "distance": 9,
+      "pathD": "M 610 349 L 619 349"
+    },
+    {
+      "id": "campus:route_edge_main_rq_entrance_northlounge_to_main_node_19",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_rq_entrance_northlounge",
+      "nodeB": "campus:main_node_19",
+      "distance": 9.848857801796104,
+      "pathD": "M 610 277 L 619 281"
+    },
+    {
       "id": "campus:route_edge_main_rq_entrance_northwest_to_main_node_10",
       "kind": "walk",
       "floorId": "campus",
@@ -3001,6 +3235,24 @@
       "nodeB": "lh-1f:lh_room_m10",
       "distance": 33.301651610693426,
       "pathD": "M 297 443 L 319 418"
+    },
+    {
+      "id": "lh-1f:route_edge_lh_door_m8_1_to_lh_room_m8",
+      "kind": "walk",
+      "floorId": "lh-1f",
+      "nodeA": "lh-1f:lh_door_m8_1",
+      "nodeB": "lh-1f:lh_room_m8",
+      "distance": 31.400636936215164,
+      "pathD": "M 182 443 L 201 418"
+    },
+    {
+      "id": "lh-1f:route_edge_lh_door_m8_2_to_lh_node_1f_14",
+      "kind": "walk",
+      "floorId": "lh-1f",
+      "nodeA": "lh-1f:lh_door_m8_2",
+      "nodeB": "lh-1f:lh_node_1f_14",
+      "distance": 14,
+      "pathD": "M 219 443 L 219 457"
     },
     {
       "id": "lh-1f:route_edge_lh_node_1f_1_to_lh_stairs_west_1f",
@@ -3075,40 +3327,40 @@
       "pathD": "M 329 475 L 367 475"
     },
     {
+      "id": "lh-1f:route_edge_lh_node_1f_13_to_lh_door_m8_1",
+      "kind": "walk",
+      "floorId": "lh-1f",
+      "nodeA": "lh-1f:lh_node_1f_13",
+      "nodeB": "lh-1f:lh_door_m8_1",
+      "distance": 14,
+      "pathD": "M 182 457 L 182 443"
+    },
+    {
       "id": "lh-1f:route_edge_lh_node_1f_13_to_lh_node_1f_14",
       "kind": "walk",
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_13",
       "nodeB": "lh-1f:lh_node_1f_14",
-      "distance": 79,
-      "pathD": "M 171 457 L 250 457"
+      "distance": 37,
+      "pathD": "M 182 457 L 219 457"
     },
     {
-      "id": "lh-1f:route_edge_lh_node_1f_13_to_lh_node_1f_6",
-      "kind": "walk",
-      "floorId": "lh-1f",
-      "nodeA": "lh-1f:lh_node_1f_13",
-      "nodeB": "lh-1f:lh_node_1f_6",
-      "distance": 11,
-      "pathD": "M 171 457 L 171 468"
-    },
-    {
-      "id": "lh-1f:route_edge_lh_node_1f_14_to_lh_node_1f_5",
+      "id": "lh-1f:route_edge_lh_node_1f_14_to_lh_node_1f_7",
       "kind": "walk",
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_14",
-      "nodeB": "lh-1f:lh_node_1f_5",
-      "distance": 47,
-      "pathD": "M 250 457 L 297 457"
+      "nodeB": "lh-1f:lh_node_1f_7",
+      "distance": 33,
+      "pathD": "M 219 457 L 252 457"
     },
     {
-      "id": "lh-1f:route_edge_lh_node_1f_2_to_lh_node_1f_13",
+      "id": "lh-1f:route_edge_lh_node_1f_2_to_lh_node_1f_6",
       "kind": "walk",
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_2",
-      "nodeB": "lh-1f:lh_node_1f_13",
-      "distance": 64,
-      "pathD": "M 107 457 L 171 457"
+      "nodeB": "lh-1f:lh_node_1f_6",
+      "distance": 59,
+      "pathD": "M 107 457 L 166 457"
     },
     {
       "id": "lh-1f:route_edge_lh_node_1f_3_to_lh_node_1f_12",
@@ -3147,13 +3399,22 @@
       "pathD": "M 297 457 L 297 443"
     },
     {
-      "id": "lh-1f:route_edge_lh_node_1f_7_to_lh_node_1f_14",
+      "id": "lh-1f:route_edge_lh_node_1f_6_to_lh_node_1f_13",
+      "kind": "walk",
+      "floorId": "lh-1f",
+      "nodeA": "lh-1f:lh_node_1f_6",
+      "nodeB": "lh-1f:lh_node_1f_13",
+      "distance": 16,
+      "pathD": "M 166 457 L 182 457"
+    },
+    {
+      "id": "lh-1f:route_edge_lh_node_1f_7_to_lh_node_1f_5",
       "kind": "walk",
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_7",
-      "nodeB": "lh-1f:lh_node_1f_14",
-      "distance": 12,
-      "pathD": "M 250 469 L 250 457"
+      "nodeB": "lh-1f:lh_node_1f_5",
+      "distance": 45,
+      "pathD": "M 252 457 L 297 457"
     },
     {
       "id": "lh-1f:route_edge_lh_node_1f_8_to_lh_entrance_east1f",
@@ -3219,22 +3480,13 @@
       "pathD": "M 319 418 L 340 443"
     },
     {
-      "id": "lh-1f:route_edge_lh_room_m8_to_lh_node_1f_13",
+      "id": "lh-1f:route_edge_lh_room_m8_to_lh_door_m8_2",
       "kind": "walk",
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_room_m8",
-      "nodeB": "lh-1f:lh_node_1f_13",
-      "distance": 29.832867780352597,
-      "pathD": "M 200 450 L 171 457"
-    },
-    {
-      "id": "lh-2f:route_edge_lh_door_lth_2_to_lh_room_lth_2",
-      "kind": "walk",
-      "floorId": "lh-2f",
-      "nodeA": "lh-2f:lh_door_lth_2",
-      "nodeB": "lh-2f:lh_room_lth_2",
-      "distance": 55.154328932550705,
-      "pathD": "M 99 107 L 48 128"
+      "nodeB": "lh-1f:lh_door_m8_2",
+      "distance": 30.805843601498726,
+      "pathD": "M 201 418 L 219 443"
     },
     {
       "id": "lh-2f:route_edge_lh_door_m2_2_to_lh_node_2f_2",
@@ -3363,13 +3615,13 @@
       "pathD": "M 352 85 L 368 85"
     },
     {
-      "id": "lh-2f:route_edge_lh_node_2f_15_to_lh_node_2f_22",
+      "id": "lh-2f:route_edge_lh_node_2f_15_to_lh_node_2f_3",
       "kind": "walk",
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_15",
-      "nodeB": "lh-2f:lh_node_2f_22",
-      "distance": 20,
-      "pathD": "M 130 67 L 150 67"
+      "nodeB": "lh-2f:lh_node_2f_3",
+      "distance": 27,
+      "pathD": "M 130 67 L 157 67"
     },
     {
       "id": "lh-2f:route_edge_lh_node_2f_16_to_lh_node_2f_4",
@@ -3381,13 +3633,13 @@
       "pathD": "M 169 67 L 188 67"
     },
     {
-      "id": "lh-2f:route_edge_lh_node_2f_17_to_lh_node_2f_23",
+      "id": "lh-2f:route_edge_lh_node_2f_17_to_lh_node_2f_5",
       "kind": "walk",
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_17",
-      "nodeB": "lh-2f:lh_node_2f_23",
-      "distance": 20,
-      "pathD": "M 242 67 L 262 67"
+      "nodeB": "lh-2f:lh_node_2f_5",
+      "distance": 16,
+      "pathD": "M 242 67 L 258 67"
     },
     {
       "id": "lh-2f:route_edge_lh_node_2f_18_to_lh_node_2f_19",
@@ -3435,31 +3687,13 @@
       "pathD": "M 374 126 L 374 137"
     },
     {
-      "id": "lh-2f:route_edge_lh_node_2f_22_to_lh_node_2f_16",
+      "id": "lh-2f:route_edge_lh_node_2f_3_to_lh_node_2f_16",
       "kind": "walk",
       "floorId": "lh-2f",
-      "nodeA": "lh-2f:lh_node_2f_22",
+      "nodeA": "lh-2f:lh_node_2f_3",
       "nodeB": "lh-2f:lh_node_2f_16",
-      "distance": 19,
-      "pathD": "M 150 67 L 169 67"
-    },
-    {
-      "id": "lh-2f:route_edge_lh_node_2f_22_to_lh_node_2f_3",
-      "kind": "walk",
-      "floorId": "lh-2f",
-      "nodeA": "lh-2f:lh_node_2f_22",
-      "nodeB": "lh-2f:lh_node_2f_3",
-      "distance": 7,
-      "pathD": "M 150 67 L 150 74"
-    },
-    {
-      "id": "lh-2f:route_edge_lh_node_2f_23_to_lh_node_2f_18",
-      "kind": "walk",
-      "floorId": "lh-2f",
-      "nodeA": "lh-2f:lh_node_2f_23",
-      "nodeB": "lh-2f:lh_node_2f_18",
-      "distance": 22,
-      "pathD": "M 262 67 L 284 67"
+      "distance": 12,
+      "pathD": "M 157 67 L 169 67"
     },
     {
       "id": "lh-2f:route_edge_lh_node_2f_4_to_2",
@@ -3471,13 +3705,13 @@
       "pathD": "M 188 67 L 225 67"
     },
     {
-      "id": "lh-2f:route_edge_lh_node_2f_5_to_lh_node_2f_23",
+      "id": "lh-2f:route_edge_lh_node_2f_5_to_lh_node_2f_18",
       "kind": "walk",
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_5",
-      "nodeB": "lh-2f:lh_node_2f_23",
-      "distance": 7,
-      "pathD": "M 262 74 L 262 67"
+      "nodeB": "lh-2f:lh_node_2f_18",
+      "distance": 26,
+      "pathD": "M 258 67 L 284 67"
     },
     {
       "id": "lh-2f:route_edge_lh_node_2f_6_to_lh_node_2f_15",
@@ -3550,15 +3784,6 @@
       "nodeB": "lh-2f:lh_stairs_southeast_2f",
       "distance": 12.206555615733702,
       "pathD": "M 352 126 L 342 133"
-    },
-    {
-      "id": "lh-2f:route_edge_lh_room_lth_2_to_lh_node_2f_1",
-      "kind": "walk",
-      "floorId": "lh-2f",
-      "nodeA": "lh-2f:lh_door_lth_2",
-      "nodeB": "lh-2f:lh_node_2f_1",
-      "distance": 14.866068747318506,
-      "pathD": "M 99 107 L 104 93"
     },
     {
       "id": "lh-2f:route_edge_lh_room_m2_to_lh_room_m2_2",
@@ -3665,8 +3890,17 @@
       "floorId": "lictia-1f",
       "nodeA": "lictia-1f:lictia_node_1",
       "nodeB": "lictia-1f:lictia_node_3",
-      "distance": 19.4164878389476,
-      "pathD": "M 97 52 L 78 48"
+      "distance": 18.439088914585774,
+      "pathD": "M 78 48 L 96 52"
+    },
+    {
+      "id": "lictia-1f:route_edge_lictia_node_2_to_lictia_node_1",
+      "kind": "walk",
+      "floorId": "lictia-1f",
+      "nodeA": "lictia-1f:lictia_node_2",
+      "nodeB": "lictia-1f:lictia_node_1",
+      "distance": 46,
+      "pathD": "M 32 48 L 78 48"
     },
     {
       "id": "lictia-1f:route_edge_lictia_node_2_to_lictia_room_cswr",
@@ -3678,13 +3912,13 @@
       "pathD": "M 32 48 L 28 76"
     },
     {
-      "id": "lictia-1f:route_edge_lictia_node_3_to_lictia_node_2",
+      "id": "lictia-1f:route_edge_lictia_node_3_to_lictia_node_4",
       "kind": "walk",
       "floorId": "lictia-1f",
       "nodeA": "lictia-1f:lictia_node_3",
-      "nodeB": "lictia-1f:lictia_node_2",
-      "distance": 46,
-      "pathD": "M 78 48 L 32 48"
+      "nodeB": "lictia-1f:lictia_node_4",
+      "distance": 16,
+      "pathD": "M 96 52 L 112 52"
     },
     {
       "id": "lictia-1f:route_edge_lictia_node_4_to_lictia_entrance",
@@ -3696,22 +3930,22 @@
       "pathD": "M 112 52 L 118 57"
     },
     {
-      "id": "lictia-1f:route_edge_lictia_node_4_to_lictia_node_1",
-      "kind": "walk",
-      "floorId": "lictia-1f",
-      "nodeA": "lictia-1f:lictia_node_4",
-      "nodeB": "lictia-1f:lictia_node_1",
-      "distance": 15,
-      "pathD": "M 112 52 L 97 52"
-    },
-    {
-      "id": "lictia-1f:route_edge_lictia_room_is_to_lictia_node_3",
+      "id": "lictia-1f:route_edge_lictia_room_is_to_lictia_node_1",
       "kind": "walk",
       "floorId": "lictia-1f",
       "nodeA": "lictia-1f:lictia_room_is",
-      "nodeB": "lictia-1f:lictia_node_3",
+      "nodeB": "lictia-1f:lictia_node_1",
       "distance": 15,
       "pathD": "M 78 33 L 78 48"
+    },
+    {
+      "id": "rq-1f:route_edge_1_to_rq_node_1f_16",
+      "kind": "walk",
+      "floorId": "rq-1f",
+      "nodeA": "rq-1f:rq_entrance_northLounge",
+      "nodeB": "rq-1f:rq_node_1f_16",
+      "distance": 30,
+      "pathD": "M 409 16 L 409 46"
     },
     {
       "id": "rq-1f:route_edge_42_to_rq_node_1",
@@ -4320,8 +4554,8 @@
       "id": "rq-2f:route_edge_1_to_5",
       "kind": "walk",
       "floorId": "rq-2f",
-      "nodeA": "rq-2f:route_node_1",
-      "nodeB": "rq-2f:route_node_5",
+      "nodeA": "rq-2f:rq_room_s1",
+      "nodeB": "rq-2f:rq_door_s1_1",
       "distance": 21.470910553583888,
       "pathD": "M 41 115 L 60 105"
     },
@@ -4356,8 +4590,8 @@
       "id": "rq-2f:route_edge_3_to_6",
       "kind": "walk",
       "floorId": "rq-2f",
-      "nodeA": "rq-2f:route_node_3",
-      "nodeB": "rq-2f:route_node_6",
+      "nodeA": "rq-2f:rq_room_s4",
+      "nodeB": "rq-2f:rq_door_s4_1",
       "distance": 21.470910553583888,
       "pathD": "M 41 225 L 60 215"
     },
@@ -4365,10 +4599,19 @@
       "id": "rq-2f:route_edge_6_to_rq_node_2f_34",
       "kind": "walk",
       "floorId": "rq-2f",
-      "nodeA": "rq-2f:route_node_6",
+      "nodeA": "rq-2f:rq_door_s4_1",
       "nodeB": "rq-2f:rq_node_2f_34",
       "distance": 10,
       "pathD": "M 60 215 L 70 215"
+    },
+    {
+      "id": "rq-2f:route_edge_rq_door_201f_to_rq_node_2f_32",
+      "kind": "walk",
+      "floorId": "rq-2f",
+      "nodeA": "rq-2f:rq_door_201f",
+      "nodeB": "rq-2f:rq_node_2f_32",
+      "distance": 5,
+      "pathD": "M 439 43 L 439 48"
     },
     {
       "id": "rq-2f:route_edge_rq_door_267_to_rq_room_267",
@@ -4378,6 +4621,24 @@
       "nodeB": "rq-2f:rq_room_267",
       "distance": 20,
       "pathD": "M 135 373 L 135 393"
+    },
+    {
+      "id": "rq-2f:route_edge_rq_door_s1_2_to_rq_node_2f_27",
+      "kind": "walk",
+      "floorId": "rq-2f",
+      "nodeA": "rq-2f:rq_door_s1_2",
+      "nodeB": "rq-2f:rq_node_2f_27",
+      "distance": 10,
+      "pathD": "M 60 125 L 70 125"
+    },
+    {
+      "id": "rq-2f:route_edge_rq_door_s4_2_to_rq_node_2f_35",
+      "kind": "walk",
+      "floorId": "rq-2f",
+      "nodeA": "rq-2f:rq_door_s4_2",
+      "nodeB": "rq-2f:rq_node_2f_35",
+      "distance": 10,
+      "pathD": "M 60 233 L 70 233"
     },
     {
       "id": "rq-2f:route_edge_rq_node_2f_1_to_rq_node_2f_3",
@@ -4614,15 +4875,6 @@
       "pathD": "M 70 125 L 70 215"
     },
     {
-      "id": "rq-2f:route_edge_rq_node_2f_27_to_rq_room_s1",
-      "kind": "walk",
-      "floorId": "rq-2f",
-      "nodeA": "rq-2f:rq_node_2f_27",
-      "nodeB": "rq-2f:rq_room_s1",
-      "distance": 9,
-      "pathD": "M 70 125 L 61 125"
-    },
-    {
       "id": "rq-2f:route_edge_rq_node_2f_29_to_rq_node_2f_8",
       "kind": "walk",
       "floorId": "rq-2f",
@@ -4686,15 +4938,6 @@
       "pathD": "M 439 48 L 415 48"
     },
     {
-      "id": "rq-2f:route_edge_rq_node_2f_32_to_rq_room_201f",
-      "kind": "walk",
-      "floorId": "rq-2f",
-      "nodeA": "rq-2f:rq_node_2f_32",
-      "nodeB": "rq-2f:rq_room_201f",
-      "distance": 4,
-      "pathD": "M 439 48 L 439 44"
-    },
-    {
       "id": "rq-2f:route_edge_rq_node_2f_34_to_rq_node_2f_35",
       "kind": "walk",
       "floorId": "rq-2f",
@@ -4711,15 +4954,6 @@
       "nodeB": "rq-2f:rq_node_2f_29",
       "distance": 59,
       "pathD": "M 70 233 L 70 292"
-    },
-    {
-      "id": "rq-2f:route_edge_rq_node_2f_35_to_rq_room_s4",
-      "kind": "walk",
-      "floorId": "rq-2f",
-      "nodeA": "rq-2f:rq_node_2f_35",
-      "nodeB": "rq-2f:rq_room_s4",
-      "distance": 9,
-      "pathD": "M 70 233 L 61 233"
     },
     {
       "id": "rq-2f:route_edge_rq_node_2f_36_to_rq_node_2f_8",
@@ -4861,7 +5095,7 @@
       "kind": "walk",
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_7",
-      "nodeB": "rq-2f:route_node_5",
+      "nodeB": "rq-2f:rq_door_s1_1",
       "distance": 12.806248474865697,
       "pathD": "M 70 97 L 60 105"
     },
@@ -4902,13 +5136,13 @@
       "pathD": "M 70 366 L 70 341"
     },
     {
-      "id": "rq-2f:route_edge_rq_room_201f_to_7",
+      "id": "rq-2f:route_edge_rq_room_201f_to_rq_door_201f",
       "kind": "walk",
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_201f",
-      "nodeB": "rq-2f:route_node_7",
-      "distance": 21,
-      "pathD": "M 439 44 L 439 23"
+      "nodeB": "rq-2f:rq_door_201f",
+      "distance": 20,
+      "pathD": "M 439 23 L 439 43"
     },
     {
       "id": "rq-2f:route_edge_rq_room_243b_to_rq_node_2f_40",
@@ -4947,22 +5181,22 @@
       "pathD": "M 99 372 L 99 366"
     },
     {
-      "id": "rq-2f:route_edge_rq_room_s1_to_1",
+      "id": "rq-2f:route_edge_rq_room_s1_to_rq_door_s1_2",
       "kind": "walk",
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s1",
-      "nodeB": "rq-2f:route_node_1",
-      "distance": 22.360679774997898,
-      "pathD": "M 61 125 L 41 115"
+      "nodeB": "rq-2f:rq_door_s1_2",
+      "distance": 21.470910553583888,
+      "pathD": "M 41 115 L 60 125"
     },
     {
-      "id": "rq-2f:route_edge_rq_room_s4_to_3",
+      "id": "rq-2f:route_edge_rq_room_s4_to_rq_door_s4_2",
       "kind": "walk",
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s4",
-      "nodeB": "rq-2f:route_node_3",
-      "distance": 21.540659228538015,
-      "pathD": "M 61 233 L 41 225"
+      "nodeB": "rq-2f:rq_door_s4_2",
+      "distance": 20.615528128088304,
+      "pathD": "M 41 225 L 60 233"
     },
     {
       "id": "rq-2f:route_edge_rq_stairs_midcenter_2f_to_rq_node_2f_38",
@@ -5784,13 +6018,13 @@
       "pathD": "M 55 13 L 92 27"
     },
     {
-      "id": "sh-1f:route_edge_sh_reception_to_sh_node_1f_6",
+      "id": "sh-1f:route_edge_sh_room_cafeteria_to_sh_reception",
       "kind": "walk",
       "floorId": "sh-1f",
-      "nodeA": "sh-1f:sh_reception",
-      "nodeB": "sh-1f:sh_node_1f_6",
-      "distance": 9.300537618869138,
-      "pathD": "M 66.5 46.5 L 61 39"
+      "nodeA": "sh-1f:sh_room_cafeteria",
+      "nodeB": "sh-1f:sh_reception",
+      "distance": 2,
+      "pathD": "M 92 27 L 92 29"
     },
     {
       "id": "sh-1f:route_edge_sh_room_shop_to_sh_entrance_south1f",
@@ -5915,6 +6149,13 @@
       "kind": "transfer",
       "nodeA": "campus:main_rq_entrance_northeast",
       "nodeB": "rq-1f:rq_entrance_northeast",
+      "distance": 0
+    },
+    {
+      "id": "transfer:entrance:rq_northlounge:campus:rq-1f",
+      "kind": "transfer",
+      "nodeA": "campus:main_rq_entrance_northlounge",
+      "nodeB": "rq-1f:rq_entrance_northLounge",
       "distance": 0
     },
     {
@@ -6149,6 +6390,33 @@
       "distance": 60
     },
     {
+      "id": "ubic-1f:route_edge_1_to_ubic_node_1",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_1",
+      "nodeB": "ubic-1f:ubic_node_1",
+      "distance": 24.413111231467404,
+      "pathD": "M 49 49 L 69 35"
+    },
+    {
+      "id": "ubic-1f:route_edge_1_to_ubic_node_2",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:route_node_1",
+      "nodeB": "ubic-1f:ubic_node_2",
+      "distance": 12.806248474865697,
+      "pathD": "M 49 49 L 39 57"
+    },
+    {
+      "id": "ubic-1f:route_edge_ubic_door_3dt_to_1",
+      "kind": "walk",
+      "floorId": "ubic-1f",
+      "nodeA": "ubic-1f:ubic_door_3dt",
+      "nodeB": "ubic-1f:route_node_1",
+      "distance": 7.810249675906654,
+      "pathD": "M 44 43 L 49 49"
+    },
+    {
       "id": "ubic-1f:route_edge_ubic_door_mar_to_ubic_node_1",
       "kind": "walk",
       "floorId": "ubic-1f",
@@ -6185,22 +6453,13 @@
       "pathD": "M 69 35 L 118 54"
     },
     {
-      "id": "ubic-1f:route_edge_ubic_node_2_to_ubic_node_1",
-      "kind": "walk",
-      "floorId": "ubic-1f",
-      "nodeA": "ubic-1f:ubic_node_2",
-      "nodeB": "ubic-1f:ubic_node_1",
-      "distance": 37.20215047547655,
-      "pathD": "M 39 57 L 69 35"
-    },
-    {
-      "id": "ubic-1f:route_edge_ubic_room_3dtheater_to_ubic_node_2",
+      "id": "ubic-1f:route_edge_ubic_room_3dtheater_to_ubic_door_3dt",
       "kind": "walk",
       "floorId": "ubic-1f",
       "nodeA": "ubic-1f:ubic_room_3dtheater",
-      "nodeB": "ubic-1f:ubic_node_2",
-      "distance": 8,
-      "pathD": "M 39 49 L 39 57"
+      "nodeB": "ubic-1f:ubic_door_3dt",
+      "distance": 24.758836806279895,
+      "pathD": "M 26 26 L 44 43"
     },
     {
       "id": "ubic-1f:route_edge_ubic_room_mar_to_ubic_door_mar",

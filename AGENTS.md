@@ -21,7 +21,7 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 - **git操作(checkout / reset / stash / commit)はユーザーまたはリード(Claude関与時)のみ**。実装(Codex)は行わない
 - Codexで実装した変更は、完了報告前に会話履歴を引き継がないレビュー専用サブエージェントを起動し、別コンテキストの読み取り専用レビューを通す。適格なレビュー結果を受領できない場合は自己レビューで代替せず未完了として報告する。詳細は [docs/WORKFLOW.md](docs/WORKFLOW.md)「レビュー」に従う
 - 作業を再開するときは [docs/WORKFLOW.md](docs/WORKFLOW.md)「作業開始時に読む順」に従う
-- `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で109 Place / 74 QR / 60 EventのPASSを確認する
+- `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で122 Place / 87 QR / 60 EventのPASSを確認する
 - 開発コマンド: `bun run dev` / `bun run build`(build は tsc -b を含むため型チェックを兼ねる)/ `bun run verify:places`
 
 ## ExecPlanとリポジトリ横断リファクタリング

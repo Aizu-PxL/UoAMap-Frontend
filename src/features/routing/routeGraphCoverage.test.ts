@@ -305,23 +305,23 @@ describe("実生成Routeグラフcoverage", () => {
       {
         nodeId: "lh-1f:lh_room_m8",
         placeId: "lh_room_m8",
-        x: 200,
-        y: 450,
-        neighborId: "lh-1f:lh_node_1f_13",
+        x: 201,
+        y: 418,
+        neighborId: "lh-1f:lh_door_m8_1",
       },
       {
         nodeId: "sh-1f:sh_reception",
         placeId: "sh_reception",
-        x: 66.5,
-        y: 46.5,
-        neighborId: "sh-1f:sh_node_1f_6",
+        x: 92,
+        y: 29,
+        neighborId: "sh-1f:sh_room_cafeteria",
       },
       {
         nodeId: "ubic-1f:ubic_room_3dtheater",
         placeId: "ubic_room_3dtheater",
-        x: 39,
-        y: 49,
-        neighborId: "ubic-1f:ubic_node_2",
+        x: 26,
+        y: 26,
+        neighborId: "ubic-1f:ubic_door_3dt",
       },
     ];
 
@@ -342,13 +342,13 @@ describe("実生成Routeグラフcoverage", () => {
   });
 
   test("生成グラフのノード・エッジ内訳を固定する", () => {
-    expect(routeGraph.nodes.length).toEqual(336);
-    expect(routeGraph.edges.length).toEqual(425);
-    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(387);
-    expect(routeGraph.edges.filter((edge) => edge.kind === "transfer").length).toEqual(38);
+    expect(routeGraph.nodes.length).toEqual(347);
+    expect(routeGraph.edges.length).toEqual(444);
+    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(405);
+    expect(routeGraph.edges.filter((edge) => edge.kind === "transfer").length).toEqual(39);
   });
 
-  test("campus-all以外の全108 PlaceがRouteへ収録され講堂から到達可能", () => {
+  test("campus-all以外の全121 PlaceがRouteへ収録され講堂から到達可能", () => {
     const excludedPlaceIds = new Set(["campus-all"]);
     const expectedPlaceIds = places
       .filter((place) => !excludedPlaceIds.has(place.id))
@@ -359,7 +359,7 @@ describe("実生成Routeグラフcoverage", () => {
       .sort();
 
     expect(routedPlaceIds).toEqual(expectedPlaceIds);
-    expect(expectedPlaceIds.length).toEqual(108);
+    expect(expectedPlaceIds.length).toEqual(121);
     for (const placeId of expectedPlaceIds) {
       expect(
         findShortestRouteBetweenPlaces(routeGraph, "main_auditorium", placeId) ===

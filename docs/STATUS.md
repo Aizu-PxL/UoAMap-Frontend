@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-07-31(モバイル地図UX一括調整)
+最終更新: 2026-07-31(QR対応表87件反映)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -11,7 +11,7 @@
 |---|---|---|---|
 | 1 | 土台(型・モック・リポジトリ層・Router・feature構成) | ✅ 完了 | |
 | 2 | 地図表示 | ✅ 完了 | ブリーフ: docs/tasks/02a〜02d + UI修正02e〜02h(建物枠線・フロア切替viewBox維持・イベントマーカー・視認性とピン置換)。各レビュー指摘も修正済み。ビジュアル刷新04〜06、横長固定サイズ補正07、講義棟フロア別SVG化08、パン座標補正09、オーバーレイアンカー固定10も完了 |
-| 3 | ルート | ✅ 完了 | 03a〜03i + 14。`campus-all`(全域概念)を除く全108 Placeを336ノード/425エッジの単一連結グラフへ収録。全60イベント地点・Q001〜Q074地点をcoverageテストで固定 |
+| 3 | ルート | ✅ 完了 | 03a〜03i + 14 + 19。`campus-all`(全域概念)を除く全121 Placeを347ノード/444エッジの単一連結グラフへ収録。全60イベント地点・87 QR地点をcoverageテストで固定 |
 | 4 | イベント検索 | ✅ 完了 | 検索・タグ絞り込み・詳細・「ここへ行く」 |
 | 5 | QR/ディープリンク | ✅ 完了 | `/q`・`/p`・`/e` の正規化、アプリ内カメラスキャン、`to`保持での再スキャン、エラー復旧を実装 |
 | 6 | スケジュール | ✅ 完了 | 画像表示と全画面拡大(public/schedule/) |
@@ -26,6 +26,18 @@
 最新イベントデータブリーフ: `docs/tasks/17-open-campus-2026-data.md`（未コミット）
 
 最新モバイル地図UXブリーフ: `docs/tasks/18-mobile-map-ux-adjustments.md`（未コミット）
+
+最新QR対応表ブリーフ: `docs/tasks/19-qr-mapping-refresh.md`（未コミット）
+
+## QR対応表87件反映
+
+受領した`uoamap-qr-mapping (2).json`はリポジトリ内の`uoamap-qr-mappings.json`とバイト単位で一致した。対応表と計画JSONはQ018を欠番のまま再利用せず、Q075〜Q088を追加した87件、`nextQrNumber: 89`である。新規Place案は73件のまま、Q075〜Q088は既存Routeノード14件をPlaceとして再利用する。
+
+Placeは87 QR地点 + 34イベント会場 + `campus-all`の122件。`campus-all`以外の121件は、347ノード／444エッジ（walk 405 / transfer 39）の単一連結グラフに収録される。`verify:places`はQR IDの欠番を明示的に扱い、87 mappings / 87 placements / 73 placeProposals、Place参照・floor・座標、重複、60イベントを検証する。
+
+自動検証は123 tests / 1008 assertions、122 Place / 87 QR / 60 Event、347 nodes / 444 edges、production build、git diff checkをPASS。幅402pxでQ075→`main_dormitory`（創明寮前）、Q088→`sh_entrance_north`（学生ホール北口出口）、Q001→`main_node_11`（駐車場北）の解決と経路表示、Q018の登録なし案内を確認し、console error 0件。物理QRの印刷・設置承認は引き続き対象外。
+
+会話履歴なしの初回読み取り専用レビューでは、再利用QRの`routeNodeId`を生成Routeへ突合する検証不足とブリーフSCOPE漏れを修正した。修正後の別コンテキスト再レビューは指摘なし。
 
 ## モバイル地図UX一括調整
 
@@ -154,7 +166,7 @@ bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる
-bun run verify:places  # 109 Place / 74 QR / 60 Eventと計画JSONの整合検証
+bun run verify:places  # 122 Place / 87 QR / 60 Eventと計画JSONの整合検証
 bun run verify:routes  # SVGのRouteグラフが生成結果と一致することを確認
 ```
 
@@ -190,18 +202,18 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」は`focus=`を使う。「ここへ行く」直後とQR解決直後の現在地への注目だけは、公開URLへ`focus`ピンを追加しない一時的なnavigation stateで要求する
 - **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一origin・`BASE_URL`配下の`/q/:qrId`だけを受理する。読み取り後は既存クエリを保持して`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
-- **places.ts が地点語彙の正**: 全109 Placeの内訳はQR座標地点74件、イベント会場34件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
+- **places.ts が地点語彙の正**: 全122 Placeの内訳はQR地点87件（新規座標Place案73件 + 既存Routeノード再利用14件）、イベント会場34件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
 - **マーカー**: React非管理のオーバーレイSVGレイヤー。イベントバッジはPlace座標から画面上20px上へ置き、ラベル衝突除外には使わない。水滴ピンの先端はPlace座標へ固定し、従来どおりラベル衝突除外に使う。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。正式IDのカテゴリ色を面へ適用し、同一地点が混色またはIDなしならtealへ戻す。単一イベントは詳細へ遷移し、キャンパス集約は建物フロアへ移動する。同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
-- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全108 Placeを336ノード/425エッジの単一連結グラフへ収録し、全60イベント地点とQ001〜Q074をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
+- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全121 Placeを347ノード/444エッジの単一連結グラフへ収録し、全60イベント地点と全87 QR地点をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
 - **フロア切替のviewBox引き継ぎ**: 同一建物内の切替は「シート全体に対する相対位置・相対ズーム」を比例マッピングして維持(フロア間で座標系が揃っていないため絶対座標は使えない)。キャンパス⇄建物は全体表示リセット。RQ2FはviewBox属性が無いためwidth/height属性からフォールバック構成
 - **scrollIntoViewは `behavior:"auto"`**: smoothはバックグラウンドタブでアニメーションが進まず止まることがあるため使わない
 
 ## 既知の注意(再発防止ルール)
 
-- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で109 Place / 74 QR / 60 EventのPASSを必ず確認する
+- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で122 Place / 87 QR / 60 EventのPASSを必ず確認する
 - SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)
 - カメラは本番ではHTTPSのsecure contextが必須。`qr-scanner`のMIT通知は`public/THIRD_PARTY_NOTICES.txt`として配布物へ同梱する(アプリ内ライセンス画面は不要)
