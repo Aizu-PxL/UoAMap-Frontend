@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "nextQrNumber": 75,
+  "nextQrNumber": 89,
   "placements": [
     {
       "qrId": "Q001",
@@ -19,7 +19,7 @@
       "routeNodeId": "main_sh_entrance_north",
       "placeId": "main_sh_entrance_north",
       "kind": "fixed",
-      "installationNote": "学生ホール北口",
+      "installationNote": "学生ホール北口入口",
       "floorId": "campus",
       "x": 332,
       "y": 321
@@ -30,7 +30,7 @@
       "routeNodeId": "main_lh_entrance_west",
       "placeId": "main_lh_entrance_west",
       "kind": "fixed",
-      "installationNote": "講義棟西口",
+      "installationNote": "講義棟西口入口",
       "floorId": "campus",
       "x": 342,
       "y": 268
@@ -41,7 +41,7 @@
       "routeNodeId": "main_lh_entrance_east1f",
       "placeId": "main_lh_entrance_east1f",
       "kind": "fixed",
-      "installationNote": "講義棟東口１階",
+      "installationNote": "講義棟東口１階入口",
       "floorId": "campus",
       "x": 394,
       "y": 269
@@ -52,7 +52,7 @@
       "routeNodeId": "main_lh_entrance_east2f",
       "placeId": "main_lh_entrance_east2f",
       "kind": "fixed",
-      "installationNote": "講義棟東口２階",
+      "installationNote": "講義棟東口２階入口",
       "floorId": "campus",
       "x": 421,
       "y": 286
@@ -63,7 +63,7 @@
       "routeNodeId": "main_sh_entrance_east",
       "placeId": "main_sh_entrance_east",
       "kind": "fixed",
-      "installationNote": "学生ホール東口",
+      "installationNote": "学生ホール東口入口",
       "floorId": "campus",
       "x": 388,
       "y": 328
@@ -74,7 +74,7 @@
       "routeNodeId": "main_rq_entrance_northwest",
       "placeId": "main_rq_entrance_northwest",
       "kind": "fixed",
-      "installationNote": "研究棟北西口",
+      "installationNote": "研究棟北西口入口",
       "floorId": "campus",
       "x": 470,
       "y": 328
@@ -85,7 +85,7 @@
       "routeNodeId": "main_rq_entrance_southwest",
       "placeId": "main_rq_entrance_southwest",
       "kind": "fixed",
-      "installationNote": "研究棟南西口",
+      "installationNote": "研究棟南西口入口",
       "floorId": "campus",
       "x": 470,
       "y": 414
@@ -96,7 +96,7 @@
       "routeNodeId": "main_sh_entrance_main",
       "placeId": "main_sh_entrance_main",
       "kind": "fixed",
-      "installationNote": "学生ホール中央１階",
+      "installationNote": "学生ホール中央入口",
       "floorId": "campus",
       "x": 343,
       "y": 360
@@ -107,7 +107,7 @@
       "routeNodeId": "main_library",
       "placeId": "main_library",
       "kind": "fixed",
-      "installationNote": "図書館",
+      "installationNote": "図書館前",
       "floorId": "campus",
       "x": 338,
       "y": 443
@@ -118,7 +118,7 @@
       "routeNodeId": "main_auditorium",
       "placeId": "main_auditorium",
       "kind": "fixed",
-      "installationNote": "講堂",
+      "installationNote": "講堂前",
       "floorId": "campus",
       "x": 353,
       "y": 563
@@ -162,7 +162,7 @@
       "routeNodeId": "main_node_5",
       "placeId": "main_node_5",
       "kind": "fixed",
-      "installationNote": "学生ホール南口２階前",
+      "installationNote": "学生ホール南口前",
       "floorId": "campus",
       "x": 328,
       "y": 407
@@ -190,23 +190,12 @@
       "y": 214
     },
     {
-      "qrId": "Q018",
-      "sheetId": "campus",
-      "routeNodeId": "main_node_19",
-      "placeId": "main_node_19",
-      "kind": "fixed",
-      "installationNote": "LICTiA前",
-      "floorId": "campus",
-      "x": 618,
-      "y": 281
-    },
-    {
       "qrId": "Q019",
       "sheetId": "campus",
       "routeNodeId": "main_rq_entrance_northeast",
       "placeId": "main_rq_entrance_northeast",
       "kind": "fixed",
-      "installationNote": "研究棟北東口",
+      "installationNote": "研究棟北東口入口",
       "floorId": "campus",
       "x": 610,
       "y": 349
@@ -217,7 +206,7 @@
       "routeNodeId": "main_rq_entrance_southeast",
       "placeId": "main_rq_entrance_southeast",
       "kind": "fixed",
-      "installationNote": "研究棟南東口",
+      "installationNote": "研究棟南東口入口",
       "floorId": "campus",
       "x": 610,
       "y": 393
@@ -228,7 +217,7 @@
       "routeNodeId": "main_ubic_entrance",
       "placeId": "main_ubic_entrance",
       "kind": "fixed",
-      "installationNote": "UBIC",
+      "installationNote": "UBIC入口",
       "floorId": "campus",
       "x": 483,
       "y": 268
@@ -239,7 +228,7 @@
       "routeNodeId": "main_node_8",
       "placeId": "main_node_8",
       "kind": "fixed",
-      "installationNote": "駐車場",
+      "installationNote": "駐車場中央",
       "floorId": "campus",
       "x": 300,
       "y": 371
@@ -285,8 +274,8 @@
       "kind": "fixed",
       "installationNote": "LICTiA中",
       "floorId": "lictia-1f",
-      "x": 97,
-      "y": 52
+      "x": 78,
+      "y": 48
     },
     {
       "qrId": "Q027",
@@ -780,8 +769,8 @@
       "kind": "fixed",
       "installationNote": "講義棟通路西１階",
       "floorId": "lh-1f",
-      "x": 171,
-      "y": 468
+      "x": 166,
+      "y": 457
     },
     {
       "qrId": "Q072",
@@ -791,8 +780,8 @@
       "kind": "fixed",
       "installationNote": "講義棟通路東１階",
       "floorId": "lh-1f",
-      "x": 250,
-      "y": 469
+      "x": 252,
+      "y": 457
     },
     {
       "qrId": "Q073",
@@ -802,8 +791,8 @@
       "kind": "fixed",
       "installationNote": "講義棟通路西２階",
       "floorId": "lh-2f",
-      "x": 150,
-      "y": 74
+      "x": 157,
+      "y": 67
     },
     {
       "qrId": "Q074",
@@ -813,8 +802,162 @@
       "kind": "fixed",
       "installationNote": "講義棟通路東２階",
       "floorId": "lh-2f",
-      "x": 262,
-      "y": 74
+      "x": 258,
+      "y": 67
+    },
+    {
+      "qrId": "Q075",
+      "sheetId": "campus",
+      "routeNodeId": "main_node_16",
+      "placeId": "main_dormitory",
+      "kind": "fixed",
+      "installationNote": "創明寮前",
+      "floorId": "campus",
+      "x": 604,
+      "y": 214
+    },
+    {
+      "qrId": "Q076",
+      "sheetId": "campus",
+      "routeNodeId": "main_lictia_entrance",
+      "placeId": "main_lictia_entrance",
+      "kind": "fixed",
+      "installationNote": "LICTiA入口",
+      "floorId": "campus",
+      "x": 610,
+      "y": 264
+    },
+    {
+      "qrId": "Q077",
+      "sheetId": "campus",
+      "routeNodeId": "main_node_30",
+      "placeId": "main_gym",
+      "kind": "fixed",
+      "installationNote": "体育館前",
+      "floorId": "campus",
+      "x": 390,
+      "y": 435
+    },
+    {
+      "qrId": "Q078",
+      "sheetId": "campus",
+      "routeNodeId": "main_node_32",
+      "placeId": "main_node_32",
+      "kind": "fixed",
+      "installationNote": "メイン通路管理棟前",
+      "floorId": "campus",
+      "x": 390,
+      "y": 528
+    },
+    {
+      "qrId": "Q079",
+      "sheetId": "campus",
+      "routeNodeId": "main_node_34",
+      "placeId": "main_node_34",
+      "kind": "fixed",
+      "installationNote": "メイン通路講堂前",
+      "floorId": "campus",
+      "x": 367,
+      "y": 590
+    },
+    {
+      "qrId": "Q080",
+      "sheetId": "campus",
+      "routeNodeId": "main_node_36",
+      "placeId": "main_node_36",
+      "kind": "fixed",
+      "installationNote": "正門",
+      "floorId": "campus",
+      "x": 378,
+      "y": 655
+    },
+    {
+      "qrId": "Q081",
+      "sheetId": "lh1f",
+      "routeNodeId": "lh_entrance_west",
+      "placeId": "lh_entrance_west",
+      "kind": "fixed",
+      "installationNote": "講義棟西口出口",
+      "floorId": "lh-1f",
+      "x": 116,
+      "y": 475
+    },
+    {
+      "qrId": "Q082",
+      "sheetId": "sh1f",
+      "routeNodeId": "sh_entrance_south1f",
+      "placeId": "sh_entrance_south1f",
+      "kind": "fixed",
+      "installationNote": "学生ホール売店出口",
+      "floorId": "sh-1f",
+      "x": 51,
+      "y": 85
+    },
+    {
+      "qrId": "Q083",
+      "sheetId": "sh2f",
+      "routeNodeId": "sh_entrance_east",
+      "placeId": "sh_entrance_east",
+      "kind": "fixed",
+      "installationNote": "学生ホール東口出口",
+      "floorId": "sh-2f",
+      "x": 125,
+      "y": 3
+    },
+    {
+      "qrId": "Q084",
+      "sheetId": "ubic",
+      "routeNodeId": "ubic_node_2",
+      "placeId": "ubic_node_2",
+      "kind": "fixed",
+      "installationNote": "UBIC出口",
+      "floorId": "ubic-1f",
+      "x": 39,
+      "y": 57
+    },
+    {
+      "qrId": "Q085",
+      "sheetId": "lictia",
+      "routeNodeId": "lictia_node_4",
+      "placeId": "lictia_node_4",
+      "kind": "fixed",
+      "installationNote": "LICTiA出口",
+      "floorId": "lictia-1f",
+      "x": 112,
+      "y": 52
+    },
+    {
+      "qrId": "Q086",
+      "sheetId": "campus",
+      "routeNodeId": "main_sh_entrance_south2f",
+      "placeId": "main_sh_entrance_south2f",
+      "kind": "fixed",
+      "installationNote": "学生ホール南口入口",
+      "floorId": "campus",
+      "x": 332,
+      "y": 363
+    },
+    {
+      "qrId": "Q087",
+      "sheetId": "campus",
+      "routeNodeId": "main_sh_entrance_south1f",
+      "placeId": "main_sh_entrance_south1f",
+      "kind": "fixed",
+      "installationNote": "学生ホール売店入口",
+      "floorId": "campus",
+      "x": 335,
+      "y": 378
+    },
+    {
+      "qrId": "Q088",
+      "sheetId": "sh1f",
+      "routeNodeId": "sh_entrance_north",
+      "placeId": "sh_entrance_north",
+      "kind": "fixed",
+      "installationNote": "学生ホール北口出口",
+      "floorId": "sh-1f",
+      "x": 55,
+      "y": 4
     }
   ],
   "placeProposals": [
@@ -824,8 +967,8 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_node_1f_6",
       "floorId": "lh-1f",
-      "x": 171,
-      "y": 468
+      "x": 166,
+      "y": 457
     },
     {
       "id": "lh_node_1f_7",
@@ -833,8 +976,8 @@
       "sheetId": "lh1f",
       "routeNodeId": "lh_node_1f_7",
       "floorId": "lh-1f",
-      "x": 250,
-      "y": 469
+      "x": 252,
+      "y": 457
     },
     {
       "id": "lh_node_2f_3",
@@ -842,8 +985,8 @@
       "sheetId": "lh2f",
       "routeNodeId": "lh_node_2f_3",
       "floorId": "lh-2f",
-      "x": 150,
-      "y": 74
+      "x": 157,
+      "y": 67
     },
     {
       "id": "lh_node_2f_5",
@@ -851,8 +994,8 @@
       "sheetId": "lh2f",
       "routeNodeId": "lh_node_2f_5",
       "floorId": "lh-2f",
-      "x": 262,
-      "y": 74
+      "x": 258,
+      "y": 67
     },
     {
       "id": "lh_stairs_northeast_1f",
@@ -914,12 +1057,12 @@
       "sheetId": "lictia",
       "routeNodeId": "lictia_node_1",
       "floorId": "lictia-1f",
-      "x": 97,
-      "y": 52
+      "x": 78,
+      "y": 48
     },
     {
       "id": "main_auditorium",
-      "name": "講堂",
+      "name": "講堂前",
       "sheetId": "campus",
       "routeNodeId": "main_auditorium",
       "floorId": "campus",
@@ -955,7 +1098,7 @@
     },
     {
       "id": "main_library",
-      "name": "図書館",
+      "name": "図書館前",
       "sheetId": "campus",
       "routeNodeId": "main_library",
       "floorId": "campus",
@@ -979,15 +1122,6 @@
       "floorId": "campus",
       "x": 454,
       "y": 214
-    },
-    {
-      "id": "main_node_19",
-      "name": "LICTiA前",
-      "sheetId": "campus",
-      "routeNodeId": "main_node_19",
-      "floorId": "campus",
-      "x": 618,
-      "y": 281
     },
     {
       "id": "main_node_2",
@@ -1018,7 +1152,7 @@
     },
     {
       "id": "main_node_5",
-      "name": "学生ホール南口２階前",
+      "name": "学生ホール南口前",
       "sheetId": "campus",
       "routeNodeId": "main_node_5",
       "floorId": "campus",
