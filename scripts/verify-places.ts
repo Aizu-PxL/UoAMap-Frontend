@@ -4,16 +4,50 @@ import placeProposals from "../uoamap-place-proposals.json";
 import qrMappings from "../uoamap-qr-mappings.json";
 import qrPlacementPlan from "../uoamap-qr-placement-plan.json";
 import { mockEvents } from "../src/data/mock/events.js";
+import { mockRepository } from "../src/data/mock/mockRepository.js";
 import { floors, mapSheets, places } from "../src/data/places.js";
+import routeGraph from "../src/features/routing/generated/routeGraph.json";
 
-const EXPECTED_PLACE_COUNT = 109;
-const EXPECTED_QR_COUNT = 74;
+const EXPECTED_PLACE_COUNT = 122;
+const EXPECTED_QR_COUNT = 87;
+const EXPECTED_QR_PLACE_PROPOSAL_COUNT = 73;
+const EXPECTED_NEXT_QR_NUMBER = 89;
+const EXPECTED_QR_IDS = Array.from(
+  { length: EXPECTED_NEXT_QR_NUMBER - 1 },
+  (_, index) => `Q${String(index + 1).padStart(3, "0")}`,
+).filter((qrId) => qrId !== "Q018");
 const EXPECTED_EVENT_COUNT = 60;
+const EXPECTED_EVENT_ID_COUNT = 55;
+const EXPECTED_EVENT_CATEGORIES = [
+  ["A", "大学説明会"],
+  ["L", "入試説明会"],
+  ["E", "早期（飛び）入試説明会"],
+  ["U", "保護者向け説明会"],
+  ["P", "研究室公開"],
+  ["T", "キャンパスツアー"],
+  ["M", "体験授業"],
+  ["G", "なんでも相談会"],
+  ["R", "受験勉強相談"],
+] as const;
+const EVENT_CATEGORY_IDS: ReadonlySet<string> = new Set(
+  EXPECTED_EVENT_CATEGORIES.map(([id]) => id),
+);
+const IDLESS_EVENT_KEYS = new Set([
+  "service-reception",
+  "service-self-guided-tour",
+  "service-rest-area",
+  "service-lunch",
+  "service-shop",
+]);
+const EVENT_TIME_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\+09:00$/;
 
 const errors: string[] = [];
 const floorById = new Map(floors.map((floor) => [floor.id, floor]));
 const sheetById = new Map(mapSheets.map((sheet) => [sheet.id, sheet]));
 const placeById = new Map(places.map((place) => [place.id, place]));
+const routeNodeById = new Map(routeGraph.nodes.map((node) => [node.id, node]));
+const mockTags = await mockRepository.getTags();
 
 function fail(message: string) {
   errors.push(message);
@@ -109,19 +143,23 @@ for (const place of places) {
   }
 }
 
-if (placeProposals.length !== EXPECTED_QR_COUNT) {
-  fail(`Place案件数: ${placeProposals.length}（期待値 ${EXPECTED_QR_COUNT}）`);
+if (placeProposals.length !== EXPECTED_QR_PLACE_PROPOSAL_COUNT) {
+  fail(
+    `Place案件数: ${placeProposals.length}（期待値 ${EXPECTED_QR_PLACE_PROPOSAL_COUNT}）`,
+  );
 }
 for (const duplicate of findDuplicates(placeProposals.map((item) => item.id))) {
   fail(`Place案ID重複: ${duplicate}`);
 }
 
 if (qrPlacementPlan.schemaVersion !== 1) fail("計画JSON schemaVersionは1が必要です");
-if (qrPlacementPlan.nextQrNumber !== 75) fail("計画JSON nextQrNumberは75が必要です");
+if (qrPlacementPlan.nextQrNumber !== EXPECTED_NEXT_QR_NUMBER) {
+  fail(`計画JSON nextQrNumberは${EXPECTED_NEXT_QR_NUMBER}が必要です`);
+}
 if (qrPlacementPlan.placements.length !== EXPECTED_QR_COUNT) {
   fail(`計画placements件数: ${qrPlacementPlan.placements.length}`);
 }
-if (qrPlacementPlan.placeProposals.length !== EXPECTED_QR_COUNT) {
+if (qrPlacementPlan.placeProposals.length !== EXPECTED_QR_PLACE_PROPOSAL_COUNT) {
   fail(`計画placeProposals件数: ${qrPlacementPlan.placeProposals.length}`);
 }
 
@@ -159,8 +197,11 @@ if (qrMappings.length !== EXPECTED_QR_COUNT) {
 for (const duplicate of findDuplicates(qrMappings.map((item) => item.qrId))) {
   fail(`QR ID重複: ${duplicate}`);
 }
-for (let index = 0; index < EXPECTED_QR_COUNT; index += 1) {
-  const expectedQrId = `Q${String(index + 1).padStart(3, "0")}`;
+for (const duplicate of findDuplicates(qrMappings.map((item) => item.placeId))) {
+  fail(`QR Place重複: ${duplicate}`);
+}
+for (let index = 0; index < EXPECTED_QR_IDS.length; index += 1) {
+  const expectedQrId = EXPECTED_QR_IDS[index];
   const placement = qrPlacementPlan.placements[index];
   const mapping = qrMappings[index];
   if (placement?.qrId !== expectedQrId || mapping?.qrId !== expectedQrId) {
@@ -174,30 +215,115 @@ for (let index = 0; index < EXPECTED_QR_COUNT; index += 1) {
   ) {
     fail(`${expectedQrId}: 計画placementsとQR対応表が一致しません`);
   }
-  if (placement.placeId !== placement.routeNodeId) {
+  if (planProposalById.has(placement.placeId) && placement.placeId !== placement.routeNodeId) {
     fail(`${expectedQrId}: placeIdとrouteNodeIdが一致しません`);
   }
-  const proposal = placeProposals.find((item) => item.id === placement.placeId);
-  if (
-    !proposal ||
-    proposal.floorId !== placement.floorId ||
-    proposal.name !== placement.installationNote ||
-    proposal.coordinates.x !== placement.x ||
-    proposal.coordinates.y !== placement.y
+  const place = placeById.get(mapping.placeId);
+  if (!place) {
+    fail(`${expectedQrId}: 未登録Place ${mapping.placeId}`);
+  } else if (
+    place.floorId !== placement.floorId ||
+    place.mapping !== "coordinates" ||
+    place.coordinates.x !== placement.x ||
+    place.coordinates.y !== placement.y
   ) {
-    fail(`${expectedQrId}: placementsとPlace案JSONのID・座標・名称が一致しません`);
+    fail(`${expectedQrId}: 計画placementsとPlaceのfloor・座標が一致しません`);
   }
-  if (!placeById.has(mapping.placeId)) fail(`${expectedQrId}: 未登録Place ${mapping.placeId}`);
+
+  const routeNode = routeNodeById.get(`${placement.floorId}:${placement.routeNodeId}`);
+  if (!routeNode) {
+    fail(`${expectedQrId}: 未登録Routeノード ${placement.routeNodeId}`);
+  } else if (
+    routeNode.placeId !== placement.placeId ||
+    routeNode.x !== placement.x ||
+    routeNode.y !== placement.y
+  ) {
+    fail(`${expectedQrId}: 計画placementsと生成RouteノードのPlace・座標が一致しません`);
+  }
 }
 
 if (mockEvents.length !== EXPECTED_EVENT_COUNT) {
   fail(`Event件数: ${mockEvents.length}（期待値 ${EXPECTED_EVENT_COUNT}）`);
 }
-for (const duplicate of findDuplicates(mockEvents.map((event) => event.id))) {
+if (
+  JSON.stringify(mockTags.map(({ id, label }) => [id, label])) !==
+  JSON.stringify(EXPECTED_EVENT_CATEGORIES)
+) {
+  fail("EventカテゴリはA/L/E/U/P/T/M/G/RのID・表示名・順序との完全一致が必要です");
+}
+for (const duplicate of findDuplicates(mockEvents.map((event) => event.key))) {
+  fail(`Event key重複: ${duplicate}`);
+}
+const eventIds = mockEvents.flatMap((event) => (event.id ? [event.id] : []));
+if (eventIds.length !== EXPECTED_EVENT_ID_COUNT) {
+  fail(`正式Event ID件数: ${eventIds.length}（期待値 ${EXPECTED_EVENT_ID_COUNT}）`);
+}
+for (const duplicate of findDuplicates(eventIds)) {
   fail(`Event ID重複: ${duplicate}`);
 }
 for (const event of mockEvents) {
-  if (!placeById.has(event.placeId)) fail(`${event.id}: 未登録Place ${event.placeId}`);
+  if (!placeById.has(event.placeId)) fail(`${event.key}: 未登録Place ${event.placeId}`);
+  if (event.id === undefined) {
+    if (!IDLESS_EVENT_KEYS.has(event.key)) {
+      fail(`${event.key}: 正式IDなしEventの内部keyが許可一覧にありません`);
+    }
+    if (event.tags.length !== 0) {
+      fail(`${event.key}: 正式IDなしEventのtagsは空配列が必要です`);
+    }
+  } else {
+    if (!/^[ALEUPTMGR]\d+$/.test(event.id)) {
+      fail(`${event.key}: 正式Event IDはA/L/E/U/P/T/M/G/R + 数字が必要です`);
+    }
+    if (event.key !== event.id) {
+      fail(`${event.key}: 正式IDありEventはkeyとidの一致が必要です`);
+    }
+    const expectedTagId = event.id[0];
+    if (
+      event.tags.length !== 1 ||
+      event.tags[0] !== expectedTagId ||
+      !EVENT_CATEGORY_IDS.has(expectedTagId)
+    ) {
+      fail(`${event.key}: Event.tagsは正式IDの先頭文字1件との一致が必要です`);
+    }
+  }
+  if (event.timeSlots.length === 0) fail(`${event.key}: timeSlotsが空です`);
+
+  let previousEnd = Number.NEGATIVE_INFINITY;
+  for (const [index, timeSlot] of event.timeSlots.entries()) {
+    const start = EVENT_TIME_PATTERN.test(timeSlot.start)
+      ? Date.parse(timeSlot.start)
+      : Number.NaN;
+    const end =
+      timeSlot.end === undefined
+        ? undefined
+        : EVENT_TIME_PATTERN.test(timeSlot.end)
+          ? Date.parse(timeSlot.end)
+          : Number.NaN;
+    if (!Number.isFinite(start)) {
+      fail(`${event.key}: timeSlots[${index}].startは+09:00付きISO 8601時刻が必要です`);
+      continue;
+    }
+    if (end !== undefined && (!Number.isFinite(end) || end <= start)) {
+      fail(`${event.key}: timeSlots[${index}].endが不正か開始時刻より後ではありません`);
+    }
+    if (start < previousEnd) {
+      fail(`${event.key}: timeSlotsが時刻順でないか重複しています`);
+    }
+    previousEnd = end ?? start;
+    const isStartOnlyConsultation = /^R[1-9]$/.test(event.id ?? "");
+    if (isStartOnlyConsultation && end !== undefined) {
+      fail(`${event.key}: 公式終了時刻がないためendは省略が必要です`);
+    }
+    if (end === undefined && !isStartOnlyConsultation) {
+      fail(`${event.key}: 終了時刻を省略できるのはR1〜R9だけです`);
+    }
+  }
+}
+
+for (const key of IDLESS_EVENT_KEYS) {
+  if (!mockEvents.some((event) => event.key === key && event.id === undefined)) {
+    fail(`${key}: 正式IDなしEventがありません`);
+  }
 }
 
 if (errors.length > 0) {

@@ -14,22 +14,26 @@ type EventCardProps = {
 export function EventCard({ event, tagLabel, highlighted = false, cardRef }: EventCardProps) {
   const location = useLocation();
   const place = getPlace(event.placeId);
+  const pathname = event.id ? `/e/${event.id}` : `/events/${event.key}`;
 
   return (
     <Link
       ref={cardRef}
       className={highlighted ? "event-card is-highlighted" : "event-card"}
+      data-event-key={event.key}
       data-event-id={event.id}
-      to={{ pathname: `/e/${event.id}`, search: location.search }}
+      to={{ pathname, search: location.search }}
     >
       <h2>{event.title}</h2>
       <p>
         {formatTimeSlots(event.timeSlots)} <span>@{place?.name ?? event.placeId}</span>
       </p>
-      <div className="event-card__tag">
-        <TagIcon />
-        {tagLabel}
-      </div>
+      {tagLabel && (
+        <div className="event-card__tag">
+          <TagIcon />
+          {tagLabel}
+        </div>
+      )}
     </Link>
   );
 }

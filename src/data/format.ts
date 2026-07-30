@@ -7,7 +7,8 @@ const timeFormat = new Intl.DateTimeFormat("ja-JP", {
 });
 
 export function formatTimeSlot(slot: TimeSlot): string {
-  return `${timeFormat.format(new Date(slot.start))}〜${timeFormat.format(new Date(slot.end))}`;
+  const start = timeFormat.format(new Date(slot.start));
+  return slot.end ? `${start}〜${timeFormat.format(new Date(slot.end))}` : `${start}〜`;
 }
 
 export function formatTimeSlots(slots: TimeSlot[]): string {

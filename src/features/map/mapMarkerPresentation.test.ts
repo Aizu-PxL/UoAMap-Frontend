@@ -18,8 +18,20 @@ const places: Place[] = [
 
 function event(id: string, placeId: string): Event {
   return {
+    key: id,
     id,
     title: `イベント${id}`,
+    description: "説明",
+    placeId,
+    tags: [],
+    timeSlots: [],
+  };
+}
+
+function idlessEvent(key: string, placeId: string): Event {
+  return {
+    key,
+    title: `イベント${key}`,
     description: "説明",
     placeId,
     tags: [],
@@ -69,7 +81,32 @@ function createPresentation(options: {
   });
 }
 
+function firstEventColor(options: Parameters<typeof createPresentation>[0]) {
+  const marker = createPresentation(options)[0];
+  return marker?.type === "event" ? marker.colorKey : null;
+}
+
 describe("createMapMarkerPresentation", () => {
+  test("正式IDなしイベントも内部keyでmarker actionを作る", () => {
+    expect(
+      createPresentation({
+        events: [idlessEvent("service-lunch", "room-a")],
+        floorId: "rq-1f",
+      }),
+    ).toEqual([
+      {
+        type: "event",
+        coordinates: { x: 1, y: 2 },
+        markerLabel: "研究棟 Aのイベントを表示: イベントservice-lunch",
+        action: { kind: "event", eventKey: "service-lunch" },
+        placeId: "room-a",
+        eventKey: "service-lunch",
+        eventId: undefined,
+        colorKey: "default",
+      },
+    ]);
+  });
+
   test("同一placeを先頭イベントで代表し入力place順を維持する", () => {
     const presentation = createPresentation({
       events: [event("E2", "room-b"), event("E1", "room-a"), event("E3", "room-a")],
@@ -80,17 +117,21 @@ describe("createMapMarkerPresentation", () => {
         type: "event",
         coordinates: { x: 3, y: 4 },
         markerLabel: "研究棟 Bのイベントを表示: イベントE2",
-        action: { kind: "event", eventId: "E2" },
+        action: { kind: "event", eventKey: "E2" },
         placeId: "room-b",
+        eventKey: "E2",
         eventId: "E2",
+        colorKey: "explanation",
       },
       {
         type: "event",
         coordinates: { x: 1, y: 2 },
         markerLabel: "研究棟 Aのイベントを表示: イベントE1",
-        action: { kind: "event", eventId: "E1" },
+        action: { kind: "event", eventKey: "E1" },
         placeId: "room-a",
+        eventKey: "E1",
         eventId: "E1",
+        colorKey: "explanation",
       },
     ]);
   });
@@ -108,9 +149,11 @@ describe("createMapMarkerPresentation", () => {
         type: "event",
         coordinates: { x: 9, y: 10 },
         markerLabel: "研究棟 Dのイベントを表示: イベントED",
-        action: { kind: "event", eventId: "ED" },
+        action: { kind: "event", eventKey: "ED" },
         placeId: "room-d",
+        eventKey: "ED",
         eventId: "ED",
+        colorKey: "explanation",
       },
       { type: "pin", coordinates: { x: 1, y: 2 }, markerKind: "current", placeId: "room-a" },
       { type: "pin", coordinates: { x: 3, y: 4 }, markerKind: "destination", placeId: "room-b" },
@@ -138,17 +181,39 @@ describe("createMapMarkerPresentation", () => {
         action: { kind: "floor", floorId: "rq-1f" },
         buildingId: "building_ResearchQuad",
         eventCount: 3,
+        colorKey: "study",
       },
       {
         type: "event",
         coordinates: { x: 70, y: 80 },
         markerLabel: "屋外展示のイベント2件を表示: イベントO1",
-        action: { kind: "event", eventId: "O1" },
+        action: { kind: "event", eventKey: "O1" },
         placeId: "outdoor",
+        eventKey: "O1",
         eventId: "O1",
         eventCount: 2,
+        colorKey: "default",
       },
     ]);
+  });
+
+  test("同一地点と建物集約は同色だけを維持し混色をdefaultへ戻す", () => {
+    expect(
+      firstEventColor({
+        events: [event("A1", "room-a"), event("L1", "room-a")],
+      }),
+    ).toEqual("explanation");
+    expect(
+      firstEventColor({
+        events: [event("A1", "room-a"), event("M1", "room-a")],
+      }),
+    ).toEqual("default");
+    expect(
+      firstEventColor({
+        floorId: "campus",
+        events: [event("R1", "room-a"), event("M1", "room-rq2")],
+      }),
+    ).toEqual("default");
   });
 
   test("キャンパス建物pinを優先し未知placeと座標なしを無視する", () => {

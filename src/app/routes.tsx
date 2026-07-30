@@ -13,6 +13,7 @@ export function AppRoutes() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<MapPanel />} />
         <Route path="/events" element={<SearchPanel />} />
+        <Route path="/events/:eventKey" element={<EventDetail />} />
         <Route path="/e/:eventId" element={<EventDetail />} />
         <Route path="/qr" element={<QrPanel />} />
         <Route path="/schedule" element={<SchedulePanel />} />

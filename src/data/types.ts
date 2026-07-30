@@ -45,11 +45,15 @@ export type Place = PlaceBase &
 export type TimeSlot = {
   /** ISO 8601 */
   start: string;
-  end: string;
+  /** 公式情報に終了時刻がない場合は省略する */
+  end?: string;
 };
 
 export type Event = {
-  id: string;
+  /** URL状態やReact keyに使う年度内一意の内部キー */
+  key: string;
+  /** 公式タイムテーブルの記号。運営イベントには存在しない */
+  id?: string;
   title: string;
   description: string;
   placeId: string;

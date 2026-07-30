@@ -1,5 +1,10 @@
 import type { Event as CampusEvent, Place } from "../../data/types";
 import type { OverlayPoint } from "./mapOverlayGeometry";
+import {
+  getAggregatedEventMarkerColorKey,
+  getEventMarkerColorKey,
+} from "./eventMarkerColor";
+import type { EventMarkerColorKey } from "./eventMarkerColor";
 
 const DEFAULT_FLOOR_ID = "campus";
 
@@ -27,7 +32,7 @@ const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
 
 export type EventMarkerAction =
   | { kind: "floor"; floorId: string }
-  | { kind: "event"; eventId: string };
+  | { kind: "event"; eventKey: string };
 
 export type EventMarkerPlacement = {
   type: "event";
@@ -35,9 +40,11 @@ export type EventMarkerPlacement = {
   markerLabel: string;
   action: EventMarkerAction;
   placeId?: string;
+  eventKey?: string;
   eventId?: string;
   buildingId?: CampusBuildingId;
   eventCount?: number;
+  colorKey: EventMarkerColorKey;
 };
 
 export type PinMarkerPlacement = {
@@ -99,7 +106,11 @@ export function createMapMarkerPresentation({
   const placements: MapMarkerPlacement[] = [];
   const eventsByPlaceId = new Map<
     string,
-    { firstEvent: CampusEvent; eventCount: number }
+    {
+      firstEvent: CampusEvent;
+      eventCount: number;
+      colorKeys: Set<EventMarkerColorKey>;
+    }
   >();
   const pinPlaces = [currentPlace, destinationPlace, focusPlace].filter(
     (place): place is Place => place !== null,
@@ -111,6 +122,10 @@ export function createMapMarkerPresentation({
     eventsByPlaceId.set(event.placeId, {
       firstEvent: group?.firstEvent ?? event,
       eventCount: (group?.eventCount ?? 0) + 1,
+      colorKeys: new Set([
+        ...(group?.colorKeys ?? []),
+        getEventMarkerColorKey(event),
+      ]),
     });
   }
 
@@ -121,21 +136,28 @@ export function createMapMarkerPresentation({
         .map((place) => resolveCampusBuildingId(place, resolveFloorSheetId))
         .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
     );
-    const eventCountByBuildingId = new Map<CampusBuildingId, number>();
+    const eventGroupsByBuildingId = new Map<
+      CampusBuildingId,
+      { eventCount: number; colorKeys: Set<EventMarkerColorKey> }
+    >();
     for (const event of events) {
       const place = resolvePlace(event.placeId);
       const buildingId = place
         ? resolveCampusBuildingId(place, resolveFloorSheetId)
         : null;
       if (buildingId) {
-        eventCountByBuildingId.set(
-          buildingId,
-          (eventCountByBuildingId.get(buildingId) ?? 0) + 1,
-        );
+        const group = eventGroupsByBuildingId.get(buildingId);
+        eventGroupsByBuildingId.set(buildingId, {
+          eventCount: (group?.eventCount ?? 0) + 1,
+          colorKeys: new Set([
+            ...(group?.colorKeys ?? []),
+            getEventMarkerColorKey(event),
+          ]),
+        });
       }
     }
 
-    for (const [buildingId, eventCount] of eventCountByBuildingId) {
+    for (const [buildingId, { eventCount, colorKeys }] of eventGroupsByBuildingId) {
       if (occupiedBuildingIds.has(buildingId)) {
         continue;
       }
@@ -154,10 +176,11 @@ export function createMapMarkerPresentation({
         action: { kind: "floor", floorId: building.floorId },
         buildingId,
         eventCount,
+        colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
     }
 
-    for (const [placeId, { firstEvent, eventCount }] of eventsByPlaceId) {
+    for (const [placeId, { firstEvent, eventCount, colorKeys }] of eventsByPlaceId) {
       const place = resolvePlace(placeId);
       if (
         !place ||
@@ -175,14 +198,16 @@ export function createMapMarkerPresentation({
         type: "event",
         coordinates,
         markerLabel: `${place.name}のイベント${eventCount}件を表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
+        action: { kind: "event", eventKey: firstEvent.key },
         placeId: place.id,
+        eventKey: firstEvent.key,
         eventId: firstEvent.id,
         eventCount,
+        colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
     }
   } else {
-    for (const [placeId, { firstEvent }] of eventsByPlaceId) {
+    for (const [placeId, { firstEvent, colorKeys }] of eventsByPlaceId) {
       const place = resolvePlace(placeId);
       if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
         continue;
@@ -195,9 +220,11 @@ export function createMapMarkerPresentation({
         type: "event",
         coordinates,
         markerLabel: `${place.name}のイベントを表示: ${firstEvent.title}`,
-        action: { kind: "event", eventId: firstEvent.id },
+        action: { kind: "event", eventKey: firstEvent.key },
         placeId: place.id,
+        eventKey: firstEvent.key,
         eventId: firstEvent.id,
+        colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
     }
   }

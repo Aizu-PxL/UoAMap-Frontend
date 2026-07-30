@@ -3,9 +3,11 @@ import { Navigate, useNavigate, useParams, useSearchParams } from "react-router"
 import { useRepository } from "../data/DataProvider";
 import { getPlace } from "../data/places";
 import {
+  createNextMapFocusRequestState,
+  createResolvedQrNavigation,
   setFocusSearchParams,
-  setResolvedQrSearchParams,
 } from "./navigationSearch";
+import { useLayoutControl } from "./layoutControl";
 
 /**
  * QRの着地ルート /q/:qrId(SPEC.md 3.2)。
@@ -17,6 +19,7 @@ export function QrLanding() {
   const { qrId } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { requestBottomSheetSnap } = useLayoutControl();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,15 +37,20 @@ export function QrLanding() {
           setError(`このQRコード（${qrId}）は登録されていません。`);
           return;
         }
+        const destination = createResolvedQrNavigation(searchParams, qr.placeId);
+        requestBottomSheetSnap(destination.sheetSnapPoint);
         navigate(
           {
-            pathname: "/",
-            search: setResolvedQrSearchParams(
-              searchParams,
-              qr.placeId,
-            ).toString(),
+            pathname: destination.pathname,
+            search: destination.searchParams.toString(),
           },
-          { replace: true },
+          {
+            replace: true,
+            state: createNextMapFocusRequestState(
+              undefined,
+              destination.mapFocusPlaceId,
+            ),
+          },
         );
       })
       .catch(() => {
@@ -53,7 +61,7 @@ export function QrLanding() {
     return () => {
       cancelled = true;
     };
-  }, [navigate, qrId, repository, searchParams]);
+  }, [navigate, qrId, repository, requestBottomSheetSnap, searchParams]);
 
   if (error) {
     return (

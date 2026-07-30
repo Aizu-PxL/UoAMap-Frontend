@@ -6,7 +6,7 @@ import type { Event as CampusEvent, Place } from "../data/types";
 export type NavState = {
   /** ?at=placeId から導出した現在地 */
   currentPlace: Place | null;
-  /** ?to=eventId から導出した目的地イベント */
+  /** ?to=eventKey から導出した目的地イベント */
   destinationEvent: CampusEvent | null;
   /** 目的地イベントの会場 */
   destinationPlace: Place | null;
@@ -31,7 +31,7 @@ export function useNavState(): NavState {
 
   const currentPlace = at ? (getPlace(at) ?? null) : null;
   const destinationEvent =
-    to ? (events.find((event) => event.id === to) ?? null) : null;
+    to ? (events.find((event) => event.key === to) ?? null) : null;
   const destinationPlace = destinationEvent
     ? (getPlace(destinationEvent.placeId) ?? null)
     : null;

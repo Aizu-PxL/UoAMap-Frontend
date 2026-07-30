@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router";
 
 type SheetNavigationProps = {
-  onNavigate: () => void;
+  onNavigate: (tabId: Tab["id"]) => void;
 };
 
 type Tab = {
@@ -31,7 +31,7 @@ export function SheetNavigation({ onNavigate }: SheetNavigationProps) {
             aria-label={tab.label}
             className="sheet-nav__button"
             key={tab.id}
-            onClick={onNavigate}
+            onClick={() => onNavigate(tab.id)}
             replace={isActive}
             to={{ pathname: tab.path, search: location.search }}
           >
@@ -43,8 +43,12 @@ export function SheetNavigation({ onNavigate }: SheetNavigationProps) {
   );
 }
 
-function getActiveTab(pathname: string): Tab["id"] | null {
-  if (pathname === "/events" || pathname.startsWith("/e/")) {
+export function getActiveTab(pathname: string): Tab["id"] | null {
+  if (
+    pathname === "/events" ||
+    pathname.startsWith("/events/") ||
+    pathname.startsWith("/e/")
+  ) {
     return "search";
   }
   if (pathname === "/qr" || pathname.startsWith("/q/")) {

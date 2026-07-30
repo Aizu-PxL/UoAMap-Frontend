@@ -103,6 +103,25 @@ const qrPlaces: Place[] = placeProposalsJson.map((proposal) =>
   ),
 );
 
+// Route Editorで既存Routeノードを再利用したQR地点。新規Place案には含まれないため、
+// 計画JSONとの整合はscripts/verify-places.tsで明示的に検証する。
+const reusedRouteQrPlaces: Place[] = [
+  coordinates("main_dormitory", "campus", "創明寮前", 604, 214),
+  coordinates("main_lictia_entrance", "campus", "LICTiA入口", 610, 264),
+  coordinates("main_gym", "campus", "体育館前", 390, 435),
+  coordinates("main_node_32", "campus", "メイン通路管理棟前", 390, 528),
+  coordinates("main_node_34", "campus", "メイン通路講堂前", 367, 590),
+  coordinates("main_node_36", "campus", "正門", 378, 655),
+  coordinates("lh_entrance_west", "lh-1f", "講義棟西口出口", 116, 475),
+  coordinates("sh_entrance_south1f", "sh-1f", "学生ホール売店出口", 51, 85),
+  coordinates("sh_entrance_east", "sh-2f", "学生ホール東口出口", 125, 3),
+  coordinates("ubic_node_2", "ubic-1f", "UBIC出口", 39, 57),
+  coordinates("lictia_node_4", "lictia-1f", "LICTiA出口", 112, 52),
+  coordinates("main_sh_entrance_south2f", "campus", "学生ホール南口入口", 332, 363),
+  coordinates("main_sh_entrance_south1f", "campus", "学生ホール売店入口", 335, 378),
+  coordinates("sh_entrance_north", "sh-1f", "学生ホール北口出口", 55, 4),
+];
+
 const eventVenuePlaces: Place[] = [
   svg("main_robothangar", "campus", "駐車場 ロボット格納庫", "building_RobotGarage"),
   svg("lh_room_lth_1", "lh-1f", "大講義室", "room_1F_LTh"),
@@ -147,6 +166,7 @@ const eventVenuePlaces: Place[] = [
 
 export const places: Place[] = [
   ...qrPlaces,
+  ...reusedRouteQrPlaces,
   ...eventVenuePlaces,
   unmapped("campus-all", "campus", "キャンパス全域"),
 ];

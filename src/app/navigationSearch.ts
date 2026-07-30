@@ -1,13 +1,21 @@
 export type MapFocusRequestState = {
   mapFocusRequestNonce: number;
+  mapFocusPlaceId?: string;
+};
+
+export type GuidedNavigation = {
+  pathname: "/" | "/qr";
+  searchParams: URLSearchParams;
+  sheetSnapPoint: 22 | 82;
+  mapFocusPlaceId?: string;
 };
 
 export function setDestinationSearchParams(
   currentSearch: URLSearchParams,
-  eventId: string,
+  eventKey: string,
 ): URLSearchParams {
   const params = new URLSearchParams(currentSearch);
-  params.set("to", eventId);
+  params.set("to", eventKey);
   params.delete("focus");
   return params;
 }
@@ -33,18 +41,72 @@ export function setResolvedQrSearchParams(
 
 export function setEventHighlightSearchParams(
   currentSearch: URLSearchParams,
-  eventId: string,
+  eventKey: string,
 ): URLSearchParams {
   const params = new URLSearchParams(currentSearch);
-  params.set("highlight", eventId);
+  params.set("highlight", eventKey);
   return params;
+}
+
+export function createDestinationNavigation(
+  currentSearch: URLSearchParams,
+  eventKey: string,
+  routableCurrentPlaceId: string | null,
+): GuidedNavigation {
+  const searchParams = setDestinationSearchParams(currentSearch, eventKey);
+  return routableCurrentPlaceId
+    ? {
+        pathname: "/",
+        searchParams,
+        sheetSnapPoint: 22,
+        mapFocusPlaceId: routableCurrentPlaceId,
+      }
+    : { pathname: "/qr", searchParams, sheetSnapPoint: 82 };
+}
+
+export function createResolvedQrNavigation(
+  currentSearch: URLSearchParams,
+  placeId: string,
+): GuidedNavigation {
+  return {
+    pathname: "/",
+    searchParams: setResolvedQrSearchParams(currentSearch, placeId),
+    sheetSnapPoint: 22,
+    mapFocusPlaceId: placeId,
+  };
+}
+
+export function getEventDetailPath(eventKey: string, eventId?: string): string {
+  return eventId
+    ? `/e/${encodeURIComponent(eventId)}`
+    : `/events/${encodeURIComponent(eventKey)}`;
+}
+
+export function getEntrySheetSnapPoint(pathname: string): 82 | null {
+  const pathSegments = pathname.split("/").filter(Boolean);
+  if (pathSegments.length === 1 && pathSegments[0] === "qr") {
+    return 82;
+  }
+
+  if (
+    pathSegments.length === 2 &&
+    (pathSegments[0] === "e" || pathSegments[0] === "events")
+  ) {
+    return 82;
+  }
+
+  return null;
 }
 
 export function createNextMapFocusRequestState(
   currentState: unknown,
+  mapFocusPlaceId?: string,
 ): MapFocusRequestState {
   const previousNonce = getMapFocusRequestNonce(currentState);
-  return { mapFocusRequestNonce: previousNonce + 1 };
+  return {
+    mapFocusRequestNonce: previousNonce + 1,
+    ...(mapFocusPlaceId ? { mapFocusPlaceId } : {}),
+  };
 }
 
 function getMapFocusRequestNonce(currentState: unknown): number {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { setEventHighlightSearchParams } from "../../app/navigationSearch";
+import { getEventDetailPath } from "../../app/navigationSearch";
+import type { BottomSheetSnapPoint } from "../../components/bottom-sheet/bottomSheetGeometry";
 import { floors, getPlace, mapSheets } from "../../data/places";
 import type { Event as CampusEvent, Place } from "../../data/types";
 import type { RoutePresentation } from "../routing/routePresentation";
@@ -17,6 +18,7 @@ import {
   type MapMarkerPlacement,
 } from "./mapMarkerPresentation";
 import { getMapOverlayRedrawKey } from "./mapOverlayRedraw";
+import { exceedsMapTapMovement } from "./mapGesture";
 import {
   focusMapViewBox,
   getProportionalMapViewBox,
@@ -35,9 +37,11 @@ interface MapCanvasProps {
   currentPlace: Place | null;
   destinationPlace: Place | null;
   focusPlace: Place | null;
+  requestedFocusPlace: Place | null;
   focusRequestNonce: number;
   events: CampusEvent[];
   routePresentation: RoutePresentation;
+  onRequestBottomSheetSnap: (snapPoint: BottomSheetSnapPoint) => void;
 }
 
 const DEFAULT_FLOOR_ID = "campus";
@@ -58,7 +62,7 @@ const PERSON_DETAIL_PATH =
   "M25 20.42a4.17 4.17 0 1 0 0-8.34 4.17 4.17 0 0 0 0 8.34Zm-7.29 10.41h14.58v-2.08c0-3.47-3.24-6.25-7.29-6.25s-7.29 2.78-7.29 6.25v2.08Z";
 const EVENT_MARKER_SIZE = 24;
 const EVENT_MARKER_RADIUS = 11;
-const EVENT_MARKER_LOCAL_ANCHOR = { x: 12, y: 12 };
+const EVENT_MARKER_LOCAL_ANCHOR = { x: 12, y: 32 };
 const PIN_LOCAL_ANCHOR = { x: 25, y: 45.83 };
 const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
@@ -193,9 +197,11 @@ export function MapCanvas({
   currentPlace,
   destinationPlace,
   focusPlace,
+  requestedFocusPlace,
   focusRequestNonce,
   events,
   routePresentation,
+  onRequestBottomSheetSnap,
 }: MapCanvasProps) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -228,6 +234,7 @@ export function MapCanvas({
     focusSearchParams.get("focus") ?? "",
     focusSearchParams.get("to") ?? "",
     focusSearchParams.get("at") ?? "",
+    requestedFocusPlace?.id ?? "",
     focusRequestNonce,
   ].join(":");
   const selectableFloorIds = floorGroups.find((group) =>
@@ -235,7 +242,6 @@ export function MapCanvas({
   );
   const routeFloorIds = routePresentation.floorIds;
   const hasVisibleRoute = routeFloorIds.has(floorId);
-  const isCampusOnRoute = routeFloorIds.has(DEFAULT_FLOOR_ID);
 
   // Store original viewBox for zoom clamping calculation
   const originalViewBoxRef = useRef<MapViewBox>(DEFAULT_VIEW_BOX);
@@ -252,9 +258,12 @@ export function MapCanvas({
     panInverseScreenMatrix?: DOMMatrix;
     pinchStartDistance?: number;
     pinchCenter?: { x: number; y: number };
+    pointerStartClient?: { x: number; y: number };
+    pointerMoved: boolean;
   }>({
     isPanning: false,
     isPinching: false,
+    pointerMoved: false,
     startViewBox: DEFAULT_VIEW_BOX,
   });
 
@@ -465,7 +474,8 @@ export function MapCanvas({
 
   // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
   useEffect(() => {
-    const prioritizedPlace = focusPlace ?? destinationPlace ?? currentPlace;
+    const prioritizedPlace =
+      requestedFocusPlace ?? focusPlace ?? destinationPlace ?? currentPlace;
     const svgElement = svgRef.current;
     if (
       loading ||
@@ -494,7 +504,15 @@ export function MapCanvas({
         FOCUS_VERTICAL_ANCHOR,
       ),
     );
-  }, [currentPlace, destinationPlace, floorId, focusPlace, focusRequestKey, loading]);
+  }, [
+    currentPlace,
+    destinationPlace,
+    floorId,
+    focusPlace,
+    focusRequestKey,
+    loading,
+    requestedFocusPlace,
+  ]);
 
   // 元SVGから抽出したラベルを、routeとmarkerの間の専用レイヤーへ描画する。
   useEffect(() => {
@@ -529,9 +547,9 @@ export function MapCanvas({
       labels: mapLabels,
       userUnitsPerPixel,
       isCampusOverview: floorId === DEFAULT_FLOOR_ID,
-      exclusionBounds: markerPlacements.map((marker) =>
-        getMarkerExclusionBounds(marker, userUnitsPerPixel),
-      ),
+      exclusionBounds: markerPlacements
+        .filter((marker) => marker.type === "pin")
+        .map((marker) => getMarkerExclusionBounds(marker, userUnitsPerPixel)),
     });
   }, [
     currentPlace,
@@ -600,11 +618,18 @@ export function MapCanvas({
           EVENT_MARKER_LOCAL_ANCHOR,
         ),
       );
-      group.setAttribute("class", "map-marker map-marker--event");
+      group.setAttribute(
+        "class",
+        `map-marker map-marker--event map-marker--event-${marker.colorKey}`,
+      );
+      group.setAttribute("data-event-color", marker.colorKey);
       group.setAttribute("data-anchor-x", String(marker.coordinates.x));
       group.setAttribute("data-anchor-y", String(marker.coordinates.y));
       if (marker.placeId) {
         group.setAttribute("data-place-id", marker.placeId);
+      }
+      if (marker.eventKey) {
+        group.setAttribute("data-event-key", marker.eventKey);
       }
       if (marker.eventId) {
         group.setAttribute("data-event-id", marker.eventId);
@@ -670,13 +695,10 @@ export function MapCanvas({
             return;
           }
 
-          const searchParams = setEventHighlightSearchParams(
-            new URLSearchParams(location.search),
-            marker.action.eventId,
-          );
+          onRequestBottomSheetSnap(82);
           void navigate({
-            pathname: "/events",
-            search: `?${searchParams.toString()}`,
+            pathname: getEventDetailPath(marker.action.eventKey, marker.eventId),
+            search: location.search,
           });
         };
         appendEventBadge(marker, onActivate);
@@ -722,6 +744,7 @@ export function MapCanvas({
     loading,
     location.search,
     navigate,
+    onRequestBottomSheetSnap,
     overlayRedrawKey,
   ]);
 
@@ -775,6 +798,8 @@ export function MapCanvas({
     gestureRef.current.startViewBox = { ...viewBox };
     gestureRef.current.panStartSvgPoint = panStartSvgPoint;
     gestureRef.current.panInverseScreenMatrix = inverseScreenMatrix;
+    gestureRef.current.pointerStartClient = { x: event.clientX, y: event.clientY };
+    gestureRef.current.pointerMoved = false;
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -794,20 +819,44 @@ export function MapCanvas({
     );
     if (!currentSvgPoint) return;
 
+    const pointerStartClient = gestureRef.current.pointerStartClient;
+    if (
+      pointerStartClient &&
+      exceedsMapTapMovement(pointerStartClient, {
+        x: event.clientX,
+        y: event.clientY,
+      })
+    ) {
+      gestureRef.current.pointerMoved = true;
+    }
+
     setViewBox(
       panMapViewBox(
         gestureRef.current.startViewBox,
         gestureRef.current.panStartSvgPoint,
         currentSvgPoint,
+        originalViewBoxRef.current,
       ),
     );
   };
 
-  const handlePointerUp = () => {
+  const finishPointer = (allowTap: boolean) => {
+    const shouldCollapse =
+      allowTap &&
+      gestureRef.current.isPanning &&
+      !gestureRef.current.isPinching &&
+      !gestureRef.current.pointerMoved;
     gestureRef.current.isPanning = false;
     gestureRef.current.panStartSvgPoint = undefined;
     gestureRef.current.panInverseScreenMatrix = undefined;
+    gestureRef.current.pointerStartClient = undefined;
+    gestureRef.current.pointerMoved = false;
+    if (shouldCollapse) {
+      onRequestBottomSheetSnap(22);
+    }
   };
+
+  const handlePointerUp = () => finishPointer(true);
 
   const startPinch = (touches: React.TouchList) => {
     const svgElement = svgRef.current;
@@ -828,6 +877,7 @@ export function MapCanvas({
 
     gestureRef.current.isPanning = false;
     gestureRef.current.isPinching = true;
+    gestureRef.current.pointerMoved = true;
     gestureRef.current.pinchStartDistance = Math.hypot(
       touch2.clientX - touch1.clientX,
       touch2.clientY - touch1.clientY,
@@ -892,7 +942,7 @@ export function MapCanvas({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerUp}
+      onPointerLeave={() => finishPointer(false)}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -930,15 +980,12 @@ export function MapCanvas({
           <div className="map-canvas__floor-switch" aria-label="フロア切替">
             {selectableFloorIds.map((selectableFloorId) => {
               const floorLabel = getFloorLabel(selectableFloorId);
-              const isOnRoute = routeFloorIds.has(selectableFloorId);
               return (
                 <button
                   key={selectableFloorId}
                   type="button"
-                  className={`map-canvas__floor-button${
-                    isOnRoute ? " map-canvas__floor-button--on-route" : ""
-                  }`}
-                  aria-label={isOnRoute ? `${floorLabel}、ルート上` : floorLabel}
+                  className="map-canvas__floor-button"
+                  aria-label={floorLabel}
                   aria-pressed={selectableFloorId === floorId}
                   onClick={() => onFloorChange(selectableFloorId)}
                 >
@@ -951,14 +998,8 @@ export function MapCanvas({
         {floorId !== DEFAULT_FLOOR_ID && (
           <button
             type="button"
-            className={`map-canvas__campus-button${
-              isCampusOnRoute ? " map-canvas__campus-button--on-route" : ""
-            }`}
-            aria-label={
-              isCampusOnRoute
-                ? "キャンパス全体へ戻る、ルート上"
-                : "キャンパス全体へ戻る"
-            }
+            className="map-canvas__campus-button"
+            aria-label="キャンパス全体へ戻る"
             onClick={() => onFloorChange(DEFAULT_FLOOR_ID)}
           >
             キャンパス全体へ戻る

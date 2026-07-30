@@ -1,21 +1,37 @@
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation } from "react-router";
 import { BottomSheet } from "../components/bottom-sheet/BottomSheet";
+import type { BottomSheetSnapPoint } from "../components/bottom-sheet/bottomSheetGeometry";
 import { useCampusData } from "../data/DataProvider";
+import { getPlace } from "../data/places";
 import { MapCanvas } from "../features/map/MapCanvas";
 import { findShortestRouteBetweenPlaces } from "../features/routing/findShortestRoute";
 import { routeGraph } from "../features/routing/routeGraph";
 import { createRoutePresentation } from "../features/routing/routePresentation";
 import { useNavState } from "./useNavState";
+import { LayoutControlProvider } from "./layoutControl";
+import { getEntrySheetSnapPoint } from "./navigationSearch";
 
 export function AppLayout() {
   const [floorId, setFloorId] = useState("campus");
   const [bottomSheetHeight, setBottomSheetHeight] = useState(58);
+  const [sheetSnapRequest, setSheetSnapRequest] = useState<{
+    key: number;
+    snapPoint: BottomSheetSnapPoint;
+  } | null>(null);
   const location = useLocation();
   const { events } = useCampusData();
   const { currentPlace, destinationPlace, focusPlace } = useNavState();
 
-  const prioritizedPlace = focusPlace ?? destinationPlace ?? currentPlace;
+  const requestedMapFocusPlaceId =
+    typeof location.state?.mapFocusPlaceId === "string"
+      ? location.state.mapFocusPlaceId
+      : null;
+  const requestedMapFocusPlace = requestedMapFocusPlaceId
+    ? (getPlace(requestedMapFocusPlaceId) ?? null)
+    : null;
+  const prioritizedPlace =
+    requestedMapFocusPlace ?? focusPlace ?? destinationPlace ?? currentPlace;
   const navigationParams = new URLSearchParams(location.search);
   const expandRequestKey = navigationParams.get("highlight");
   const hasNavigationParams = ["at", "to", "focus"].some((param) =>
@@ -28,6 +44,16 @@ export function AppLayout() {
   const appShellStyle = {
     "--bottom-sheet-height": `${bottomSheetHeight}svh`,
   } as CSSProperties;
+  const requestBottomSheetSnap = useCallback((snapPoint: BottomSheetSnapPoint) => {
+    setSheetSnapRequest((current) => ({
+      key: (current?.key ?? 0) + 1,
+      snapPoint,
+    }));
+  }, []);
+  const layoutControl = useMemo(
+    () => ({ requestBottomSheetSnap }),
+    [requestBottomSheetSnap],
+  );
   const routePresentation = useMemo(() => {
     const routeEdges =
       currentPlace && destinationPlace
@@ -48,25 +74,37 @@ export function AppLayout() {
     }
   }, [hasNavigationParams, prioritizedPlace]);
 
+  useEffect(() => {
+    const entrySnapPoint = getEntrySheetSnapPoint(location.pathname);
+    if (entrySnapPoint !== null) {
+      requestBottomSheetSnap(entrySnapPoint);
+    }
+  }, [location.pathname, requestBottomSheetSnap]);
+
   return (
-    <main className="app-shell" style={appShellStyle}>
-      {/* 地図キャンバス。全画面共通の背面レイヤー */}
-      <MapCanvas
-        floorId={floorId}
-        onFloorChange={setFloorId}
-        currentPlace={currentPlace}
-        destinationPlace={destinationPlace}
-        focusPlace={focusPlace}
-        focusRequestNonce={focusRequestNonce}
-        events={events}
-        routePresentation={routePresentation}
-      />
-      <BottomSheet
-        expandRequestKey={expandRequestKey}
-        onHeightChange={setBottomSheetHeight}
-      >
-        <Outlet />
-      </BottomSheet>
-    </main>
+    <LayoutControlProvider value={layoutControl}>
+      <main className="app-shell" style={appShellStyle}>
+        {/* 地図キャンバス。全画面共通の背面レイヤー */}
+        <MapCanvas
+          floorId={floorId}
+          onFloorChange={setFloorId}
+          currentPlace={currentPlace}
+          destinationPlace={destinationPlace}
+          focusPlace={focusPlace}
+          requestedFocusPlace={requestedMapFocusPlace}
+          focusRequestNonce={focusRequestNonce}
+          events={events}
+          routePresentation={routePresentation}
+          onRequestBottomSheetSnap={requestBottomSheetSnap}
+        />
+        <BottomSheet
+          expandRequestKey={expandRequestKey}
+          onHeightChange={setBottomSheetHeight}
+          snapRequest={sheetSnapRequest}
+        >
+          <Outlet />
+        </BottomSheet>
+      </main>
+    </LayoutControlProvider>
   );
 }

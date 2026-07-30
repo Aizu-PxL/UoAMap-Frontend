@@ -3,14 +3,24 @@ import { useCampusData } from "../../data/DataProvider";
 import { TagIcon } from "./EventCard";
 import { formatTimeSlots } from "../../data/format";
 import { getPlace } from "../../data/places";
-import { setDestinationSearchParams } from "../../app/navigationSearch";
+import {
+  createDestinationNavigation,
+  createNextMapFocusRequestState,
+} from "../../app/navigationSearch";
+import { useLayoutControl } from "../../app/layoutControl";
+import { useNavState } from "../../app/useNavState";
 
 export function EventDetail() {
-  const { eventId } = useParams();
+  const { eventId, eventKey } = useParams();
   const { events, tags, loading, error } = useCampusData();
   const location = useLocation();
   const navigate = useNavigate();
-  const event = events.find((candidate) => candidate.id === eventId);
+  const { requestBottomSheetSnap } = useLayoutControl();
+  const { currentPlace } = useNavState();
+  const event = eventId
+    ? events.find((candidate) => candidate.id === eventId)
+    : events.find((candidate) => candidate.key === eventKey);
+  const requestedEvent = eventId ?? eventKey;
 
   // 一覧からイベントを開いただけでは地図を動かさない(目的地・フォーカスは
   // 「ここへ行く」を押したときだけ)。そのため詳細表示時の自動 `to` セットは行わない。
@@ -30,7 +40,7 @@ export function EventDetail() {
   if (!event) {
     return (
       <div className="landing-message" role="alert">
-        <p>イベント「{eventId}」が見つかりません。</p>
+        <p>イベント「{requestedEvent}」が見つかりません。</p>
         <Link to={{ pathname: "/events", search: location.search }}>検索へ戻る</Link>
       </div>
     );
@@ -42,11 +52,26 @@ export function EventDetail() {
   );
 
   const setDestination = () => {
-    const params = setDestinationSearchParams(
+    const destination = createDestinationNavigation(
       new URLSearchParams(location.search),
-      event.id,
+      event.key,
+      currentPlace && currentPlace.mapping !== "unmapped" ? currentPlace.id : null,
     );
-    navigate({ pathname: "/", search: params.toString() });
+    requestBottomSheetSnap(destination.sheetSnapPoint);
+    navigate(
+      {
+        pathname: destination.pathname,
+        search: destination.searchParams.toString(),
+      },
+      destination.mapFocusPlaceId
+        ? {
+            state: createNextMapFocusRequestState(
+              location.state,
+              destination.mapFocusPlaceId,
+            ),
+          }
+        : undefined,
+    );
   };
 
   return (
