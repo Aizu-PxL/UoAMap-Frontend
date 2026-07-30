@@ -217,6 +217,7 @@ export function MapCanvas({
   const [error, setError] = useState<string | null>(null);
   const [viewBox, setViewBox] = useState<MapViewBox>(DEFAULT_VIEW_BOX);
   const [mapLabels, setMapLabels] = useState<MapLabel[]>([]);
+  const [loadedSheetId, setLoadedSheetId] = useState<string | null>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const lastHandledFocusRequestRef = useRef<string | null>(null);
   const overlayRedrawKey = getMapOverlayRedrawKey(viewBox, containerSize);
@@ -316,6 +317,7 @@ export function MapCanvas({
     }
 
     setLoading(true);
+    setLoadedSheetId(null);
     svgRef.current = null;
     setMapLabels([]);
     svgHost?.replaceChildren();
@@ -382,6 +384,7 @@ export function MapCanvas({
         svgHost.replaceChildren(svgElement);
         svgRef.current = svgElement;
         setMapLabels(extractMapLabels(svgElement));
+        setLoadedSheetId(sheet.id);
 
         // Determine if we should preserve viewBox across floor switch
         const previousFloorId = previousFloorIdRef.current;
@@ -479,6 +482,7 @@ export function MapCanvas({
     const svgElement = svgRef.current;
     if (
       loading ||
+      loadedSheetId !== sheetId ||
       !prioritizedPlace ||
       prioritizedPlace.floorId !== floorId ||
       !svgElement
@@ -510,8 +514,10 @@ export function MapCanvas({
     floorId,
     focusPlace,
     focusRequestKey,
+    loadedSheetId,
     loading,
     requestedFocusPlace,
+    sheetId,
   ]);
 
   // 元SVGから抽出したラベルを、routeとmarkerの間の専用レイヤーへ描画する。
@@ -598,6 +604,7 @@ export function MapCanvas({
     ) => {
       const group = document.createElementNS(SVG_NAMESPACE, "g");
       const hitArea = document.createElementNS(SVG_NAMESPACE, "rect");
+      const outline = document.createElementNS(SVG_NAMESPACE, "circle");
       const surface = document.createElementNS(SVG_NAMESPACE, "circle");
       const glyph = document.createElementNS(SVG_NAMESPACE, "path");
       const openEventWithKeyboard = (keyboardEvent: KeyboardEvent) => {
@@ -649,13 +656,17 @@ export function MapCanvas({
       hitArea.setAttribute("width", marker.eventCount === undefined ? "44" : "56");
       hitArea.setAttribute("height", "44");
       hitArea.setAttribute("rx", "22");
+      outline.setAttribute("class", "map-marker__event-outline");
+      outline.setAttribute("cx", String(EVENT_MARKER_SIZE / 2));
+      outline.setAttribute("cy", String(EVENT_MARKER_SIZE / 2));
+      outline.setAttribute("r", String(EVENT_MARKER_RADIUS));
       surface.setAttribute("class", "map-marker__event-surface");
       surface.setAttribute("cx", String(EVENT_MARKER_SIZE / 2));
       surface.setAttribute("cy", String(EVENT_MARKER_SIZE / 2));
       surface.setAttribute("r", String(EVENT_MARKER_RADIUS));
       glyph.setAttribute("class", "map-marker__event-glyph");
       glyph.setAttribute("d", EVENT_MARKER_PERSON_PATH);
-      group.append(hitArea, surface, glyph);
+      group.append(hitArea, outline, surface, glyph);
 
       if (marker.eventCount !== undefined) {
         const countText = String(marker.eventCount);
@@ -696,10 +707,13 @@ export function MapCanvas({
           }
 
           onRequestBottomSheetSnap(82);
-          void navigate({
-            pathname: getEventDetailPath(marker.action.eventKey, marker.eventId),
-            search: location.search,
-          });
+          void navigate(
+            {
+              pathname: getEventDetailPath(marker.action.eventKey, marker.eventId),
+              search: location.search,
+            },
+            { state: location.state },
+          );
         };
         appendEventBadge(marker, onActivate);
         continue;
@@ -743,6 +757,7 @@ export function MapCanvas({
     focusPlace,
     loading,
     location.search,
+    location.state,
     navigate,
     onRequestBottomSheetSnap,
     overlayRedrawKey,

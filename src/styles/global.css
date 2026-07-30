@@ -210,14 +210,23 @@ input {
   fill: var(--map-marker-hit-area);
 }
 
+.map-marker__event-outline {
+  fill: var(--color-surface);
+  stroke: var(--color-text);
+  stroke-width: 4px;
+}
+
 .map-marker__event-surface {
-  fill: var(--map-marker-event-color);
+  fill: var(--color-surface);
   stroke: var(--map-marker-event-color);
   stroke-width: 2px;
 }
 
 .map-marker__event-glyph {
-  fill: var(--color-text);
+  fill: var(--map-marker-event-color);
+  stroke: var(--color-text);
+  stroke-width: 0.75px;
+  paint-order: stroke fill;
 }
 
 .map-marker__event-count-background {
@@ -237,8 +246,8 @@ input {
   outline: none;
 }
 
-.map-marker--event:focus-visible .map-marker__event-surface {
-  stroke-width: 4px;
+.map-marker--event:focus-visible .map-marker__event-outline {
+  stroke-width: 6px;
 }
 
 .map-marker__detail {
