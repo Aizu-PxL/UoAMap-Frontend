@@ -5,6 +5,7 @@ import {
   createQrLandingLocation,
   extractQrIdFromAppUrl,
 } from "./qrValue";
+import { shouldRunQrScanner } from "./qrVisibility";
 
 type ScannerPhase = "starting" | "scanning" | "failed";
 
@@ -14,12 +15,42 @@ export function QrPanel() {
   const [phase, setPhase] = useState<ScannerPhase>("starting");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [retryNonce, setRetryNonce] = useState(0);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(
+    () => document.visibilityState === "visible",
+  );
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const updateVisibility = () => {
+      setIsDocumentVisible(document.visibilityState === "visible");
+    };
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
+  }, []);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video) {
+      return;
+    }
+    if (!("IntersectionObserver" in window)) {
+      setIsVideoVisible(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVideoVisible(Boolean(entry?.isIntersecting)),
+      { threshold: 0.01 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldRunQrScanner(isDocumentVisible, isVideoVisible)) {
       return;
     }
 
@@ -110,7 +141,7 @@ export function QrPanel() {
       void scanner?.pause(true);
       scanner?.destroy();
     };
-  }, [location.search, navigate, retryNonce]);
+  }, [isDocumentVisible, isVideoVisible, location.search, navigate, retryNonce]);
 
   return (
     <div className="qr-panel">

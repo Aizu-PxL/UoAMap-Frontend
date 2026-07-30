@@ -13,18 +13,21 @@ import {
   getNextBottomSheetSnapPoint,
   initialBottomSheetSnapPoint,
 } from "./bottomSheetGeometry";
+import type { BottomSheetSnapPoint } from "./bottomSheetGeometry";
 import { SheetNavigation } from "./SheetNavigation";
 
 type BottomSheetProps = {
   children: ReactNode;
   expandRequestKey: string | null;
   onHeightChange: (height: number) => void;
+  snapRequest: { key: number; snapPoint: BottomSheetSnapPoint } | null;
 };
 
 export function BottomSheet({
   children,
   expandRequestKey,
   onHeightChange,
+  snapRequest,
 }: BottomSheetProps) {
   const [height, setHeight] = useState(initialBottomSheetSnapPoint);
   const [isDragging, setIsDragging] = useState(false);
@@ -43,6 +46,12 @@ export function BottomSheet({
       setHeight(getExpandedBottomSheetHeight);
     }
   }, [expandRequestKey]);
+
+  useEffect(() => {
+    if (snapRequest) {
+      setHeight(snapRequest.snapPoint);
+    }
+  }, [snapRequest]);
 
   const startDrag = (event: PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -90,8 +99,8 @@ export function BottomSheet({
         <div className="bottom-sheet__handle" aria-hidden="true" />
       </div>
       <SheetNavigation
-        onNavigate={() => {
-          setHeight(getExpandedBottomSheetHeight);
+        onNavigate={(tabId) => {
+          setHeight(tabId === "qr" ? 82 : getExpandedBottomSheetHeight);
         }}
       />
       <div className="bottom-sheet__body">{children}</div>

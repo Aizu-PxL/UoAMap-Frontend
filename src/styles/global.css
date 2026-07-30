@@ -16,6 +16,13 @@
   --map-marker-event-glyph: var(--color-accent);
   --map-marker-event-count-fill: var(--color-accent);
   --map-marker-event-count-text: var(--color-surface);
+  --map-event-explanation: #cc76d1;
+  --map-event-guardian: #ed73b2;
+  --map-event-open-lab: #a5cc4f;
+  --map-event-tour: #67c07d;
+  --map-event-trial-class: #56bcf9;
+  --map-event-consultation: #f2a93b;
+  --map-event-study: #ffff54;
   --map-marker-hit-area: transparent;
   --map-marker-shadow: rgba(0, 0, 0, 0.3);
   --map-label-halo: rgba(255, 255, 255, 0.92);
@@ -166,8 +173,37 @@ input {
 }
 
 .map-marker--event {
+  --map-marker-event-color: var(--color-accent);
   pointer-events: auto;
   cursor: pointer;
+}
+
+.map-marker--event-explanation {
+  --map-marker-event-color: var(--map-event-explanation);
+}
+
+.map-marker--event-guardian {
+  --map-marker-event-color: var(--map-event-guardian);
+}
+
+.map-marker--event-open-lab {
+  --map-marker-event-color: var(--map-event-open-lab);
+}
+
+.map-marker--event-tour {
+  --map-marker-event-color: var(--map-event-tour);
+}
+
+.map-marker--event-trial-class {
+  --map-marker-event-color: var(--map-event-trial-class);
+}
+
+.map-marker--event-consultation {
+  --map-marker-event-color: var(--map-event-consultation);
+}
+
+.map-marker--event-study {
+  --map-marker-event-color: var(--map-event-study);
 }
 
 .map-marker__hit-area {
@@ -175,21 +211,21 @@ input {
 }
 
 .map-marker__event-surface {
-  fill: var(--map-marker-event-fill);
-  stroke: var(--map-marker-event-border);
+  fill: var(--map-marker-event-color);
+  stroke: var(--map-marker-event-color);
   stroke-width: 2px;
 }
 
 .map-marker__event-glyph {
-  fill: var(--map-marker-event-glyph);
+  fill: var(--color-text);
 }
 
 .map-marker__event-count-background {
-  fill: var(--map-marker-event-count-fill);
+  fill: var(--map-marker-event-color);
 }
 
 .map-marker__event-count {
-  fill: var(--map-marker-event-count-text);
+  fill: var(--color-text);
   font-family: var(--font-family);
   font-size: 9px;
   font-weight: 800;
@@ -245,25 +281,9 @@ input {
   background: transparent;
 }
 
-.map-canvas__floor-button--on-route::after,
-.map-canvas__campus-button--on-route::after {
-  position: absolute;
-  top: 0.35rem;
-  right: 0.35rem;
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 50%;
-  background: var(--color-accent);
-  content: "";
-}
-
 .map-canvas__floor-button[aria-pressed="true"] {
   color: #ffffff;
   background: var(--color-accent);
-}
-
-.map-canvas__floor-button--on-route[aria-pressed="true"]::after {
-  background: var(--color-surface);
 }
 
 .map-canvas__campus-button {
@@ -289,7 +309,7 @@ input {
   grid-template-rows: auto auto minmax(0, 1fr);
   width: 100%;
   max-width: 430px;
-  min-height: 12rem;
+  min-height: 0;
   height: var(--bottom-sheet-height);
   max-height: 82svh;
   padding: 1rem 1.25rem max(1.25rem, env(safe-area-inset-bottom));
@@ -343,7 +363,8 @@ input {
 .sheet-nav__button {
   display: grid;
   place-items: center;
-  width: 2.7rem;
+  flex: 1 1 0;
+  width: auto;
   height: 4rem;
   border: 0;
   color: var(--color-icon-muted);
@@ -354,10 +375,6 @@ input {
 
 .sheet-nav__button[aria-current="page"] {
   color: var(--color-text);
-}
-
-.sheet-nav__button[aria-label="QR"] {
-  width: 4rem;
 }
 
 /* QRはアクティブ時のみアクセント色、他タブ表示中は薄色 */
@@ -749,6 +766,67 @@ input {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: 4px;
+}
+
+.schedule-panel__open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.schedule-panel__open:focus-visible,
+.schedule-dialog__close:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.schedule-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  background: rgba(17, 17, 17, 0.94);
+}
+
+.schedule-dialog__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 0.75rem;
+}
+
+.schedule-dialog__close {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  background: var(--color-surface);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.schedule-dialog__viewport {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+.schedule-dialog__viewport img {
+  display: block;
+  width: min(1500px, 200vw);
+  max-width: none;
+  height: auto;
+  margin: 0 auto;
   border-radius: 4px;
 }
 

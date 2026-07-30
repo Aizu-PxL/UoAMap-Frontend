@@ -58,14 +58,40 @@ export function parseMapViewBox({
   throw new Error("Invalid SVG viewBox");
 }
 
+const MAX_ZOOM_SCALE = 6;
+
 function clampMapViewBoxSize(width: number, original: MapViewBox) {
   const clampedWidth = Math.min(
-    Math.max(width, original.width / 8),
+    Math.max(width, original.width / MAX_ZOOM_SCALE),
     original.width * 2,
   );
   return {
     width: clampedWidth,
     height: original.height * (clampedWidth / original.width),
+  };
+}
+
+export function clampMapViewBoxPosition(
+  viewBox: MapViewBox,
+  original: MapViewBox,
+): MapViewBox {
+  const clampAxis = (
+    position: number,
+    size: number,
+    originalPosition: number,
+    originalSize: number,
+  ) =>
+    size >= originalSize
+      ? originalPosition - (size - originalSize) / 2
+      : Math.min(
+          Math.max(position, originalPosition),
+          originalPosition + originalSize - size,
+        );
+
+  return {
+    ...viewBox,
+    x: clampAxis(viewBox.x, viewBox.width, original.x, original.width),
+    y: clampAxis(viewBox.y, viewBox.height, original.y, original.height),
   };
 }
 
@@ -77,12 +103,12 @@ export function focusMapViewBox(
 ): MapViewBox {
   const width = original.width * sizeRatio;
   const height = original.height * sizeRatio;
-  return {
+  return clampMapViewBoxPosition({
     x: point.x - width / 2,
     y: point.y - height * verticalAnchor,
     width,
     height,
-  };
+  }, original);
 }
 
 export function zoomMapViewBoxAt(
@@ -97,24 +123,25 @@ export function zoomMapViewBoxAt(
     current.width * zoomFactor,
     original,
   );
-  return {
+  return clampMapViewBoxPosition({
     x: anchor.x - anchorX * width,
     y: anchor.y - anchorY * height,
     width,
     height,
-  };
+  }, original);
 }
 
 export function panMapViewBox(
   start: MapViewBox,
   startPoint: MapPoint,
   currentPoint: MapPoint,
+  original: MapViewBox,
 ): MapViewBox {
-  return {
+  return clampMapViewBoxPosition({
     ...start,
     x: start.x + startPoint.x - currentPoint.x,
     y: start.y + startPoint.y - currentPoint.y,
-  };
+  }, original);
 }
 
 export function getProportionalMapViewBox(
@@ -132,12 +159,12 @@ export function getProportionalMapViewBox(
   const height = (current.height / previousOriginal.height) * nextOriginal.height;
   const centerX = nextOriginal.x + centerXRatio * nextOriginal.width;
   const centerY = nextOriginal.y + centerYRatio * nextOriginal.height;
-  return {
+  return clampMapViewBoxPosition({
     x: centerX - width / 2,
     y: centerY - height / 2,
     width,
     height,
-  };
+  }, nextOriginal);
 }
 
 export function serializeMapViewBox(viewBox: MapViewBox) {

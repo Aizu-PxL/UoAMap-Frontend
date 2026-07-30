@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import {
+  createDestinationNavigation,
   createNextMapFocusRequestState,
+  createResolvedQrNavigation,
+  getEntrySheetSnapPoint,
+  getEventDetailPath,
   setDestinationSearchParams,
   setEventHighlightSearchParams,
   setFocusSearchParams,
@@ -79,6 +83,63 @@ describe("URL状態更新", () => {
   });
 });
 
+describe("目的地から経路案内への遷移", () => {
+  test("Route対応現在地があれば地図へ戻して現在地注目と22svhを要求する", () => {
+    const current = new URLSearchParams("at=main_node_11&focus=old&source=detail");
+    const result = createDestinationNavigation(current, "P1", "main_node_11");
+
+    expect(result.pathname).toEqual("/");
+    expect(result.searchParams.toString()).toEqual(
+      "at=main_node_11&source=detail&to=P1",
+    );
+    expect(result.sheetSnapPoint).toEqual(22);
+    expect(result.mapFocusPlaceId).toEqual("main_node_11");
+  });
+
+  test("現在地がなければ目的地を保持してQRと82svhを要求する", () => {
+    const result = createDestinationNavigation(
+      new URLSearchParams("source=detail"),
+      "service-lunch",
+      null,
+    );
+
+    expect(result.pathname).toEqual("/qr");
+    expect(result.searchParams.toString()).toEqual(
+      "source=detail&to=service-lunch",
+    );
+    expect(result.sheetSnapPoint).toEqual(82);
+    expect(result.mapFocusPlaceId).toEqual(undefined);
+  });
+
+  test("QR解決後は現在地と目的地を保持して現在地注目と22svhを要求する", () => {
+    const result = createResolvedQrNavigation(
+      new URLSearchParams("to=P1&focus=old"),
+      "main_node_11",
+    );
+
+    expect(result.pathname).toEqual("/");
+    expect(result.searchParams.toString()).toEqual("to=P1&at=main_node_11");
+    expect(result.sheetSnapPoint).toEqual(22);
+    expect(result.mapFocusPlaceId).toEqual("main_node_11");
+  });
+
+  test("イベント詳細は正式IDと内部keyで正規ルートを分ける", () => {
+    expect(getEventDetailPath("P1", "P1")).toEqual("/e/P1");
+    expect(getEventDetailPath("service lunch")).toEqual(
+      "/events/service%20lunch",
+    );
+  });
+
+  test("QRとイベント詳細への入場だけ82svhを要求する", () => {
+    expect(getEntrySheetSnapPoint("/qr")).toEqual(82);
+    expect(getEntrySheetSnapPoint("/e/P1")).toEqual(82);
+    expect(getEntrySheetSnapPoint("/events/service-lunch")).toEqual(82);
+    expect(getEntrySheetSnapPoint("/")).toEqual(null);
+    expect(getEntrySheetSnapPoint("/events")).toEqual(null);
+    expect(getEntrySheetSnapPoint("/q/Q001")).toEqual(null);
+  });
+});
+
 describe("地図の再フォーカス要求", () => {
   test("既存nonceを1増やし、それ以外のlocation stateは引き継がない", () => {
     expect(
@@ -87,6 +148,12 @@ describe("地図の再フォーカス要求", () => {
         unrelated: "value",
       }),
     ).toEqual({ mapFocusRequestNonce: 5 });
+    expect(
+      createNextMapFocusRequestState(
+        { mapFocusRequestNonce: 4, unrelated: "value" },
+        "main_node_11",
+      ),
+    ).toEqual({ mapFocusRequestNonce: 5, mapFocusPlaceId: "main_node_11" });
   });
 
   test("nonceが未設定または数値でなければ1から開始する", () => {

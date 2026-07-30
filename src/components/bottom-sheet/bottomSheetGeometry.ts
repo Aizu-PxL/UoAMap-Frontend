@@ -1,4 +1,5 @@
 export const bottomSheetSnapPoints = [22, 58, 82] as const;
+export type BottomSheetSnapPoint = (typeof bottomSheetSnapPoints)[number];
 export const initialBottomSheetSnapPoint = 58;
 
 export function clampBottomSheetHeight(value: number): number {

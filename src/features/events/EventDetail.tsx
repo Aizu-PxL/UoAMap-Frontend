@@ -3,13 +3,20 @@ import { useCampusData } from "../../data/DataProvider";
 import { TagIcon } from "./EventCard";
 import { formatTimeSlots } from "../../data/format";
 import { getPlace } from "../../data/places";
-import { setDestinationSearchParams } from "../../app/navigationSearch";
+import {
+  createDestinationNavigation,
+  createNextMapFocusRequestState,
+} from "../../app/navigationSearch";
+import { useLayoutControl } from "../../app/layoutControl";
+import { useNavState } from "../../app/useNavState";
 
 export function EventDetail() {
   const { eventId, eventKey } = useParams();
   const { events, tags, loading, error } = useCampusData();
   const location = useLocation();
   const navigate = useNavigate();
+  const { requestBottomSheetSnap } = useLayoutControl();
+  const { currentPlace } = useNavState();
   const event = eventId
     ? events.find((candidate) => candidate.id === eventId)
     : events.find((candidate) => candidate.key === eventKey);
@@ -45,11 +52,26 @@ export function EventDetail() {
   );
 
   const setDestination = () => {
-    const params = setDestinationSearchParams(
+    const destination = createDestinationNavigation(
       new URLSearchParams(location.search),
       event.key,
+      currentPlace && currentPlace.mapping !== "unmapped" ? currentPlace.id : null,
     );
-    navigate({ pathname: "/", search: params.toString() });
+    requestBottomSheetSnap(destination.sheetSnapPoint);
+    navigate(
+      {
+        pathname: destination.pathname,
+        search: destination.searchParams.toString(),
+      },
+      destination.mapFocusPlaceId
+        ? {
+            state: createNextMapFocusRequestState(
+              location.state,
+              destination.mapFocusPlaceId,
+            ),
+          }
+        : undefined,
+    );
   };
 
   return (

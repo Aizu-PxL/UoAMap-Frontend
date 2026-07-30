@@ -9,13 +9,13 @@ import {
 } from "./mapOverlayGeometry";
 
 describe("map overlay geometry", () => {
-  test("イベント円中心とピン先端はズーム倍率によらず地点座標へ一致する", () => {
+  test("イベント円中心は地点の20px上、ピン先端は地点座標へ固定する", () => {
     const anchor = { x: 125.5, y: 240.25 };
 
     for (const scale of [0.25, 1, 3.5]) {
       expect(
-        mapAnchoredLocalPoint({ x: 12, y: 12 }, anchor, scale, { x: 12, y: 12 }),
-      ).toEqual(anchor);
+        mapAnchoredLocalPoint({ x: 12, y: 12 }, anchor, scale, { x: 12, y: 32 }),
+      ).toEqual({ x: anchor.x, y: anchor.y - 20 * scale });
       expect(
         mapAnchoredLocalPoint(
           { x: 25, y: 45.83 },

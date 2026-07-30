@@ -81,6 +81,11 @@ function createPresentation(options: {
   });
 }
 
+function firstEventColor(options: Parameters<typeof createPresentation>[0]) {
+  const marker = createPresentation(options)[0];
+  return marker?.type === "event" ? marker.colorKey : null;
+}
+
 describe("createMapMarkerPresentation", () => {
   test("正式IDなしイベントも内部keyでmarker actionを作る", () => {
     expect(
@@ -97,6 +102,7 @@ describe("createMapMarkerPresentation", () => {
         placeId: "room-a",
         eventKey: "service-lunch",
         eventId: undefined,
+        colorKey: "default",
       },
     ]);
   });
@@ -115,6 +121,7 @@ describe("createMapMarkerPresentation", () => {
         placeId: "room-b",
         eventKey: "E2",
         eventId: "E2",
+        colorKey: "explanation",
       },
       {
         type: "event",
@@ -124,6 +131,7 @@ describe("createMapMarkerPresentation", () => {
         placeId: "room-a",
         eventKey: "E1",
         eventId: "E1",
+        colorKey: "explanation",
       },
     ]);
   });
@@ -145,6 +153,7 @@ describe("createMapMarkerPresentation", () => {
         placeId: "room-d",
         eventKey: "ED",
         eventId: "ED",
+        colorKey: "explanation",
       },
       { type: "pin", coordinates: { x: 1, y: 2 }, markerKind: "current", placeId: "room-a" },
       { type: "pin", coordinates: { x: 3, y: 4 }, markerKind: "destination", placeId: "room-b" },
@@ -172,6 +181,7 @@ describe("createMapMarkerPresentation", () => {
         action: { kind: "floor", floorId: "rq-1f" },
         buildingId: "building_ResearchQuad",
         eventCount: 3,
+        colorKey: "study",
       },
       {
         type: "event",
@@ -182,8 +192,28 @@ describe("createMapMarkerPresentation", () => {
         eventKey: "O1",
         eventId: "O1",
         eventCount: 2,
+        colorKey: "default",
       },
     ]);
+  });
+
+  test("同一地点と建物集約は同色だけを維持し混色をdefaultへ戻す", () => {
+    expect(
+      firstEventColor({
+        events: [event("A1", "room-a"), event("L1", "room-a")],
+      }),
+    ).toEqual("explanation");
+    expect(
+      firstEventColor({
+        events: [event("A1", "room-a"), event("M1", "room-a")],
+      }),
+    ).toEqual("default");
+    expect(
+      firstEventColor({
+        floorId: "campus",
+        events: [event("R1", "room-a"), event("M1", "room-rq2")],
+      }),
+    ).toEqual("default");
   });
 
   test("キャンパス建物pinを優先し未知placeと座標なしを無視する", () => {

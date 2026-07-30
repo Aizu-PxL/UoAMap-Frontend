@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  clampMapViewBoxPosition,
   focusMapViewBox,
   getProportionalMapViewBox,
   panMapViewBox,
@@ -54,7 +55,7 @@ describe("mapViewBox", () => {
     ).toEqual("Invalid SVG viewBox");
   });
 
-  test("focusは元viewBoxの40%へ縮小し地点を横中央・上から20%へ置く", () => {
+  test("focusは元viewBoxの40%へ縮小し範囲内で地点を横中央・上から20%へ置く", () => {
     expect(focusMapViewBox(original, { x: 500, y: 300 }, 0.4, 0.2)).toEqual({
       x: 340,
       y: 268,
@@ -63,7 +64,7 @@ describe("mapViewBox", () => {
     });
   });
 
-  test("anchor zoomはアンカー位置を保ち元viewBoxの1/8〜2倍へ制限する", () => {
+  test("anchor zoomはアンカー位置を保ち元viewBoxの1/6〜2倍へ制限する", () => {
     const anchor = { x: 300, y: 300 };
     expect(zoomMapViewBoxAt(original, original, anchor, 0.5)).toEqual({
       x: 200,
@@ -72,23 +73,43 @@ describe("mapViewBox", () => {
       height: 200,
     });
     expect(zoomMapViewBoxAt(original, original, anchor, 0.01)).toEqual({
-      x: 275,
-      y: 287.5,
-      width: 100,
-      height: 50,
+      x: 266.6666666666667,
+      y: 283.3333333333333,
+      width: 133.33333333333334,
+      height: 66.66666666666667,
     });
     expect(zoomMapViewBoxAt(original, original, anchor, 10)).toEqual({
-      x: -100,
-      y: 100,
+      x: -300,
+      y: 0,
       width: 1600,
       height: 800,
     });
   });
 
-  test("panはpointer-down時のviewBoxへSVG座標差分を加える", () => {
+  test("panはpointer-down時のviewBoxへSVG座標差分を加えて元範囲内へclampする", () => {
     expect(
-      panMapViewBox(original, { x: 250, y: 260 }, { x: 230, y: 300 }),
-    ).toEqual({ x: 120, y: 160, width: 800, height: 400 });
+      panMapViewBox(
+        { x: 300, y: 250, width: 400, height: 200 },
+        { x: 250, y: 260 },
+        { x: 230, y: 300 },
+        original,
+      ),
+    ).toEqual({ x: 320, y: 210, width: 400, height: 200 });
+  });
+
+  test("表示範囲は四辺を越えず、元地図より大きい場合は中央固定する", () => {
+    expect(
+      clampMapViewBoxPosition(
+        { x: -500, y: 900, width: 400, height: 200 },
+        original,
+      ),
+    ).toEqual({ x: 100, y: 400, width: 400, height: 200 });
+    expect(
+      clampMapViewBoxPosition(
+        { x: 999, y: 999, width: 1600, height: 800 },
+        original,
+      ),
+    ).toEqual({ x: -300, y: 0, width: 1600, height: 800 });
   });
 
   test("フロア切替は中心位置と表示割合を新しい元viewBoxへ比例変換する", () => {
