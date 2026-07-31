@@ -12,7 +12,7 @@ async function main() {
   
   // Paths
   const mappingsPath = path.join(rootDir, 'uoamap-qr-mappings.json');
-  const pdfTemplatePath = path.join(rootDir, 'Poster', 'Sample', 'CampusQR.pdf');
+  const pdfTemplatePath = path.join(rootDir, 'Poster', 'Sample', 'CampusQR2.pdf');
   const fontPath = path.join(rootDir, 'Poster', 'Sample', 'Noto_Sans_JP', 'static', 'NotoSansJP-Bold.ttf');
   const outDir = path.join(rootDir, 'Poster');
 
@@ -31,7 +31,17 @@ async function main() {
 
   // Process just the first one for testing, or all if we remove the slice
   const testMode = process.argv.includes('--test');
-  const targets = testMode ? mappings.slice(0, 1) : mappings;
+  const targets = testMode ? mappings.slice(0, 1) : [...mappings];
+  
+  if (!testMode) {
+    // Add 3 extra blank posters
+    for (let i = 89; i <= 91; i++) {
+      targets.push({
+        qrId: `Q0${i}`,
+        installationNote: ''
+      });
+    }
+  }
   
   console.log(`Generating ${targets.length} PDF(s)...`);
 
@@ -40,7 +50,7 @@ async function main() {
 
   for (const item of targets) {
     const { qrId, installationNote } = item;
-    const url = `https://aizu-pxl.github.io/UoAMap-Frontend/q/${qrId}`;
+    const url = `https://uoa-ocmap.com/UoAMap-Frontend/q/${qrId}`;
     console.log(`Processing ${qrId}... (${url})`);
 
     // 1. Generate QR Code image (PNG data URI)
@@ -75,8 +85,8 @@ async function main() {
     // Assuming A4 (595.28 x 841.89)
     const qrSize = 275; // Shrunk by ~80%
     const qrX = (width - qrSize) / 2;
-    // Set QR code position to middle
-    const qrY = 183;
+    // Set QR code position (moved down for CampusQR2.pdf)
+    const qrY = 171;
 
     page.drawImage(qrImage, {
       x: qrX,
@@ -90,7 +100,7 @@ async function main() {
     const textBgWidth = 290; // Shrink width more so it fits inside rounded corners
     const textBgHeight = 45;
     const textBgX = (width - textBgWidth) / 2;
-    const textBgY = 96; // Move it slightly up further
+    const textBgY = 88; // Move it down to match the new template
     
     page.drawRectangle({
       x: textBgX,
@@ -101,41 +111,38 @@ async function main() {
     });
 
     // 5. Draw the new text
-    const prefix = `ID: ${qrId} `;
     const defaultFontSize = 24;
-    const prefixWidth = helveticaFont.widthOfTextAtSize(prefix, defaultFontSize);
     
     const maxTextWidth = 280;
     let noteFontSize = defaultFontSize;
     let noteWidth = customFont.widthOfTextAtSize(installationNote, noteFontSize);
     
     // Scale down installationNote if it's too long
-    while (prefixWidth + noteWidth > maxTextWidth && noteFontSize > 10) {
+    while (noteWidth > maxTextWidth && noteFontSize > 10) {
       noteFontSize -= 1;
       noteWidth = customFont.widthOfTextAtSize(installationNote, noteFontSize);
     }
     
-    const totalWidth = prefixWidth + noteWidth;
-    const startX = (width - totalWidth) / 2;
-
-    // Draw prefix with Helvetica Bold to avoid kerning issues
-    page.drawText(prefix, {
-      x: startX,
-      y: textBgY + 12,
-      size: defaultFontSize,
-      font: helveticaFont,
-      color: rgb(0, 0, 0),
-    });
+    const startX = (width - noteWidth) / 2;
 
     // Draw installationNote with custom Japanese font
     // If font size was scaled down, adjust Y to center it vertically
     // Dividing by 2 shifted it too high (superscript look), dividing by 4 is a better middle ground
     const yOffset = (defaultFontSize - noteFontSize) / 4;
     page.drawText(installationNote, {
-      x: startX + prefixWidth,
-      y: textBgY + 12 + yOffset,
+      x: startX,
+      y: textBgY + 9 + yOffset, // Decreased +12 to +9 to move text down slightly
       size: noteFontSize,
       font: customFont,
+      color: rgb(0, 0, 0),
+    });
+
+    // 6. Draw small ID at bottom left
+    page.drawText(qrId, {
+      x: 30,
+      y: 18, // Decreased to align with the bottom of the logo on the right
+      size: 14,
+      font: helveticaFont,
       color: rgb(0, 0, 0),
     });
 
