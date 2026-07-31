@@ -34,13 +34,32 @@ async function main() {
   const targets = testMode ? mappings.slice(0, 1) : [...mappings];
   
   if (!testMode) {
-    // Add 3 extra blank posters
-    for (let i = 89; i <= 91; i++) {
-      targets.push({
-        qrId: `Q0${i}`,
-        installationNote: ''
-      });
+    // Determine the maximum ID currently in the mappings
+    const existingIds = new Set(mappings.map((m: any) => m.qrId));
+    let maxIdNum = 0;
+    for (const id of existingIds) {
+      if (id.startsWith('Q')) {
+        const num = parseInt(id.substring(1), 10);
+        if (!isNaN(num) && num > maxIdNum) {
+          maxIdNum = num;
+        }
+      }
     }
+
+    // Add extra blank posters for any missing numbers, plus 3 spares at the end
+    const targetMax = maxIdNum + 3;
+    for (let i = 1; i <= targetMax; i++) {
+      const qrId = `Q${String(i).padStart(3, '0')}`;
+      if (!existingIds.has(qrId)) {
+        targets.push({
+          qrId,
+          installationNote: ''
+        });
+      }
+    }
+    
+    // Sort targets by qrId so that missing ones (like Q018) are in the correct order
+    targets.sort((a, b) => a.qrId.localeCompare(b.qrId));
   }
   
   console.log(`Generating ${targets.length} PDF(s)...`);

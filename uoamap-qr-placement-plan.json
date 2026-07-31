@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "nextQrNumber": 89,
+  "nextQrNumber": 90,
   "placements": [
     {
       "qrId": "Q001",
@@ -958,6 +958,17 @@
       "floorId": "sh-1f",
       "x": 55,
       "y": 4
+    },
+    {
+      "qrId": "Q089",
+      "sheetId": "sh1f",
+      "routeNodeId": "sh_room_kiyare",
+      "placeId": "sh_room_kiyare",
+      "kind": "fixed",
+      "installationNote": "学生ホールきやれ",
+      "floorId": "sh-1f",
+      "x": 43,
+      "y": 71
     }
   ],
   "placeProposals": [
