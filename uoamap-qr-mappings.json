@@ -520,5 +520,11 @@
     "placeId": "sh_entrance_north",
     "kind": "fixed",
     "installationNote": "学生ホール北口出口"
+  },
+  {
+    "qrId": "Q089",
+    "placeId": "sh_room_kiyare",
+    "kind": "fixed",
+    "installationNote": "学生ホールきやれ"
   }
 ]

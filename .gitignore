@@ -3,3 +3,7 @@ dist
 .vite
 *.local
 .DS_Store
+
+# Generated PDFs
+Poster/All_Posters.pdf
+Poster/All_Posters_test.pdf
