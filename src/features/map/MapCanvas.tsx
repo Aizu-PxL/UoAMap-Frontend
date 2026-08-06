@@ -802,6 +802,12 @@ export function MapCanvas({
     const screenMatrix = svgElement?.getScreenCTM();
     if (!containerRef.current || !screenMatrix || gestureRef.current.isPinching) return;
 
+    const activePointerId = gestureRef.current.pointerId;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    if (activePointerId !== undefined && activePointerId !== event.pointerId) {
+      return;
+    }
+
     const inverseScreenMatrix = screenMatrix.inverse();
     const panStartSvgPoint = screenPointToSvgWithMatrix(
       inverseScreenMatrix,
@@ -811,8 +817,7 @@ export function MapCanvas({
     if (!panStartSvgPoint) return;
 
     gestureRef.current.isPanning = true;
-    if (event.isPrimary) {
-      event.currentTarget.setPointerCapture(event.pointerId);
+    if (gestureRef.current.pointerId === undefined) {
       gestureRef.current.pointerId = event.pointerId;
     }
     gestureRef.current.startViewBox = { ...viewBox };
@@ -823,6 +828,11 @@ export function MapCanvas({
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const activePointerId = gestureRef.current.pointerId;
+    if (activePointerId !== undefined && activePointerId !== event.pointerId) {
+      return;
+    }
+
     if (
       gestureRef.current.isPinching ||
       !gestureRef.current.isPanning ||

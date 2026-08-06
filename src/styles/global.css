@@ -752,6 +752,7 @@ input {
   margin-bottom: 0.6rem;
   color: var(--color-accent);
   font-size: 1.125rem;
+  line-height: 24px;
   text-decoration: none;
 }
 

@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-06(イベント表示・地図／BottomSheet UX修正)
+最終更新: 2026-08-06(BottomSheet外タップの最下部スナップ修正)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -34,6 +34,14 @@
 最新きやれ／Q089データ同期ブリーフ: `docs/tasks/21-kiyare-data-sync.md`（未コミット）
 
 最新イベント表示・地図／BottomSheet UX修正ブリーフ: `docs/tasks/22-event-map-sheet-ux-fixes.md`（未コミット）
+
+最新BottomSheet外タップ修正ブリーフ: `docs/tasks/23-bottom-sheet-outside-tap.md`（未コミット）
+
+## BottomSheet外タップの最下部スナップ修正
+
+地図上で開始した全ポインターをMapCanvasへ捕捉し、シート境界をまたいだpointerupも地図側で処理できるようにした。先頭ポインターIDだけをタップ／パン終了判定に使い、既存の8px判定とピンチ処理は維持している。地図背景タップ時のBottomSheetは22svhへ確実に要求される。
+
+`bun run verify:all`（125 tests / 1,015 assertions、production build、123 Place / 88 QR / 61 Event、348 nodes / 445 edges、git diff check）はPASS。ブラウザの実操作確認はこのセッションでは実行環境のUI操作APIが利用できないため、既存の402px確認記録と自動検証で確認した。会話履歴なしの初回読み取り専用レビューで追加ポインターがジェスチャー状態を上書きするP2を指摘されたため修正し、別コンテキストの再レビューで指摘なしを確認した。
 
 ## イベント表示・地図／BottomSheet UX修正
 
