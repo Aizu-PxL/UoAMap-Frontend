@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(Q018追加データ同期)
+最終更新: 2026-08-07(BottomSheetカレンダーアイコンのサイズ調整)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -92,6 +92,12 @@
 BottomSheet上部タブの上下marginを`0.7rem / 1.4rem`から半分の`0.35rem / 0.7rem`へ変更した。イベント詳細はID下をイベントカードと同じ`0.25rem`へ揃え、meta段落の既定上marginをリセットして余白が再び広がらないようにした。React、ルーティング、データは変更していない。
 
 `bun test`、`bun run build`、`bun run verify:places`（123 Place / 88 QR / 61 Event）、`git diff --check`はPASS。幅402pxで`/events`、`/events/A1`、`/schedule`を確認し、余白調整とconsole error 0件を確認した。独立サブエージェントレビューはユーザー指定により実施していない。
+
+## BottomSheetカレンダーアイコンのサイズ調整
+
+添付SVGの`viewBox`・`path`は維持したまま、スケジュールアイコンに専用クラスを付けて`scale(0.9)`を適用した。リストの図形約32.4×18pxに対し、カレンダーの最大寸法を約32.4pxへ揃え、縦長の比率は維持している。既存の作業ツリーにあった`global.css`のスケジュールダイアログ変更は保持した。
+
+`bun.cmd test`（134 tests / 1,041 assertions）、`bun.cmd run build`、`bun.cmd run verify:places`（124 Place / 89 QR / 61 Event）、`git diff --check`はPASS。幅402pxの`/events`・`/schedule`で最大表示寸法、添付SVG形状、console error 0件を確認し、独立読み取り専用レビューは指摘なし。
 
 ## ブラウザのプル更新抑止
 
