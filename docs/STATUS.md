@@ -35,6 +35,18 @@
 
 最新Q018追加データ同期ブリーフ: `docs/tasks/28-qr-q018-data-sync.md`（未コミット）
 
+最新ルート開始時現在地ピン統一ブリーフ: `docs/tasks/29-current-marker-route-start.md`（未コミット）
+
+## ルート表示開始時の現在地ピン統一
+
+目的地設定の操作経路とURL直アクセス・再読み込みで分かれていた初期フロア／フォーカス導出を、`src/app/mapNavigation.ts`へ集約した。明示的な一時フォーカスとURL `focus`を優先し、それらがないルート表示では現在地を初期表示する。目的地のみ／現在地のみ／位置情報なしは従来どおりとし、MapCanvasは導出済みのフォーカス地点を受け取ってフロア選択とviewBoxフォーカスを一致させる。
+
+別フロアでは表示中フロアのピンだけを表示し、同一フロアでは現在地・目的地の両ピンを表示する既存マーカー仕様をテストで固定した。SVG、Routeグラフ、URL、Repository、CSS、Figmaは変更していない。
+
+`bun.cmd run verify:all`は134 tests / 1,041 assertions、production build、124 Place / 89 QR / 61 Event、350 nodes / 447 edges、git diff checkをPASS。402×874pxで`/?at=main_node_11&to=M21`の直接アクセス・再読み込み、`/?at=lh_room_m3&to=M21`の同一フロア両ピン、`/q/Q001?to=M21`の目的地保持後の現在地ピンと経路を確認し、console error 0件。
+
+会話履歴なしの読み取り専用独立レビューは指摘なし。
+
 ## Q018追加データ同期
 
 追加された`uoamap-qr-mapping.json`のQ018を、正式対応表`uoamap-qr-mappings.json`へ同期した。Q018はキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）を参照し、`src/data/places.ts`ではSVG Placeとして登録している。計画JSONの`nextQrNumber: 91`は受領値を維持し、現行配置はQ001〜Q089の89件である。

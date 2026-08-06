@@ -7,9 +7,7 @@ import { getPlace } from "../data/places";
 import { MapCanvas } from "../features/map/MapCanvas";
 import { MapSheetControls } from "../features/map/MapSheetControls";
 import { DEFAULT_FLOOR_ID } from "../features/map/mapFloorNavigation";
-import { findShortestRouteBetweenPlaces } from "../features/routing/findShortestRoute";
-import { routeGraph } from "../features/routing/routeGraph";
-import { createRoutePresentation } from "../features/routing/routePresentation";
+import { createMapNavigationPresentation } from "./mapNavigation";
 import { useNavState } from "./useNavState";
 import { LayoutControlProvider } from "./layoutControl";
 import { getEntrySheetSnapPoint } from "./navigationSearch";
@@ -32,8 +30,6 @@ export function AppLayout() {
   const requestedMapFocusPlace = requestedMapFocusPlaceId
     ? (getPlace(requestedMapFocusPlaceId) ?? null)
     : null;
-  const prioritizedPlace =
-    requestedMapFocusPlace ?? focusPlace ?? destinationPlace ?? currentPlace;
   const navigationParams = new URLSearchParams(location.search);
   const expandRequestKey = navigationParams.get("highlight");
   const hasNavigationParams = ["at", "to", "focus"].some((param) =>
@@ -56,25 +52,29 @@ export function AppLayout() {
     () => ({ requestBottomSheetSnap }),
     [requestBottomSheetSnap],
   );
-  const routePresentation = useMemo(() => {
-    const routeEdges =
-      currentPlace && destinationPlace
-        ? (findShortestRouteBetweenPlaces(
-            routeGraph,
-            currentPlace.id,
-            destinationPlace.id,
-          ) ?? [])
-        : [];
-    return createRoutePresentation(routeEdges, routeGraph.nodes);
-  }, [currentPlace, destinationPlace]);
+  const { mapFocusPlace, routePresentation } = useMemo(
+    () =>
+      createMapNavigationPresentation({
+        requestedFocusPlace: requestedMapFocusPlace,
+        focusPlace,
+        currentPlace,
+        destinationPlace,
+      }),
+    [
+      currentPlace,
+      destinationPlace,
+      focusPlace,
+      requestedMapFocusPlace,
+    ],
+  );
 
   useEffect(() => {
-    if (prioritizedPlace) {
-      setFloorId(prioritizedPlace.floorId);
+    if (mapFocusPlace) {
+      setFloorId(mapFocusPlace.floorId);
     } else if (!hasNavigationParams) {
       setFloorId(DEFAULT_FLOOR_ID);
     }
-  }, [hasNavigationParams, prioritizedPlace]);
+  }, [hasNavigationParams, mapFocusPlace]);
 
   useEffect(() => {
     const entrySnapPoint = getEntrySheetSnapPoint(location.pathname);
@@ -92,8 +92,8 @@ export function AppLayout() {
           onFloorChange={setFloorId}
           currentPlace={currentPlace}
           destinationPlace={destinationPlace}
+          mapFocusPlace={mapFocusPlace}
           focusPlace={focusPlace}
-          requestedFocusPlace={requestedMapFocusPlace}
           focusRequestNonce={focusRequestNonce}
           events={events}
           routePresentation={routePresentation}
