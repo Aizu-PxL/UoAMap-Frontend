@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-06(ブラウザのプル更新抑止)
+最終更新: 2026-08-06(イベントバッジ表示調整)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -48,6 +48,12 @@
 320×568pxでは操作群をコンパクト化し、82svhでも操作群上端14px・シート上端との間隔8pxを確認した。402×874pxでは22／58／82svhすべてでシート上端との間隔16pxを確認した。375×667pxでも初期58svhと82svhの追従・画面内表示を確認し、フロア切替、キャンパス復帰、シート境界越しパン、console error 0件を確認した。
 
 `bun run verify:all`は128 tests / 1,025 assertions、production build、123 Place / 88 QR / 61 Event、348 nodes / 445 edges、git diff checkをPASS。初回独立レビューのP2（BottomSheet外枠に残ったgrid定義）をsurface専用レイアウトへ修正し、全ゲートを再実行した。修正後の会話履歴なし最終読み取り専用レビューは指摘なし。
+
+## イベントバッジ表示調整
+
+地図上のイベントバッジ通常表示から黒い外周線と人物グリフの黒strokeを除去し、件数ラベルを白字へ変更した。キーボードフォーカス時はカテゴリ色のリングを表示する。402×874pxでイベントバッジ8個、白字、黒線なし、console error 0件を確認した。
+
+`bun.cmd run build`、`bun.cmd run verify:places`（123 Place / 88 QR / 61 Event）、`git diff --check`、独立読み取り専用レビューはPASS。
 
 ## ブラウザのプル更新抑止
 
