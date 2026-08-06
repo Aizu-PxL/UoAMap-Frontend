@@ -106,4 +106,49 @@ describe("filterEventsByCriteria", () => {
       ).map((event) => event.id),
     ).toEqual(["M3"]);
   });
+
+  test("数字を含むqueryはID一致を優先し、全角数字も正規化する", () => {
+    expect(
+      filterEventsByCriteria(
+        [
+          ...events,
+          {
+            key: "service-2026",
+            title: "2026年度案内",
+            description: "数字を含む運営案内",
+            placeId: "unknown-place",
+            tags: [],
+            timeSlots: [],
+          },
+        ],
+        { query: "1", tagIds: [] },
+        resolvePlaceName,
+      ).map((event) => event.id ?? event.key),
+    ).toEqual(["P1"]);
+    expect(
+      filterEventsByCriteria(events, { query: "３", tagIds: [] }, resolvePlaceName).map(
+        (event) => event.id,
+      ),
+    ).toEqual(["M3"]);
+  });
+
+  test("数字のID一致がなければ従来の全文検索へfallbackする", () => {
+    expect(
+      filterEventsByCriteria(
+        [
+          ...events,
+          {
+            key: "service-2026",
+            title: "2026年度案内",
+            description: "数字を含む運営案内",
+            placeId: "unknown-place",
+            tags: [],
+            timeSlots: [],
+          },
+        ],
+        { query: "２０２６", tagIds: [] },
+        resolvePlaceName,
+      ).map((event) => event.id ?? event.key),
+    ).toEqual(["service-2026"]);
+  });
 });

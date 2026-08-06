@@ -7,6 +7,11 @@ import path from 'path';
 // Using fs.promises for async file operations
 const fsPromises = fs.promises;
 
+type QrPosterTarget = {
+  qrId: string;
+  installationNote: string;
+};
+
 async function main() {
   const rootDir = process.cwd();
   
@@ -19,7 +24,7 @@ async function main() {
   // Load mappings
   console.log('Loading mappings...');
   const mappingsRaw = await fsPromises.readFile(mappingsPath, 'utf8');
-  const mappings = JSON.parse(mappingsRaw);
+  const mappings = JSON.parse(mappingsRaw) as QrPosterTarget[];
 
   // Load PDF Template
   console.log('Loading PDF template...');
@@ -35,7 +40,7 @@ async function main() {
   
   if (!testMode) {
     // Determine the maximum ID currently in the mappings
-    const existingIds = new Set(mappings.map((m: any) => m.qrId));
+    const existingIds = new Set(mappings.map((mapping) => mapping.qrId));
     let maxIdNum = 0;
     for (const id of existingIds) {
       if (id.startsWith('Q')) {

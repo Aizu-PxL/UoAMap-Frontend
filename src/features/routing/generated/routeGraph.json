@@ -2393,6 +2393,14 @@
       "kind": "corridor"
     },
     {
+      "id": "sh-1f:sh_room_kiyare",
+      "floorId": "sh-1f",
+      "x": 43,
+      "y": 71,
+      "kind": "corridor",
+      "placeId": "sh_room_kiyare"
+    },
+    {
       "id": "sh-1f:sh_room_shop",
       "floorId": "sh-1f",
       "x": 32,
@@ -5908,6 +5916,15 @@
       "nodeB": "sh-1f:sh_node_1f_6",
       "distance": 14.212670403551895,
       "pathD": "M 52 50 L 61 39"
+    },
+    {
+      "id": "sh-1f:route_edge_sh_node_1f_2_to_sh_room_kiyare",
+      "kind": "walk",
+      "floorId": "sh-1f",
+      "nodeA": "sh-1f:sh_node_1f_2",
+      "nodeB": "sh-1f:sh_room_kiyare",
+      "distance": 22.847319317591726,
+      "pathD": "M 52 50 L 43 71"
     },
     {
       "id": "sh-1f:route_edge_sh_node_1f_3_to_sh_node_1f_4",

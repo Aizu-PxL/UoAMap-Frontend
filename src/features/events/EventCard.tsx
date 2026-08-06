@@ -25,6 +25,7 @@ export function EventCard({ event, tagLabel, highlighted = false, cardRef }: Eve
       to={{ pathname, search: location.search }}
     >
       <h2>{event.title}</h2>
+      {event.id && <p className="event-card__id">ID: {event.id}</p>}
       <p>
         {formatTimeSlots(event.timeSlots)} <span>@{place?.name ?? event.placeId}</span>
       </p>

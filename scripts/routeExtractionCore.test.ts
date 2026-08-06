@@ -48,7 +48,7 @@ const nodeB =
   '<circle id="node_b" data-route-node="" data-kind="corridor" cx="3" cy="4" />';
 
 describe("extractRouteGraph", () => {
-  test("実10 SVGを347 nodes / 444 edgesへ抽出し生成JSONと完全バイト一致する", async () => {
+  test("実10 SVGを348 nodes / 445 edgesへ抽出し生成JSONと完全バイト一致する", async () => {
     const sources: RouteSvgSource[] = await Promise.all(
       mapSheets.map(async (sheet) => ({
         svgUrl: sheet.svgUrl,
@@ -73,7 +73,7 @@ describe("extractRouteGraph", () => {
 
     expect(result.errors).toEqual([]);
     expect([result.graph.nodes.length, result.graph.edges.length]).toEqual([
-      347, 444,
+      348, 445,
     ]);
     expect(serializeRouteGraph(result.graph)).toEqual(currentJson);
   });

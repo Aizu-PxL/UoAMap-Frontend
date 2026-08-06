@@ -8,15 +8,15 @@ import { mockRepository } from "../src/data/mock/mockRepository.js";
 import { floors, mapSheets, places } from "../src/data/places.js";
 import routeGraph from "../src/features/routing/generated/routeGraph.json";
 
-const EXPECTED_PLACE_COUNT = 122;
-const EXPECTED_QR_COUNT = 87;
+const EXPECTED_PLACE_COUNT = 123;
+const EXPECTED_QR_COUNT = 88;
 const EXPECTED_QR_PLACE_PROPOSAL_COUNT = 73;
-const EXPECTED_NEXT_QR_NUMBER = 89;
+const EXPECTED_NEXT_QR_NUMBER = 90;
 const EXPECTED_QR_IDS = Array.from(
   { length: EXPECTED_NEXT_QR_NUMBER - 1 },
   (_, index) => `Q${String(index + 1).padStart(3, "0")}`,
 ).filter((qrId) => qrId !== "Q018");
-const EXPECTED_EVENT_COUNT = 60;
+const EXPECTED_EVENT_COUNT = 61;
 const EXPECTED_EVENT_ID_COUNT = 55;
 const EXPECTED_EVENT_CATEGORIES = [
   ["A", "大学説明会"],
@@ -38,6 +38,7 @@ const IDLESS_EVENT_KEYS = new Set([
   "service-rest-area",
   "service-lunch",
   "service-shop",
+  "service-map-guide",
 ]);
 const EVENT_TIME_PATTERN =
   /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\+09:00$/;
@@ -221,13 +222,15 @@ for (let index = 0; index < EXPECTED_QR_IDS.length; index += 1) {
   const place = placeById.get(mapping.placeId);
   if (!place) {
     fail(`${expectedQrId}: 未登録Place ${mapping.placeId}`);
-  } else if (
-    place.floorId !== placement.floorId ||
-    place.mapping !== "coordinates" ||
-    place.coordinates.x !== placement.x ||
-    place.coordinates.y !== placement.y
-  ) {
-    fail(`${expectedQrId}: 計画placementsとPlaceのfloor・座標が一致しません`);
+  } else {
+    const placeMatchesPlacement =
+      place.floorId === placement.floorId &&
+      (place.mapping === "coordinates"
+        ? place.coordinates.x === placement.x && place.coordinates.y === placement.y
+        : place.mapping === "svg" && place.svgElementId === placement.routeNodeId);
+    if (!placeMatchesPlacement) {
+      fail(`${expectedQrId}: 計画placementsとPlaceのfloor・座標が一致しません`);
+    }
   }
 
   const routeNode = routeNodeById.get(`${placement.floorId}:${placement.routeNodeId}`);

@@ -31,7 +31,6 @@
   --radius-sheet: 20px;
   --radius-pill: 999px;
   --shadow-sheet: 0 -3px 13.2px rgba(0, 0, 0, 0.25);
-  --shadow-card: 4px 4px 4px rgba(0, 0, 0, 0.25);
   --font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--color-text);
   font-family: var(--font-family);
@@ -42,10 +41,23 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+#root {
+  height: 100%;
+  overscroll-behavior-y: none;
 }
 
 button,
@@ -106,6 +118,14 @@ input {
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.map-canvas__svg-host,
+.map-canvas__route-layer,
+.map-canvas__label-layer,
+.map-canvas__marker-layer {
+  transform: translateY(calc(var(--bottom-sheet-height) * -0.5));
+  will-change: transform;
 }
 
 .map-canvas__route-layer,
@@ -254,17 +274,13 @@ input {
   fill: var(--map-marker-detail);
 }
 
-.map-canvas__controls {
-  position: absolute;
-  right: 1rem;
-  bottom: calc(var(--bottom-sheet-height) + 1rem);
-  z-index: 4;
+.map-sheet-controls {
   display: grid;
   justify-items: end;
   gap: 0.65rem;
 }
 
-.map-canvas__floor-switch {
+.map-sheet-controls__floor-switch {
   display: flex;
   padding: 0.25rem;
   border-radius: var(--radius-pill);
@@ -272,8 +288,8 @@ input {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.map-canvas__floor-button,
-.map-canvas__campus-button {
+.map-sheet-controls__floor-button,
+.map-sheet-controls__campus-button {
   min-height: 2.5rem;
   border: 0;
   color: var(--color-text);
@@ -282,7 +298,7 @@ input {
   cursor: pointer;
 }
 
-.map-canvas__floor-button {
+.map-sheet-controls__floor-button {
   position: relative;
   min-width: 2.75rem;
   padding: 0 0.7rem;
@@ -290,22 +306,35 @@ input {
   background: transparent;
 }
 
-.map-canvas__floor-button[aria-pressed="true"] {
+.map-sheet-controls__floor-button[aria-pressed="true"] {
   color: #ffffff;
   background: var(--color-accent);
 }
 
-.map-canvas__campus-button {
+.map-sheet-controls__campus-button {
   position: relative;
   padding: 0 1rem;
   border-radius: var(--radius-pill);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.map-canvas__floor-button:focus-visible,
-.map-canvas__campus-button:focus-visible {
+.map-sheet-controls__floor-button:focus-visible,
+.map-sheet-controls__campus-button:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+.bottom-sheet__top-overlay {
+  position: absolute;
+  right: 1rem;
+  bottom: calc(100% + 1rem);
+  z-index: 1;
+  width: max-content;
+  pointer-events: none;
+}
+
+.bottom-sheet__top-overlay > * {
+  pointer-events: auto;
 }
 
 
@@ -314,21 +343,28 @@ input {
   left: 50%;
   bottom: 0;
   z-index: 5;
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
   width: 100%;
   max-width: 430px;
   min-height: 0;
   height: var(--bottom-sheet-height);
   max-height: 82svh;
+  overflow: visible;
+  transform: translateX(-50%);
+  transition: height 180ms ease-out;
+  will-change: height;
+}
+
+.bottom-sheet__surface {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   padding: 1rem 1.25rem max(1.25rem, env(safe-area-inset-bottom));
   overflow: hidden;
   border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
   background: var(--color-surface);
   box-shadow: var(--shadow-sheet);
-  transform: translateX(-50%);
-  transition: height 180ms ease-out;
-  will-change: height;
 }
 
 .bottom-sheet.is-dragging {
@@ -431,6 +467,7 @@ input {
   height: 100%;
   padding: 3.5rem 0 2rem;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 .qr-panel__copy {
@@ -584,8 +621,11 @@ input {
 .event-list {
   display: grid;
   gap: 0.85rem;
+  align-content: start;
+  align-items: start;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 0 0.15rem 2rem;
 }
 
@@ -596,15 +636,12 @@ input {
   border-radius: var(--radius-card);
   color: inherit;
   background: var(--color-card-bg);
-  box-shadow: var(--shadow-card);
   text-decoration: none;
 }
 
 .event-card.is-highlighted {
   border-color: var(--color-accent);
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--color-accent) 22%, transparent),
-    var(--shadow-card);
+  box-shadow: none;
 }
 
 .event-card h2 {
@@ -618,6 +655,16 @@ input {
   margin: 0 0 0.5rem;
   font-size: 0.875rem;
   line-height: 1.3;
+}
+
+.event-card__id,
+.event-detail__id {
+  color: #626262;
+  font-size: 0.75rem;
+}
+
+.event-card__id {
+  margin-bottom: 0.25rem !important;
 }
 
 .event-card__tag {
@@ -637,6 +684,7 @@ input {
   height: 100%;
   padding: 0.25rem 0 1rem;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   text-align: center;
 }
 
@@ -715,6 +763,7 @@ input {
 .schedule-panel {
   height: 100%;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 0.25rem 0.15rem 2rem;
 }
 
@@ -736,6 +785,7 @@ input {
   margin-bottom: 0.6rem;
   color: var(--color-accent);
   font-size: 1.125rem;
+  line-height: 24px;
   text-decoration: none;
 }
 
@@ -749,6 +799,10 @@ input {
   margin: 0 0 0.85rem;
   font-size: 1.25rem;
   line-height: 1.35;
+}
+
+.event-detail__id {
+  margin: -0.45rem 0 0.85rem;
 }
 
 .schedule-panel h2 {
@@ -867,8 +921,27 @@ input {
   fill: currentColor;
 }
 
+@media (max-height: 640px) {
+  .bottom-sheet__top-overlay {
+    bottom: calc(100% + 0.5rem);
+  }
+
+  .map-sheet-controls {
+    gap: 0.25rem;
+  }
+
+  .map-sheet-controls__floor-switch {
+    padding: 0.125rem;
+  }
+
+  .map-sheet-controls__floor-button,
+  .map-sheet-controls__campus-button {
+    min-height: 2.25rem;
+  }
+}
+
 @media (max-width: 380px) {
-  .bottom-sheet {
+  .bottom-sheet__surface {
     padding-inline: 1rem;
   }
 
