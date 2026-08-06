@@ -41,10 +41,23 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
+#root {
+  height: 100%;
+  overscroll-behavior-y: none;
 }
 
 button,
@@ -438,6 +451,7 @@ input {
   height: 100%;
   padding: 3.5rem 0 2rem;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 .qr-panel__copy {
@@ -595,6 +609,7 @@ input {
   align-items: start;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 0 0.15rem 2rem;
 }
 
@@ -653,6 +668,7 @@ input {
   height: 100%;
   padding: 0.25rem 0 1rem;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   text-align: center;
 }
 
@@ -731,6 +747,7 @@ input {
 .schedule-panel {
   height: 100%;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 0.25rem 0.15rem 2rem;
 }
 

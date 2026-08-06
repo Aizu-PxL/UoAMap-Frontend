@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-06(BottomSheet外タップの最下部スナップ修正)
+最終更新: 2026-08-06(ブラウザのプル更新抑止)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -36,6 +36,14 @@
 最新イベント表示・地図／BottomSheet UX修正ブリーフ: `docs/tasks/22-event-map-sheet-ux-fixes.md`（未コミット）
 
 最新BottomSheet外タップ修正ブリーフ: `docs/tasks/23-bottom-sheet-outside-tap.md`（未コミット）
+
+最新ブラウザのプル更新抑止ブリーフ: `docs/tasks/24-pull-to-refresh-guard.md`（未コミット）
+
+## ブラウザのプル更新抑止
+
+`html`、`body`、`#root` の縦方向overscrollとページスクロールを抑止し、イベント一覧・QR・地図パネル・詳細・スケジュールの内部スクロール領域には`overscroll-behavior-y: contain`を設定した。地図パン、BottomSheetドラッグ、スケジュール画像の操作を壊す全体`touchmove.preventDefault()`は追加していない。
+
+`bun run verify:all`（125 tests / 1,015 assertions、production build、123 Place / 88 QR / 61 Event、348 nodes / 445 edges、git diff check）はPASS。ローカルブラウザの402×874pxで、ページ本体の`overflow-y: hidden`／`overscroll-behavior-y: none`、イベント一覧の内部スクロール、QR／スケジュールの`contain`、console error 0件を確認した。実機ブラウザでのプル操作確認はこのセッションでは未実施。Safari系でCSS抑止が効かない場合は、内部スクロール領域の先頭・下端だけを対象にした限定的なタッチイベントフォールバックを別スライスで追加する。
 
 ## BottomSheet外タップの最下部スナップ修正
 
