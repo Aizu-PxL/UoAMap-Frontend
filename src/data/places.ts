@@ -159,6 +159,7 @@ const eventVenuePlaces: Place[] = [
   svg("sh_room_cafeteria", "sh-1f", "学生ホール 食堂", "room_1F_Cafeteria"),
   coordinates("sh_reception", "sh-1f", "学生ホール 食堂／ホール", 66.5, 46.5),
   svg("sh_room_shop", "sh-1f", "学生ホール 売店", "room_1F_Shop"),
+  svg("sh_room_kiyare", "sh-1f", "きやれ", "sh_room_kiyare"),
   svg("ubic_room_3dtheater", "ubic-1f", "UBIC 3Dシアター", "room_3DTh"),
   svg("ubic_room_RLA", "ubic-1f", "UBIC 研究ラボエリア", "area_ResearchLab"),
   svg("ubic_room_mar", "ubic-1f", "UBIC 運動解析ルーム", "room_Motion"),

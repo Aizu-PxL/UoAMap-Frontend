@@ -130,8 +130,9 @@ describe("route editor history", () => {
     const html = await Bun.file(
       path.join(import.meta.dirname, "../route-editor.html"),
     ).text();
+    const normalizedHtml = html.replace(/\r\n/gu, "\n");
 
-    expect(html.includes("state.maps.set(cfg.sheetId, ms);\n  resetHistory();")).toEqual(
+    expect(normalizedHtml.includes("state.maps.set(cfg.sheetId, ms);\n  resetHistory();")).toEqual(
       true,
     );
     expect(

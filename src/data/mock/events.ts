@@ -444,11 +444,12 @@ export const mockEvents: CampusEvent[] = [
     "service-shop",
   ),
   event(
-    "service-map-guide",
+    undefined,
     "オープンキャンパス地図アプリ解説",
     "学生ホールきやれにて、地図アプリの使い方を解説します。",
     "sh_room_kiyare",
-    ["service"],
+    [],
     [slot("09:00", "15:00")],
+    "service-map-guide",
   ),
 ];
