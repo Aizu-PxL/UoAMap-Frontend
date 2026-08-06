@@ -122,6 +122,10 @@ const reusedRouteQrPlaces: Place[] = [
   coordinates("sh_entrance_north", "sh-1f", "学生ホール北口出口", 55, 4),
 ];
 
+const svgRouteQrPlaces: Place[] = [
+  svg("nazonobasyo", "campus", "図書館の池前", "nazonobasyo"),
+];
+
 const eventVenuePlaces: Place[] = [
   svg("main_robothangar", "campus", "駐車場 ロボット格納庫", "building_RobotGarage"),
   svg("lh_room_lth_1", "lh-1f", "大講義室", "room_1F_LTh"),
@@ -168,6 +172,7 @@ const eventVenuePlaces: Place[] = [
 export const places: Place[] = [
   ...qrPlaces,
   ...reusedRouteQrPlaces,
+  ...svgRouteQrPlaces,
   ...eventVenuePlaces,
   unmapped("campus-all", "campus", "キャンパス全域"),
 ];

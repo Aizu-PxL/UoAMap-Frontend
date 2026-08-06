@@ -8,14 +8,14 @@ import { mockRepository } from "../src/data/mock/mockRepository.js";
 import { floors, mapSheets, places } from "../src/data/places.js";
 import routeGraph from "../src/features/routing/generated/routeGraph.json";
 
-const EXPECTED_PLACE_COUNT = 123;
-const EXPECTED_QR_COUNT = 88;
+const EXPECTED_PLACE_COUNT = 124;
+const EXPECTED_QR_COUNT = 89;
 const EXPECTED_QR_PLACE_PROPOSAL_COUNT = 73;
-const EXPECTED_NEXT_QR_NUMBER = 90;
+const EXPECTED_NEXT_QR_NUMBER = 91;
 const EXPECTED_QR_IDS = Array.from(
-  { length: EXPECTED_NEXT_QR_NUMBER - 1 },
+  { length: EXPECTED_QR_COUNT },
   (_, index) => `Q${String(index + 1).padStart(3, "0")}`,
-).filter((qrId) => qrId !== "Q018");
+);
 const EXPECTED_EVENT_COUNT = 61;
 const EXPECTED_EVENT_ID_COUNT = 55;
 const EXPECTED_EVENT_CATEGORIES = [

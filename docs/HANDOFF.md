@@ -1,12 +1,12 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-08-06(きやれイベント／Q089データ同期)
+最終更新: 2026-08-07(Q018追加データ同期)
 対象ブランチ: `feature/fixerror`
-最新実装ブリーフ: `docs/tasks/21-kiyare-data-sync.md`（未コミット）
+最新実装ブリーフ: `docs/tasks/28-qr-q018-data-sync.md`（未コミット）
 
 ## 現在地
 
-きやれ追加データをフロントの正式モックへ採用した。Q018は欠番として再利用せず、Q075〜Q088は既存Routeノード14件をPlaceへ登録して再利用し、Q089はイベント会場Place `sh_room_kiyare`を参照する。Placeは88 QR地点、35イベント会場、`campus-all`の123件（Q089のPlaceはイベント会場と共有）で、`campus-all`以外の122 Placeは348ノード・445エッジ（walk 406 / transfer 39）の単一連結グラフに収録される。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・欠番・参照・座標の不一致を自動修正せずFAILさせる。
+Q018をキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）へ割り当て、追加JSONをフロントの正式モックへ採用した。Q075〜Q088は既存Routeノード14件をPlaceへ登録して再利用し、Q089はイベント会場Place `sh_room_kiyare`を参照する。Placeは89 QR地点、35イベント会場、`campus-all`の124件（Q089のPlaceはイベント会場と共有）で、`campus-all`以外の123 Placeは350ノード・447エッジ（walk 408 / transfer 39）の単一連結グラフに収録される。計画JSONの`nextQrNumber: 91`を維持し、現行配置はQ001〜Q089の89件。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・参照・座標の不一致をFAILさせる。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
@@ -16,7 +16,7 @@
 `.agent/refactor-plan.md` のM1〜M8完了を確認し、次に着手する機能を `docs/SPEC.md` と `docs/BACKLOG.md` から選んで別ブリーフを作成してください。本番公開や物理QRの場合は先に `docs/PRODUCTION.md` の人間決定ゲートを確認してください。
 ```
 
-SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全122 Placeが、348ノード・445エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
+SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全123 Placeが、350ノード・447エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
 
 次のロードマップ実装候補はステップ7の `docs/API.md` 契約に沿ったAPI接続。
 並行する公開準備は [PRODUCTION.md](PRODUCTION.md) を正とし、実装前に人間が本番origin、base path、ホスティング所有者、API構成、QR台帳責任者を確定する。URL凍結前にQRを量産しない。
@@ -62,25 +62,25 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 - 03dで導入した複数フロアSVG抽出は08で廃止した。講義棟は`LH1F_base_plain.svg`と`LH2F_base_plain.svg`が正本
 - 同じ `data-stair-id` の隣接階ノード間にコスト60、同じ `data-entrance-id` の建物側・キャンパス側ノード間にコスト0のtransfer edgeを生成する
 - `MapCanvas` は経路が存在するフロアだけでなく、乗換地点だけを含むフロアも表示対象として扱う
-- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全122 Route対応Place、全ノードの単一連結性、全61イベント地点、全88 QR地点は `src/features/routing/routeGraphCoverage.test.ts` で固定している
+- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全123 Route対応Place、全ノードの単一連結性、全61イベント地点、全89 QR地点は `src/features/routing/routeGraphCoverage.test.ts` で固定している
 - `campus-all` は意図的な唯一のRoute非収録Place。URLで指定されてもクラッシュせず「位置情報なし」として扱う
 
 ## 最終検証結果
 
-2026-08-06のきやれ／Q089データ同期で以下を確認済み。
+2026-08-07のQ018追加データ同期で以下を確認済み。
 
 ```text
 bun run verify:all     PASS
-bun test               123 tests / 0 fail / 1012 expect() calls
+bun test               128 tests / 0 fail / 1029 expect() calls
 bun run build          PASS（route editor鮮度、strict型検査、Vite build）
-bun run verify:routes  348 nodes / 445 edges
-bun run verify:places  123 Place / 88 QR / 61 Event
+bun run verify:routes  350 nodes / 447 edges
+bun run verify:places  124 Place / 89 QR / 61 Event
 git diff --check       PASS
 ```
 
-幅402pxのブラウザで `/events/service-map-guide`、`/q/Q089?to=M21`（`at=sh_room_kiyare`）、`/q/Q001?to=service-map-guide`（`at=main_node_11`）を確認し、きやれEventの詳細・目的地設定・経路表示、console error 0件を確認した。既存のQ075／Q088／Q001と欠番Q018の確認結果も維持する。
+幅402pxのブラウザで `/q/Q018`（`at=nazonobasyo`）、`/q/Q018?to=M21`、`/q/Q089?to=M21`（`at=sh_room_kiyare`）、`/q/Q001?to=service-map-guide`（`at=main_node_11`）を確認し、Q018の地点フォーカス・経路表示、きやれEventの目的地設定・経路表示、console error 0件を確認した。
 
-今回の会話履歴なし独立レビューでは、SCOPE・現行件数・検証記録の指摘を修正した。修正後の別コンテキスト再レビューは指摘なし。
+今回の会話履歴なし読み取り専用独立レビューは指摘なし。
 
 再開時の最低限の健全性確認:
 
@@ -96,7 +96,7 @@ bun run verify:all
 - 学生ホール2Fには選択可能なPlaceがなく、中央階段の着地点だけをRouteへ収録
 - v1は各建物につき代表となる来場者入口1か所でキャンパスRouteと接続。別入口を追加する場合、SVGごとに座標単位が異なるため、建物内・屋外コストの正規化を先に設計する
 - `lictia_room_cswr` は現SVG上の「検証室」と判断した中心座標 `(32.5, 54.6)` に割り当てた。公開前に公式の会場配置と一致するか確認する
-- 88件（Q001〜Q017、Q019〜Q089）はフロント用モックとして確定したが、物理QRの量産・設置承認ではない。本番originと現地受入は`docs/PRODUCTION.md`のゲートに従う
+- 89件（Q001〜Q089）はフロント用モックとして確定したが、物理QRの量産・設置承認ではない。本番originと現地受入は`docs/PRODUCTION.md`のゲートに従う
 - テキストによる曲がり方・所要時間案内はSPEC上の将来拡張であり、ステップ3の未実装ではない
 
 ## SVG編集時の注意

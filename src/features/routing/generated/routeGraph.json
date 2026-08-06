@@ -417,6 +417,21 @@
       "placeId": "main_ubic_entrance"
     },
     {
+      "id": "campus:nazonobasyo",
+      "floorId": "campus",
+      "x": 347,
+      "y": 434,
+      "kind": "corridor",
+      "placeId": "nazonobasyo"
+    },
+    {
+      "id": "campus:route_node_1",
+      "floorId": "campus",
+      "x": 368,
+      "y": 434,
+      "kind": "corridor"
+    },
+    {
       "id": "lh-1f:lh_door_lth_1",
       "floorId": "lh-1f",
       "x": 25,
@@ -2561,6 +2576,15 @@
   ],
   "edges": [
     {
+      "id": "campus:route_edge_1_to_2",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:route_node_1",
+      "nodeB": "campus:nazonobasyo",
+      "distance": 21,
+      "pathD": "M 368 434 L 347 434"
+    },
+    {
       "id": "campus:route_edge_1_to_3",
       "kind": "walk",
       "floorId": "campus",
@@ -2658,6 +2682,15 @@
       "nodeB": "campus:main_node_12",
       "distance": 66.21933252457322,
       "pathD": "M 394 269 L 342 310"
+    },
+    {
+      "id": "campus:route_edge_main_library_to_2",
+      "kind": "walk",
+      "floorId": "campus",
+      "nodeA": "campus:main_library",
+      "nodeB": "campus:nazonobasyo",
+      "distance": 12.727922061357855,
+      "pathD": "M 338 443 L 347 434"
     },
     {
       "id": "campus:route_edge_main_library_to_main_node_3",
