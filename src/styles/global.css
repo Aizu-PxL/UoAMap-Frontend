@@ -231,8 +231,8 @@ input {
 }
 
 .map-marker__event-outline {
-  fill: var(--color-surface);
-  stroke: var(--color-text);
+  fill: none;
+  stroke: transparent;
   stroke-width: 4px;
 }
 
@@ -244,9 +244,7 @@ input {
 
 .map-marker__event-glyph {
   fill: var(--map-marker-event-color);
-  stroke: var(--color-text);
-  stroke-width: 0.75px;
-  paint-order: stroke fill;
+  stroke: none;
 }
 
 .map-marker__event-count-background {
@@ -254,7 +252,7 @@ input {
 }
 
 .map-marker__event-count {
-  fill: var(--color-text);
+  fill: var(--map-marker-event-count-text);
   font-family: var(--font-family);
   font-size: 9px;
   font-weight: 800;
@@ -267,6 +265,7 @@ input {
 }
 
 .map-marker--event:focus-visible .map-marker__event-outline {
+  stroke: var(--map-marker-event-color);
   stroke-width: 6px;
 }
 
