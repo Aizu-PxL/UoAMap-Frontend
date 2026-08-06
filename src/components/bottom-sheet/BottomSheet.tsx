@@ -21,6 +21,7 @@ type BottomSheetProps = {
   expandRequestKey: string | null;
   onHeightChange: (height: number) => void;
   snapRequest: { key: number; snapPoint: BottomSheetSnapPoint } | null;
+  topOverlay?: ReactNode;
 };
 
 export function BottomSheet({
@@ -28,6 +29,7 @@ export function BottomSheet({
   expandRequestKey,
   onHeightChange,
   snapRequest,
+  topOverlay,
 }: BottomSheetProps) {
   const [height, setHeight] = useState(initialBottomSheetSnapPoint);
   const [isDragging, setIsDragging] = useState(false);
@@ -87,23 +89,26 @@ export function BottomSheet({
 
   return (
     <section className={isDragging ? "bottom-sheet is-dragging" : "bottom-sheet"} aria-label="Map controls">
-      <div
-        className="bottom-sheet__drag-zone"
-        onPointerDown={startDrag}
-        onPointerMove={dragSheet}
-        onPointerUp={stopDrag}
-        onPointerCancel={stopDrag}
-        onDoubleClick={() => setHeight(getNextBottomSheetSnapPoint)}
-        role="presentation"
-      >
-        <div className="bottom-sheet__handle" aria-hidden="true" />
+      {topOverlay && <div className="bottom-sheet__top-overlay">{topOverlay}</div>}
+      <div className="bottom-sheet__surface">
+        <div
+          className="bottom-sheet__drag-zone"
+          onPointerDown={startDrag}
+          onPointerMove={dragSheet}
+          onPointerUp={stopDrag}
+          onPointerCancel={stopDrag}
+          onDoubleClick={() => setHeight(getNextBottomSheetSnapPoint)}
+          role="presentation"
+        >
+          <div className="bottom-sheet__handle" aria-hidden="true" />
+        </div>
+        <SheetNavigation
+          onNavigate={(tabId) => {
+            setHeight(tabId === "qr" ? 82 : getExpandedBottomSheetHeight);
+          }}
+        />
+        <div className="bottom-sheet__body">{children}</div>
       </div>
-      <SheetNavigation
-        onNavigate={(tabId) => {
-          setHeight(tabId === "qr" ? 82 : getExpandedBottomSheetHeight);
-        }}
-      />
-      <div className="bottom-sheet__body">{children}</div>
     </section>
   );
 }

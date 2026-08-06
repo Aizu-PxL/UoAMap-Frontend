@@ -5,6 +5,8 @@ import type { BottomSheetSnapPoint } from "../components/bottom-sheet/bottomShee
 import { useCampusData } from "../data/DataProvider";
 import { getPlace } from "../data/places";
 import { MapCanvas } from "../features/map/MapCanvas";
+import { MapSheetControls } from "../features/map/MapSheetControls";
+import { DEFAULT_FLOOR_ID } from "../features/map/mapFloorNavigation";
 import { findShortestRouteBetweenPlaces } from "../features/routing/findShortestRoute";
 import { routeGraph } from "../features/routing/routeGraph";
 import { createRoutePresentation } from "../features/routing/routePresentation";
@@ -13,7 +15,7 @@ import { LayoutControlProvider } from "./layoutControl";
 import { getEntrySheetSnapPoint } from "./navigationSearch";
 
 export function AppLayout() {
-  const [floorId, setFloorId] = useState("campus");
+  const [floorId, setFloorId] = useState(DEFAULT_FLOOR_ID);
   const [bottomSheetHeight, setBottomSheetHeight] = useState(58);
   const [sheetSnapRequest, setSheetSnapRequest] = useState<{
     key: number;
@@ -70,7 +72,7 @@ export function AppLayout() {
     if (prioritizedPlace) {
       setFloorId(prioritizedPlace.floorId);
     } else if (!hasNavigationParams) {
-      setFloorId("campus");
+      setFloorId(DEFAULT_FLOOR_ID);
     }
   }, [hasNavigationParams, prioritizedPlace]);
 
@@ -101,6 +103,11 @@ export function AppLayout() {
           expandRequestKey={expandRequestKey}
           onHeightChange={setBottomSheetHeight}
           snapRequest={sheetSnapRequest}
+          topOverlay={
+            floorId === DEFAULT_FLOOR_ID ? null : (
+              <MapSheetControls floorId={floorId} onFloorChange={setFloorId} />
+            )
+          }
         >
           <Outlet />
         </BottomSheet>

@@ -20,6 +20,10 @@ import {
 import { getMapOverlayRedrawKey } from "./mapOverlayRedraw";
 import { exceedsMapTapMovement } from "./mapGesture";
 import {
+  DEFAULT_FLOOR_ID,
+  isSameBuilding,
+} from "./mapFloorNavigation";
+import {
   focusMapViewBox,
   getProportionalMapViewBox,
   panMapViewBox,
@@ -44,7 +48,6 @@ interface MapCanvasProps {
   onRequestBottomSheetSnap: (snapPoint: BottomSheetSnapPoint) => void;
 }
 
-const DEFAULT_FLOOR_ID = "campus";
 const DEFAULT_VIEW_BOX: MapViewBox = {
   x: 0,
   y: 0,
@@ -68,12 +71,6 @@ const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
   "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
 const ROUTE_TRANSFER_MARKER_RADIUS = 7;
-const floorGroups = [
-  ["rq-1f", "rq-2f", "rq-3f"],
-  ["sh-1f", "sh-2f"],
-  ["lh-1f", "lh-2f"],
-] as const;
-
 const buildingFloorIds = {
   building_ResearchQuad: "rq-1f",
   building_StudentHall: "sh-1f",
@@ -145,10 +142,6 @@ function fetchSvg(svgUrl: string) {
   return svgRequest;
 }
 
-function getFloorLabel(floorId: string) {
-  return floorId.slice(floorId.lastIndexOf("-") + 1).toUpperCase();
-}
-
 function screenPointToSvg(
   svgElement: SVGSVGElement,
   clientX: number,
@@ -178,17 +171,6 @@ function screenPointToSvgWithMatrix(
   }
 
   return { x: point.x, y: point.y };
-}
-
-function isSameBuilding(floorId1: string, floorId2: string): boolean {
-  for (const group of floorGroups) {
-    const inGroup1 = group.includes(floorId1 as never);
-    const inGroup2 = group.includes(floorId2 as never);
-    if (inGroup1 && inGroup2) {
-      return true;
-    }
-  }
-  return false;
 }
 
 export function MapCanvas({
@@ -238,9 +220,6 @@ export function MapCanvas({
     requestedFocusPlace?.id ?? "",
     focusRequestNonce,
   ].join(":");
-  const selectableFloorIds = floorGroups.find((group) =>
-    group.some((candidate) => candidate === floorId),
-  );
   const routeFloorIds = routePresentation.floorIds;
   const hasVisibleRoute = routeFloorIds.has(floorId);
 
@@ -1017,42 +996,6 @@ export function MapCanvas({
         aria-label="地図マーカー"
         preserveAspectRatio="xMidYMid meet"
       />
-
-      <div
-        className="map-canvas__controls"
-        aria-label="地図表示切替"
-        onPointerDown={(event) => event.stopPropagation()}
-      >
-        {selectableFloorIds && (
-          <div className="map-canvas__floor-switch" aria-label="フロア切替">
-            {selectableFloorIds.map((selectableFloorId) => {
-              const floorLabel = getFloorLabel(selectableFloorId);
-              return (
-                <button
-                  key={selectableFloorId}
-                  type="button"
-                  className="map-canvas__floor-button"
-                  aria-label={floorLabel}
-                  aria-pressed={selectableFloorId === floorId}
-                  onClick={() => onFloorChange(selectableFloorId)}
-                >
-                  {floorLabel}
-                </button>
-              );
-            })}
-          </div>
-        )}
-        {floorId !== DEFAULT_FLOOR_ID && (
-          <button
-            type="button"
-            className="map-canvas__campus-button"
-            aria-label="キャンパス全体へ戻る"
-            onClick={() => onFloorChange(DEFAULT_FLOOR_ID)}
-          >
-            キャンパス全体へ戻る
-          </button>
-        )}
-      </div>
 
       {loading && <p className="map-canvas__status">地図を読み込み中...</p>}
       {error && (

@@ -39,6 +39,16 @@
 
 最新ブラウザのプル更新抑止ブリーフ: `docs/tasks/24-pull-to-refresh-guard.md`（未コミット）
 
+最新BottomSheet追従型地図操作UI整理ブリーフ: `docs/tasks/25-map-sheet-controls.md`（未コミット）
+
+## BottomSheet追従型の地図操作UI整理
+
+フロア切替と「キャンパス全体へ戻る」を`MapSheetControls`へ抽出し、`MapCanvas`とは別にBottomSheetの子要素として配置した。BottomSheetは外枠とsurfaceを分け、外枠の上端フローティング領域がシートのheight transitionに直接追従する。旧`bottom: calc(var(--bottom-sheet-height) + 1rem)`による操作UI位置計算は削除し、`--bottom-sheet-height`は地図表示中心の調整だけに残している。
+
+320×568pxでは操作群をコンパクト化し、82svhでも操作群上端14px・シート上端との間隔8pxを確認した。402×874pxでは22／58／82svhすべてでシート上端との間隔16pxを確認した。375×667pxでも初期58svhと82svhの追従・画面内表示を確認し、フロア切替、キャンパス復帰、シート境界越しパン、console error 0件を確認した。
+
+`bun run verify:all`は128 tests / 1,025 assertions、production build、123 Place / 88 QR / 61 Event、348 nodes / 445 edges、git diff checkをPASS。初回独立レビューのP2（BottomSheet外枠に残ったgrid定義）をsurface専用レイアウトへ修正し、全ゲートを再実行した。修正後の会話履歴なし最終読み取り専用レビューは指摘なし。
+
 ## ブラウザのプル更新抑止
 
 `html`、`body`、`#root` の縦方向overscrollとページスクロールを抑止し、イベント一覧・QR・地図パネル・詳細・スケジュールの内部スクロール領域には`overscroll-behavior-y: contain`を設定した。地図パン、BottomSheetドラッグ、スケジュール画像の操作を壊す全体`touchmove.preventDefault()`は追加していない。
