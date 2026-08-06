@@ -446,6 +446,10 @@ input {
   height: 4rem;
 }
 
+.sheet-icon--calendar {
+  transform: scale(0.9);
+}
+
 .sheet-icon--stroke {
   fill: none;
   stroke: currentColor;
@@ -858,7 +862,7 @@ input {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
-  background: rgba(17, 17, 17, 0.94);
+  background: var(--color-surface);
 }
 
 .schedule-dialog__toolbar {
@@ -874,7 +878,7 @@ input {
   border: 0;
   border-radius: var(--radius-pill);
   color: var(--color-text);
-  background: var(--color-surface);
+  background: var(--color-description-bg);
   font-weight: 700;
   cursor: pointer;
 }
