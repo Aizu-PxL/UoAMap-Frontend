@@ -63,7 +63,7 @@ async function main() {
       }
     }
     
-    // Sort targets by qrId so that missing ones (like Q018) are in the correct order
+    // Sort targets by qrId so that all QR IDs are emitted in numeric order
     targets.sort((a, b) => a.qrId.localeCompare(b.qrId));
   }
   

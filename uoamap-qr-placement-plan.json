@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "nextQrNumber": 90,
+  "nextQrNumber": 91,
   "placements": [
     {
       "qrId": "Q001",
@@ -188,6 +188,17 @@
       "floorId": "campus",
       "x": 454,
       "y": 214
+    },
+    {
+      "qrId": "Q018",
+      "sheetId": "campus",
+      "routeNodeId": "nazonobasyo",
+      "placeId": "nazonobasyo",
+      "kind": "fixed",
+      "installationNote": "図書館の池前",
+      "floorId": "campus",
+      "x": 347,
+      "y": 434
     },
     {
       "qrId": "Q019",

@@ -401,7 +401,7 @@ input {
   width: 100%;
   max-width: 430px;
   min-height: 4rem;
-  margin: 0.7rem auto 1.4rem;
+  margin: 0.35rem auto 0.7rem;
 }
 
 .sheet-nav__button {
@@ -801,7 +801,11 @@ input {
 }
 
 .event-detail__id {
-  margin: -0.45rem 0 0.85rem;
+  margin: -0.45rem 0 0.25rem;
+}
+
+.event-detail__meta {
+  margin: 0 0 0.85rem;
 }
 
 .schedule-panel h2 {

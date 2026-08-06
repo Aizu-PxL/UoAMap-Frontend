@@ -161,6 +161,30 @@ describe("createMapMarkerPresentation", () => {
     ]);
   });
 
+  test("別フロアでは表示中フロアのcurrentまたはdestination pinだけを描画する", () => {
+    const currentPlace = placeById.get("room-a");
+    const destinationPlace = placeById.get("room-rq2");
+
+    expect(
+      createPresentation({
+        currentPlace,
+        destinationPlace,
+        floorId: "rq-1f",
+      }).filter((marker) => marker.type === "pin"),
+    ).toEqual([
+      { type: "pin", coordinates: { x: 1, y: 2 }, markerKind: "current", placeId: "room-a" },
+    ]);
+    expect(
+      createPresentation({
+        currentPlace,
+        destinationPlace,
+        floorId: "rq-2f",
+      }).filter((marker) => marker.type === "pin"),
+    ).toEqual([
+      { type: "pin", coordinates: { x: 7, y: 8 }, markerKind: "destination", placeId: "room-rq2" },
+    ]);
+  });
+
   test("キャンパスでは建物別件数と屋外place件数を集約しactionを分ける", () => {
     const presentation = createPresentation({
       floorId: "campus",

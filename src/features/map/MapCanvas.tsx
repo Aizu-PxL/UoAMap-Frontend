@@ -40,8 +40,8 @@ interface MapCanvasProps {
   onFloorChange: (floorId: string) => void;
   currentPlace: Place | null;
   destinationPlace: Place | null;
+  mapFocusPlace: Place | null;
   focusPlace: Place | null;
-  requestedFocusPlace: Place | null;
   focusRequestNonce: number;
   events: CampusEvent[];
   routePresentation: RoutePresentation;
@@ -178,8 +178,8 @@ export function MapCanvas({
   onFloorChange,
   currentPlace,
   destinationPlace,
+  mapFocusPlace,
   focusPlace,
-  requestedFocusPlace,
   focusRequestNonce,
   events,
   routePresentation,
@@ -217,7 +217,7 @@ export function MapCanvas({
     focusSearchParams.get("focus") ?? "",
     focusSearchParams.get("to") ?? "",
     focusSearchParams.get("at") ?? "",
-    requestedFocusPlace?.id ?? "",
+    mapFocusPlace?.id ?? "",
     focusRequestNonce,
   ].join(":");
   const routeFloorIds = routePresentation.floorIds;
@@ -455,16 +455,14 @@ export function MapCanvas({
     }
   }, [floorId, loading, overlayRedrawKey, routePresentation]);
 
-  // URL 状態の優先地点へ一度だけフォーカスする (focus > to > at)。
+  // 導出済みの初期表示地点へ一度だけフォーカスする。
   useEffect(() => {
-    const prioritizedPlace =
-      requestedFocusPlace ?? focusPlace ?? destinationPlace ?? currentPlace;
     const svgElement = svgRef.current;
     if (
       loading ||
       loadedSheetId !== sheetId ||
-      !prioritizedPlace ||
-      prioritizedPlace.floorId !== floorId ||
+      !mapFocusPlace ||
+      mapFocusPlace.floorId !== floorId ||
       !svgElement
     ) {
       return;
@@ -474,7 +472,7 @@ export function MapCanvas({
       return;
     }
 
-    const coordinates = getPlaceCoordinates(prioritizedPlace, svgElement);
+    const coordinates = getPlaceCoordinates(mapFocusPlace, svgElement);
     lastHandledFocusRequestRef.current = focusRequestKey;
     if (!coordinates) {
       return;
@@ -489,14 +487,11 @@ export function MapCanvas({
       ),
     );
   }, [
-    currentPlace,
-    destinationPlace,
     floorId,
-    focusPlace,
     focusRequestKey,
     loadedSheetId,
     loading,
-    requestedFocusPlace,
+    mapFocusPlace,
     sheetId,
   ]);
 

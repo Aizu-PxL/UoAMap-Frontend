@@ -72,7 +72,7 @@ STATUS.md・検証結果を更新
 ## 検証ゲート(スライス完了の条件)
 
 1. `bun run build` が通る(型チェック込み)
-2. `bun run verify:places` が **122 Place / 87 QR / 60 EventでPASS**(places.tsを触っていなくても実行する — 巻き戻し事故の検知のため)
+2. `bun run verify:places` が **124 Place / 89 QR / 61 EventでPASS**(places.tsを触っていなくても実行する — 巻き戻し事故の検知のため)
 3. ルート(`public/maps/` の Route グループ・`scripts/extract-routes.ts`・`src/features/routing/`)を触ったら `bun run verify:routes` と `bun test` も通す
 4. ブラウザ確認: 幅402pxで STATUS.md の検証用URL表のうち関連するものを確認し、コンソールエラーがないことを確認する
 
