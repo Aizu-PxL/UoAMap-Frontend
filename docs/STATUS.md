@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-06(イベントバッジ表示調整)
+最終更新: 2026-08-07(BottomSheetタブとイベント詳細の余白調整)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -54,6 +54,18 @@
 地図上のイベントバッジ通常表示から黒い外周線と人物グリフの黒strokeを除去し、件数ラベルを白字へ変更した。キーボードフォーカス時はカテゴリ色のリングを表示する。402×874pxでイベントバッジ8個、白字、黒線なし、console error 0件を確認した。
 
 `bun.cmd run build`、`bun.cmd run verify:places`（123 Place / 88 QR / 61 Event）、`git diff --check`、独立読み取り専用レビューはPASS。
+
+## BottomSheetナビゲーションアイコン調整
+
+リストとスケジュールのアイコンを同じ`.sheet-icon`サイズで描画できるよう、スケジュール側を24×24座標系へ統一し、指定された`calendar_month_24dp`のパスへ差し替えた。タブ遷移、アクティブ状態の色、QRアイコンは変更していない。
+
+`bun test`、`bun run build`、`bun run verify:places`（123 Place / 88 QR / 61 Event）、`git diff --check`はPASS。幅402pxで`/events`と`/schedule`を確認し、リスト／スケジュールのアイコン外枠サイズ統一、指定カレンダー形状、console error 0件を確認した。会話履歴なしの独立読み取り専用レビューは指摘なし。
+
+## BottomSheetタブとイベント詳細の余白調整
+
+BottomSheet上部タブの上下marginを`0.7rem / 1.4rem`から半分の`0.35rem / 0.7rem`へ変更した。イベント詳細はID下をイベントカードと同じ`0.25rem`へ揃え、meta段落の既定上marginをリセットして余白が再び広がらないようにした。React、ルーティング、データは変更していない。
+
+`bun test`、`bun run build`、`bun run verify:places`（123 Place / 88 QR / 61 Event）、`git diff --check`はPASS。幅402pxで`/events`、`/events/A1`、`/schedule`を確認し、余白調整とconsole error 0件を確認した。独立サブエージェントレビューはユーザー指定により実施していない。
 
 ## ブラウザのプル更新抑止
 
