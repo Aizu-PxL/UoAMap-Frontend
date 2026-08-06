@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-06(きやれイベント／Q089データ同期)
+最終更新: 2026-08-06(イベント表示・地図／BottomSheet UX修正)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -32,6 +32,20 @@
 最新地図回帰修正ブリーフ: `docs/tasks/20-map-focus-event-marker-regressions.md`（未コミット）
 
 最新きやれ／Q089データ同期ブリーフ: `docs/tasks/21-kiyare-data-sync.md`（未コミット）
+
+最新イベント表示・地図／BottomSheet UX修正ブリーフ: `docs/tasks/22-event-map-sheet-ux-fixes.md`（未コミット）
+
+## イベント表示・地図／BottomSheet UX修正
+
+正式`Event.id`を持つイベントだけを一覧カードと詳細へ`ID: <id>`形式で表示し、`service-*`内部keyは表示しない。数字を含む検索語は半角・全角数字を同一視し、正式IDの部分一致があればID一致結果だけを返し、該当IDがなければタイトル・説明・会場名の全文検索へフォールバックする。イベントリストは少数件でもカードがリスト高へ伸長せず、通常の内容高で表示し、カードと強調状態のドロップシャドウを除去した。
+
+地図キャンバス全体は維持しつつ、地図・ルート・ラベル・マーカーを`--bottom-sheet-height`の半分だけ上へ移動してシートを除いた表示領域の中央へ寄せた。フロア切替などの操作対象は従来どおりシート上端へ追従する。MapCanvasはpointer captureでシート境界をまたぐパンを継続し、touch終了時にpointer-up前のタップ状態を消さないよう整理して、地図背景タップで確実に22svhへ下げる。
+
+Figmaの既存EventCardとScreens 03/05へ正式ID表示・影なし・詳細の「リストに戻る」を同期し、ノード構造・トークン・API・Repository・Eventデータ・SVG・Routeグラフは変更していない。QR案内文言は「道案内QRコードを読み込んでください」へ修正した。
+
+`bun test`（125 tests / 1,015 assertions）、`bun run build`、`bun run verify:places`（123 Place / 88 QR / 61 Event）、`bun run verify:routes`（348 nodes / 445 edges）、`bun run verify:all`、`git diff --check`はPASS。402×874pxで、1件・少数件カードの内容高、影なし、正式ID／service内部key非表示、半角・全角数字検索、正式ID／QR文言を確認した。地図は22／58／82svhでレイヤーがシート高さの半分だけ上がり、操作対象がシート上端へ追従すること、背景タップで22svhへ下がること、ズーム後のパン継続を確認した。console errorは0件（localhostのカメラHTTPSに関する既存warningのみ）。
+
+会話履歴なしの読み取り専用レビューを実施し、指摘なしを確認した。
 
 ## きやれイベント／Q089データ同期
 

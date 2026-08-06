@@ -54,7 +54,7 @@ const DEFAULT_VIEW_BOX: MapViewBox = {
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 const FOCUS_VIEW_BOX_RATIO = 0.4;
-const FOCUS_VERTICAL_ANCHOR = 0.2;
+const FOCUS_VERTICAL_ANCHOR = 0.5;
 const PIN_PATH =
   "M25 45.83c-5.59-4.76-9.77-9.17-12.53-13.25-2.76-4.08-4.14-7.86-4.14-11.33 0-5.21 1.68-9.36 5.03-12.45C16.71 5.71 20.59 4.17 25 4.17s8.29 1.55 11.64 4.64c3.35 3.09 5.03 7.24 5.03 12.45 0 3.47-1.38 7.25-4.14 11.33-2.76 4.08-6.94 8.49-12.53 13.25Z";
 const LOCATION_DETAIL_PATH = "M25 27.08a5.83 5.83 0 1 0 0-11.66 5.83 5.83 0 0 0 0 11.66Z";
@@ -259,6 +259,7 @@ export function MapCanvas({
     panInverseScreenMatrix?: DOMMatrix;
     pinchStartDistance?: number;
     pinchCenter?: { x: number; y: number };
+    pointerId?: number;
     pointerStartClient?: { x: number; y: number };
     pointerMoved: boolean;
   }>({
@@ -810,6 +811,10 @@ export function MapCanvas({
     if (!panStartSvgPoint) return;
 
     gestureRef.current.isPanning = true;
+    if (event.isPrimary) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+      gestureRef.current.pointerId = event.pointerId;
+    }
     gestureRef.current.startViewBox = { ...viewBox };
     gestureRef.current.panStartSvgPoint = panStartSvgPoint;
     gestureRef.current.panInverseScreenMatrix = inverseScreenMatrix;
@@ -855,15 +860,29 @@ export function MapCanvas({
     );
   };
 
-  const finishPointer = (allowTap: boolean) => {
+  const finishPointer = (allowTap: boolean, pointerId?: number) => {
+    const activePointerId = gestureRef.current.pointerId;
+    if (
+      activePointerId !== undefined &&
+      pointerId !== undefined &&
+      activePointerId !== pointerId
+    ) {
+      return;
+    }
+
     const shouldCollapse =
       allowTap &&
       gestureRef.current.isPanning &&
       !gestureRef.current.isPinching &&
       !gestureRef.current.pointerMoved;
+    const container = containerRef.current;
+    if (activePointerId !== undefined && container?.hasPointerCapture(activePointerId)) {
+      container.releasePointerCapture(activePointerId);
+    }
     gestureRef.current.isPanning = false;
     gestureRef.current.panStartSvgPoint = undefined;
     gestureRef.current.panInverseScreenMatrix = undefined;
+    gestureRef.current.pointerId = undefined;
     gestureRef.current.pointerStartClient = undefined;
     gestureRef.current.pointerMoved = false;
     if (shouldCollapse) {
@@ -871,7 +890,11 @@ export function MapCanvas({
     }
   };
 
-  const handlePointerUp = () => finishPointer(true);
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) =>
+    finishPointer(true, event.pointerId);
+
+  const handlePointerCancel = (event: React.PointerEvent<HTMLDivElement>) =>
+    finishPointer(false, event.pointerId);
 
   const startPinch = (touches: React.TouchList) => {
     const svgElement = svgRef.current;
@@ -944,7 +967,6 @@ export function MapCanvas({
       return;
     }
 
-    gestureRef.current.isPanning = false;
     gestureRef.current.isPinching = false;
     gestureRef.current.pinchStartDistance = undefined;
     gestureRef.current.pinchCenter = undefined;
@@ -957,7 +979,7 @@ export function MapCanvas({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerLeave={() => finishPointer(false)}
+      onPointerCancel={handlePointerCancel}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

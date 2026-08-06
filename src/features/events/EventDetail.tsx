@@ -83,6 +83,7 @@ export function EventDetail() {
         リストに戻る
       </Link>
       <h2>{event.title}</h2>
+      {event.id && <p className="event-detail__id">ID: {event.id}</p>}
       <p className="event-detail__meta">
         {formatTimeSlots(event.timeSlots)}
         <br />@{place?.name ?? event.placeId}
