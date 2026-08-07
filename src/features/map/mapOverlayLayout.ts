@@ -59,17 +59,20 @@ export function createMapOverlayLayout({
   resolveElementBounds,
   resolvePlaceBounds,
 }: CreateMapOverlayLayoutOptions): MapOverlayLayout {
-  const initialPinExclusionBounds = markers
+  // ピン座標はこのレイアウトで動かないため、ラベル選定の除外矩形をそのまま最終判定にも使う。
+  // ただし目的地ピンはルート終端(部屋の出入口付近)に立って地点名ラベルへ重なりやすく、
+  // ラベルを落とすとどこが目的地か読めなくなる。ラベルは残し、marker層(label層より前面)で上に重ねる
+  const pinExclusionBounds = markers
     .filter(
       (marker): marker is PinMarkerPlacement =>
-        marker.type === "pin" && marker.replacesEventMarker === undefined,
+        marker.type === "pin" && marker.markerKind !== "destination",
     )
     .map(getPinExclusionBounds);
   const selectedLabels = selectVisibleMapLabels({
     labels: mapLabels,
     userUnitsPerPixel,
     isCampusOverview,
-    exclusionBounds: initialPinExclusionBounds,
+    exclusionBounds: pinExclusionBounds,
   });
 
   const { markers: laidOutMarkers, anchoredLabelIdsByMarkerKey } = layoutEventMarkers({
@@ -81,7 +84,7 @@ export function createMapOverlayLayout({
     resolvePlaceBounds,
   });
 
-  const replacementCoordinates = new Map<PinMarkerPlacement, { x: number; y: number }>();
+  // 目的地ピンと同じ地点のイベントバッジは表示しない(ピンはルート終端に別途固定される)
   const replacedEvents = new Set<EventMarkerPlacement>();
   for (const marker of laidOutMarkers) {
     if (marker.type !== "pin") {
@@ -97,23 +100,13 @@ export function createMapOverlayLayout({
         matchesReplacement(candidate, replacementTarget),
     );
     if (replacedEvent) {
-      replacementCoordinates.set(marker, replacedEvent.coordinates);
       replacedEvents.add(replacedEvent);
     }
   }
 
-  const finalMarkers = laidOutMarkers
-    .filter((marker) => marker.type !== "event" || !replacedEvents.has(marker))
-    .map((marker) => {
-      if (marker.type !== "pin") {
-        return marker;
-      }
-      const coordinates = replacementCoordinates.get(marker);
-      return coordinates ? { ...marker, coordinates } : marker;
-    });
-  const finalPinBounds = finalMarkers
-    .filter((marker): marker is PinMarkerPlacement => marker.type === "pin")
-    .map(getPinExclusionBounds);
+  const finalMarkers = laidOutMarkers.filter(
+    (marker) => marker.type !== "event" || !replacedEvents.has(marker),
+  );
   const visibleAnchoredLabelIds = new Set(
     finalMarkers
       .filter((marker): marker is EventMarkerPlacement => marker.type === "event")
@@ -133,9 +126,8 @@ export function createMapOverlayLayout({
 
   const labelPlacements = selectedLabels.filter(
     (placement) =>
-      !finalPinBounds.some((bounds) => overlayBoundsIntersect(placement.bounds, bounds)) &&
-      (visibleAnchoredLabelIds.has(placement.label.id) ||
-        !badgeBounds.some((bounds) => overlayBoundsIntersect(placement.bounds, bounds))),
+      visibleAnchoredLabelIds.has(placement.label.id) ||
+      !badgeBounds.some((bounds) => overlayBoundsIntersect(placement.bounds, bounds)),
   );
 
   return { labelPlacements, markers: finalMarkers };
