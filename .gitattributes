@@ -1,0 +1,6 @@
+# 生成物はチェックイン内容とバイト単位で比較して検証する(scripts/extract-routes.ts --check /
+# scripts/build-route-editor.ts --check)。Windowsの core.autocrlf=true でチェックアウト時に
+# CRLFへ変換されると、生成側が常にLFで出力するため実体が同じでも検証が落ちる。
+# これらのファイルはOSを問わずLFのまま取り出す。
+src/features/routing/generated/routeGraph.json text eol=lf
+tools/route-editor.html text eol=lf

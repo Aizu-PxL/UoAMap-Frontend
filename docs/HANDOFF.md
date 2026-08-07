@@ -6,7 +6,7 @@
 
 ## 現在地
 
-Q018をキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）へ割り当て、追加JSONをフロントの正式モックへ採用した。Q075〜Q088は既存Routeノード14件をPlaceへ登録して再利用し、Q089はイベント会場Place `sh_room_kiyare`を参照する。Placeは89 QR地点、35イベント会場、`campus-all`の124件（Q089のPlaceはイベント会場と共有）で、`campus-all`以外の123 Placeは350ノード・447エッジ（walk 408 / transfer 39）の単一連結グラフに収録される。計画JSONの`nextQrNumber: 91`を維持し、現行配置はQ001〜Q089の89件。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・参照・座標の不一致をFAILさせる。
+Q018をキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）へ割り当て、追加JSONをフロントの正式モックへ採用した。Q075〜Q088は既存Routeノード14件をPlaceへ登録して再利用し、Q089はイベント会場Place `sh_room_kiyare`を参照する。Placeは89 QR地点、QR地点と重複しない35イベント会場、`campus-all`の125件（`main_auditorium`と`sh_room_kiyare`のPlaceはイベント会場と共有）で、`campus-all`以外の124 Placeは350ノード・448エッジ（walk 409 / transfer 39）の単一連結グラフに収録される。計画JSONの`nextQrNumber: 91`を維持し、現行配置はQ001〜Q089の89件。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・参照・座標の不一致をFAILさせる。
 
 印刷QRの正式URLは`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId`。アプリ本体のbase pathは`/`を維持し、この公開パスだけを既存`QrLanding`の別名として受理する。アプリ内スキャナーは同一originの正式URLと従来のアプリbase path配下`/q/:qrId`を受理し、スキャン後は内部`/q/:qrId`へ渡す。公開Q001、目的地付き公開Q001、公開Q999、既存Q001の402×874px確認はPASS。本番デプロイと実URL・実機・実印刷受入は未実施。
 
@@ -18,7 +18,7 @@ Q018をキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）�
 `.agent/refactor-plan.md` のM1〜M8完了を確認し、次に着手する機能を `docs/SPEC.md` と `docs/BACKLOG.md` から選んで別ブリーフを作成してください。本番公開や物理QRの場合は先に `docs/PRODUCTION.md` の人間決定ゲートを確認してください。
 ```
 
-SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全123 Placeが、350ノード・447エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
+SPECロードマップのステップ3「ルート」とステップ5「QR/ディープリンク」は完了している。`campus-all`（点ではなくキャンパス全域を表す概念地点）を除く全124 Placeが、350ノード・448エッジの単一連結グラフに収録済み。QRタブから現在地を読み取り、目的地を保持した初回・再スキャンの双方でルートを更新できる。
 
 次のロードマップ実装候補はステップ7の `docs/API.md` 契約に沿ったAPI接続。
 並行する公開準備は [PRODUCTION.md](PRODUCTION.md) を正とし、実装前に人間が本番origin、base path、ホスティング所有者、API構成、QR台帳責任者を確定する。URL凍結前にQRを量産しない。
@@ -64,7 +64,7 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 - 03dで導入した複数フロアSVG抽出は08で廃止した。講義棟は`LH1F_base_plain.svg`と`LH2F_base_plain.svg`が正本
 - 同じ `data-stair-id` の隣接階ノード間にコスト60、同じ `data-entrance-id` の建物側・キャンパス側ノード間にコスト0のtransfer edgeを生成する
 - `MapCanvas` は経路が存在するフロアだけでなく、乗換地点だけを含むフロアも表示対象として扱う
-- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全123 Route対応Place、全ノードの単一連結性、全61イベント地点、全89 QR地点は `src/features/routing/routeGraphCoverage.test.ts` で固定している
+- 最短経路アルゴリズムは `src/features/routing/findShortestRoute.test.ts`、全124 Route対応Place、全ノードの単一連結性、全61イベント地点、全89 QR地点は `src/features/routing/routeGraphCoverage.test.ts` で固定している
 - `campus-all` は意図的な唯一のRoute非収録Place。URLで指定されてもクラッシュせず「位置情報なし」として扱う
 
 ## 最終検証結果

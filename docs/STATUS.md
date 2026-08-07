@@ -374,7 +374,7 @@ bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる
-bun run verify:places  # 124 Place / 89 QR / 61 Eventと計画JSONの整合検証
+bun run verify:places  # 125 Place / 89 QR / 61 Eventと計画JSONの整合検証
 bun run verify:routes  # SVGのRouteグラフが生成結果と一致することを確認
 ```
 
@@ -415,7 +415,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」は`focus=`を使う。「ここへ行く」直後とQR解決直後の現在地への注目だけは、公開URLへ`focus`ピンを追加しない一時的なnavigation stateで要求する
 - **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一originの`BASE_URL`配下`/q/:qrId`と正式公開パス`/UoAMap-Frontend/q/:qrId`を受理する。読み取り後は既存クエリを保持して内部`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
-- **places.ts が地点語彙の正**: 全124 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、イベント会場35件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
+- **places.ts が地点語彙の正**: 全125 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、QR地点と重複しないイベント会場35件、意図的unmapped 1件(`campus-all`)。イベント会場Placeは全38件で、うち`main_auditorium`と`sh_room_kiyare`の2件はQR地点と共有するため上の89件に含まれる。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
@@ -426,7 +426,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 
 ## 既知の注意(再発防止ルール)
 
-- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で124 Place / 89 QR / 61 EventのPASSを必ず確認する
+- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で125 Place / 89 QR / 61 EventのPASSを必ず確認する
 - SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)
 - カメラは本番ではHTTPSのsecure contextが必須。`qr-scanner`のMIT通知は`public/THIRD_PARTY_NOTICES.txt`として配布物へ同梱する(アプリ内ライセンス画面は不要)

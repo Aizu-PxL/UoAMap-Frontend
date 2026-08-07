@@ -196,7 +196,7 @@ RouteEdge … 経路エッジ(nodeA, nodeB, 距離)。フロア間・シート�
 
 - `MapSheet / Floor / Place / RouteNode / RouteEdge` はSVGから生成する静的データ
 - `Event / Tag / QrCode` はバックエンド(完成まではモック)から取得
-- 現行Placeレジストリは、89件のQR地点（新規座標Place案73件 + 既存Routeノード再利用14件 + SVG RouteノードのQ018 1件 + イベント会場と共有するQ089の1件）、35件のイベント会場Place、Route非対応の概念地点`campus-all`の計124件で構成する。Q089の`sh_room_kiyare`はイベント会場Placeと共有するため、重複を除いた一意なPlace件数は124件である。Place IDは新Routeノード形式を正とし、旧Place IDのURL互換・エイリアスは設けない
+- 現行Placeレジストリは、89件のQR地点（新規座標Place案73件 + 既存Routeノード再利用14件 + SVG RouteノードのQ018 1件 + イベント会場と共有するQ089の1件）、35件のイベント会場Place、Route非対応の概念地点`campus-all`の計125件で構成する。ここでの「35件のイベント会場Place」はQR地点と重複しないものだけを数えており、イベント会場Placeは全38件、うち`main_auditorium`と`sh_room_kiyare`の2件はQR地点と共有するため89件側に含まれる。重複を除いた一意なPlace件数は125件である。Place IDは新Routeノード形式を正とし、旧Place IDのURL互換・エイリアスは設けない
 - ステップ1の仮Placeは `mapping: unmapped` を明示して位置アンカー未確定を許容する。ステップ2で全地点をSVG要素または座標へ解決し、未紐付けを検証エラーにする
 - `Event.key`は全Eventに必要な内部識別子で、年度内で一意とする。正式IDがあるEventは`key`と`id`を同じ値にし、正式IDがない運営イベントは`service-*`形式の内部keyだけを持つ。内部keyは公式IDとして表示しない
 - **Event.id は公式タイムテーブルの記号だけを保持する**。許可する先頭文字と内容は、`A` 大学説明会、`L` 入試説明会、`E` 早期（飛び）入試説明会、`U` 保護者向け説明会、`P` 研究室公開、`T` キャンパスツアー、`M` 体験授業、`G` なんでも相談会、`R` 受験勉強相談。外部リンク `/e/L1` がそのまま人間にも読める。総合案内・自由見学・休憩所・ランチ営業・売店営業・地図アプリ解説はEventとして残すが正式IDを持たない。複数回開催は公式に別記号があれば別Eventとし、休憩を挟む開催はtimeSlotsの複数要素で表現する
