@@ -7,6 +7,10 @@ import type {
   RouteNode,
   RouteNodeKind,
 } from "../src/data/types.js";
+import {
+  calibrateRouteGraphDistances,
+  type RouteDistanceCalibrationPlan,
+} from "./routeDistanceCalibration.js";
 
 type SourceNode = Omit<RouteNode, "id" | "floorId"> & {
   localId: string;
@@ -33,6 +37,7 @@ export type RouteExtractionInput = {
   mapSheets: readonly MapSheet[];
   floors: readonly Floor[];
   places: readonly Place[];
+  distanceCalibrationPlan?: RouteDistanceCalibrationPlan;
 };
 
 export type RouteExtractionResult = {
@@ -56,6 +61,7 @@ export async function extractRouteGraph({
   mapSheets,
   floors,
   places,
+  distanceCalibrationPlan,
 }: RouteExtractionInput): Promise<RouteExtractionResult> {
   const errors: string[] = [];
   const nodes: RouteNode[] = [];
@@ -501,8 +507,18 @@ for (const [entranceId, occurrences] of entranceOccurrences) {
 nodes.sort((a, b) => a.id.localeCompare(b.id));
 edges.sort((a, b) => a.id.localeCompare(b.id));
 
+  const graph = { nodes, edges };
+  if (distanceCalibrationPlan && errors.length === 0) {
+    const calibrated = calibrateRouteGraphDistances(
+      graph,
+      distanceCalibrationPlan,
+    );
+    errors.push(...calibrated.errors);
+    return { graph: calibrated.graph, errors };
+  }
+
   return {
-    graph: { nodes, edges },
+    graph,
     errors,
   };
 }

@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(目的地ピンのルート終端固定)
+最終更新: 2026-08-07（Route距離のキャンパス相対校正）
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -50,6 +50,18 @@
 最新キャンパス屋内現在地投影ブリーフ: `docs/tasks/40-campus-current-marker-projection.md`（未コミット）
 
 最新目的地ピン配置ブリーフ: `docs/tasks/41-destination-pin-route-anchor.md`（未コミット）
+
+最新Route距離校正ブリーフ: `docs/tasks/42-route-distance-calibration.md`（未コミット）
+
+## Route距離のキャンパス相対校正
+
+各SVGのviewBox座標をそのまま距離として加算していた生成処理を改め、入口・階段transferの対応点からフロアごとの単一倍率を導出し、walk距離をcampus基準へ事前校正するようにした。倍率はRQ 1F/2F/3Fが`0.330 / 0.310 / 0.309`、LH 1F/2Fが`0.281 / 0.270`、SH 1F/2Fが`0.709 / 0.640`。UBICとLICTiAは入口1本・階段なしの間だけ倍率1のtopology-neutral fallbackを許可する。入口を増やすか階段を追加すると生成を失敗させ、暗黙に未校正のまま運用しない。
+
+生成グラフのwalkは校正倍率を掛けたキャンパス相対距離、階段transferは`60 * sqrt(scaleA * scaleB)`、入口transferは0となる。倍率・親・使用したtransfer ID・正規化RMSEは`distanceCalibration`へ記録する。Dijkstraの公開インターフェース、単一距離最小化、node座標、`pathD`、SVG、350 nodes / 448 edgesは変更していない。校正は屋内常時優先ではなく、校正後の距離が短い経路を選ぶ。
+
+代表回帰ではQ081→P17相当を講義棟1F内、Q023→P2相当を研究棟1F内だけに戻し、研究棟→講義棟2Fは2F東口を直接使う。Q083→R1相当は校正後も学生ホールの屋外経路が短いため、その挙動を意図的に維持する。対応点不足・ゼロ基線・未知の親・親循環・正規化RMSE 15%超・fallback構造違反はユニットテストで拒否する。
+
+`bun run verify:all`は196 tests / 1,285 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。402×874pxでは、`/q/Q081?to=P17`が講義棟1F内、`/q/Q023?to=P2`が研究棟1F内だけを描画し、`/?at=rq_room_161&to=M21`は研究棟1Fからキャンパスの`lh_east2f`を経て講義棟2Fへ到着した。`/q/Q083?to=R1`は学生ホール東口から正面入口へ屋外区間を維持した。ルート線・フロア構成に異常はなく、console error/warn 0件。会話履歴なしの読み取り専用独立レビューは指摘なし。
 
 ## 目的地ピンのルート終端固定
 
@@ -436,7 +448,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
 - **マーカー**: React非管理のオーバーレイSVGレイヤー。イベントバッジはPlace座標から画面上20px上へ置き、ラベル衝突除外には使わない。水滴ピンの先端はPlace座標へ固定し、従来どおりラベル衝突除外に使う。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。バッジは白地と濃色外周を持ち、正式IDのカテゴリ色を縁と人型グリフへ適用し、同一地点が混色またはIDなしならtealへ戻す。単一イベントは詳細へ遷移し、キャンパス集約は建物フロアへ移動する。同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
-- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全123 Placeを350ノード/447エッジの単一連結グラフへ収録し、全61イベント地点と全89 QR地点をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
+- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全124 Placeを350ノード/448エッジの単一連結グラフへ収録し、全61イベント地点と全89 QR地点をcoverageテストで固定。walk距離は入口・階段の対応点から導出したフロア倍率でcampus基準へ校正し、階段transferはローカル距離60へ両フロア倍率の幾何平均を掛け、入口transferはコスト0とする。floorIdは各SVG直下のRouteグループから抽出する
 - **フロア切替のviewBox引き継ぎ**: 同一建物内の切替は「シート全体に対する相対位置・相対ズーム」を比例マッピングして維持(フロア間で座標系が揃っていないため絶対座標は使えない)。キャンパス⇄建物は全体表示リセット。RQ2FはviewBox属性が無いためwidth/height属性からフォールバック構成
 - **scrollIntoViewは `behavior:"auto"`**: smoothはバックグラウンドタブでアニメーションが進まず止まることがあるため使わない
 

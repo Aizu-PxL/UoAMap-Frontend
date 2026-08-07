@@ -6,6 +6,7 @@ import {
   serializeRouteGraph,
   type RouteSvgSource,
 } from "./routeExtractionCore.js";
+import { routeDistanceCalibrationPlan } from "./routeDistanceCalibration.js";
 
 const repositoryRoot = path.join(import.meta.dirname, "..");
 const outputPath = path.join(
@@ -29,6 +30,7 @@ const result = await extractRouteGraph({
   mapSheets,
   floors,
   places,
+  distanceCalibrationPlan: routeDistanceCalibrationPlan,
 });
 
 if (result.errors.length > 0) {
