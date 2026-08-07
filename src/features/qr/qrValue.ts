@@ -3,9 +3,12 @@ export type QrLandingLocation = {
   search: string;
 };
 
+export const PUBLIC_QR_PATH_PREFIX = "/UoAMap-Frontend/q/";
+export const PUBLIC_QR_ROUTE_PATH = `${PUBLIC_QR_PATH_PREFIX}:qrId`;
+
 /**
- * QRに格納されたURLから、このアプリの /q/:qrId に対応するIDだけを取り出す。
- * 外部サイトのQRをアプリ内の現在地として誤認しないよう、originとbase pathを照合する。
+ * QRに格納されたURLから、このアプリのQR着地ルートに対応するIDだけを取り出す。
+ * 外部サイトのQRをアプリ内の現在地として誤認しないよう、originと許可パスを照合する。
  */
 export function extractQrIdFromAppUrl(
   rawValue: string,
@@ -26,8 +29,14 @@ export function extractQrIdFromAppUrl(
     return null;
   }
 
-  const qrPathPrefix = `${normalizeBasePath(appBaseUrl)}q/`;
-  if (!scannedUrl.pathname.startsWith(qrPathPrefix)) {
+  const qrPathPrefixes = new Set([
+    `${normalizeBasePath(appBaseUrl)}q/`,
+    PUBLIC_QR_PATH_PREFIX,
+  ]);
+  const qrPathPrefix = [...qrPathPrefixes].find((pathPrefix) =>
+    scannedUrl.pathname.startsWith(pathPrefix),
+  );
+  if (!qrPathPrefix) {
     return null;
   }
 

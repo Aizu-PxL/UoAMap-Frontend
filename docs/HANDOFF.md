@@ -1,12 +1,14 @@
 # HANDOFF — 次のセッションへの引き継ぎ
 
-最終更新: 2026-08-07(Q018追加データ同期)
+最終更新: 2026-08-07(公開QRパス対応)
 対象ブランチ: `feature/fixerror`
-最新実装ブリーフ: `docs/tasks/28-qr-q018-data-sync.md`（未コミット）
+最新実装ブリーフ: `docs/tasks/32-public-qr-path-alias.md`（未コミット）
 
 ## 現在地
 
 Q018をキャンパスSVGのRouteノード`nazonobasyo`（図書館の池前）へ割り当て、追加JSONをフロントの正式モックへ採用した。Q075〜Q088は既存Routeノード14件をPlaceへ登録して再利用し、Q089はイベント会場Place `sh_room_kiyare`を参照する。Placeは89 QR地点、35イベント会場、`campus-all`の124件（Q089のPlaceはイベント会場と共有）で、`campus-all`以外の123 Placeは350ノード・447エッジ（walk 408 / transfer 39）の単一連結グラフに収録される。計画JSONの`nextQrNumber: 91`を維持し、現行配置はQ001〜Q089の89件。計画JSON・Place案JSON・QR対応表は手動同期し、`verify:places`がID・参照・座標の不一致をFAILさせる。
+
+印刷QRの正式URLは`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId`。アプリ本体のbase pathは`/`を維持し、この公開パスだけを既存`QrLanding`の別名として受理する。アプリ内スキャナーは同一originの正式URLと従来のアプリbase path配下`/q/:qrId`を受理し、スキャン後は内部`/q/:qrId`へ渡す。公開Q001、目的地付き公開Q001、公開Q999、既存Q001の402×874px確認はPASS。本番デプロイと実URL・実機・実印刷受入は未実施。
 
 開始時は `AGENTS.md` → `docs/STATUS.md` → このファイル → `docs/SPEC.md` → `docs/WORKFLOW.md` → `.agent/PLANS.md` → `.agent/refactor-plan.md` の順に読み、作業ツリーと基準コマンドを再確認する。各マイルストーンを `docs/tasks/13x-*.md` の小スライスに分け、検証・STATUS/ExecPlan更新・独立レビューまで閉じる。このリファクタリングではユーザーがスライス単位のgit commitを許可している。
 
@@ -42,7 +44,7 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 ### 05a アプリ内QRスキャン
 
 - `qr-scanner` 1.4.2で背面カメラを優先し、QRタブ表示中だけスキャンする
-- 同一originかつVite `BASE_URL`配下の`/q/:qrId`だけを道案内QRとして受理する。外部origin・別パス・空ID・余分なパスは拒否してスキャンを継続する
+- 同一originかつVite `BASE_URL`配下の`/q/:qrId`、または正式公開パス`/UoAMap-Frontend/q/:qrId`を道案内QRとして受理する。外部origin・その他のパス・空ID・余分なパスは拒否してスキャンを継続する
 - 有効なQRは既存クエリを保持して`/q/:qrId`へ渡す。`QrLanding`が`at`だけを置換し、`to`を保持、`focus`を削除する
 - QR検出後は重複処理をロックし、画面離脱時はカメラ・Worker・イベントリスナーをdestroyする
 - QRタブへ戻った直後のカメラ解放競合には400ms後の自動再試行1回、その後の失敗には日本語エラーと手動再試行を提供する
@@ -67,20 +69,20 @@ SPECロードマップのステップ3「ルート」とステップ5「QR/デ�
 
 ## 最終検証結果
 
-2026-08-07のQ018追加データ同期で以下を確認済み。
+2026-08-07の公開QRパス対応で以下を確認済み。
 
 ```text
 bun run verify:all     PASS
-bun test               128 tests / 0 fail / 1029 expect() calls
+bun test               138 tests / 0 fail / 1053 expect() calls
 bun run build          PASS（route editor鮮度、strict型検査、Vite build）
 bun run verify:routes  350 nodes / 447 edges
 bun run verify:places  124 Place / 89 QR / 61 Event
 git diff --check       PASS
 ```
 
-幅402pxのブラウザで `/q/Q018`（`at=nazonobasyo`）、`/q/Q018?to=M21`、`/q/Q089?to=M21`（`at=sh_room_kiyare`）、`/q/Q001?to=service-map-guide`（`at=main_node_11`）を確認し、Q018の地点フォーカス・経路表示、きやれEventの目的地設定・経路表示、console error 0件を確認した。
+幅402×874pxのブラウザで`/UoAMap-Frontend/q/Q001`、`/UoAMap-Frontend/q/Q001?to=M21`、`/UoAMap-Frontend/q/Q999`、`/q/Q001`を確認し、Q001→`at=main_node_11`、目的地保持、未知QRエラー、既存ルート互換、console error/warn 0件を確認した。
 
-今回の会話履歴なし読み取り専用独立レビューは指摘なし。
+初回の会話履歴なし読み取り専用独立レビューで、残存していた旧QR表記とURL決定手順の矛盾3件をP2として指摘され、仕様・実機受入表・スキャナー説明を修正した。修正後の最終再レビューは指摘なし。
 
 再開時の最低限の健全性確認:
 

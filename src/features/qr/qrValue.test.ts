@@ -28,6 +28,16 @@ describe("extractQrIdFromAppUrl", () => {
     ).toEqual("Q001");
   });
 
+  test("ルート配信時も印刷QRの正式パスを扱う", () => {
+    expect(
+      extractQrIdFromAppUrl(
+        "https://uoa-ocmap.com/UoAMap-Frontend/q/Q001",
+        "https://uoa-ocmap.com/qr?to=M21",
+        "/",
+      ),
+    ).toEqual("Q001");
+  });
+
   test("同一originの相対URLも扱う", () => {
     expect(extractQrIdFromAppUrl("/q/Q002", appUrl, "/")).toEqual("Q002");
   });
@@ -35,8 +45,8 @@ describe("extractQrIdFromAppUrl", () => {
   test("外部originのQRを拒否する", () => {
     expect(
       extractQrIdFromAppUrl(
-        "https://example.com/q/Q001",
-        appUrl,
+        "https://example.com/UoAMap-Frontend/q/Q001",
+        "https://uoa-ocmap.com/qr",
         "/",
       ),
     ).toBeNull();
@@ -48,6 +58,10 @@ describe("extractQrIdFromAppUrl", () => {
       "https://map.example.jp/q/",
       "https://map.example.jp/q/Q001/extra",
       "https://map.example.jp/q/Q001%2Fextra",
+      "https://map.example.jp/UoAMap-Frontend/q/",
+      "https://map.example.jp/UoAMap-Frontend/q/Q001/extra",
+      "https://map.example.jp/UoAMap-Frontend/q/Q001%2Fextra",
+      "https://map.example.jp/UoAMap-Frontend/p/Q001",
       "Q001",
     ];
 
@@ -55,7 +69,7 @@ describe("extractQrIdFromAppUrl", () => {
       invalidValues.map((value) =>
         extractQrIdFromAppUrl(value, appUrl, "/"),
       ),
-    ).toEqual([null, null, null, null, null]);
+    ).toEqual([null, null, null, null, null, null, null, null, null]);
   });
 });
 

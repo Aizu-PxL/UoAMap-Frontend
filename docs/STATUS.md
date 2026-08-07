@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(BottomSheetカレンダーアイコンのサイズ調整)
+最終更新: 2026-08-07(公開QRパス対応)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -68,6 +68,16 @@
 最新BottomSheet追従型地図操作UI整理ブリーフ: `docs/tasks/25-map-sheet-controls.md`（未コミット）
 
 最新ページズーム抑止ブリーフ: `docs/tasks/31-disable-page-zoom.md`（未コミット）
+
+最新公開QRパス対応ブリーフ: `docs/tasks/32-public-qr-path-alias.md`（未コミット）
+
+## 公開QRパス対応
+
+印刷QRの正式URLを`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId`に確定し、アプリ本体は`base=/`のルート配信を維持したまま、このパスだけを既存`QrLanding`の別名として追加した。アプリ内スキャナーも同一originの正式URLを受理し、外部origin・類似パス・余分なパス・不正IDは従来どおり拒否する。内部`/q/:qrId`、Repository/API、QR対応表、Vite base、ポスター生成処理は変更していない。
+
+`bun run verify:all`は138 tests / 1,053 assertions、production build、124 Place / 89 QR / 61 Event、350 nodes / 447 edges、git diff checkをPASS。402×874pxで公開Q001、目的地付き公開Q001、公開Q999、既存`/q/Q001`を確認し、Q001は`at=main_node_11`へ正規化、`to=M21`保持、Q999の利用者向けエラー、console error/warn 0件を確認した。本番反映、実URLの再確認、実機・実印刷QRの受入は未実施。
+
+初回の会話履歴なし読み取り専用独立レビューで、残存していた旧QR表記とURL決定手順の矛盾3件をP2として指摘され、仕様・実機受入表・スキャナー説明を修正した。修正後の最終再レビューは指摘なし。
 
 ## ページ全体のズーム抑止
 
@@ -325,7 +335,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 
 - **地図SVGはReact非管理DOM**: `MapCanvas` は SVG を `svgHostRef`(専用div)内に `DOMParser`+`replaceChildren` で挿入する。**React管理下の要素とSVG DOMを混ぜない**こと(混ぜるとReactの再レンダーでクラッシュする)。SVG要素へのイベントは addEventListener + クリーンアップで管理
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」は`focus=`を使う。「ここへ行く」直後とQR解決直後の現在地への注目だけは、公開URLへ`focus`ピンを追加しない一時的なnavigation stateで要求する
-- **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一origin・`BASE_URL`配下の`/q/:qrId`だけを受理する。読み取り後は既存クエリを保持して`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
+- **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一originの`BASE_URL`配下`/q/:qrId`と正式公開パス`/UoAMap-Frontend/q/:qrId`を受理する。読み取り後は既存クエリを保持して内部`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
 - **places.ts が地点語彙の正**: 全124 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、イベント会場35件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
