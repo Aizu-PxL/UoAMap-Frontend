@@ -2510,7 +2510,8 @@
       "floorId": "ubic-1f",
       "x": 49,
       "y": 49,
-      "kind": "corridor"
+      "kind": "corridor",
+      "placeId": "ubic_room_exchange"
     },
     {
       "id": "ubic-1f:ubic_door_3dt",

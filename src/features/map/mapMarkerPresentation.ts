@@ -1,5 +1,13 @@
-import type { Event as CampusEvent, Place } from "../../data/types";
+import type { Event as CampusEvent, Place, RouteNode } from "../../data/types";
+import { routeGraph } from "../routing/routeGraph";
+import { getCenteredLineOffsetsEm } from "./mapOverlayGeometry";
 import type { OverlayPoint } from "./mapOverlayGeometry";
+import {
+  campusBuildingLabelIds,
+  LABEL_LINE_HEIGHT,
+  LABEL_TARGET_PX,
+} from "./mapLabels";
+import type { MapLabel } from "./mapLabels";
 import {
   getAggregatedEventMarkerColorKey,
   getEventMarkerColorKey,
@@ -30,6 +38,19 @@ const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
   lictia: "building_LICTiA",
 };
 
+// アンカー先ラベルの上端からバッジ中心までの距離(バッジ半径11px + 余白)。
+// ラベル行数ぶんの高さはgetLabelHalfHeightPxで加算するため、複数行でも文字と重ならない
+const CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX = 18;
+// キャンパス直置きPlaceの個別バッジは地点名ラベルと同位置になりやすいため画面上20px持ち上げる
+const CAMPUS_EVENT_MARKER_NODE_OFFSET_PX = 20;
+const campusBuildingLabelIdByBuildingId: Record<CampusBuildingId, string> = {
+  building_ResearchQuad: "text_ResearchQuad",
+  building_StudentHall: "text_StudentHall",
+  building_LecHall: "text_LecHall",
+  building_UBIC: "text_UBIC",
+  building_LICTiA: "text_LICTiA",
+};
+
 export type EventMarkerAction =
   | { kind: "floor"; floorId: string }
   | { kind: "event"; eventKey: string };
@@ -58,7 +79,65 @@ export type MapMarkerPlacement = EventMarkerPlacement | PinMarkerPlacement;
 
 export type MarkerCoordinateTarget =
   | { kind: "place"; place: Place }
+  | { kind: "route-node"; node: RouteNode }
   | { kind: "svg-element"; elementId: string };
+
+function getLabelHalfHeightPx(label: MapLabel): number {
+  const centeredOffsetsEm = getCenteredLineOffsetsEm(
+    label.lineOffsetsEm,
+    label.lines.length,
+    LABEL_LINE_HEIGHT,
+  );
+  const lastOffsetEm = centeredOffsetsEm[centeredOffsetsEm.length - 1] ?? 0;
+  return (lastOffsetEm + 0.5) * LABEL_TARGET_PX;
+}
+
+export function anchorCampusBuildingEventMarkers(
+  markers: MapMarkerPlacement[],
+  mapLabels: MapLabel[],
+  userUnitsPerPixel: number,
+  floorId: string,
+): MapMarkerPlacement[] {
+  const buildingLabelsById = new Map(
+    mapLabels
+      .filter((label) => campusBuildingLabelIds.has(label.id))
+      .map((label) => [label.id, label]),
+  );
+
+  return markers.map((marker) => {
+    if (marker.type !== "event") {
+      return marker;
+    }
+    if (marker.buildingId) {
+      const labelId = campusBuildingLabelIdByBuildingId[marker.buildingId];
+      const label = buildingLabelsById.get(labelId);
+      if (!label) {
+        return marker;
+      }
+      const offsetPx =
+        getLabelHalfHeightPx(label) + CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX;
+      return {
+        ...marker,
+        coordinates: {
+          x: label.center.x,
+          y: label.center.y - offsetPx * userUnitsPerPixel,
+        },
+      };
+    }
+    if (floorId === DEFAULT_FLOOR_ID) {
+      return {
+        ...marker,
+        coordinates: {
+          x: marker.coordinates.x,
+          y:
+            marker.coordinates.y -
+            CAMPUS_EVENT_MARKER_NODE_OFFSET_PX * userUnitsPerPixel,
+        },
+      };
+    }
+    return marker;
+  });
+}
 
 type CreateMapMarkerPresentationOptions = {
   currentPlace: Place | null;
@@ -91,6 +170,26 @@ function resolveCampusBuildingId(
     return place.svgElementId as CampusBuildingId;
   }
   return null;
+}
+
+function resolveEventCoordinates(
+  place: Place,
+  resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null,
+): OverlayPoint | null {
+  const routeNode = routeGraph.nodes.find(
+    (node) => node.placeId === place.id && node.floorId === place.floorId,
+  );
+  if (routeNode) {
+    const nodeCoordinates = resolveCoordinates({
+      kind: "route-node",
+      node: routeNode,
+    });
+    if (nodeCoordinates) {
+      return nodeCoordinates;
+    }
+  }
+
+  return resolveCoordinates({ kind: "place", place });
 }
 
 export function createMapMarkerPresentation({
@@ -190,7 +289,7 @@ export function createMapMarkerPresentation({
       ) {
         continue;
       }
-      const coordinates = resolveCoordinates({ kind: "place", place });
+      const coordinates = resolveEventCoordinates(place, resolveCoordinates);
       if (!coordinates) {
         continue;
       }
@@ -212,7 +311,7 @@ export function createMapMarkerPresentation({
       if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
         continue;
       }
-      const coordinates = resolveCoordinates({ kind: "place", place });
+      const coordinates = resolveEventCoordinates(place, resolveCoordinates);
       if (!coordinates) {
         continue;
       }

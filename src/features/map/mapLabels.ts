@@ -8,12 +8,12 @@ import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
-const LABEL_TARGET_PX = 12;
-const LABEL_LINE_HEIGHT = 1.2;
+export const LABEL_TARGET_PX = 12;
+export const LABEL_LINE_HEIGHT = 1.2;
 const LABEL_COLLISION_PADDING_PX = 2;
 const LABEL_CHARACTER_WIDTH_EM = 0.95;
 
-const campusBuildingLabelIds = new Set([
+export const campusBuildingLabelIds = new Set([
   "text_RobotGarage",
   "text_SomeiHouse",
   "text_ClubHouse",
@@ -30,6 +30,15 @@ const campusBuildingLabelIds = new Set([
   "text_StudentHall",
   "text_Library",
   "text_Auditrium",
+]);
+
+// イベント集約バッジのアンカー先となる5建物の建物名。俯瞰の衝突カリングで最優先にする
+export const campusAggregateBuildingLabelIds = new Set([
+  "text_ResearchQuad",
+  "text_StudentHall",
+  "text_LecHall",
+  "text_UBIC",
+  "text_LICTiA",
 ]);
 
 export interface MapLabel {
@@ -250,8 +259,15 @@ function getPrioritizedLabels(
   // 件数間引きは行わず、衝突カリングの優先順位だけを決める。
   // 重ならない限り全ラベルを描画し、引き時も一覧性を保つ。
   return [...labels].sort((first, second) => {
-    // キャンパス俯瞰では建物名が衝突カリングでも勝つよう、font-sizeより優先する
+    // キャンパス俯瞰では建物名が衝突カリングでも勝つよう、font-sizeより優先する。
+    // 集約バッジのアンカー先となる5建物名は施設名(食堂・売店等)よりさらに優先する
     if (isCampusOverview) {
+      const aggregateDifference =
+        Number(campusAggregateBuildingLabelIds.has(second.id)) -
+        Number(campusAggregateBuildingLabelIds.has(first.id));
+      if (aggregateDifference !== 0) {
+        return aggregateDifference;
+      }
       const buildingDifference =
         Number(campusBuildingLabelIds.has(second.id)) -
         Number(campusBuildingLabelIds.has(first.id));

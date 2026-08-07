@@ -323,7 +323,7 @@ export const mockEvents: CampusEvent[] = [
   ...repeatedEvents(
     "キャンパスツアー",
     "在学生の案内で、学生生活に使う主要施設を巡ります。動きやすい服装が推奨されています。",
-    "main_ubic_entrance",
+    "ubic_room_exchange",
     "T",
     [
       { id: "T1", start: "09:30", end: "10:00" },

@@ -13,6 +13,7 @@ import {
 } from "./mapOverlayGeometry";
 import type { OverlayBounds } from "./mapOverlayGeometry";
 import {
+  anchorCampusBuildingEventMarkers,
   createMapMarkerPresentation,
   type EventMarkerPlacement,
   type MapMarkerPlacement,
@@ -65,7 +66,7 @@ const PERSON_DETAIL_PATH =
   "M25 20.42a4.17 4.17 0 1 0 0-8.34 4.17 4.17 0 0 0 0 8.34Zm-7.29 10.41h14.58v-2.08c0-3.47-3.24-6.25-7.29-6.25s-7.29 2.78-7.29 6.25v2.08Z";
 const EVENT_MARKER_SIZE = 24;
 const EVENT_MARKER_RADIUS = 11;
-const EVENT_MARKER_LOCAL_ANCHOR = { x: 12, y: 32 };
+const EVENT_MARKER_LOCAL_ANCHOR = { x: 12, y: 12 };
 const PIN_LOCAL_ANCHOR = { x: 25, y: 45.83 };
 const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
@@ -511,25 +512,36 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = createMapMarkerPresentation({
-      currentPlace,
-      destinationPlace,
-      events,
+    const markerPlacements = anchorCampusBuildingEventMarkers(
+      createMapMarkerPresentation({
+        currentPlace,
+        destinationPlace,
+        events,
+        floorId,
+        focusPlace,
+        resolveCoordinates: (target) => {
+          if (target.kind === "place") {
+            return getPlaceCoordinates(target.place, svgElement);
+          }
+          if (target.kind === "route-node") {
+            return { x: target.node.x, y: target.node.y };
+          }
+          return getSvgElementCoordinates(target.elementId, svgElement);
+        },
+        resolveFloorSheetId: (targetFloorId) =>
+          floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
+        resolvePlace: (placeId) => getPlace(placeId) ?? null,
+      }),
+      mapLabels,
+      userUnitsPerPixel,
       floorId,
-      focusPlace,
-      resolveCoordinates: (target) =>
-        target.kind === "place"
-          ? getPlaceCoordinates(target.place, svgElement)
-          : getSvgElementCoordinates(target.elementId, svgElement),
-      resolveFloorSheetId: (targetFloorId) =>
-        floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
-      resolvePlace: (placeId) => getPlace(placeId) ?? null,
-    });
+    );
     renderMapLabels({
       layer: labelLayer,
       labels: mapLabels,
       userUnitsPerPixel,
       isCampusOverview: floorId === DEFAULT_FLOOR_ID,
+      // イベントバッジは配置オフセットで文字を避けるため、ラベル除外は水滴ピンのみ
       exclusionBounds: markerPlacements
         .filter((marker) => marker.type === "pin")
         .map((marker) => getMarkerExclusionBounds(marker, userUnitsPerPixel)),
@@ -560,20 +572,30 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = createMapMarkerPresentation({
-      currentPlace,
-      destinationPlace,
-      events,
+    const markerPlacements = anchorCampusBuildingEventMarkers(
+      createMapMarkerPresentation({
+        currentPlace,
+        destinationPlace,
+        events,
+        floorId,
+        focusPlace,
+        resolveCoordinates: (target) => {
+          if (target.kind === "place") {
+            return getPlaceCoordinates(target.place, svgElement);
+          }
+          if (target.kind === "route-node") {
+            return { x: target.node.x, y: target.node.y };
+          }
+          return getSvgElementCoordinates(target.elementId, svgElement);
+        },
+        resolveFloorSheetId: (targetFloorId) =>
+          floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
+        resolvePlace: (placeId) => getPlace(placeId) ?? null,
+      }),
+      mapLabels,
+      markerScale,
       floorId,
-      focusPlace,
-      resolveCoordinates: (target) =>
-        target.kind === "place"
-          ? getPlaceCoordinates(target.place, svgElement)
-          : getSvgElementCoordinates(target.elementId, svgElement),
-      resolveFloorSheetId: (targetFloorId) =>
-        floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
-      resolvePlace: (placeId) => getPlace(placeId) ?? null,
-    });
+    );
 
     const appendEventBadge = (
       marker: EventMarkerPlacement,

@@ -8,7 +8,7 @@ import { mockRepository } from "../src/data/mock/mockRepository.js";
 import { floors, mapSheets, places } from "../src/data/places.js";
 import routeGraph from "../src/features/routing/generated/routeGraph.json";
 
-const EXPECTED_PLACE_COUNT = 124;
+const EXPECTED_PLACE_COUNT = 125;
 const EXPECTED_QR_COUNT = 89;
 const EXPECTED_QR_PLACE_PROPOSAL_COUNT = 73;
 const EXPECTED_NEXT_QR_NUMBER = 91;

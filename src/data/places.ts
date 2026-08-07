@@ -167,6 +167,7 @@ const eventVenuePlaces: Place[] = [
   svg("ubic_room_3dtheater", "ubic-1f", "UBIC 3Dシアター", "room_3DTh"),
   svg("ubic_room_RLA", "ubic-1f", "UBIC 研究ラボエリア", "area_ResearchLab"),
   svg("ubic_room_mar", "ubic-1f", "UBIC 運動解析ルーム", "room_Motion"),
+  coordinates("ubic_room_exchange", "ubic-1f", "UBIC 交流スペース", 49, 49),
 ];
 
 export const places: Place[] = [
