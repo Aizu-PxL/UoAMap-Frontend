@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(公開QRパス対応)
+最終更新: 2026-08-07(QRナビゲーション未選択色調整)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -36,6 +36,16 @@
 最新Q018追加データ同期ブリーフ: `docs/tasks/28-qr-q018-data-sync.md`（未コミット）
 
 最新ルート開始時現在地ピン統一ブリーフ: `docs/tasks/29-current-marker-route-start.md`（未コミット）
+
+最新QRナビゲーション色調整ブリーフ: `docs/tasks/33-qr-nav-inactive-color.md`（未コミット）
+
+## QRナビゲーション未選択色の調整
+
+BottomSheet上部のQRアイコンだけ、未選択時の色を灰色からアクセント色30%濃度の薄い緑へ変更した。選択中のアクセント色、検索・スケジュールの未選択色、アイコン形状、タブ遷移は変更していない。Figmaは対象外として変更していない。
+
+`bun run verify:all`は139 tests / 1,058 assertions、production build、124 Place / 89 QR / 61 Event、350 nodes / 447 edges、git diff checkをPASS。402×874pxで`/events`の未選択QRが`rgba(0, 139, 140, 0.3)`、`/qr`の選択中QRが`rgb(0, 139, 140)`であることと、console error 0件を確認した（localhostカメラの既存HTTPS warningのみ）。
+
+会話履歴なしの読み取り専用独立レビューは指摘なし。
 
 ## ルート表示開始時の現在地ピン統一
 
