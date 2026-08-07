@@ -7,6 +7,7 @@ import {
   serializeRouteGraph,
   type RouteSvgSource,
 } from "./routeExtractionCore.js";
+import { routeDistanceCalibrationPlan } from "./routeDistanceCalibration.js";
 
 const repositoryRoot = path.join(import.meta.dirname, "..");
 
@@ -69,12 +70,14 @@ describe("extractRouteGraph", () => {
       mapSheets,
       floors,
       places,
+      distanceCalibrationPlan: routeDistanceCalibrationPlan,
     });
 
     expect(result.errors).toEqual([]);
     expect([result.graph.nodes.length, result.graph.edges.length]).toEqual([
       350, 448,
     ]);
+    expect(result.graph.distanceCalibration?.unit).toEqual("campus-svg-unit");
     expect(serializeRouteGraph(result.graph)).toEqual(currentJson);
   });
 

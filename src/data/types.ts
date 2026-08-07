@@ -100,7 +100,7 @@ export type RouteEdge =
       nodeA: string;
       nodeB: string;
       distance: number;
-      /** Routeレイヤーから抽出した、同じviewBox座標系の直線path */
+      /** Routeレイヤーから抽出した、描画用の同じviewBox座標系の直線path */
       pathD: string;
     }
   | {
@@ -111,7 +111,35 @@ export type RouteEdge =
       distance: number;
     };
 
+export type RouteDistanceCalibrationFloor = {
+  floorId: string;
+  /** 1ローカル座標単位をcampus SVG座標単位へ換算する倍率 */
+  scale: number;
+} &
+  (
+    | {
+        source: "anchor";
+      }
+    | {
+        source: "transfer-pairs";
+        parentFloorId: string;
+        transferEdgeIds: string[];
+        normalizedRmse: number;
+      }
+    | {
+        source: "topology-neutral-fallback";
+      }
+  );
+
+export type RouteDistanceCalibration = {
+  unit: "campus-svg-unit";
+  stairEquivalentLocalDistance: number;
+  floors: RouteDistanceCalibrationFloor[];
+};
+
 export type RouteGraph = {
   nodes: RouteNode[];
   edges: RouteEdge[];
+  /** 生成グラフでは必須。合成テスト用グラフは省略できる。 */
+  distanceCalibration?: RouteDistanceCalibration;
 };

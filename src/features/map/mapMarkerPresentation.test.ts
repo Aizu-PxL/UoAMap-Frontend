@@ -182,6 +182,8 @@ function resolveCoordinates(target: MarkerCoordinateTarget) {
     "room-rq2": { x: 7, y: 8 },
     rq: { x: 10, y: 20 },
     outdoor: { x: 70, y: 80 },
+    // ルートノード(35, 247)を持つPlace。ピン種別ごとの座標の出所を区別するために別値にする
+    rq_room_161: { x: 900, y: 901 },
   };
   return coordinatesByPlaceId[target.place.id] ?? null;
 }
@@ -563,6 +565,82 @@ describe("createMapMarkerPresentation", () => {
         eventKey: "R267",
         eventId: "R267",
         colorKey: "study",
+      },
+    ]);
+  });
+
+  test("目的地pinだけをルート終端へ固定し現在地・注目pinはPlace座標のままにする", () => {
+    const place = placeById.get("rq_room_161");
+
+    expect(
+      createPresentation({
+        currentPlace: place,
+        destinationPlace: place,
+        focusPlace: place,
+        floorId: "rq-1f",
+      }),
+    ).toEqual([
+      {
+        type: "pin",
+        coordinates: { x: 900, y: 901 },
+        markerKind: "current",
+        placeId: "rq_room_161",
+      },
+      {
+        type: "pin",
+        coordinates: { x: 35, y: 247 },
+        markerKind: "destination",
+        placeId: "rq_room_161",
+      },
+      {
+        type: "pin",
+        coordinates: { x: 900, y: 901 },
+        markerKind: "focus",
+        placeId: "rq_room_161",
+      },
+    ]);
+  });
+
+  test("イベントバッジを置換する目的地pinもルート終端へ固定する", () => {
+    const presentation = createPresentation({
+      destinationPlace: placeById.get("rq_room_161"),
+      events: [event("R1", "rq_room_161")],
+      floorId: "rq-1f",
+    });
+
+    expect(presentation).toEqual([
+      {
+        type: "event",
+        coordinates: { x: 35, y: 247 },
+        markerLabel: "研究棟1F 161のイベントを表示: イベントR1",
+        action: { kind: "event", eventKey: "R1" },
+        placeId: "rq_room_161",
+        eventKey: "R1",
+        eventId: "R1",
+        colorKey: "study",
+      },
+      {
+        type: "pin",
+        coordinates: { x: 35, y: 247 },
+        markerKind: "destination",
+        placeId: "rq_room_161",
+        replacesEventMarker: { kind: "place", placeId: "rq_room_161" },
+      },
+    ]);
+  });
+
+  test("対応するルートノードがない目的地pinはPlace座標へフォールバックする", () => {
+    expect(
+      createPresentation({
+        destinationPlace: placeById.get("coordinate-without-route"),
+        floorId: "rq-1f",
+      }),
+    ).toEqual([
+      {
+        type: "pin",
+        coordinates: { x: 227, y: 325 },
+        markerKind: "destination",
+        placeId: "coordinate-without-route",
       },
     ]);
   });

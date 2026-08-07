@@ -184,7 +184,7 @@ describe("createMapOverlayLayout", () => {
     expect(renderedLabelIds(result)).toEqual(["text_StudentHall"]);
   });
 
-  test("個別イベントの最終中心へ目的地pinを置きバッジを最終出力から除く", () => {
+  test("個別イベントのバッジだけを最終出力から除き目的地pinの座標は動かさない", () => {
     const roomLabel = label("text_room", ["267"], { x: 70, y: 80 });
     const eventMarker: EventMarkerPlacement = {
       type: "event",
@@ -215,10 +215,14 @@ describe("createMapOverlayLayout", () => {
       userUnitsPerPixel: 1,
     });
 
+    // バッジ単独ならラベル回避で元座標(70, 80)の直上へ退避する。
+    // ピン先端はルート終端(createMapMarkerPresentationが決めた座標)のままで、そこへは引き寄せられない
+    expect(badgeOnly.markers[0]?.coordinates.x).toEqual(70);
+    expect(badgeOnly.markers[0]?.coordinates.y).toBeLessThan(80);
     expect(replaced.markers).toEqual([
       {
         type: "pin",
-        coordinates: badgeOnly.markers[0]?.coordinates,
+        coordinates: { x: 5, y: 6 },
         markerKind: "destination",
         placeId: "venue",
         replacesEventMarker: { kind: "place", placeId: "venue" },
@@ -228,7 +232,7 @@ describe("createMapOverlayLayout", () => {
     expect(renderedLabelIds(replaced)).toEqual(["text_room"]);
   });
 
-  test("キャンパス集約バッジの最終中心へ目的地pinを置換する", () => {
+  test("キャンパス集約バッジを除いても目的地pinの座標は動かさない", () => {
     const studentHall = label("text_StudentHall", ["学生ホール"], { x: 100, y: 200 });
     const badgeOnly = layout({
       mapLabels: [studentHall],
@@ -257,15 +261,50 @@ describe("createMapOverlayLayout", () => {
       buildingBounds: { left: 0, top: 0, right: 300, bottom: 400 },
     });
 
+    // 集約バッジ単独なら建物名ラベル直上(100, 152)へ置かれるが、ピンはその座標を引き継がない
+    expect(badgeOnly.markers[0]?.coordinates).toEqual({ x: 100, y: 152 });
     expect(replaced.markers.length).toEqual(1);
     expect(replaced.markers[0]).toMatchObject({
       type: "pin",
-      coordinates: badgeOnly.markers[0]?.coordinates,
+      coordinates: { x: 10, y: 20 },
       markerKind: "destination",
     });
   });
 
-  test("置換対象のイベントがなければ目的地pinのPlace座標を維持する", () => {
+  test("目的地pinはラベルを落とさず現在地・注目pinはバッジ配置より前に落とす", () => {
+    const coveredLabel = label("text_covered", ["267"], { x: 0, y: 0 });
+    const otherBadge: EventMarkerPlacement = {
+      type: "event",
+      coordinates: { x: 0, y: 0 },
+      markerLabel: "別会場のイベントを表示",
+      action: { kind: "event", eventKey: "E2" },
+      placeId: "other",
+      eventKey: "E2",
+      colorKey: "default",
+    };
+    const withPin = (markerKind: PinMarkerPlacement["markerKind"]) =>
+      layout({
+        mapLabels: [coveredLabel],
+        markers: [
+          otherBadge,
+          { type: "pin", coordinates: { x: 0, y: 20 }, markerKind, placeId: "venue" },
+        ],
+        userUnitsPerPixel: 1,
+      });
+
+    // 目的地pinはラベルを残し、別会場のバッジは従来どおりそのラベルの直上へ退避する
+    const destination = withPin("destination");
+    expect(renderedLabelIds(destination)).toEqual(["text_covered"]);
+    expect(destination.markers[0]?.coordinates.y).toBeLessThan(0);
+    // 現在地・注目pinで隠れるラベルはバッジ配置より前に落ちるため、退避先の計算対象にならない
+    for (const markerKind of ["current", "focus"] as const) {
+      const result = withPin(markerKind);
+      expect(renderedLabelIds(result)).toEqual([]);
+      expect(result.markers[0]?.coordinates).toEqual({ x: 0, y: 0 });
+    }
+  });
+
+  test("置換対象のイベントがなければ目的地pinの入力座標を維持する", () => {
     const pinLabel = label("text_pin", ["目的地"], { x: 25, y: 10 });
     const result = layout({
       mapLabels: [pinLabel],
@@ -282,6 +321,7 @@ describe("createMapOverlayLayout", () => {
     });
 
     expect(result.markers[0]?.coordinates).toEqual({ x: 25, y: 30 });
-    expect(renderedLabelIds(result)).toEqual([]);
+    // 目的地pinの真上にあるラベルもそのまま残す(ピンが前面に重なる)
+    expect(renderedLabelIds(result)).toEqual(["text_pin"]);
   });
 });

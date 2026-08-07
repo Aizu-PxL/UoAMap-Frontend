@@ -3275,7 +3275,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_door_lth_1",
       "nodeB": "lh-1f:lh_room_lth_1",
-      "distance": 48.373546489791295,
+      "distance": 13.57542643442955,
       "pathD": "M 25 480 L 49 522"
     },
     {
@@ -3284,7 +3284,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_door_m10_1",
       "nodeB": "lh-1f:lh_room_m10",
-      "distance": 33.301651610693426,
+      "distance": 9.345689005485227,
       "pathD": "M 297 443 L 319 418"
     },
     {
@@ -3293,7 +3293,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_door_m8_1",
       "nodeB": "lh-1f:lh_room_m8",
-      "distance": 31.400636936215164,
+      "distance": 8.812193185210875,
       "pathD": "M 182 443 L 201 418"
     },
     {
@@ -3302,7 +3302,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_door_m8_2",
       "nodeB": "lh-1f:lh_node_1f_14",
-      "distance": 14,
+      "distance": 3.9289236343695193,
       "pathD": "M 219 443 L 219 457"
     },
     {
@@ -3311,7 +3311,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_1",
       "nodeB": "lh-1f:lh_stairs_west_1f",
-      "distance": 10,
+      "distance": 2.8063740245496565,
       "pathD": "M 97 519 L 107 519"
     },
     {
@@ -3320,7 +3320,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_10",
       "nodeB": "lh-1f:lh_entrance_west",
-      "distance": 9,
+      "distance": 2.525736622094691,
       "pathD": "M 107 475 L 116 475"
     },
     {
@@ -3329,7 +3329,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_10",
       "nodeB": "lh-1f:lh_node_1f_1",
-      "distance": 45.12205669071391,
+      "distance": 12.662936783107655,
       "pathD": "M 107 475 L 97 519"
     },
     {
@@ -3338,7 +3338,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_10",
       "nodeB": "lh-1f:lh_node_1f_2",
-      "distance": 18,
+      "distance": 5.051473244189382,
       "pathD": "M 107 475 L 107 457"
     },
     {
@@ -3347,7 +3347,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_11",
       "nodeB": "lh-1f:lh_door_lth_1",
-      "distance": 5,
+      "distance": 1.4031870122748282,
       "pathD": "M 25 475 L 25 480"
     },
     {
@@ -3356,7 +3356,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_11",
       "nodeB": "lh-1f:lh_node_1f_10",
-      "distance": 82,
+      "distance": 23.012267001307183,
       "pathD": "M 25 475 L 107 475"
     },
     {
@@ -3365,7 +3365,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_12",
       "nodeB": "lh-1f:lh_node_1f_8",
-      "distance": 11,
+      "distance": 3.0870114270046223,
       "pathD": "M 329 475 L 329 486"
     },
     {
@@ -3374,7 +3374,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_12",
       "nodeB": "lh-1f:lh_stairs_northeast_1f",
-      "distance": 38,
+      "distance": 10.664221293288694,
       "pathD": "M 329 475 L 367 475"
     },
     {
@@ -3383,7 +3383,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_13",
       "nodeB": "lh-1f:lh_door_m8_1",
-      "distance": 14,
+      "distance": 3.9289236343695193,
       "pathD": "M 182 457 L 182 443"
     },
     {
@@ -3392,7 +3392,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_13",
       "nodeB": "lh-1f:lh_node_1f_14",
-      "distance": 37,
+      "distance": 10.38358389083373,
       "pathD": "M 182 457 L 219 457"
     },
     {
@@ -3401,7 +3401,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_14",
       "nodeB": "lh-1f:lh_node_1f_7",
-      "distance": 33,
+      "distance": 9.261034281013867,
       "pathD": "M 219 457 L 252 457"
     },
     {
@@ -3410,7 +3410,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_2",
       "nodeB": "lh-1f:lh_node_1f_6",
-      "distance": 59,
+      "distance": 16.557606744842975,
       "pathD": "M 107 457 L 166 457"
     },
     {
@@ -3419,7 +3419,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_3",
       "nodeB": "lh-1f:lh_node_1f_12",
-      "distance": 18,
+      "distance": 5.051473244189382,
       "pathD": "M 329 457 L 329 475"
     },
     {
@@ -3428,7 +3428,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_4",
       "nodeB": "lh-1f:lh_stairs_southeast_1f",
-      "distance": 25.632011235952593,
+      "distance": 7.193301052954229,
       "pathD": "M 329 505 L 305 514"
     },
     {
@@ -3437,7 +3437,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_5",
       "nodeB": "lh-1f:lh_node_1f_3",
-      "distance": 32,
+      "distance": 8.980396878558901,
       "pathD": "M 297 457 L 329 457"
     },
     {
@@ -3446,7 +3446,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_5",
       "nodeB": "lh-1f:lh_door_m10_1",
-      "distance": 14,
+      "distance": 3.9289236343695193,
       "pathD": "M 297 457 L 297 443"
     },
     {
@@ -3455,7 +3455,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_6",
       "nodeB": "lh-1f:lh_node_1f_13",
-      "distance": 16,
+      "distance": 4.4901984392794505,
       "pathD": "M 166 457 L 182 457"
     },
     {
@@ -3464,7 +3464,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_7",
       "nodeB": "lh-1f:lh_node_1f_5",
-      "distance": 45,
+      "distance": 12.628683110473455,
       "pathD": "M 252 457 L 297 457"
     },
     {
@@ -3473,7 +3473,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_8",
       "nodeB": "lh-1f:lh_entrance_east1f",
-      "distance": 28,
+      "distance": 7.857847268739039,
       "pathD": "M 329 486 L 301 486"
     },
     {
@@ -3482,7 +3482,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_8",
       "nodeB": "lh-1f:lh_node_1f_4",
-      "distance": 19,
+      "distance": 5.332110646644347,
       "pathD": "M 329 486 L 329 505"
     },
     {
@@ -3491,7 +3491,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_8",
       "nodeB": "lh-1f:lh_stairs_northeast_1f",
-      "distance": 39.56008088970496,
+      "distance": 11.102038341795128,
       "pathD": "M 329 486 L 367 475"
     },
     {
@@ -3500,7 +3500,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_9",
       "nodeB": "lh-1f:lh_node_1f_11",
-      "distance": 18,
+      "distance": 5.051473244189382,
       "pathD": "M 25 457 L 25 475"
     },
     {
@@ -3509,7 +3509,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_node_1f_9",
       "nodeB": "lh-1f:lh_node_1f_2",
-      "distance": 82,
+      "distance": 23.012267001307183,
       "pathD": "M 25 457 L 107 457"
     },
     {
@@ -3518,7 +3518,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_door_m10_2",
       "nodeB": "lh-1f:lh_node_1f_3",
-      "distance": 17.804493814764857,
+      "distance": 4.996606896201112,
       "pathD": "M 340 443 L 329 457"
     },
     {
@@ -3527,7 +3527,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_room_m10",
       "nodeB": "lh-1f:lh_door_m10_2",
-      "distance": 32.64965543462902,
+      "distance": 9.162714492223941,
       "pathD": "M 319 418 L 340 443"
     },
     {
@@ -3536,7 +3536,7 @@
       "floorId": "lh-1f",
       "nodeA": "lh-1f:lh_room_m8",
       "nodeB": "lh-1f:lh_door_m8_2",
-      "distance": 30.805843601498726,
+      "distance": 8.645271928758527,
       "pathD": "M 201 418 L 219 443"
     },
     {
@@ -3545,7 +3545,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m2_2",
       "nodeB": "lh-2f:lh_node_2f_2",
-      "distance": 11.40175425099138,
+      "distance": 3.07417407437809,
       "pathD": "M 111 58 L 104 67"
     },
     {
@@ -3554,7 +3554,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m2_2",
       "nodeB": "lh-2f:lh_node_2f_6",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 111 58 L 111 67"
     },
     {
@@ -3563,7 +3563,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m3_1",
       "nodeB": "lh-2f:lh_node_2f_15",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 130 58 L 130 67"
     },
     {
@@ -3572,7 +3572,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m3_2",
       "nodeB": "lh-2f:lh_node_2f_16",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 169 58 L 169 67"
     },
     {
@@ -3581,7 +3581,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m4_1",
       "nodeB": "lh-2f:lh_node_2f_4",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 188 58 L 188 67"
     },
     {
@@ -3590,7 +3590,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m4_2",
       "nodeB": "lh-2f:lh_node_2f_11",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 225 58 L 225 67"
     },
     {
@@ -3599,7 +3599,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m5_1",
       "nodeB": "lh-2f:lh_node_2f_17",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 242 58 L 242 67"
     },
     {
@@ -3608,7 +3608,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m5_2",
       "nodeB": "lh-2f:lh_node_2f_18",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 284 58 L 284 67"
     },
     {
@@ -3617,7 +3617,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m6_1",
       "nodeB": "lh-2f:lh_node_2f_19",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 299 58 L 299 67"
     },
     {
@@ -3626,7 +3626,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_1",
       "nodeB": "lh-2f:lh_node_2f_2",
-      "distance": 26,
+      "distance": 7.010195464165576,
       "pathD": "M 104 93 L 104 67"
     },
     {
@@ -3635,7 +3635,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_1",
       "nodeB": "lh-2f:lh_stairs_west_2f",
-      "distance": 9,
+      "distance": 2.426606122211161,
       "pathD": "M 104 93 L 113 93"
     },
     {
@@ -3644,7 +3644,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_11",
       "nodeB": "lh-2f:lh_node_2f_17",
-      "distance": 17,
+      "distance": 4.583589341954415,
       "pathD": "M 225 67 L 242 67"
     },
     {
@@ -3653,7 +3653,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_13",
       "nodeB": "lh-2f:lh_node_2f_9",
-      "distance": 41,
+      "distance": 11.054539001184178,
       "pathD": "M 352 85 L 352 126"
     },
     {
@@ -3662,7 +3662,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_13",
       "nodeB": "lh-2f:lh_stairs_northeast_2f",
-      "distance": 16,
+      "distance": 4.313966439486508,
       "pathD": "M 352 85 L 368 85"
     },
     {
@@ -3671,7 +3671,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_15",
       "nodeB": "lh-2f:lh_node_2f_3",
-      "distance": 27,
+      "distance": 7.279818366633482,
       "pathD": "M 130 67 L 157 67"
     },
     {
@@ -3680,7 +3680,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_16",
       "nodeB": "lh-2f:lh_node_2f_4",
-      "distance": 19,
+      "distance": 5.122835146890228,
       "pathD": "M 169 67 L 188 67"
     },
     {
@@ -3689,7 +3689,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_17",
       "nodeB": "lh-2f:lh_node_2f_5",
-      "distance": 16,
+      "distance": 4.313966439486508,
       "pathD": "M 242 67 L 258 67"
     },
     {
@@ -3698,7 +3698,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_18",
       "nodeB": "lh-2f:lh_node_2f_19",
-      "distance": 15,
+      "distance": 4.044343537018602,
       "pathD": "M 284 67 L 299 67"
     },
     {
@@ -3707,7 +3707,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_2",
       "nodeB": "lh-2f:lh_node_2f_6",
-      "distance": 7,
+      "distance": 1.8873603172753475,
       "pathD": "M 104 67 L 111 67"
     },
     {
@@ -3716,7 +3716,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_20",
       "nodeB": "lh-2f:lh_node_2f_8",
-      "distance": 16,
+      "distance": 4.313966439486508,
       "pathD": "M 401 51 L 401 67"
     },
     {
@@ -3725,7 +3725,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_21",
       "nodeB": "lh-2f:lh_node_2f_10",
-      "distance": 27,
+      "distance": 7.279818366633482,
       "pathD": "M 374 126 L 401 126"
     },
     {
@@ -3734,7 +3734,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_21",
       "nodeB": "lh-2f:main_lh_entrance_east2f",
-      "distance": 11,
+      "distance": 2.9658519271469745,
       "pathD": "M 374 126 L 374 137"
     },
     {
@@ -3743,7 +3743,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_3",
       "nodeB": "lh-2f:lh_node_2f_16",
-      "distance": 12,
+      "distance": 3.235474829614881,
       "pathD": "M 157 67 L 169 67"
     },
     {
@@ -3752,7 +3752,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_4",
       "nodeB": "lh-2f:lh_node_2f_11",
-      "distance": 37,
+      "distance": 9.97604739131255,
       "pathD": "M 188 67 L 225 67"
     },
     {
@@ -3761,7 +3761,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_5",
       "nodeB": "lh-2f:lh_node_2f_18",
-      "distance": 26,
+      "distance": 7.010195464165576,
       "pathD": "M 258 67 L 284 67"
     },
     {
@@ -3770,7 +3770,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_6",
       "nodeB": "lh-2f:lh_node_2f_15",
-      "distance": 19,
+      "distance": 5.122835146890228,
       "pathD": "M 111 67 L 130 67"
     },
     {
@@ -3779,7 +3779,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_7",
       "nodeB": "lh-2f:lh_door_m6_2",
-      "distance": 13.45362404707371,
+      "distance": 3.62740516428404,
       "pathD": "M 352 67 L 342 58"
     },
     {
@@ -3788,7 +3788,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_7",
       "nodeB": "lh-2f:lh_node_2f_13",
-      "distance": 18,
+      "distance": 4.853212244422322,
       "pathD": "M 352 67 L 352 85"
     },
     {
@@ -3797,7 +3797,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_7",
       "nodeB": "lh-2f:lh_node_2f_19",
-      "distance": 53,
+      "distance": 14.290013830799058,
       "pathD": "M 352 67 L 299 67"
     },
     {
@@ -3806,7 +3806,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_7",
       "nodeB": "lh-2f:lh_node_2f_8",
-      "distance": 49,
+      "distance": 13.211522220927431,
       "pathD": "M 352 67 L 401 67"
     },
     {
@@ -3815,7 +3815,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_8",
       "nodeB": "lh-2f:lh_node_2f_10",
-      "distance": 59,
+      "distance": 15.9077512456065,
       "pathD": "M 401 67 L 401 126"
     },
     {
@@ -3824,7 +3824,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_9",
       "nodeB": "lh-2f:lh_node_2f_21",
-      "distance": 22,
+      "distance": 5.931703854293949,
       "pathD": "M 352 126 L 374 126"
     },
     {
@@ -3833,7 +3833,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_node_2f_9",
       "nodeB": "lh-2f:lh_stairs_southeast_2f",
-      "distance": 12.206555615733702,
+      "distance": 3.2911669542500475,
       "pathD": "M 352 126 L 342 133"
     },
     {
@@ -3842,7 +3842,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m2",
       "nodeB": "lh-2f:lh_door_m2_2",
-      "distance": 34.132096331752024,
+      "distance": 9.202794880281175,
       "pathD": "M 93 29 L 111 58"
     },
     {
@@ -3851,7 +3851,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m3_1",
       "nodeB": "lh-2f:lh_room_m3",
-      "distance": 35.22782990761707,
+      "distance": 9.498229747337447,
       "pathD": "M 130 58 L 150 29"
     },
     {
@@ -3860,7 +3860,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m3",
       "nodeB": "lh-2f:lh_door_m3_2",
-      "distance": 34.66987164671943,
+      "distance": 9.347791421578279,
       "pathD": "M 150 29 L 169 58"
     },
     {
@@ -3869,7 +3869,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m4_1",
       "nodeB": "lh-2f:lh_room_m4",
-      "distance": 34.66987164671943,
+      "distance": 9.347791421578279,
       "pathD": "M 188 58 L 207 29"
     },
     {
@@ -3878,7 +3878,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m4",
       "nodeB": "lh-2f:lh_door_m4_2",
-      "distance": 34.132096331752024,
+      "distance": 9.202794880281175,
       "pathD": "M 207 29 L 225 58"
     },
     {
@@ -3887,7 +3887,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m5_1",
       "nodeB": "lh-2f:lh_room_m5",
-      "distance": 35.805027579936315,
+      "distance": 9.65385545904588,
       "pathD": "M 242 58 L 263 29"
     },
     {
@@ -3896,7 +3896,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m5",
       "nodeB": "lh-2f:lh_door_m5_2",
-      "distance": 35.805027579936315,
+      "distance": 9.65385545904588,
       "pathD": "M 263 29 L 284 58"
     },
     {
@@ -3905,7 +3905,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m6_1",
       "nodeB": "lh-2f:lh_room_m6",
-      "distance": 36.40054944640259,
+      "distance": 9.814421793165623,
       "pathD": "M 299 58 L 321 29"
     },
     {
@@ -3914,7 +3914,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m6",
       "nodeB": "lh-2f:lh_door_m6_2",
-      "distance": 35.805027579936315,
+      "distance": 9.65385545904588,
       "pathD": "M 321 29 L 342 58"
     },
     {
@@ -3923,7 +3923,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_room_m7",
       "nodeB": "lh-2f:lh_door_m7",
-      "distance": 36.40054944640259,
+      "distance": 9.814421793165623,
       "pathD": "M 440 29 L 411 51"
     },
     {
@@ -3932,7 +3932,7 @@
       "floorId": "lh-2f",
       "nodeA": "lh-2f:lh_door_m7",
       "nodeB": "lh-2f:lh_node_2f_20",
-      "distance": 10,
+      "distance": 2.6962290246790674,
       "pathD": "M 411 51 L 401 51"
     },
     {
@@ -3995,7 +3995,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_entrance_northLounge",
       "nodeB": "rq-1f:rq_node_1f_16",
-      "distance": 30,
+      "distance": 9.904958284488469,
       "pathD": "M 409 16 L 409 46"
     },
     {
@@ -4004,7 +4004,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_26",
       "nodeB": "rq-1f:rq_node_1f_1",
-      "distance": 32,
+      "distance": 10.565288836787701,
       "pathD": "M 64 291 L 64 323"
     },
     {
@@ -4013,7 +4013,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_26",
       "nodeB": "rq-1f:rq_door_161",
-      "distance": 10,
+      "distance": 3.3016527614961566,
       "pathD": "M 64 291 L 54 291"
     },
     {
@@ -4022,7 +4022,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_room_104f",
       "nodeB": "rq-1f:rq_door_104f",
-      "distance": 20,
+      "distance": 6.603305522992313,
       "pathD": "M 390 109 L 390 89"
     },
     {
@@ -4031,7 +4031,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_door_127",
       "nodeB": "rq-1f:rq_room_127",
-      "distance": 21.93171219946131,
+      "distance": 7.241089814769038,
       "pathD": "M 157 348 L 166 368"
     },
     {
@@ -4040,7 +4040,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_door_141E",
       "nodeB": "rq-1f:rq_node_1f_31",
-      "distance": 5,
+      "distance": 1.6508263807480783,
       "pathD": "M 327 561 L 327 566"
     },
     {
@@ -4049,7 +4049,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_door_141E",
       "nodeB": "rq-1f:rq_room_141E",
-      "distance": 19,
+      "distance": 6.273140246842697,
       "pathD": "M 327 561 L 327 542"
     },
     {
@@ -4058,7 +4058,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_door_144f",
       "nodeB": "rq-1f:rq_room_144f",
-      "distance": 20,
+      "distance": 6.603305522992313,
       "pathD": "M 394 609 L 394 629"
     },
     {
@@ -4067,7 +4067,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_entrance_northwest",
       "nodeB": "rq-1f:rq_node_1f_36",
-      "distance": 31,
+      "distance": 10.235123560638085,
       "pathD": "M 33 174 L 64 174"
     },
     {
@@ -4076,7 +4076,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_entrance_southwest",
       "nodeB": "rq-1f:rq_node_1f_37",
-      "distance": 29,
+      "distance": 9.574793008338855,
       "pathD": "M 34 476 L 63 476"
     },
     {
@@ -4085,7 +4085,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_10",
       "nodeB": "rq-1f:rq_node_1f_11",
-      "distance": 97,
+      "distance": 32.02603178651272,
       "pathD": "M 65 66 L 162 66"
     },
     {
@@ -4094,7 +4094,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_11",
       "nodeB": "rq-1f:rq_stairs_northmid_1f",
-      "distance": 15,
+      "distance": 4.9524791422442345,
       "pathD": "M 162 66 L 162 81"
     },
     {
@@ -4103,7 +4103,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_12",
       "nodeB": "rq-1f:rq_node_1f_11",
-      "distance": 156,
+      "distance": 51.50578307934004,
       "pathD": "M 318 66 L 162 66"
     },
     {
@@ -4112,7 +4112,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_12",
       "nodeB": "rq-1f:rq_node_1f_13",
-      "distance": 17,
+      "distance": 5.612809694543467,
       "pathD": "M 318 66 L 318 83"
     },
     {
@@ -4121,7 +4121,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_14",
       "nodeB": "rq-1f:rq_node_1f_12",
-      "distance": 20,
+      "distance": 6.603305522992313,
       "pathD": "M 318 46 L 318 66"
     },
     {
@@ -4130,7 +4130,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_16",
       "nodeB": "rq-1f:rq_node_1f_14",
-      "distance": 91,
+      "distance": 30.045040129615025,
       "pathD": "M 409 46 L 318 46"
     },
     {
@@ -4139,7 +4139,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_19",
       "nodeB": "rq-1f:rq_node_1f_20",
-      "distance": 100,
+      "distance": 33.01652761496157,
       "pathD": "M 63 583 L 163 583"
     },
     {
@@ -4148,7 +4148,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_19",
       "nodeB": "rq-1f:rq_stairs_southwest_1f",
-      "distance": 9,
+      "distance": 2.971487485346541,
       "pathD": "M 63 583 L 54 583"
     },
     {
@@ -4157,7 +4157,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_1",
       "nodeB": "rq-1f:rq_node_1f_37",
-      "distance": 153.00326793895613,
+      "distance": 50.51636621085908,
       "pathD": "M 64 323 L 63 476"
     },
     {
@@ -4166,7 +4166,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_10",
       "nodeB": "rq-1f:rq_node_1f_36",
-      "distance": 108.00462953040486,
+      "distance": 35.65937833434305,
       "pathD": "M 65 66 L 64 174"
     },
     {
@@ -4175,7 +4175,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_13",
       "nodeB": "rq-1f:rq_node_1f_28",
-      "distance": 72,
+      "distance": 23.771899882772328,
       "pathD": "M 318 83 L 390 83"
     },
     {
@@ -4184,7 +4184,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_15",
       "nodeB": "rq-1f:rq_node_1f_9",
-      "distance": 166.00301202086666,
+      "distance": 54.80843030553741,
       "pathD": "M 409 83 L 410 249"
     },
     {
@@ -4193,7 +4193,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_16",
       "nodeB": "rq-1f:rq_node_1f_33",
-      "distance": 24,
+      "distance": 7.923966627590776,
       "pathD": "M 409 46 L 409 70"
     },
     {
@@ -4202,7 +4202,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_18",
       "nodeB": "rq-1f:rq_entrance_southeast",
-      "distance": 30,
+      "distance": 9.904958284488469,
       "pathD": "M 410 400 L 440 400"
     },
     {
@@ -4211,7 +4211,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_18",
       "nodeB": "rq-1f:rq_node_1f_6",
-      "distance": 57,
+      "distance": 18.81942074052809,
       "pathD": "M 410 400 L 410 343"
     },
     {
@@ -4220,7 +4220,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_22",
       "nodeB": "rq-1f:rq_node_1f_32",
-      "distance": 76,
+      "distance": 25.09256098737079,
       "pathD": "M 318 603 L 394 603"
     },
     {
@@ -4229,7 +4229,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_24",
       "nodeB": "rq-1f:rq_node_1f_35",
-      "distance": 23,
+      "distance": 7.59380135144116,
       "pathD": "M 410 603 L 410 580"
     },
     {
@@ -4238,7 +4238,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_25",
       "nodeB": "rq-1f:rq_node_1f_18",
-      "distance": 166,
+      "distance": 54.8074358408362,
       "pathD": "M 410 566 L 410 400"
     },
     {
@@ -4247,7 +4247,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_25",
       "nodeB": "rq-1f:rq_node_1f_31",
-      "distance": 83,
+      "distance": 27.4037179204181,
       "pathD": "M 410 566 L 327 566"
     },
     {
@@ -4256,7 +4256,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_28",
       "nodeB": "rq-1f:rq_door_104f",
-      "distance": 6,
+      "distance": 1.980991656897694,
       "pathD": "M 390 83 L 390 89"
     },
     {
@@ -4265,7 +4265,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_28",
       "nodeB": "rq-1f:rq_node_1f_15",
-      "distance": 19,
+      "distance": 6.273140246842697,
       "pathD": "M 390 83 L 409 83"
     },
     {
@@ -4274,7 +4274,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_29",
       "nodeB": "rq-1f:rq_node_1f_1",
-      "distance": 26,
+      "distance": 8.584297179890008,
       "pathD": "M 90 323 L 64 323"
     },
     {
@@ -4283,7 +4283,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_29",
       "nodeB": "rq-1f:rq_node_1f_2",
-      "distance": 67,
+      "distance": 22.12107350202425,
       "pathD": "M 90 323 L 157 323"
     },
     {
@@ -4292,7 +4292,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_31",
       "nodeB": "rq-1f:rq_node_1f_23",
-      "distance": 9,
+      "distance": 2.971487485346541,
       "pathD": "M 327 566 L 318 566"
     },
     {
@@ -4301,7 +4301,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_32",
       "nodeB": "rq-1f:rq_door_144f",
-      "distance": 6,
+      "distance": 1.980991656897694,
       "pathD": "M 394 603 L 394 609"
     },
     {
@@ -4310,7 +4310,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_32",
       "nodeB": "rq-1f:rq_node_1f_24",
-      "distance": 16,
+      "distance": 5.282644418393851,
       "pathD": "M 394 603 L 410 603"
     },
     {
@@ -4319,7 +4319,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_33",
       "nodeB": "rq-1f:rq_node_1f_15",
-      "distance": 13,
+      "distance": 4.292148589945004,
       "pathD": "M 409 70 L 409 83"
     },
     {
@@ -4328,7 +4328,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_34",
       "nodeB": "rq-1f:rq_node_1f_7",
-      "distance": 14,
+      "distance": 4.622313866094619,
       "pathD": "M 410 320 L 410 306"
     },
     {
@@ -4337,7 +4337,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_35",
       "nodeB": "rq-1f:rq_node_1f_25",
-      "distance": 14,
+      "distance": 4.622313866094619,
       "pathD": "M 410 580 L 410 566"
     },
     {
@@ -4346,7 +4346,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_36",
       "nodeB": "rq-1f:rq_node_1f_38",
-      "distance": 107,
+      "distance": 35.327684548008875,
       "pathD": "M 64 174 L 64 281"
     },
     {
@@ -4355,7 +4355,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_36",
       "nodeB": "rq-1f:rq_node_1f_8",
-      "distance": 13,
+      "distance": 4.292148589945004,
       "pathD": "M 64 174 L 77 174"
     },
     {
@@ -4364,7 +4364,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_37",
       "nodeB": "rq-1f:rq_node_1f_17",
-      "distance": 14,
+      "distance": 4.622313866094619,
       "pathD": "M 63 476 L 77 476"
     },
     {
@@ -4373,7 +4373,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_37",
       "nodeB": "rq-1f:rq_node_1f_19",
-      "distance": 107,
+      "distance": 35.327684548008875,
       "pathD": "M 63 476 L 63 583"
     },
     {
@@ -4382,7 +4382,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_38",
       "nodeB": "rq-1f:rq_node_1f_26",
-      "distance": 10,
+      "distance": 3.3016527614961566,
       "pathD": "M 64 281 L 64 291"
     },
     {
@@ -4391,7 +4391,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_38",
       "nodeB": "rq-1f:rq_stairs_midcenter_1f",
-      "distance": 26,
+      "distance": 8.584297179890008,
       "pathD": "M 64 281 L 90 281"
     },
     {
@@ -4400,7 +4400,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_6",
       "nodeB": "rq-1f:rq_node_1f_34",
-      "distance": 23,
+      "distance": 7.59380135144116,
       "pathD": "M 410 343 L 410 320"
     },
     {
@@ -4409,7 +4409,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_7",
       "nodeB": "rq-1f:rq_node_1f_9",
-      "distance": 57,
+      "distance": 18.81942074052809,
       "pathD": "M 410 306 L 410 249"
     },
     {
@@ -4418,7 +4418,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_9",
       "nodeB": "rq-1f:rq_entrance_northeast",
-      "distance": 30,
+      "distance": 9.904958284488469,
       "pathD": "M 410 249 L 440 249"
     },
     {
@@ -4427,7 +4427,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_2",
       "nodeB": "rq-1f:rq_node_1f_3",
-      "distance": 161.00310556011024,
+      "distance": 53.15763480819952,
       "pathD": "M 157 323 L 318 324"
     },
     {
@@ -4436,7 +4436,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_2",
       "nodeB": "rq-1f:rq_door_127",
-      "distance": 25,
+      "distance": 8.254131903740392,
       "pathD": "M 157 323 L 157 348"
     },
     {
@@ -4445,7 +4445,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_2",
       "nodeB": "rq-1f:rq_stairs_midmid_1f",
-      "distance": 17.08800749063506,
+      "distance": 5.6418667119922254,
       "pathD": "M 157 323 L 163 339"
     },
     {
@@ -4454,7 +4454,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_20",
       "nodeB": "rq-1f:rq_stairs_southmid_1f",
-      "distance": 16,
+      "distance": 5.282644418393851,
       "pathD": "M 163 583 L 163 599"
     },
     {
@@ -4463,7 +4463,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_21",
       "nodeB": "rq-1f:rq_node_1f_20",
-      "distance": 155.00322577288512,
+      "distance": 51.17668284138584,
       "pathD": "M 318 584 L 163 583"
     },
     {
@@ -4472,7 +4472,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_21",
       "nodeB": "rq-1f:rq_node_1f_22",
-      "distance": 19,
+      "distance": 6.273140246842697,
       "pathD": "M 318 584 L 318 603"
     },
     {
@@ -4481,7 +4481,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_21",
       "nodeB": "rq-1f:rq_node_1f_23",
-      "distance": 18,
+      "distance": 5.942974970693082,
       "pathD": "M 318 584 L 318 566"
     },
     {
@@ -4490,7 +4490,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_3",
       "nodeB": "rq-1f:rq_node_1f_4",
-      "distance": 19,
+      "distance": 6.273140246842697,
       "pathD": "M 318 324 L 318 343"
     },
     {
@@ -4499,7 +4499,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_3",
       "nodeB": "rq-1f:rq_node_1f_5",
-      "distance": 18,
+      "distance": 5.942974970693082,
       "pathD": "M 318 324 L 318 306"
     },
     {
@@ -4508,7 +4508,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_4",
       "nodeB": "rq-1f:rq_node_1f_6",
-      "distance": 92,
+      "distance": 30.37520540576464,
       "pathD": "M 318 343 L 410 343"
     },
     {
@@ -4517,7 +4517,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_node_1f_7",
       "nodeB": "rq-1f:rq_node_1f_5",
-      "distance": 92,
+      "distance": 30.37520540576464,
       "pathD": "M 410 306 L 318 306"
     },
     {
@@ -4526,7 +4526,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_room_161",
       "nodeB": "rq-1f:rq_door_161",
-      "distance": 47.92702786528704,
+      "distance": 15.823840390172819,
       "pathD": "M 35 247 L 54 291"
     },
     {
@@ -4535,7 +4535,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_midcenter_1f",
       "nodeB": "rq-1f:rq_door_161",
-      "distance": 37.36308338453881,
+      "distance": 12.335992743457373,
       "pathD": "M 90 281 L 54 291"
     },
     {
@@ -4544,7 +4544,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_midcenter_1f",
       "nodeB": "rq-1f:rq_node_1f_29",
-      "distance": 42,
+      "distance": 13.866941598283859,
       "pathD": "M 90 281 L 90 323"
     },
     {
@@ -4553,7 +4553,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_mideast_1f",
       "nodeB": "rq-1f:rq_node_1f_34",
-      "distance": 7,
+      "distance": 2.3111569330473096,
       "pathD": "M 403 320 L 410 320"
     },
     {
@@ -4562,7 +4562,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_midmid_1f",
       "nodeB": "rq-1f:rq_door_127",
-      "distance": 10.816653826391969,
+      "distance": 3.5712834976055015,
       "pathD": "M 163 339 L 157 348"
     },
     {
@@ -4571,7 +4571,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_midwest_1f",
       "nodeB": "rq-1f:rq_node_1f_1",
-      "distance": 26,
+      "distance": 8.584297179890008,
       "pathD": "M 38 323 L 64 323"
     },
     {
@@ -4580,7 +4580,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_northeast_1f",
       "nodeB": "rq-1f:rq_node_1f_33",
-      "distance": 6,
+      "distance": 1.980991656897694,
       "pathD": "M 403 70 L 409 70"
     },
     {
@@ -4589,7 +4589,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_northwest_1f",
       "nodeB": "rq-1f:rq_node_1f_10",
-      "distance": 11,
+      "distance": 3.6318180376457723,
       "pathD": "M 54 66 L 65 66"
     },
     {
@@ -4598,7 +4598,7 @@
       "floorId": "rq-1f",
       "nodeA": "rq-1f:rq_stairs_southeast_1f",
       "nodeB": "rq-1f:rq_node_1f_35",
-      "distance": 7,
+      "distance": 2.3111569330473096,
       "pathD": "M 403 580 L 410 580"
     },
     {
@@ -4607,7 +4607,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s1",
       "nodeB": "rq-2f:rq_door_s1_1",
-      "distance": 21.470910553583888,
+      "distance": 6.646878143546663,
       "pathD": "M 41 115 L 60 105"
     },
     {
@@ -4616,7 +4616,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_243b",
       "nodeB": "rq-2f:rq_door_243b",
-      "distance": 21,
+      "distance": 6.501095548142961,
       "pathD": "M 221 577 L 221 598"
     },
     {
@@ -4625,7 +4625,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_39",
       "nodeB": "rq-2f:rq_node_2f_15",
-      "distance": 19,
+      "distance": 5.881943591176964,
       "pathD": "M 89 623 L 89 604"
     },
     {
@@ -4634,7 +4634,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_39",
       "nodeB": "rq-2f:rq_node_2f_16",
-      "distance": 21,
+      "distance": 6.501095548142961,
       "pathD": "M 89 623 L 89 644"
     },
     {
@@ -4643,7 +4643,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s4",
       "nodeB": "rq-2f:rq_door_s4_1",
-      "distance": 21.470910553583888,
+      "distance": 6.646878143546663,
       "pathD": "M 41 225 L 60 215"
     },
     {
@@ -4652,7 +4652,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_s4_1",
       "nodeB": "rq-2f:rq_node_2f_34",
-      "distance": 10,
+      "distance": 3.095759784829981,
       "pathD": "M 60 215 L 70 215"
     },
     {
@@ -4661,7 +4661,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_201f",
       "nodeB": "rq-2f:rq_node_2f_32",
-      "distance": 5,
+      "distance": 1.5478798924149906,
       "pathD": "M 439 43 L 439 48"
     },
     {
@@ -4670,7 +4670,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_267",
       "nodeB": "rq-2f:rq_room_267",
-      "distance": 20,
+      "distance": 6.191519569659962,
       "pathD": "M 135 373 L 135 393"
     },
     {
@@ -4679,7 +4679,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_s1_2",
       "nodeB": "rq-2f:rq_node_2f_27",
-      "distance": 10,
+      "distance": 3.095759784829981,
       "pathD": "M 60 125 L 70 125"
     },
     {
@@ -4688,7 +4688,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_s4_2",
       "nodeB": "rq-2f:rq_node_2f_35",
-      "distance": 10,
+      "distance": 3.095759784829981,
       "pathD": "M 60 233 L 70 233"
     },
     {
@@ -4697,7 +4697,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_1",
       "nodeB": "rq-2f:rq_node_2f_3",
-      "distance": 150,
+      "distance": 46.43639677244972,
       "pathD": "M 88 48 L 238 48"
     },
     {
@@ -4706,7 +4706,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_1",
       "nodeB": "rq-2f:rq_node_2f_30",
-      "distance": 22,
+      "distance": 6.810671526625958,
       "pathD": "M 88 48 L 88 70"
     },
     {
@@ -4715,7 +4715,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_10",
       "nodeB": "rq-2f:rq_node_2f_23",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 326 L 415 326"
     },
     {
@@ -4724,7 +4724,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_10",
       "nodeB": "rq-2f:rq_stairs_midmid_2f",
-      "distance": 27,
+      "distance": 8.35855141904095,
       "pathD": "M 238 326 L 238 353"
     },
     {
@@ -4733,7 +4733,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_11",
       "nodeB": "rq-2f:rq_node_2f_24",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 366 L 415 366"
     },
     {
@@ -4742,7 +4742,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_11",
       "nodeB": "rq-2f:rq_node_2f_28",
-      "distance": 103,
+      "distance": 31.886325783748806,
       "pathD": "M 238 366 L 135 366"
     },
     {
@@ -4751,7 +4751,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_12",
       "nodeB": "rq-2f:rq_node_2f_43",
-      "distance": 13,
+      "distance": 4.024487720278976,
       "pathD": "M 458 326 L 458 339"
     },
     {
@@ -4760,7 +4760,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_12",
       "nodeB": "rq-2f:rq_node_2f_6",
-      "distance": 237,
+      "distance": 73.36950690047055,
       "pathD": "M 458 326 L 458 89"
     },
     {
@@ -4769,7 +4769,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_14",
       "nodeB": "rq-2f:rq_node_2f_15",
-      "distance": 19.313207915827967,
+      "distance": 5.978905238188028,
       "pathD": "M 71 597 L 89 604"
     },
     {
@@ -4778,7 +4778,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_15",
       "nodeB": "rq-2f:rq_node_2f_40",
-      "distance": 132,
+      "distance": 40.86402915975575,
       "pathD": "M 89 604 L 221 604"
     },
     {
@@ -4787,7 +4787,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_16",
       "nodeB": "rq-2f:rq_node_2f_18",
-      "distance": 149,
+      "distance": 46.12682079396672,
       "pathD": "M 89 644 L 238 644"
     },
     {
@@ -4796,7 +4796,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_17",
       "nodeB": "rq-2f:rq_node_2f_25",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 604 L 415 604"
     },
     {
@@ -4805,7 +4805,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_17",
       "nodeB": "rq-2f:rq_stairs_southmid_2f",
-      "distance": 27,
+      "distance": 8.35855141904095,
       "pathD": "M 238 604 L 238 631"
     },
     {
@@ -4814,7 +4814,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_18",
       "nodeB": "rq-2f:rq_node_2f_26",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 644 L 415 644"
     },
     {
@@ -4823,7 +4823,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_19",
       "nodeB": "rq-2f:rq_node_2f_13",
-      "distance": 238.0021008310641,
+      "distance": 73.67973324578584,
       "pathD": "M 459 604 L 458 366"
     },
     {
@@ -4832,7 +4832,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_19",
       "nodeB": "rq-2f:rq_node_2f_42",
-      "distance": 13,
+      "distance": 4.024487720278976,
       "pathD": "M 459 604 L 459 617"
     },
     {
@@ -4841,7 +4841,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_2",
       "nodeB": "rq-2f:rq_node_2f_7",
-      "distance": 19.697715603592208,
+      "distance": 6.097939581861878,
       "pathD": "M 88 89 L 70 97"
     },
     {
@@ -4850,7 +4850,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_22",
       "nodeB": "rq-2f:rq_node_2f_21",
-      "distance": 41,
+      "distance": 12.692615117802923,
       "pathD": "M 415 89 L 415 48"
     },
     {
@@ -4859,7 +4859,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_22",
       "nodeB": "rq-2f:rq_node_2f_6",
-      "distance": 43,
+      "distance": 13.31176707476892,
       "pathD": "M 415 89 L 458 89"
     },
     {
@@ -4868,7 +4868,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_23",
       "nodeB": "rq-2f:rq_node_2f_12",
-      "distance": 43,
+      "distance": 13.31176707476892,
       "pathD": "M 415 326 L 458 326"
     },
     {
@@ -4877,7 +4877,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_24",
       "nodeB": "rq-2f:rq_node_2f_13",
-      "distance": 43,
+      "distance": 13.31176707476892,
       "pathD": "M 415 366 L 458 366"
     },
     {
@@ -4886,7 +4886,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_24",
       "nodeB": "rq-2f:rq_node_2f_23",
-      "distance": 40,
+      "distance": 12.383039139319925,
       "pathD": "M 415 366 L 415 326"
     },
     {
@@ -4895,7 +4895,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_25",
       "nodeB": "rq-2f:rq_node_2f_19",
-      "distance": 44,
+      "distance": 13.621343053251916,
       "pathD": "M 415 604 L 459 604"
     },
     {
@@ -4904,7 +4904,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_26",
       "nodeB": "rq-2f:rq_node_2f_20",
-      "distance": 44,
+      "distance": 13.621343053251916,
       "pathD": "M 415 644 L 459 644"
     },
     {
@@ -4913,7 +4913,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_26",
       "nodeB": "rq-2f:rq_node_2f_25",
-      "distance": 40,
+      "distance": 12.383039139319925,
       "pathD": "M 415 644 L 415 604"
     },
     {
@@ -4922,7 +4922,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_27",
       "nodeB": "rq-2f:rq_node_2f_34",
-      "distance": 90,
+      "distance": 27.86183806346983,
       "pathD": "M 70 125 L 70 215"
     },
     {
@@ -4931,7 +4931,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_29",
       "nodeB": "rq-2f:rq_node_2f_8",
-      "distance": 34,
+      "distance": 10.525583268421936,
       "pathD": "M 70 292 L 70 326"
     },
     {
@@ -4940,7 +4940,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_29",
       "nodeB": "rq-2f:rq_stairs_midcenter_2f",
-      "distance": 46,
+      "distance": 14.240495010217913,
       "pathD": "M 70 292 L 116 292"
     },
     {
@@ -4949,7 +4949,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_3",
       "nodeB": "rq-2f:rq_node_2f_21",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 48 L 415 48"
     },
     {
@@ -4958,7 +4958,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_3",
       "nodeB": "rq-2f:rq_stairs_northmid_2f",
-      "distance": 28,
+      "distance": 8.668127397523946,
       "pathD": "M 238 48 L 238 76"
     },
     {
@@ -4967,7 +4967,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_30",
       "nodeB": "rq-2f:rq_node_2f_2",
-      "distance": 19,
+      "distance": 5.881943591176964,
       "pathD": "M 88 70 L 88 89"
     },
     {
@@ -4976,7 +4976,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_30",
       "nodeB": "rq-2f:rq_stairs_northwest_2f",
-      "distance": 9,
+      "distance": 2.7861838063469833,
       "pathD": "M 88 70 L 79 70"
     },
     {
@@ -4985,7 +4985,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_32",
       "nodeB": "rq-2f:rq_node_2f_21",
-      "distance": 24,
+      "distance": 7.429823483591955,
       "pathD": "M 439 48 L 415 48"
     },
     {
@@ -4994,7 +4994,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_34",
       "nodeB": "rq-2f:rq_node_2f_35",
-      "distance": 18,
+      "distance": 5.5723676126939665,
       "pathD": "M 70 215 L 70 233"
     },
     {
@@ -5003,7 +5003,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_35",
       "nodeB": "rq-2f:rq_node_2f_29",
-      "distance": 59,
+      "distance": 18.26498273049689,
       "pathD": "M 70 233 L 70 292"
     },
     {
@@ -5012,7 +5012,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_36",
       "nodeB": "rq-2f:rq_node_2f_8",
-      "distance": 15,
+      "distance": 4.6436396772449715,
       "pathD": "M 70 341 L 70 326"
     },
     {
@@ -5021,7 +5021,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_37",
       "nodeB": "rq-2f:rq_node_2f_28",
-      "distance": 36,
+      "distance": 11.144735225387933,
       "pathD": "M 99 366 L 135 366"
     },
     {
@@ -5030,7 +5030,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_37",
       "nodeB": "rq-2f:rq_node_2f_9",
-      "distance": 29,
+      "distance": 8.977703376006945,
       "pathD": "M 99 366 L 70 366"
     },
     {
@@ -5039,7 +5039,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_38",
       "nodeB": "rq-2f:rq_node_2f_10",
-      "distance": 122,
+      "distance": 37.76826937492577,
       "pathD": "M 116 326 L 238 326"
     },
     {
@@ -5048,7 +5048,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_4",
       "nodeB": "rq-2f:rq_node_2f_2",
-      "distance": 150,
+      "distance": 46.43639677244972,
       "pathD": "M 238 89 L 88 89"
     },
     {
@@ -5057,7 +5057,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_4",
       "nodeB": "rq-2f:rq_node_2f_22",
-      "distance": 177,
+      "distance": 54.79494819149067,
       "pathD": "M 238 89 L 415 89"
     },
     {
@@ -5066,7 +5066,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_40",
       "nodeB": "rq-2f:rq_node_2f_17",
-      "distance": 17,
+      "distance": 5.262791634210968,
       "pathD": "M 221 604 L 238 604"
     },
     {
@@ -5075,7 +5075,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_41",
       "nodeB": "rq-2f:rq_node_2f_6",
-      "distance": 14,
+      "distance": 4.334063698761973,
       "pathD": "M 458 75 L 458 89"
     },
     {
@@ -5084,7 +5084,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_41",
       "nodeB": "rq-2f:rq_stairs_northeast_2f",
-      "distance": 6,
+      "distance": 1.8574558708979887,
       "pathD": "M 458 75 L 452 75"
     },
     {
@@ -5093,7 +5093,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_42",
       "nodeB": "rq-2f:rq_node_2f_20",
-      "distance": 27,
+      "distance": 8.35855141904095,
       "pathD": "M 459 617 L 459 644"
     },
     {
@@ -5102,7 +5102,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_42",
       "nodeB": "rq-2f:rq_stairs_southeast_2f",
-      "distance": 7,
+      "distance": 2.1670318493809866,
       "pathD": "M 459 617 L 452 617"
     },
     {
@@ -5111,7 +5111,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_43",
       "nodeB": "rq-2f:rq_node_2f_13",
-      "distance": 27,
+      "distance": 8.35855141904095,
       "pathD": "M 458 339 L 458 366"
     },
     {
@@ -5120,7 +5120,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_43",
       "nodeB": "rq-2f:rq_stairs_mideast_2f",
-      "distance": 6,
+      "distance": 1.8574558708979887,
       "pathD": "M 458 339 L 452 339"
     },
     {
@@ -5129,7 +5129,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_5",
       "nodeB": "rq-2f:rq_node_2f_32",
-      "distance": 19,
+      "distance": 5.881943591176964,
       "pathD": "M 458 48 L 439 48"
     },
     {
@@ -5138,7 +5138,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_5",
       "nodeB": "rq-2f:rq_node_2f_41",
-      "distance": 27,
+      "distance": 8.35855141904095,
       "pathD": "M 458 48 L 458 75"
     },
     {
@@ -5147,7 +5147,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_7",
       "nodeB": "rq-2f:rq_door_s1_1",
-      "distance": 12.806248474865697,
+      "distance": 3.9645069023029507,
       "pathD": "M 70 97 L 60 105"
     },
     {
@@ -5156,7 +5156,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_7",
       "nodeB": "rq-2f:rq_node_2f_27",
-      "distance": 28,
+      "distance": 8.668127397523946,
       "pathD": "M 70 97 L 70 125"
     },
     {
@@ -5165,7 +5165,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_8",
       "nodeB": "rq-2f:rq_node_2f_38",
-      "distance": 46,
+      "distance": 14.240495010217913,
       "pathD": "M 70 326 L 116 326"
     },
     {
@@ -5174,7 +5174,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_9",
       "nodeB": "rq-2f:rq_node_2f_14",
-      "distance": 231.00216449202375,
+      "distance": 71.51272110430874,
       "pathD": "M 70 366 L 71 597"
     },
     {
@@ -5183,7 +5183,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_node_2f_9",
       "nodeB": "rq-2f:rq_node_2f_36",
-      "distance": 25,
+      "distance": 7.739399462074953,
       "pathD": "M 70 366 L 70 341"
     },
     {
@@ -5192,7 +5192,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_201f",
       "nodeB": "rq-2f:rq_door_201f",
-      "distance": 20,
+      "distance": 6.191519569659962,
       "pathD": "M 439 23 L 439 43"
     },
     {
@@ -5201,7 +5201,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_243b",
       "nodeB": "rq-2f:rq_node_2f_40",
-      "distance": 6,
+      "distance": 1.8574558708979887,
       "pathD": "M 221 598 L 221 604"
     },
     {
@@ -5210,7 +5210,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_267",
       "nodeB": "rq-2f:rq_node_2f_28",
-      "distance": 7,
+      "distance": 2.1670318493809866,
       "pathD": "M 135 373 L 135 366"
     },
     {
@@ -5219,7 +5219,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_268",
       "nodeB": "rq-2f:rq_door_268",
-      "distance": 22,
+      "distance": 6.810671526625958,
       "pathD": "M 99 394 L 99 372"
     },
     {
@@ -5228,7 +5228,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_door_268",
       "nodeB": "rq-2f:rq_node_2f_37",
-      "distance": 6,
+      "distance": 1.8574558708979887,
       "pathD": "M 99 372 L 99 366"
     },
     {
@@ -5237,7 +5237,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s1",
       "nodeB": "rq-2f:rq_door_s1_2",
-      "distance": 21.470910553583888,
+      "distance": 6.646878143546663,
       "pathD": "M 41 115 L 60 125"
     },
     {
@@ -5246,7 +5246,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_room_s4",
       "nodeB": "rq-2f:rq_door_s4_2",
-      "distance": 20.615528128088304,
+      "distance": 6.382072292196707,
       "pathD": "M 41 225 L 60 233"
     },
     {
@@ -5255,7 +5255,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_midcenter_2f",
       "nodeB": "rq-2f:rq_node_2f_38",
-      "distance": 34,
+      "distance": 10.525583268421936,
       "pathD": "M 116 292 L 116 326"
     },
     {
@@ -5264,7 +5264,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_midmid_2f",
       "nodeB": "rq-2f:rq_node_2f_11",
-      "distance": 13,
+      "distance": 4.024487720278976,
       "pathD": "M 238 353 L 238 366"
     },
     {
@@ -5273,7 +5273,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_midwest_2f",
       "nodeB": "rq-2f:rq_node_2f_36",
-      "distance": 9,
+      "distance": 2.7861838063469833,
       "pathD": "M 61 341 L 70 341"
     },
     {
@@ -5282,7 +5282,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_northmid_2f",
       "nodeB": "rq-2f:rq_node_2f_4",
-      "distance": 13,
+      "distance": 4.024487720278976,
       "pathD": "M 238 76 L 238 89"
     },
     {
@@ -5291,7 +5291,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_southmid_2f",
       "nodeB": "rq-2f:rq_node_2f_18",
-      "distance": 13,
+      "distance": 4.024487720278976,
       "pathD": "M 238 631 L 238 644"
     },
     {
@@ -5300,7 +5300,7 @@
       "floorId": "rq-2f",
       "nodeA": "rq-2f:rq_stairs_southwest_2f",
       "nodeB": "rq-2f:rq_node_2f_39",
-      "distance": 9,
+      "distance": 2.7861838063469833,
       "pathD": "M 80 623 L 89 623"
     },
     {
@@ -5309,7 +5309,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_door_325f",
       "nodeB": "rq-3f:rq_room_325f",
-      "distance": 21,
+      "distance": 6.491225572739217,
       "pathD": "M 419 372 L 419 393"
     },
     {
@@ -5318,7 +5318,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_door_328E",
       "nodeB": "rq-3f:rq_room_328E",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 80 371 L 80 391"
     },
     {
@@ -5327,7 +5327,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_door_m11_1",
       "nodeB": "rq-3f:rq_room_m11",
-      "distance": 30.4138126514911,
+      "distance": 9.40109135465993,
       "pathD": "M 444 157 L 465 135"
     },
     {
@@ -5336,7 +5336,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_1",
       "nodeB": "rq-3f:rq_node_3f_29",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 65 49 L 65 69"
     },
     {
@@ -5345,7 +5345,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_1",
       "nodeB": "rq-3f:rq_node_3f_3",
-      "distance": 194,
+      "distance": 59.966560052924194,
       "pathD": "M 65 49 L 259 49"
     },
     {
@@ -5354,7 +5354,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_10",
       "nodeB": "rq-3f:rq_node_3f_33",
-      "distance": 24,
+      "distance": 7.418543511701962,
       "pathD": "M 56 366 L 80 366"
     },
     {
@@ -5363,7 +5363,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_11",
       "nodeB": "rq-3f:rq_node_3f_9",
-      "distance": 203,
+      "distance": 62.74851386981243,
       "pathD": "M 259 326 L 56 326"
     },
     {
@@ -5372,7 +5372,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_11",
       "nodeB": "rq-3f:rq_stairs_midmid_3f",
-      "distance": 29,
+      "distance": 8.964073409973205,
       "pathD": "M 259 326 L 259 355"
     },
     {
@@ -5381,7 +5381,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_12",
       "nodeB": "rq-3f:rq_node_3f_14",
-      "distance": 135.00370365289984,
+      "distance": 41.73045207458144,
       "pathD": "M 259 366 L 394 367"
     },
     {
@@ -5390,7 +5390,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_13",
       "nodeB": "rq-3f:rq_node_3f_11",
-      "distance": 135,
+      "distance": 41.72930725332353,
       "pathD": "M 394 326 L 259 326"
     },
     {
@@ -5399,7 +5399,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_14",
       "nodeB": "rq-3f:rq_node_3f_13",
-      "distance": 41,
+      "distance": 12.673345165824184,
       "pathD": "M 394 367 L 394 326"
     },
     {
@@ -5408,7 +5408,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_15",
       "nodeB": "rq-3f:rq_node_3f_13",
-      "distance": 44,
+      "distance": 13.60066310478693,
       "pathD": "M 438 326 L 394 326"
     },
     {
@@ -5417,7 +5417,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_15",
       "nodeB": "rq-3f:rq_node_3f_35",
-      "distance": 12,
+      "distance": 3.709271755850981,
       "pathD": "M 438 326 L 438 338"
     },
     {
@@ -5426,7 +5426,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_16",
       "nodeB": "rq-3f:rq_node_3f_23",
-      "distance": 237,
+      "distance": 73.25811717805688,
       "pathD": "M 438 367 L 438 604"
     },
     {
@@ -5435,7 +5435,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_16",
       "nodeB": "rq-3f:rq_node_3f_34",
-      "distance": 19,
+      "distance": 5.87301361343072,
       "pathD": "M 438 367 L 419 367"
     },
     {
@@ -5444,7 +5444,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_17",
       "nodeB": "rq-3f:rq_node_3f_27",
-      "distance": 147,
+      "distance": 45.43857900917452,
       "pathD": "M 67 603 L 214 603"
     },
     {
@@ -5453,7 +5453,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_17",
       "nodeB": "rq-3f:rq_node_3f_36",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 67 603 L 67 623"
     },
     {
@@ -5462,7 +5462,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_18",
       "nodeB": "rq-3f:rq_node_3f_37",
-      "distance": 13,
+      "distance": 4.018377735505229,
       "pathD": "M 67 644 L 80 644"
     },
     {
@@ -5471,7 +5471,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_19",
       "nodeB": "rq-3f:rq_node_3f_21",
-      "distance": 135.00370365289984,
+      "distance": 41.73045207458144,
       "pathD": "M 259 603 L 394 604"
     },
     {
@@ -5480,7 +5480,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_19",
       "nodeB": "rq-3f:rq_stairs_southmid_3f",
-      "distance": 28,
+      "distance": 8.654967430318955,
       "pathD": "M 259 603 L 259 631"
     },
     {
@@ -5489,7 +5489,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_21",
       "nodeB": "rq-3f:rq_node_3f_22",
-      "distance": 40,
+      "distance": 12.364239186169936,
       "pathD": "M 394 604 L 394 644"
     },
     {
@@ -5498,7 +5498,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_21",
       "nodeB": "rq-3f:rq_node_3f_23",
-      "distance": 44,
+      "distance": 13.60066310478693,
       "pathD": "M 394 604 L 438 604"
     },
     {
@@ -5507,7 +5507,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_22",
       "nodeB": "rq-3f:rq_node_3f_20",
-      "distance": 135,
+      "distance": 41.72930725332353,
       "pathD": "M 394 644 L 259 644"
     },
     {
@@ -5516,7 +5516,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_23",
       "nodeB": "rq-3f:rq_node_3f_39",
-      "distance": 13,
+      "distance": 4.018377735505229,
       "pathD": "M 438 604 L 438 617"
     },
     {
@@ -5525,7 +5525,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_24",
       "nodeB": "rq-3f:rq_node_3f_22",
-      "distance": 44,
+      "distance": 13.60066310478693,
       "pathD": "M 438 644 L 394 644"
     },
     {
@@ -5534,7 +5534,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_24",
       "nodeB": "rq-3f:rq_node_3f_39",
-      "distance": 27,
+      "distance": 8.345861450664707,
       "pathD": "M 438 644 L 438 617"
     },
     {
@@ -5543,7 +5543,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_25",
       "nodeB": "rq-3f:rq_door_m11_1",
-      "distance": 6,
+      "distance": 1.8546358779254906,
       "pathD": "M 438 157 L 444 157"
     },
     {
@@ -5552,7 +5552,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_25",
       "nodeB": "rq-3f:rq_node_3f_15",
-      "distance": 169,
+      "distance": 52.238910561567984,
       "pathD": "M 438 157 L 438 326"
     },
     {
@@ -5561,7 +5561,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_26",
       "nodeB": "rq-3f:rq_node_3f_12",
-      "distance": 149,
+      "distance": 46.056790968483014,
       "pathD": "M 110 366 L 259 366"
     },
     {
@@ -5570,7 +5570,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_28",
       "nodeB": "rq-3f:rq_node_3f_20",
-      "distance": 143,
+      "distance": 44.202155090557525,
       "pathD": "M 116 644 L 259 644"
     },
     {
@@ -5579,7 +5579,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_29",
       "nodeB": "rq-3f:rq_node_3f_2",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 65 69 L 65 89"
     },
     {
@@ -5588,7 +5588,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_3",
       "nodeB": "rq-3f:rq_node_3f_5",
-      "distance": 135.00370365289984,
+      "distance": 41.73045207458144,
       "pathD": "M 259 49 L 394 48"
     },
     {
@@ -5597,7 +5597,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_3",
       "nodeB": "rq-3f:rq_stairs_northmid_3f",
-      "distance": 28,
+      "distance": 8.654967430318955,
       "pathD": "M 259 49 L 259 77"
     },
     {
@@ -5606,7 +5606,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_30",
       "nodeB": "rq-3f:rq_node_3f_8",
-      "distance": 14,
+      "distance": 4.327483715159477,
       "pathD": "M 438 75 L 438 89"
     },
     {
@@ -5615,7 +5615,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_30",
       "nodeB": "rq-3f:rq_stairs_northeast_3f",
-      "distance": 7,
+      "distance": 2.1637418575797387,
       "pathD": "M 438 75 L 431 75"
     },
     {
@@ -5624,7 +5624,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_31",
       "nodeB": "rq-3f:rq_node_3f_25",
-      "distance": 48,
+      "distance": 14.837087023403924,
       "pathD": "M 438 109 L 438 157"
     },
     {
@@ -5633,7 +5633,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_31",
       "nodeB": "rq-3f:rq_door_m11_2",
-      "distance": 5,
+      "distance": 1.545529898271242,
       "pathD": "M 438 109 L 443 109"
     },
     {
@@ -5642,7 +5642,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_32",
       "nodeB": "rq-3f:rq_node_3f_10",
-      "distance": 25,
+      "distance": 7.72764949135621,
       "pathD": "M 56 341 L 56 366"
     },
     {
@@ -5651,7 +5651,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_32",
       "nodeB": "rq-3f:rq_node_3f_9",
-      "distance": 15,
+      "distance": 4.636589694813726,
       "pathD": "M 56 341 L 56 326"
     },
     {
@@ -5660,7 +5660,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_33",
       "nodeB": "rq-3f:rq_node_3f_26",
-      "distance": 30,
+      "distance": 9.273179389627453,
       "pathD": "M 80 366 L 110 366"
     },
     {
@@ -5669,7 +5669,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_33",
       "nodeB": "rq-3f:rq_door_328E",
-      "distance": 5,
+      "distance": 1.545529898271242,
       "pathD": "M 80 366 L 80 371"
     },
     {
@@ -5678,7 +5678,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_34",
       "nodeB": "rq-3f:rq_node_3f_14",
-      "distance": 25,
+      "distance": 7.72764949135621,
       "pathD": "M 419 367 L 394 367"
     },
     {
@@ -5687,7 +5687,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_34",
       "nodeB": "rq-3f:rq_door_325f",
-      "distance": 5,
+      "distance": 1.545529898271242,
       "pathD": "M 419 367 L 419 372"
     },
     {
@@ -5696,7 +5696,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_35",
       "nodeB": "rq-3f:rq_node_3f_16",
-      "distance": 29,
+      "distance": 8.964073409973205,
       "pathD": "M 438 338 L 438 367"
     },
     {
@@ -5705,7 +5705,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_35",
       "nodeB": "rq-3f:rq_stairs_mideast_3f",
-      "distance": 7,
+      "distance": 2.1637418575797387,
       "pathD": "M 438 338 L 431 338"
     },
     {
@@ -5714,7 +5714,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_36",
       "nodeB": "rq-3f:rq_node_3f_18",
-      "distance": 21,
+      "distance": 6.491225572739217,
       "pathD": "M 67 623 L 67 644"
     },
     {
@@ -5723,7 +5723,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_37",
       "nodeB": "rq-3f:rq_node_3f_28",
-      "distance": 36,
+      "distance": 11.127815267552943,
       "pathD": "M 80 644 L 116 644"
     },
     {
@@ -5732,7 +5732,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_37",
       "nodeB": "rq-3f:rq_door_348e",
-      "distance": 4,
+      "distance": 1.2364239186169936,
       "pathD": "M 80 644 L 80 648"
     },
     {
@@ -5741,7 +5741,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_38",
       "nodeB": "rq-3f:rq_node_3f_19",
-      "distance": 23,
+      "distance": 7.109437532047713,
       "pathD": "M 236 603 L 259 603"
     },
     {
@@ -5750,7 +5750,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_38",
       "nodeB": "rq-3f:rq_node_3f_27",
-      "distance": 22,
+      "distance": 6.800331552393465,
       "pathD": "M 236 603 L 214 603"
     },
     {
@@ -5759,7 +5759,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_38",
       "nodeB": "rq-3f:rq_door_342a",
-      "distance": 5,
+      "distance": 1.545529898271242,
       "pathD": "M 236 603 L 236 598"
     },
     {
@@ -5768,7 +5768,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_39",
       "nodeB": "rq-3f:rq_stairs_southeast_3f",
-      "distance": 7,
+      "distance": 2.1637418575797387,
       "pathD": "M 438 617 L 431 617"
     },
     {
@@ -5777,7 +5777,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_4",
       "nodeB": "rq-3f:rq_node_3f_2",
-      "distance": 194,
+      "distance": 59.966560052924194,
       "pathD": "M 259 89 L 65 89"
     },
     {
@@ -5786,7 +5786,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_5",
       "nodeB": "rq-3f:rq_node_3f_6",
-      "distance": 41,
+      "distance": 12.673345165824184,
       "pathD": "M 394 48 L 394 89"
     },
     {
@@ -5795,7 +5795,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_5",
       "nodeB": "rq-3f:rq_node_3f_7",
-      "distance": 44,
+      "distance": 13.60066310478693,
       "pathD": "M 394 48 L 438 48"
     },
     {
@@ -5804,7 +5804,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_6",
       "nodeB": "rq-3f:rq_node_3f_4",
-      "distance": 135,
+      "distance": 41.72930725332353,
       "pathD": "M 394 89 L 259 89"
     },
     {
@@ -5813,7 +5813,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_7",
       "nodeB": "rq-3f:rq_node_3f_30",
-      "distance": 27,
+      "distance": 8.345861450664707,
       "pathD": "M 438 48 L 438 75"
     },
     {
@@ -5822,7 +5822,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_8",
       "nodeB": "rq-3f:rq_node_3f_31",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 438 89 L 438 109"
     },
     {
@@ -5831,7 +5831,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_node_3f_8",
       "nodeB": "rq-3f:rq_node_3f_6",
-      "distance": 44,
+      "distance": 13.60066310478693,
       "pathD": "M 438 89 L 394 89"
     },
     {
@@ -5840,7 +5840,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_room_342a",
       "nodeB": "rq-3f:rq_door_342a",
-      "distance": 20,
+      "distance": 6.182119593084968,
       "pathD": "M 236 578 L 236 598"
     },
     {
@@ -5849,7 +5849,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_room_348e",
       "nodeB": "rq-3f:rq_door_348e",
-      "distance": 23,
+      "distance": 7.109437532047713,
       "pathD": "M 80 671 L 80 648"
     },
     {
@@ -5858,7 +5858,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_room_m11",
       "nodeB": "rq-3f:rq_door_m11_2",
-      "distance": 34.058772731852805,
+      "distance": 10.527770311100763,
       "pathD": "M 465 135 L 443 109"
     },
     {
@@ -5867,7 +5867,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_midmid_3f",
       "nodeB": "rq-3f:rq_node_3f_12",
-      "distance": 11,
+      "distance": 3.4001657761967325,
       "pathD": "M 259 355 L 259 366"
     },
     {
@@ -5876,7 +5876,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_midwest_3f",
       "nodeB": "rq-3f:rq_node_3f_32",
-      "distance": 17,
+      "distance": 5.254801654122223,
       "pathD": "M 39 341 L 56 341"
     },
     {
@@ -5885,7 +5885,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_northmid_3f",
       "nodeB": "rq-3f:rq_node_3f_4",
-      "distance": 12,
+      "distance": 3.709271755850981,
       "pathD": "M 259 77 L 259 89"
     },
     {
@@ -5894,7 +5894,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_northwest_3f",
       "nodeB": "rq-3f:rq_node_3f_29",
-      "distance": 7,
+      "distance": 2.1637418575797387,
       "pathD": "M 58 69 L 65 69"
     },
     {
@@ -5903,7 +5903,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_southmid_3f",
       "nodeB": "rq-3f:rq_node_3f_20",
-      "distance": 13,
+      "distance": 4.018377735505229,
       "pathD": "M 259 631 L 259 644"
     },
     {
@@ -5912,7 +5912,7 @@
       "floorId": "rq-3f",
       "nodeA": "rq-3f:rq_stairs_southwest_3f",
       "nodeB": "rq-3f:rq_node_3f_36",
-      "distance": 9,
+      "distance": 2.781953816888236,
       "pathD": "M 58 623 L 67 623"
     },
     {
@@ -5921,7 +5921,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_entrance_north",
       "nodeB": "sh-1f:sh_node_1f_7",
-      "distance": 9,
+      "distance": 6.384190477187145,
       "pathD": "M 55 4 L 55 13"
     },
     {
@@ -5930,7 +5930,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_1",
       "nodeB": "sh-1f:sh_node_1f_2",
-      "distance": 22.360679774997898,
+      "distance": 15.861648764774753,
       "pathD": "M 32 60 L 52 50"
     },
     {
@@ -5939,7 +5939,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_1",
       "nodeB": "sh-1f:sh_room_kitchen",
-      "distance": 10,
+      "distance": 7.093544974652383,
       "pathD": "M 32 60 L 32 50"
     },
     {
@@ -5948,7 +5948,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_2",
       "nodeB": "sh-1f:sh_entrance_main",
-      "distance": 14.142135623730951,
+      "distance": 10.031787508456913,
       "pathD": "M 52 50 L 62 60"
     },
     {
@@ -5957,7 +5957,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_2",
       "nodeB": "sh-1f:sh_node_1f_6",
-      "distance": 14.212670403551895,
+      "distance": 10.081821671750621,
       "pathD": "M 52 50 L 61 39"
     },
     {
@@ -5966,7 +5966,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_2",
       "nodeB": "sh-1f:sh_room_kiyare",
-      "distance": 14.560219778561036,
+      "distance": 10.328357384004589,
       "pathD": "M 52 50 L 48 64"
     },
     {
@@ -5975,7 +5975,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_3",
       "nodeB": "sh-1f:sh_node_1f_4",
-      "distance": 9,
+      "distance": 6.384190477187145,
       "pathD": "M 55 27 L 55 36"
     },
     {
@@ -5984,7 +5984,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_3",
       "nodeB": "sh-1f:sh_node_1f_6",
-      "distance": 13.416407864998739,
+      "distance": 9.516989258864852,
       "pathD": "M 55 27 L 61 39"
     },
     {
@@ -5993,7 +5993,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_3",
       "nodeB": "sh-1f:sh_room_cafeteria",
-      "distance": 37,
+      "distance": 26.24611640621382,
       "pathD": "M 55 27 L 92 27"
     },
     {
@@ -6002,7 +6002,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_4",
       "nodeB": "sh-1f:sh_node_1f_2",
-      "distance": 14.317821063276353,
+      "distance": 10.156410765137602,
       "pathD": "M 55 36 L 52 50"
     },
     {
@@ -6011,7 +6011,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_4",
       "nodeB": "sh-1f:sh_node_1f_6",
-      "distance": 6.708203932499369,
+      "distance": 4.758494629432426,
       "pathD": "M 55 36 L 61 39"
     },
     {
@@ -6020,7 +6020,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_4",
       "nodeB": "sh-1f:sh_stairs_main_1_1f",
-      "distance": 4,
+      "distance": 2.8374179898609535,
       "pathD": "M 55 36 L 51 36"
     },
     {
@@ -6029,7 +6029,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_5",
       "nodeB": "sh-1f:sh_node_1f_1",
-      "distance": 7,
+      "distance": 4.965481482256669,
       "pathD": "M 32 67 L 32 60"
     },
     {
@@ -6038,7 +6038,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_5",
       "nodeB": "sh-1f:sh_room_shop",
-      "distance": 18,
+      "distance": 12.76838095437429,
       "pathD": "M 32 67 L 32 85"
     },
     {
@@ -6047,7 +6047,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_5",
       "nodeB": "sh-1f:sh_stairs_main_2_1f",
-      "distance": 4,
+      "distance": 2.8374179898609535,
       "pathD": "M 32 67 L 28 67"
     },
     {
@@ -6056,7 +6056,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_6",
       "nodeB": "sh-1f:sh_room_cafeteria",
-      "distance": 33.24154027718932,
+      "distance": 23.580036098296112,
       "pathD": "M 61 39 L 92 27"
     },
     {
@@ -6065,7 +6065,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_7",
       "nodeB": "sh-1f:sh_node_1f_3",
-      "distance": 14,
+      "distance": 9.930962964513338,
       "pathD": "M 55 13 L 55 27"
     },
     {
@@ -6074,7 +6074,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_node_1f_7",
       "nodeB": "sh-1f:sh_room_cafeteria",
-      "distance": 39.56008088970496,
+      "distance": 28.062121299200843,
       "pathD": "M 55 13 L 92 27"
     },
     {
@@ -6083,7 +6083,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_room_cafeteria",
       "nodeB": "sh-1f:sh_reception",
-      "distance": 2,
+      "distance": 1.4187089949304768,
       "pathD": "M 92 27 L 92 29"
     },
     {
@@ -6092,7 +6092,7 @@
       "floorId": "sh-1f",
       "nodeA": "sh-1f:sh_room_shop",
       "nodeB": "sh-1f:sh_entrance_south1f",
-      "distance": 19,
+      "distance": 13.477735451839528,
       "pathD": "M 32 85 L 51 85"
     },
     {
@@ -6101,7 +6101,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_entrance_south2f",
       "nodeB": "sh-2f:sh_stairs_main_1_2f",
-      "distance": 8,
+      "distance": 5.117590687700849,
       "pathD": "M 44 67 L 44 59"
     },
     {
@@ -6110,7 +6110,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_1",
       "nodeB": "sh-2f:sh_entrance_east",
-      "distance": 79,
+      "distance": 50.53620804104588,
       "pathD": "M 46 3 L 125 3"
     },
     {
@@ -6119,7 +6119,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_1",
       "nodeB": "sh-2f:sh_node_2f_2",
-      "distance": 24,
+      "distance": 15.352772063102547,
       "pathD": "M 46 3 L 46 27"
     },
     {
@@ -6128,7 +6128,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_2",
       "nodeB": "sh-2f:sh_node_2f_5",
-      "distance": 14.422205101855956,
+      "distance": 9.225867815671215,
       "pathD": "M 46 27 L 34 35"
     },
     {
@@ -6137,7 +6137,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_3",
       "nodeB": "sh-2f:sh_node_2f_4",
-      "distance": 15.811388300841896,
+      "distance": 10.11452669100133,
       "pathD": "M 30 51 L 39 64"
     },
     {
@@ -6146,7 +6146,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_4",
       "nodeB": "sh-2f:sh_entrance_south2f",
-      "distance": 5.830951894845301,
+      "distance": 3.7300531396864915,
       "pathD": "M 39 64 L 44 67"
     },
     {
@@ -6155,7 +6155,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_node_2f_5",
       "nodeB": "sh-2f:sh_node_2f_3",
-      "distance": 16.492422502470642,
+      "distance": 10.550183477033961,
       "pathD": "M 34 35 L 30 51"
     },
     {
@@ -6164,7 +6164,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_stairs_main_1_2f",
       "nodeB": "sh-2f:sh_node_2f_4",
-      "distance": 7.0710678118654755,
+      "distance": 4.523353848262997,
       "pathD": "M 44 59 L 39 64"
     },
     {
@@ -6173,7 +6173,7 @@
       "floorId": "sh-2f",
       "nodeA": "sh-2f:sh_stairs_main_2_2f",
       "nodeB": "sh-2f:sh_node_2f_4",
-      "distance": 14,
+      "distance": 8.955783703476486,
       "pathD": "M 25 64 L 39 64"
     },
     {
@@ -6286,168 +6286,168 @@
       "kind": "transfer",
       "nodeA": "lh-1f:lh_stairs_northeast_1f",
       "nodeB": "lh-2f:lh_stairs_northeast_2f",
-      "distance": 60
+      "distance": 16.504501675829623
     },
     {
       "id": "transfer:lh_southeast:lh-1f:lh-2f",
       "kind": "transfer",
       "nodeA": "lh-1f:lh_stairs_southeast_1f",
       "nodeB": "lh-2f:lh_stairs_southeast_2f",
-      "distance": 60
+      "distance": 16.504501675829623
     },
     {
       "id": "transfer:lh_west:lh-1f:lh-2f",
       "kind": "transfer",
       "nodeA": "lh-1f:lh_stairs_west_1f",
       "nodeB": "lh-2f:lh_stairs_west_2f",
-      "distance": 60
+      "distance": 16.504501675829623
     },
     {
       "id": "transfer:rq_midcenter:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_midcenter_1f",
       "nodeB": "rq-2f:rq_stairs_midcenter_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_mideast:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_mideast_1f",
       "nodeB": "rq-2f:rq_stairs_mideast_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_mideast:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_mideast_2f",
       "nodeB": "rq-3f:rq_stairs_mideast_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_midmid:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_midmid_1f",
       "nodeB": "rq-2f:rq_stairs_midmid_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_midmid:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_midmid_2f",
       "nodeB": "rq-3f:rq_stairs_midmid_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_midwest:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_midwest_1f",
       "nodeB": "rq-2f:rq_stairs_midwest_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_midwest:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_midwest_2f",
       "nodeB": "rq-3f:rq_stairs_midwest_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_northeast:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_northeast_1f",
       "nodeB": "rq-2f:rq_stairs_northeast_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_northeast:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_northeast_2f",
       "nodeB": "rq-3f:rq_stairs_northeast_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_northmid:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_northmid_1f",
       "nodeB": "rq-2f:rq_stairs_northmid_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_northmid:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_northmid_2f",
       "nodeB": "rq-3f:rq_stairs_northmid_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_northwest:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_northwest_1f",
       "nodeB": "rq-2f:rq_stairs_northwest_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_northwest:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_northwest_2f",
       "nodeB": "rq-3f:rq_stairs_northwest_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_southeast:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_southeast_1f",
       "nodeB": "rq-2f:rq_stairs_southeast_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_southeast:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_southeast_2f",
       "nodeB": "rq-3f:rq_stairs_southeast_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_southmid:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_southmid_1f",
       "nodeB": "rq-2f:rq_stairs_southmid_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_southmid:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_southmid_2f",
       "nodeB": "rq-3f:rq_stairs_southmid_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:rq_southwest:rq-1f:rq-2f",
       "kind": "transfer",
       "nodeA": "rq-1f:rq_stairs_southwest_1f",
       "nodeB": "rq-2f:rq_stairs_southwest_2f",
-      "distance": 60
+      "distance": 19.182295439557166
     },
     {
       "id": "transfer:rq_southwest:rq-2f:rq-3f",
       "kind": "transfer",
       "nodeA": "rq-2f:rq_stairs_southwest_2f",
       "nodeB": "rq-3f:rq_stairs_southwest_3f",
-      "distance": 60
+      "distance": 18.56045338840285
     },
     {
       "id": "transfer:sh_main_1:sh-1f:sh-2f",
       "kind": "transfer",
       "nodeA": "sh-1f:sh_stairs_main_1_1f",
       "nodeB": "sh-2f:sh_stairs_main_1_2f",
-      "distance": 60
+      "distance": 40.417616044592094
     },
     {
       "id": "transfer:sh_main_2:sh-1f:sh-2f",
       "kind": "transfer",
       "nodeA": "sh-1f:sh_stairs_main_2_1f",
       "nodeB": "sh-2f:sh_stairs_main_2_2f",
-      "distance": 60
+      "distance": 40.417616044592094
     },
     {
       "id": "ubic-1f:route_edge_1_to_ubic_node_1",
@@ -6530,5 +6530,123 @@
       "distance": 22.80350850198276,
       "pathD": "M 161 59 L 143 45"
     }
-  ]
+  ],
+  "distanceCalibration": {
+    "unit": "campus-svg-unit",
+    "stairEquivalentLocalDistance": 60,
+    "floors": [
+      {
+        "floorId": "campus",
+        "scale": 1,
+        "source": "anchor"
+      },
+      {
+        "floorId": "lh-1f",
+        "scale": 0.28063740245496566,
+        "source": "transfer-pairs",
+        "parentFloorId": "campus",
+        "transferEdgeIds": [
+          "transfer:entrance:lh_east1f:campus:lh-1f",
+          "transfer:entrance:lh-west:campus:lh-1f"
+        ],
+        "normalizedRmse": 0
+      },
+      {
+        "floorId": "lh-2f",
+        "scale": 0.26962290246790677,
+        "source": "transfer-pairs",
+        "parentFloorId": "lh-1f",
+        "transferEdgeIds": [
+          "transfer:lh_northeast:lh-1f:lh-2f",
+          "transfer:lh_southeast:lh-1f:lh-2f",
+          "transfer:lh_west:lh-1f:lh-2f"
+        ],
+        "normalizedRmse": 0.11142890280680208
+      },
+      {
+        "floorId": "lictia-1f",
+        "scale": 1,
+        "source": "topology-neutral-fallback"
+      },
+      {
+        "floorId": "rq-1f",
+        "scale": 0.33016527614961566,
+        "source": "transfer-pairs",
+        "parentFloorId": "campus",
+        "transferEdgeIds": [
+          "transfer:entrance:rq_northeast:campus:rq-1f",
+          "transfer:entrance:rq_northlounge:campus:rq-1f",
+          "transfer:entrance:rq_southeast:campus:rq-1f",
+          "transfer:entrance:rq-northwest:campus:rq-1f",
+          "transfer:entrance:rq-southwest:campus:rq-1f"
+        ],
+        "normalizedRmse": 0.060113830421993406
+      },
+      {
+        "floorId": "rq-2f",
+        "scale": 0.3095759784829981,
+        "source": "transfer-pairs",
+        "parentFloorId": "rq-1f",
+        "transferEdgeIds": [
+          "transfer:rq_midcenter:rq-1f:rq-2f",
+          "transfer:rq_mideast:rq-1f:rq-2f",
+          "transfer:rq_midmid:rq-1f:rq-2f",
+          "transfer:rq_midwest:rq-1f:rq-2f",
+          "transfer:rq_northeast:rq-1f:rq-2f",
+          "transfer:rq_northmid:rq-1f:rq-2f",
+          "transfer:rq_northwest:rq-1f:rq-2f",
+          "transfer:rq_southeast:rq-1f:rq-2f",
+          "transfer:rq_southmid:rq-1f:rq-2f",
+          "transfer:rq_southwest:rq-1f:rq-2f"
+        ],
+        "normalizedRmse": 0.05273868358050009
+      },
+      {
+        "floorId": "rq-3f",
+        "scale": 0.3091059796542484,
+        "source": "transfer-pairs",
+        "parentFloorId": "rq-2f",
+        "transferEdgeIds": [
+          "transfer:rq_mideast:rq-2f:rq-3f",
+          "transfer:rq_midmid:rq-2f:rq-3f",
+          "transfer:rq_midwest:rq-2f:rq-3f",
+          "transfer:rq_northeast:rq-2f:rq-3f",
+          "transfer:rq_northmid:rq-2f:rq-3f",
+          "transfer:rq_northwest:rq-2f:rq-3f",
+          "transfer:rq_southeast:rq-2f:rq-3f",
+          "transfer:rq_southmid:rq-2f:rq-3f",
+          "transfer:rq_southwest:rq-2f:rq-3f"
+        ],
+        "normalizedRmse": 0.05180296360945012
+      },
+      {
+        "floorId": "sh-1f",
+        "scale": 0.7093544974652384,
+        "source": "transfer-pairs",
+        "parentFloorId": "campus",
+        "transferEdgeIds": [
+          "transfer:entrance:sh_main:campus:sh-1f",
+          "transfer:entrance:sh_north:campus:sh-1f",
+          "transfer:entrance:sh_south1f:campus:sh-1f"
+        ],
+        "normalizedRmse": 0.010148270094691906
+      },
+      {
+        "floorId": "sh-2f",
+        "scale": 0.6396988359626061,
+        "source": "transfer-pairs",
+        "parentFloorId": "campus",
+        "transferEdgeIds": [
+          "transfer:entrance:sh_east:campus:sh-2f",
+          "transfer:entrance:sh_south2f:campus:sh-2f"
+        ],
+        "normalizedRmse": 0
+      },
+      {
+        "floorId": "ubic-1f",
+        "scale": 1,
+        "source": "topology-neutral-fallback"
+      }
+    ]
+  }
 }

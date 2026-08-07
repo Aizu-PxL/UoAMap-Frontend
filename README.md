@@ -21,7 +21,7 @@ Viteの表示URLをスマートフォン幅（基準402px）で開いて確認�
 bun run verify:all
 ```
 
-このコマンドはunit test、TypeScript strict型検査とproduction build、route editor生成物鮮度、124 Place / 89 QR / 61 Event、350 nodes / 447 edgesのRouteグラフ、`git diff --check`を順に検証します。
+このコマンドはunit test、TypeScript strict型検査とproduction build、route editor生成物鮮度、125 Place / 89 QR / 61 Event、350 nodes / 448 edgesのRouteグラフ、`git diff --check`を順に検証します。
 
 個別コマンド:
 

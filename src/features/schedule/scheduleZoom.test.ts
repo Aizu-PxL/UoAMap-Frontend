@@ -3,6 +3,8 @@ import {
   clampScheduleScale,
   getNextScheduleScale,
   getPinchScheduleScale,
+  getScheduleFocalScroll,
+  getScheduleZoomAnchor,
   SCHEDULE_MAX_SCALE,
   SCHEDULE_MIN_SCALE,
 } from "./scheduleZoom";
@@ -26,5 +28,39 @@ describe("schedule image zoom", () => {
     expect(getPinchScheduleScale(2, 100, 10)).toEqual(SCHEDULE_MIN_SCALE);
     expect(getPinchScheduleScale(2, 100, 300)).toEqual(SCHEDULE_MAX_SCALE);
     expect(getPinchScheduleScale(2, 0, 100)).toEqual(2);
+  });
+
+  test("焦点が指す画像上の等倍座標を求める", () => {
+    expect(getScheduleZoomAnchor(200, 10, 1)).toEqual(190);
+    expect(getScheduleZoomAnchor(200, 10, 2)).toEqual(95);
+    expect(getScheduleZoomAnchor(200, 10, 0)).toEqual(0);
+    expect(getScheduleZoomAnchor(200, 10, Number.NaN)).toEqual(0);
+  });
+
+  test("倍率を変えても焦点のクライアント座標が動かない", () => {
+    // 画像原点がclientX=10、スクロール40の状態でclientX=200をピンチした
+    const imageOriginClient = 10;
+    const startScroll = 40;
+    const scrollOrigin = imageOriginClient + startScroll;
+    const focalClient = 200;
+    const anchor = getScheduleZoomAnchor(focalClient, imageOriginClient, 1);
+
+    // 同倍率なら現在のスクロール位置のまま
+    expect(getScheduleFocalScroll(scrollOrigin, anchor, 1, focalClient)).toEqual(startScroll);
+
+    for (const nextScale of [0.75, 1.5, 2, 3]) {
+      const nextScroll = getScheduleFocalScroll(scrollOrigin, anchor, nextScale, focalClient);
+      // 変形後の画像原点 = scrollOrigin - スクロール位置
+      expect(scrollOrigin - nextScroll + anchor * nextScale).toEqual(focalClient);
+    }
+  });
+
+  test("焦点が動いた分だけスクロールが逆向きに追従する", () => {
+    const scrollOrigin = 50;
+    const anchor = 190;
+
+    expect(getScheduleFocalScroll(scrollOrigin, anchor, 1, 200)).toEqual(40);
+    expect(getScheduleFocalScroll(scrollOrigin, anchor, 1, 260)).toEqual(-20);
+    expect(getScheduleFocalScroll(scrollOrigin, anchor, 1, Number.NaN)).toEqual(0);
   });
 });

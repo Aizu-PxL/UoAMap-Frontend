@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(キャンパス全体図の屋内現在地表示)
+最終更新: 2026-08-08（スケジュール拡大表示のズーム基準点）
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -45,9 +45,43 @@
 
 最新階段ルート表示ブリーフ: `docs/tasks/38-stair-route-direction-icons.md`（未コミット）
 
-最新イベント目的地ピン配置ブリーフ: `docs/tasks/39-event-destination-pin-anchor.md`（未コミット）
+イベント目的地ピン配置ブリーフ: `docs/tasks/39-event-destination-pin-anchor.md`（未コミット。ピン座標の決め方は下記41で置き換え済み）
 
 最新キャンパス屋内現在地投影ブリーフ: `docs/tasks/40-campus-current-marker-projection.md`（未コミット）
+
+最新目的地ピン配置ブリーフ: `docs/tasks/41-destination-pin-route-anchor.md`（未コミット）
+
+最新Route距離校正ブリーフ: `docs/tasks/42-route-distance-calibration.md`（未コミット）
+
+## スケジュール拡大表示のズーム基準点
+
+スケジュール全画面ダイアログの拡大縮小が、倍率だけを変えてスクロール位置を補正しておらず、`transform-origin: top left`のまま常に画像左上を基点にしていた。ピンチしても指の中心が無視され、見たい箇所が右下へ逃げる状態だったため、焦点補正を追加した。
+
+`scheduleZoom.ts`に純粋関数`getScheduleZoomAnchor`（焦点が指す画像上の等倍座標）と`getScheduleFocalScroll`（そのアンカーを焦点へ合わせる目標スクロール）を追加した。transformはレイアウトを変えないので、ジェスチャ開始時の「画像原点のクライアント座標 + スクロール位置」と等倍アンカーの2値だけで、毎フレームのDOM再測定なしに補正できる。ピンチはアンカーを開始時に固定して現在の指の中心へ合わせるため、2本指のまま動かすと画像が指に追従する。＋／−ボタンは表示中央を焦点として同じ2関数を再利用する。拡大分のスクロール可能域はtransform反映後に広がるので、目標値はrefへ置き`useLayoutEffect`で適用する。倍率が上下限に張り付いて再レンダリングが起きない間だけ、レイアウト不変を利用してその場で代入する。倍率の上下限・刻み（0.75／3／0.25）、CSS、1本指ドラッグ、閉じる操作は変更していない。
+
+`bun run verify:all`は199 tests / 1,297 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASS。402×874pxのローカルブラウザで、スクロール(250,180)・100%の状態から＋を3回・−を2回押し、表示中央が指す画像上の等倍座標が(435.2, 572.8)前後で±0.5px以内に保たれることを確認した。1本指ドラッグのスクロール量が指の移動量と一致すること、Escape／閉じるボタンでの終了、再オープン時の100%・スクロール0復帰も確認した。合成PointerEventの2本指ピンチは`setPointerCapture`が「No active pointer with the given id」で拒否するため再現できず、焦点計算はユニットテストで担保している。実機の2本指ピンチは未確認。独立レビューは未実施。
+
+## Route距離のキャンパス相対校正
+
+各SVGのviewBox座標をそのまま距離として加算していた生成処理を改め、入口・階段transferの対応点からフロアごとの単一倍率を導出し、walk距離をcampus基準へ事前校正するようにした。倍率はRQ 1F/2F/3Fが`0.330 / 0.310 / 0.309`、LH 1F/2Fが`0.281 / 0.270`、SH 1F/2Fが`0.709 / 0.640`。UBICとLICTiAは入口1本・階段なしの間だけ倍率1のtopology-neutral fallbackを許可する。入口を増やすか階段を追加すると生成を失敗させ、暗黙に未校正のまま運用しない。
+
+生成グラフのwalkは校正倍率を掛けたキャンパス相対距離、階段transferは`60 * sqrt(scaleA * scaleB)`、入口transferは0となる。倍率・親・使用したtransfer ID・正規化RMSEは`distanceCalibration`へ記録する。Dijkstraの公開インターフェース、単一距離最小化、node座標、`pathD`、SVG、350 nodes / 448 edgesは変更していない。校正は屋内常時優先ではなく、校正後の距離が短い経路を選ぶ。
+
+代表回帰ではQ081→P17相当を講義棟1F内、Q023→P2相当を研究棟1F内だけに戻し、研究棟→講義棟2Fは2F東口を直接使う。Q083→R1相当は校正後も学生ホールの屋外経路が短いため、その挙動を意図的に維持する。対応点不足・ゼロ基線・未知の親・親循環・正規化RMSE 15%超・fallback構造違反はユニットテストで拒否する。
+
+`bun run verify:all`は196 tests / 1,285 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。402×874pxでは、`/q/Q081?to=P17`が講義棟1F内、`/q/Q023?to=P2`が研究棟1F内だけを描画し、`/?at=rq_room_161&to=M21`は研究棟1Fからキャンパスの`lh_east2f`を経て講義棟2Fへ到着した。`/q/Q083?to=R1`は学生ホール東口から正面入口へ屋外区間を維持した。ルート線・フロア構成に異常はなく、console error/warn 0件。会話履歴なしの読み取り専用独立レビューは指摘なし。
+
+## 目的地ピンのルート終端固定
+
+目的地ピンの先端を、イベントバッジの最終座標ではなく**ルート終端**（目的地Placeに対応する同一フロアのルートグラフノード＝ルート線の最後の端点）へ固定するようにした。イベントバッジはラベル回避と外形クランプでルート終端から動くため、タスク39のバッジ追従ではピンがルート線の端から離れて見えていた。目的地と重なるイベントバッジ（個別・キャンパス建物集約）は引き続き最終出力から除く。ルートノードを持たないPlaceだけPlace座標へフォールバックし、ルート未表示（`to`のみ）でも同じ座標を使うため、ルート表示の開始・終了でピンは動かない。現在地・注目ピンのPlace座標固定、キャンパス俯瞰への屋内現在地投影、URL、経路計算、Route・Place・SVG・CSS・Figmaは変更していない。
+
+座標決定は`createMapMarkerPresentation`へ一本化し、overlayレイアウトはバッジ除去だけを担当する。バッジ最終座標をピンへ移す処理を削除したことでピン座標がレイアウト前後で不変になり、ピンの除外矩形はラベル選定と最終判定で同一のものを使う。目的地ピンはルート終端（部屋の出入口付近）に立って地点名ラベルへ重なりやすいため、ラベル選定の除外矩形からは外し、ラベルを残したままmarker層（ラベル層より前面）のピンを上に重ねる。現在地・注目ピンのラベル退避は従来どおり。
+
+`bun run verify:all`は187 tests / 1,243 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで目的地ピンのみのルート終端固定（現在地・注目ピンはPlace座標）、バッジ置換時のルート終端固定、ルートノードなしPlaceのフォールバック、バッジ除去後もピン座標が動かないことを確認した。
+
+会話履歴なしの読み取り専用独立レビューでは、SPEC未記載の副作用2件（同一Placeに目的地ピンと現在地・注目ピンが並ぶときの微小なズレ、目的地ピンと重なる地点名ラベルが落ちること）と、文書・テストの整合7件を指摘された。前者のズレは挙動を変えず§3.1.1へ明記し、ラベルについてはユーザー判断で「ラベルを残してピンを前面に重ねる」方針へ変更した。後者はSTATUS索引・旧ブリーフ39の置換注記・キャンパス投影バレットの表現・テスト名を修正したうえで、ピン種別ごとのラベル退避を固定するテストを追加した。
+
+402×874pxでは、`/?at=main_node_11&to=U1&focus=lh_room_m8`で講義棟1Fのルート終端`M 182 443 L 201 418`と目的地ピンのアンカー`(201, 418)`が一致し、旧実装のバッジ位置`(201, 403.51)`とは異なることを確認した。M8イベントバッジDOMは0件。`/?at=rq_room_161&to=P12`では研究棟3Fの終端`M 419 372 L 419 393`とピン`(419, 393)`が一致し、到着階の階段マーカー0件、P12バッジ0件だった。`/?to=A1`はピン`(353, 563)`と講堂前バッジ0件、`/?to=L1`はピン`(49, 522)`で、同じPlaceの注目ピン`(54.23, 526.62)`と区別できる。3段ズーム後もアンカー`(201, 418)`を維持しscaleだけが変化した。ラベルは`/?to=U1`で目的地の`M8(103)`が表示され、`/?focus=lh_room_m8`では従来どおり非表示であることを確認した。console error 0件。ブラウザペイン非表示のためスクリーンショットは取得せず、座標はDOMのtransformとルートpathで確認した。
 
 ## キャンパス全体図の屋内現在地表示
 
@@ -59,7 +93,9 @@
 
 初回の会話履歴なし読み取り専用レビューでは、Routeノード欠損時にもPlace座標へフォールバックして投影するP2が見つかった。投影専用の厳密なRouteノード解決へ分離し、実Route地点9件とRoute欠損座標Placeの回帰テストを追加して全検証を再実行した。修正後の最終読み取り専用再レビューは指摘なし。
 
-## イベント位置への目的地ピン置換
+## イベント位置への目的地ピン置換（ブリーフ41で置き換え済み）
+
+> 現行仕様は「目的地ピンのルート終端固定」。以下はブリーフ39時点の記録で、ピン座標の決め方だけが置き換わっている（バッジを最終出力から除く挙動は現行も同じ）。
 
 イベントを目的地に設定したときは、目的地と重なるイベントバッジを通常どおりラベル回避・外形クランプした後、その最終中心座標を赤い目的地ピンの先端へ引き継ぎ、イベントバッジ自体は最終マーカー出力から除く。配置用バッジはDOMへ生成しないため、クリック領域やキーボードフォーカス対象も残らない。現在地・注目ピンとの重複、対応イベントなし、別フロア、ルート終点、URL、イベント操作は従来どおり維持する。
 
@@ -374,7 +410,7 @@ bun run verify:all     # 下記の全ゲートを順に実行
 bun run dev            # dev server(ポート5173)
 bun test               # 純粋ロジックの単体テスト
 bun run build          # tsc -b + vite build。型チェックを兼ねる
-bun run verify:places  # 124 Place / 89 QR / 61 Eventと計画JSONの整合検証
+bun run verify:places  # 125 Place / 89 QR / 61 Eventと計画JSONの整合検証
 bun run verify:routes  # SVGのRouteグラフが生成結果と一致することを確認
 ```
 
@@ -415,18 +451,18 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」は`focus=`を使う。「ここへ行く」直後とQR解決直後の現在地への注目だけは、公開URLへ`focus`ピンを追加しない一時的なnavigation stateで要求する
 - **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一originの`BASE_URL`配下`/q/:qrId`と正式公開パス`/UoAMap-Frontend/q/:qrId`を受理する。読み取り後は既存クエリを保持して内部`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
-- **places.ts が地点語彙の正**: 全124 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、イベント会場35件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
+- **places.ts が地点語彙の正**: 全125 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、QR地点と重複しないイベント会場35件、意図的unmapped 1件(`campus-all`)。イベント会場Placeは全38件で、うち`main_auditorium`と`sh_room_kiyare`の2件はQR地点と共有するため上の89件に含まれる。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)
 - **パン操作**: ドラッグ開始時の `getScreenCTM().inverse()` をジェスチャー中固定し、開始点と現在点のSVG座標差でviewBoxを移動する。`viewBox幅/コンテナ幅`・`viewBox高さ/コンテナ高さ`の軸別換算は、`xMidYMid meet` の余白がある横長SVGで縦移動量が不足するため使わない
 - **ラベル・マーカー固定サイズ**: `preserveAspectRatio="xMidYMid meet"` に合わせ、`max(viewBox幅/コンテナ幅, viewBox高さ/コンテナ高さ)` で逆スケールする。コンテナ寸法は`ResizeObserver`で追従し、横長画面や実行中の幅変更でも画面上サイズを維持する。ラベルは元SVGのBBox中心へ中央揃えし、表示中マーカーの実表示範囲と交差するものだけを一時非表示にする
 - **マーカー**: React非管理のオーバーレイSVGレイヤー。イベントバッジはPlace座標から画面上20px上へ置き、ラベル衝突除外には使わない。水滴ピンの先端はPlace座標へ固定し、従来どおりラベル衝突除外に使う。ズームしても画面上サイズ一定になるよう逆スケール補正し、イベント開催地マーカーは同一placeIdで1つに集約する。バッジは白地と濃色外周を持ち、正式IDのカテゴリ色を縁と人型グリフへ適用し、同一地点が混色またはIDなしならtealへ戻す。単一イベントは詳細へ遷移し、キャンパス集約は建物フロアへ移動する。同じ地点に現在地・目的地・注目ピンがある場合はイベントマーカーを生成せず、ピンだけを表示
-- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全123 Placeを350ノード/447エッジの単一連結グラフへ収録し、全61イベント地点と全89 QR地点をcoverageテストで固定。同じ`data-stair-id`を持つ隣接階ノード間へ固定コスト60、建物・キャンパス両側の同じ`data-entrance-id`間へコスト0のtransferエッジを生成する。floorIdは各SVG直下のRouteグループから抽出する
+- **ルート**: `public/maps/` の `Route` グループを `scripts/extract-routes.ts` が `src/features/routing/generated/routeGraph.json` へ抽出する。作図契約は `docs/MAP_AUTHORING.md`。探索はフロントのDijkstra、描画はベースSVGとマーカーの間にある独立オーバーレイSVG。`campus-all`を除く全124 Placeを350ノード/448エッジの単一連結グラフへ収録し、全61イベント地点と全89 QR地点をcoverageテストで固定。walk距離は入口・階段の対応点から導出したフロア倍率でcampus基準へ校正し、階段transferはローカル距離60へ両フロア倍率の幾何平均を掛け、入口transferはコスト0とする。floorIdは各SVG直下のRouteグループから抽出する
 - **フロア切替のviewBox引き継ぎ**: 同一建物内の切替は「シート全体に対する相対位置・相対ズーム」を比例マッピングして維持(フロア間で座標系が揃っていないため絶対座標は使えない)。キャンパス⇄建物は全体表示リセット。RQ2FはviewBox属性が無いためwidth/height属性からフォールバック構成
 - **scrollIntoViewは `behavior:"auto"`**: smoothはバックグラウンドタブでアニメーションが進まず止まることがあるため使わない
 
 ## 既知の注意(再発防止ルール)
 
-- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で124 Place / 89 QR / 61 EventのPASSを必ず確認する
+- **実装エージェント(Codex等)にgit操作をさせない**(checkout/reset/stash禁止)。過去に作業ツリーの他ファイルの変更が巻き戻される事故が発生した。ディスパッチ後は `bun run verify:places` で125 Place / 89 QR / 61 EventのPASSを必ず確認する
 - SVG(`public/maps/`)は `Route` グループの追加・編集のみ可。既存要素・IDは読み取り専用でデータとの紐付けキー(AGENTS.md参照)
 - ボトムシートの高さはCSS変数 `--bottom-sheet-height`(共通祖先にセット)。地図上のUIはこれを参照して位置決めする(58svh等の直書き禁止)
 - カメラは本番ではHTTPSのsecure contextが必須。`qr-scanner`のMIT通知は`public/THIRD_PARTY_NOTICES.txt`として配布物へ同梱する(アプリ内ライセンス画面は不要)

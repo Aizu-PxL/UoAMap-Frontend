@@ -9,6 +9,7 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 - **[docs/STATUS.md](docs/STATUS.md)** — 現在の進捗・動作確認手順・アーキテクチャ要点。**作業を再開するときは最初にこれを読む**
 - [docs/WORKFLOW.md](docs/WORKFLOW.md) — 作業の進め方(運用モード・ブリーフ様式・検証ゲート・レビュー)。Codex実装は検証後に必ず別セッションの読み取り専用レビューを通し、Claude(Fable)が関与する場合は従来のリード運用に戻る
 - [docs/BACKLOG.md](docs/BACKLOG.md) — 未実装の要望・検討事項(SPEC昇格前の置き場)
+- [docs/TESTING.md](docs/TESTING.md) — Windows/PowerShellでの検証コマンド実行手順とハマりどころ(合否基準はWORKFLOW.md、確認URLはSTATUS.mdが正)
 - [docs/FIGMA.md](docs/FIGMA.md) — FigmaファイルのノードID対応表・トークン対応・運用ルール
 - [docs/API.md](docs/API.md) — API契約(バックエンドとの境界。経路API・検索APIは作らない)
 
@@ -21,7 +22,7 @@ QRスキャンで現在地、イベント選択や外部リンクで目的地を
 - **git操作(checkout / reset / stash / commit)はユーザーまたはリード(Claude関与時)のみ**。実装(Codex)は行わない
 - Codexで実装した変更は、完了報告前に会話履歴を引き継がないレビュー専用サブエージェントを起動し、別コンテキストの読み取り専用レビューを通す。適格なレビュー結果を受領できない場合は自己レビューで代替せず未完了として報告する。詳細は [docs/WORKFLOW.md](docs/WORKFLOW.md)「レビュー」に従う
 - 作業を再開するときは [docs/WORKFLOW.md](docs/WORKFLOW.md)「作業開始時に読む順」に従う
-- `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で124 Place / 89 QR / 61 EventのPASSを確認する
+- `src/data/places.ts` を変更したら(していなくても作業完了時に)`bun run verify:places` で125 Place / 89 QR / 61 EventのPASSを確認する
 - 開発コマンド: `bun run dev` / `bun run build`(build は tsc -b を含むため型チェックを兼ねる)/ `bun run verify:places`
 
 ## ExecPlanとリポジトリ横断リファクタリング

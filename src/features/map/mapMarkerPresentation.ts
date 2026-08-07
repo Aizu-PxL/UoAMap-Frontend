@@ -587,7 +587,11 @@ function resolveRouteNodeCoordinates(
   return resolveCoordinates({ kind: "route-node", node: routeNode });
 }
 
-function resolveEventCoordinates(
+/**
+ * ルートグラフのノード座標を優先し、ノードがないPlaceだけPlace座標へフォールバックする。
+ * イベントバッジの基準位置と、ルート終端へ固定する目的地ピンの両方で使う。
+ */
+function resolveRouteAnchoredCoordinates(
   place: Place,
   resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null,
 ): OverlayPoint | null {
@@ -746,7 +750,7 @@ export function createMapMarkerPresentation({
       ) {
         continue;
       }
-      const coordinates = resolveEventCoordinates(place, resolveCoordinates);
+      const coordinates = resolveRouteAnchoredCoordinates(place, resolveCoordinates);
       if (!coordinates) {
         continue;
       }
@@ -776,7 +780,7 @@ export function createMapMarkerPresentation({
       if (!place || place.floorId !== floorId || blockingPinPlaceIds.has(placeId)) {
         continue;
       }
-      const coordinates = resolveEventCoordinates(place, resolveCoordinates);
+      const coordinates = resolveRouteAnchoredCoordinates(place, resolveCoordinates);
       if (!coordinates) {
         continue;
       }
@@ -812,7 +816,11 @@ export function createMapMarkerPresentation({
     }
     const coordinates =
       pin.place.floorId === floorId
-        ? resolveCoordinates({ kind: "place", place: pin.place })
+        ? // 目的地ピンだけはルート線の終端(同一Placeのルートノード)へ固定する。
+          // ルート未表示でも同じ座標を使い、ルート開始でピンが動かないようにする
+          pin.markerKind === "destination"
+          ? resolveRouteAnchoredCoordinates(pin.place, resolveCoordinates)
+          : resolveCoordinates({ kind: "place", place: pin.place })
         : pin.markerKind === "current" && floorId === DEFAULT_FLOOR_ID
           ? projectedCurrent?.coordinates ?? null
           : null;

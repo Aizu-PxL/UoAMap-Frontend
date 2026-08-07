@@ -231,7 +231,7 @@ describe("実生成Routeグラフcoverage", () => {
     ).toEqual(true);
   });
 
-  test("研究棟から講義棟2Fへ両建物入口と階段を通って到達できる", () => {
+  test("研究棟から講義棟2Fへ校正距離が短い2F東口を通って到達できる", () => {
     const route = findShortestRouteBetweenPlaces(
       routeGraph,
       "rq_room_161",
@@ -245,8 +245,42 @@ describe("実生成Routeグラフcoverage", () => {
         .map((item) => item.id),
     ).toEqual([
       "transfer:entrance:rq-northwest:campus:rq-1f",
-      "transfer:entrance:lh-west:campus:lh-1f",
-      "transfer:lh_west:lh-1f:lh-2f",
+      "transfer:entrance:lh_east2f:campus:lh-2f",
+    ]);
+  });
+
+  test("縮尺差で屋外へ出ていた講義棟・研究棟の代表経路を屋内に保つ", () => {
+    const lectureHallRoute = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "lh_entrance_west",
+      "lh_room_m10",
+    );
+    const researchQuadRoute = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "rq_node_1f_8",
+      "rq_room_141E",
+    );
+
+    expect(lectureHallRoute === null).toEqual(false);
+    expect(researchQuadRoute === null).toEqual(false);
+    expect(lectureHallRoute?.every((edge) => edge.kind === "walk" && edge.floorId === "lh-1f")).toEqual(true);
+    expect(researchQuadRoute?.every((edge) => edge.kind === "walk" && edge.floorId === "rq-1f")).toEqual(true);
+  });
+
+  test("屋内常時優先にはせず学生ホール東口2Fから1Fは校正後の屋外最短経路を使う", () => {
+    const route = findShortestRouteBetweenPlaces(
+      routeGraph,
+      "sh_entrance_east",
+      "sh_room_cafeteria",
+    );
+
+    expect(
+      route
+        ?.filter((edge) => edge.kind === "transfer")
+        .map((edge) => edge.id),
+    ).toEqual([
+      "transfer:entrance:sh_east:campus:sh-2f",
+      "transfer:entrance:sh_main:campus:sh-1f",
     ]);
   });
 
@@ -280,7 +314,7 @@ describe("実生成Routeグラフcoverage", () => {
         ?.filter((item) => item.kind === "transfer")
         .map((item) => item.id),
     ).toEqual([
-      "transfer:entrance:rq-northwest:campus:rq-1f",
+      "transfer:entrance:rq_northlounge:campus:rq-1f",
       "transfer:entrance:lictia:campus:lictia-1f",
     ]);
   });
@@ -346,6 +380,39 @@ describe("実生成Routeグラフcoverage", () => {
     expect(routeGraph.edges.length).toEqual(448);
     expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(409);
     expect(routeGraph.edges.filter((edge) => edge.kind === "transfer").length).toEqual(39);
+  });
+
+  test("実グラフの距離校正倍率とfallbackを固定する", () => {
+    const calibrationByFloorId = new Map(
+      routeGraph.distanceCalibration?.floors.map((floor) => [floor.floorId, floor]),
+    );
+    const expectedScales = {
+      campus: 1,
+      "rq-1f": 0.330165,
+      "rq-2f": 0.309576,
+      "rq-3f": 0.309106,
+      "lh-1f": 0.280637,
+      "lh-2f": 0.269623,
+      "sh-1f": 0.709354,
+      "sh-2f": 0.639699,
+      "ubic-1f": 1,
+      "lictia-1f": 1,
+    } as const;
+
+    expect(routeGraph.distanceCalibration?.unit).toEqual("campus-svg-unit");
+    expect(routeGraph.distanceCalibration?.stairEquivalentLocalDistance).toEqual(60);
+    expect(calibrationByFloorId.size).toEqual(10);
+    for (const [floorId, expectedScale] of Object.entries(expectedScales)) {
+      expect(
+        Math.abs((calibrationByFloorId.get(floorId)?.scale ?? Number.NaN) - expectedScale),
+      ).toBeLessThan(0.000001);
+    }
+    expect(calibrationByFloorId.get("ubic-1f")?.source).toEqual(
+      "topology-neutral-fallback",
+    );
+    expect(calibrationByFloorId.get("lictia-1f")?.source).toEqual(
+      "topology-neutral-fallback",
+    );
   });
 
   test("campus-all以外の全124 PlaceがRouteへ収録され講堂から到達可能", () => {
