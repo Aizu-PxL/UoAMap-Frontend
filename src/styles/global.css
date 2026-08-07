@@ -177,6 +177,13 @@ input {
   vector-effect: non-scaling-stroke;
 }
 
+.map-route-stair__badge {
+  fill: var(--color-surface);
+  stroke: var(--color-accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
 .map-marker {
   filter: drop-shadow(0 2px 2px var(--map-marker-shadow));
 }

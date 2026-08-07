@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(同一地点イベントの未実施回選択)
+最終更新: 2026-08-07(キャンパス全体図の屋内現在地表示)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -42,6 +42,44 @@
 最新BottomSheetフリックスナップブリーフ: `docs/tasks/34-bottom-sheet-fling-snap.md`（未コミット）
 
 最新同一地点イベント選択ブリーフ: `docs/tasks/37-upcoming-event-marker-selection.md`（未コミット）
+
+最新階段ルート表示ブリーフ: `docs/tasks/38-stair-route-direction-icons.md`（未コミット）
+
+最新イベント目的地ピン配置ブリーフ: `docs/tasks/39-event-destination-pin-anchor.md`（未コミット）
+
+最新キャンパス屋内現在地投影ブリーフ: `docs/tasks/40-campus-current-marker-projection.md`（未コミット）
+
+## キャンパス全体図の屋内現在地表示
+
+屋内Placeを現在地にしたままキャンパス全体図へ戻ったとき、同一フロアのRouteノード座標をフロアSVGのルートviewBox内で正規化し、対応するキャンパス建物bbox内のおおよその相対位置へ青い現在地ピンを表示するようにした。研究棟3フロア、講義棟2フロア、学生ホール2フロア、UBIC、LICTiAの計9フロアを5建物へ対応づけ、範囲外をクランプする。投影情報を解決できない場合はピンを省略し、同じ建物のイベント集約バッジは現在地を優先して省略する。階数表示、屋内フロアの正確な位置、屋外現在地、目的地・注目地点、URL、Route・Place・SVG・Figmaは変更していない。
+
+`bun run verify:all`は183 tests / 1,231 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで実Route地点を使った9フロアの投影、正規化、境界クランプ、Routeノード・建物bbox・投影設定の未解決時の省略、屋外現在地、目的地・注目地点の非投影、同建物イベント集約バッジの抑止を確認した。
+
+402×874pxでは、`rq_room_161`、`rq_room_267`、`rq_room_325f`、`lh_room_m8`、`lh_room_m3`、`sh_room_cafeteria`、`sh_entrance_east`、`ubic_room_3dtheater`、`lictia_room_cswr`の全9フロアで、屋内図の従来ピンとキャンパス建物bbox内の投影ピン各1件、階数テキスト0件、同建物集約バッジ0件を確認した。LICTiA代表ケースではズーム・パン前後でアンカー`(575.1903, 264.8125)`と画面上サイズ約33.34×41.67pxを維持した。屋外`main_node_11`は従来座標`(307, 298)`、`rq_room_161`から`M21`への経路は屋内5区間・キャンパス6区間を維持し、console error/warn 0件だった。投影は測量座標ではなく、フロア図と建物bboxの比率による概略位置である。
+
+初回の会話履歴なし読み取り専用レビューでは、Routeノード欠損時にもPlace座標へフォールバックして投影するP2が見つかった。投影専用の厳密なRouteノード解決へ分離し、実Route地点9件とRoute欠損座標Placeの回帰テストを追加して全検証を再実行した。修正後の最終読み取り専用再レビューは指摘なし。
+
+## イベント位置への目的地ピン置換
+
+イベントを目的地に設定したときは、目的地と重なるイベントバッジを通常どおりラベル回避・外形クランプした後、その最終中心座標を赤い目的地ピンの先端へ引き継ぎ、イベントバッジ自体は最終マーカー出力から除く。配置用バッジはDOMへ生成しないため、クリック領域やキーボードフォーカス対象も残らない。現在地・注目ピンとの重複、対応イベントなし、別フロア、ルート終点、URL、イベント操作は従来どおり維持する。
+
+`bun run verify:all`は178 tests / 1,146 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで個別イベントとキャンパス建物集約バッジの最終座標置換、バッジ除去、最終ピン位置でのラベル衝突、対応イベントなし、現在地・注目ピンとの同時重複、別フロアを確認した。
+
+402×874pxでは、同じviewBox・ズーム率となる`/?focus=main_node_11`のA1イベントバッジと`/?at=main_node_11&to=A1`の目的地ピンが、ともにアンカー座標`(353, 563)`で一致することを確認した。`/?to=A1`と経路URLではA1イベントDOMが0件、目的地ピンが1件となり、経路URLではルート線8本と現在地・目的地ピン各1件を維持した。通常A1バッジのEnterキーによる`/e/A1`遷移、ズーム、パン後のルート・目的地ピン維持、console error 0件を確認した。QR画面ではlocalhost HTTPに起因する既存のカメラHTTPS warningだけが1件発生した。
+
+会話履歴なしの読み取り専用独立レビューは指摘なし。
+
+## 階段ルートの上り／下りアイコン
+
+階段を使う経路では、始点から順序付けられたエッジ列をたどり、各階段transferの出発側ノードだけに進行方向アイコンを表示する。下階から上階は上り、上階から下階は下りとし、連続する階段移動では中間階を次の出発側として表示する。最終到着階には階段マーカーを表示せず、建物出入口transferの既存円形マーカーは両側で維持する。
+
+添付SVGの黒24pxアイコンを白い32px円形背景とアクセント色2px枠へ載せ、既存の`getMeetUserUnitsPerPixel`を使ってズーム非依存の画面固定サイズにした。Figma、地図SVG、生成Routeグラフ、Place・QR・Event、URL、Repository/API契約は変更していない。
+
+`bun run verify:all`は172 tests / 1,135 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで上り・下り、3フロア連続移動、中間階、同一フロア、入口transfer、未知／不連続経路を確認した。
+
+402×874pxでは、`/?at=rq_room_161&to=P12`で1F・2Fに上り、3Fは階段マーカーなし、`/?at=rq_room_325f&to=P5`で3F・2Fに下り、1Fは階段マーカーなしを確認した。ズーム前後ともアイコン24px・背景32px・枠2pxを維持した。`/?at=main_node_11&to=M21`ではキャンパスと講義棟1Fの入口円を維持し、講義棟1Fの上りアイコンと共存すること、console error/warn 0件を確認した。
+
+会話履歴なしの読み取り専用独立レビューは指摘なし。
 
 ## 同一地点イベントの未実施回選択
 

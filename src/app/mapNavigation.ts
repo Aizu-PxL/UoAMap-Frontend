@@ -47,6 +47,10 @@ export function createMapNavigationPresentation({
           routableDestinationPlace.id,
         ) ?? [])
       : [];
+  const routeStartNodeId = routableCurrentPlace
+    ? (routeGraph.nodes.find((node) => node.placeId === routableCurrentPlace.id)?.id ??
+      null)
+    : null;
 
   const mapFocusPlace =
     requestedFocusPlace ??
@@ -57,6 +61,10 @@ export function createMapNavigationPresentation({
 
   return {
     mapFocusPlace,
-    routePresentation: createRoutePresentation(routeEdges, routeGraph.nodes),
+    routePresentation: createRoutePresentation(
+      routeEdges,
+      routeGraph.nodes,
+      routeStartNodeId,
+    ),
   };
 }
