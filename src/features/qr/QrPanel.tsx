@@ -88,7 +88,7 @@ export function QrPanel() {
         );
         if (!qrId) {
           setFeedback(
-            "道案内用のQRコードではありません。別のQRコードを読み込んでください。",
+            "道案内用の二次元コードではありません。別の二次元コードを読み込んでください。",
           );
           return;
         }
@@ -146,13 +146,13 @@ export function QrPanel() {
   return (
     <div className="qr-panel">
       <p className="qr-panel__copy">
-        道案内QRコードを読み込んでください
+        道案内二次元コードを読み込んでください
         <br />
         指定した場所へのルートが表示されます
       </p>
       <div className="qr-panel__camera">
         <video
-          aria-label="QRコード読み取り用カメラ映像"
+          aria-label="二次元コード読み取り用カメラ映像"
           className="qr-panel__video"
           muted
           playsInline
@@ -167,7 +167,7 @@ export function QrPanel() {
               {feedback ??
                 (phase === "starting"
                   ? "カメラを起動しています…"
-                  : "QRコードをカメラに映してください。")}
+                  : "二次元コードをカメラに映してください。")}
             </p>
             {phase === "failed" ? (
               <button
