@@ -1,13 +1,13 @@
 import type { Event as CampusEvent, Place, RouteNode } from "../../data/types";
 import { routeGraph } from "../routing/routeGraph";
-import { getCenteredLineOffsetsEm } from "./mapOverlayGeometry";
-import type { OverlayPoint } from "./mapOverlayGeometry";
 import {
-  campusBuildingLabelIds,
-  LABEL_LINE_HEIGHT,
-  LABEL_TARGET_PX,
-} from "./mapLabels";
-import type { MapLabel } from "./mapLabels";
+  getAnchoredOverlayBounds,
+  getCenteredLineOffsetsEm,
+  overlayBoundsIntersect,
+} from "./mapOverlayGeometry";
+import type { OverlayBounds, OverlayPoint } from "./mapOverlayGeometry";
+import { LABEL_LINE_HEIGHT, LABEL_TARGET_PX } from "./mapLabels";
+import type { MapLabel, MapLabelPlacement } from "./mapLabels";
 import {
   getAggregatedEventMarkerColorKey,
   getEventMarkerColorKey,
@@ -41,8 +41,17 @@ const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
 // アンカー先ラベルの上端からバッジ中心までの距離(バッジ半径11px + 余白)。
 // ラベル行数ぶんの高さはgetLabelHalfHeightPxで加算するため、複数行でも文字と重ならない
 const CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX = 18;
-// キャンパス直置きPlaceの個別バッジは地点名ラベルと同位置になりやすいため画面上20px持ち上げる
-const CAMPUS_EVENT_MARKER_NODE_OFFSET_PX = 20;
+// 個別バッジをラベル矩形の直上へ退避させるときの、ラベル上端とバッジ下端の間隔
+const EVENT_MARKER_LABEL_CLEARANCE_PX = 3;
+// 退避量の上限。これを超えるとバッジが元の地点から離れすぎて指し先が分からなくなる
+const EVENT_MARKER_MAX_ESCAPE_PX = 32;
+// 退避先でさらに別のラベルへぶつかる場合の再試行回数
+const EVENT_MARKER_ESCAPE_ATTEMPTS = 3;
+
+export const EVENT_MARKER_SIZE = 24;
+export const EVENT_MARKER_RADIUS = 11;
+export const EVENT_MARKER_LOCAL_ANCHOR: OverlayPoint = { x: 12, y: 12 };
+
 const campusBuildingLabelIdByBuildingId: Record<CampusBuildingId, string> = {
   building_ResearchQuad: "text_ResearchQuad",
   building_StudentHall: "text_StudentHall",
@@ -92,50 +101,224 @@ function getLabelHalfHeightPx(label: MapLabel): number {
   return (lastOffsetEm + 0.5) * LABEL_TARGET_PX;
 }
 
-export function anchorCampusBuildingEventMarkers(
-  markers: MapMarkerPlacement[],
-  mapLabels: MapLabel[],
+export function getEventCountWidth(eventCount: number): number {
+  return Math.max(14, 8 + String(eventCount).length * 6);
+}
+
+/**
+ * イベントバッジが実際にインクを載せる範囲(ローカル座標)。
+ * 円は cx/cy=12・r=11 なので 1..23、件数ピルは x=16 から右へ張り出す。
+ */
+export function getEventMarkerLocalInkBounds(
+  marker: EventMarkerPlacement,
+): OverlayBounds {
+  const circleLeft = EVENT_MARKER_SIZE / 2 - EVENT_MARKER_RADIUS;
+  const circleRight = EVENT_MARKER_SIZE / 2 + EVENT_MARKER_RADIUS;
+
+  return {
+    left: circleLeft,
+    top: circleLeft,
+    right:
+      marker.eventCount === undefined
+        ? circleRight
+        : Math.max(circleRight, 16 + getEventCountWidth(marker.eventCount)),
+    bottom: circleRight,
+  };
+}
+
+/** イベントバッジの描画範囲を、表示中SVGのルート座標へ解決する。 */
+export function getEventMarkerInkBounds(
+  marker: EventMarkerPlacement,
   userUnitsPerPixel: number,
-  floorId: string,
-): MapMarkerPlacement[] {
-  const buildingLabelsById = new Map(
-    mapLabels
-      .filter((label) => campusBuildingLabelIds.has(label.id))
-      .map((label) => [label.id, label]),
+  paddingPx = 0,
+): OverlayBounds {
+  return getAnchoredOverlayBounds(
+    getEventMarkerLocalInkBounds(marker),
+    marker.coordinates,
+    userUnitsPerPixel,
+    EVENT_MARKER_LOCAL_ANCHOR,
+    paddingPx,
   );
+}
+
+// アンカー点から見たインク範囲の各辺までの距離(user単位)。
+function getInkOffsets(marker: EventMarkerPlacement, userUnitsPerPixel: number) {
+  const local = getEventMarkerLocalInkBounds(marker);
+  return {
+    left: (local.left - EVENT_MARKER_LOCAL_ANCHOR.x) * userUnitsPerPixel,
+    top: (local.top - EVENT_MARKER_LOCAL_ANCHOR.y) * userUnitsPerPixel,
+    right: (local.right - EVENT_MARKER_LOCAL_ANCHOR.x) * userUnitsPerPixel,
+    bottom: (local.bottom - EVENT_MARKER_LOCAL_ANCHOR.y) * userUnitsPerPixel,
+  };
+}
+
+function clampToRange(value: number, min: number, max: number, fallback: number): number {
+  // 建物がバッジより小さい極端な引きでは範囲が反転するため、中央へ寄せる
+  return min > max ? fallback : Math.min(Math.max(value, min), max);
+}
+
+/**
+ * 集約バッジを建物名ラベルの直上へ置いたうえで、建物の外形bbox内へ押し戻す。
+ * 直上オフセットは画面固定量なので、引き(userUnitsPerPixelが大)ではそのままだと外形を飛び出す。
+ *
+ * 押し戻しの制約は2段階。バッジ全体(インク範囲)を外形内に収めるのが基本だが、
+ * それだと建物名の文字に乗ってしまう小さな建物では、**アンカー点が外形内にある**ことだけを
+ * 保証して文字の直上へ戻す。建物名を消さずに、バッジが建物へ属して見える状態を優先する。
+ */
+function anchorAggregateEventMarker(
+  marker: EventMarkerPlacement,
+  buildingId: CampusBuildingId,
+  labelById: Map<string, MapLabel>,
+  labelBoundsById: Map<string, OverlayBounds>,
+  buildingBounds: OverlayBounds | null,
+  userUnitsPerPixel: number,
+): EventMarkerPlacement {
+  const labelId = campusBuildingLabelIdByBuildingId[buildingId];
+  const label = labelById.get(labelId);
+  const desired = label
+    ? {
+        x: label.center.x,
+        y:
+          label.center.y -
+          (getLabelHalfHeightPx(label) + CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX) *
+            userUnitsPerPixel,
+      }
+    : marker.coordinates;
+
+  if (!buildingBounds) {
+    return { ...marker, coordinates: desired };
+  }
+
+  const ink = getInkOffsets(marker, userUnitsPerPixel);
+  const centerX = (buildingBounds.left + buildingBounds.right) / 2;
+  const x = clampToRange(
+    desired.x,
+    buildingBounds.left - ink.left,
+    buildingBounds.right - ink.right,
+    centerX - (ink.left + ink.right) / 2,
+  );
+  const softY = clampToRange(
+    desired.y,
+    buildingBounds.top - ink.top,
+    buildingBounds.bottom - ink.bottom,
+    (buildingBounds.top + buildingBounds.bottom) / 2 - (ink.top + ink.bottom) / 2,
+  );
+  const labelBounds = labelBoundsById.get(labelId);
+  const hitsLabel = (candidateY: number) =>
+    labelBounds !== undefined &&
+    overlayBoundsIntersect(
+      getAnchoredOverlayBounds(
+        getEventMarkerLocalInkBounds(marker),
+        { x, y: candidateY },
+        userUnitsPerPixel,
+        EVENT_MARKER_LOCAL_ANCHOR,
+      ),
+      labelBounds,
+    );
+
+  let y = softY;
+  if (labelBounds && hitsLabel(softY)) {
+    // 建物名が建物の上端寄りだと直上に逃げ場がない。その場合は文字の直下へ回す。
+    const clearance = EVENT_MARKER_LABEL_CLEARANCE_PX * userUnitsPerPixel;
+    const above = labelBounds.top - clearance - ink.bottom;
+    const below = labelBounds.bottom + clearance - ink.top;
+    const overhang = (candidate: number) =>
+      Math.max(0, buildingBounds.top - (candidate + ink.top)) +
+      Math.max(0, candidate + ink.bottom - buildingBounds.bottom);
+    // アンカーが外形内に残る候補のうち、外形からのはみ出しが最小のものを選ぶ
+    const clearCandidates = [above, below].filter(
+      (candidate) =>
+        candidate >= buildingBounds.top &&
+        candidate <= buildingBounds.bottom &&
+        !hitsLabel(candidate),
+    );
+    y =
+      clearCandidates.length > 0
+        ? clearCandidates.reduce((best, candidate) =>
+            overhang(candidate) < overhang(best) ? candidate : best,
+          )
+        : Math.max(above, buildingBounds.top);
+  }
+
+  return { ...marker, coordinates: { x, y } };
+}
+
+/**
+ * 個別バッジは対応ルートノード＝地点名ラベルとほぼ同一点に置かれているため、
+ * ラベル矩形と重なる場合だけその直上へ退避させる。重ならない地点は動かさない。
+ */
+function escapeEventMarkerFromLabels(
+  marker: EventMarkerPlacement,
+  labelBounds: OverlayBounds[],
+  userUnitsPerPixel: number,
+): EventMarkerPlacement {
+  const ink = getInkOffsets(marker, userUnitsPerPixel);
+  const clearance = EVENT_MARKER_LABEL_CLEARANCE_PX * userUnitsPerPixel;
+  const lowestY = marker.coordinates.y - EVENT_MARKER_MAX_ESCAPE_PX * userUnitsPerPixel;
+  let y = marker.coordinates.y;
+
+  for (let attempt = 0; attempt < EVENT_MARKER_ESCAPE_ATTEMPTS; attempt += 1) {
+    const current = { ...marker, coordinates: { x: marker.coordinates.x, y } };
+    const blocking = labelBounds.filter((bounds) =>
+      overlayBoundsIntersect(getEventMarkerInkBounds(current, userUnitsPerPixel), bounds),
+    );
+    if (blocking.length === 0) {
+      break;
+    }
+
+    const unionTop = Math.min(...blocking.map((bounds) => bounds.top));
+    const escapedY = unionTop - clearance - ink.bottom;
+    if (escapedY >= y) {
+      // これ以上持ち上げても解消しない(ラベルがバッジより下にある)ため打ち切る
+      break;
+    }
+
+    y = Math.max(escapedY, lowestY);
+    if (y === lowestY) {
+      break;
+    }
+  }
+
+  return y === marker.coordinates.y ? marker : { ...marker, coordinates: { x: marker.coordinates.x, y } };
+}
+
+export interface LayoutEventMarkersOptions {
+  markers: MapMarkerPlacement[];
+  labelPlacements: MapLabelPlacement[];
+  mapLabels: MapLabel[];
+  userUnitsPerPixel: number;
+  resolveElementBounds: (elementId: string) => OverlayBounds | null;
+}
+
+/** 確定済みラベルを避けるようにイベントバッジの最終座標を決める。 */
+export function layoutEventMarkers({
+  markers,
+  labelPlacements,
+  mapLabels,
+  userUnitsPerPixel,
+  resolveElementBounds,
+}: LayoutEventMarkersOptions): MapMarkerPlacement[] {
+  const labelById = new Map(mapLabels.map((label) => [label.id, label]));
+  const labelBoundsById = new Map(
+    labelPlacements.map((placement) => [placement.label.id, placement.bounds]),
+  );
+  const labelBounds = labelPlacements.map((placement) => placement.bounds);
 
   return markers.map((marker) => {
     if (marker.type !== "event") {
       return marker;
     }
     if (marker.buildingId) {
-      const labelId = campusBuildingLabelIdByBuildingId[marker.buildingId];
-      const label = buildingLabelsById.get(labelId);
-      if (!label) {
-        return marker;
-      }
-      const offsetPx =
-        getLabelHalfHeightPx(label) + CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX;
-      return {
-        ...marker,
-        coordinates: {
-          x: label.center.x,
-          y: label.center.y - offsetPx * userUnitsPerPixel,
-        },
-      };
+      return anchorAggregateEventMarker(
+        marker,
+        marker.buildingId,
+        labelById,
+        labelBoundsById,
+        resolveElementBounds(marker.buildingId),
+        userUnitsPerPixel,
+      );
     }
-    if (floorId === DEFAULT_FLOOR_ID) {
-      return {
-        ...marker,
-        coordinates: {
-          x: marker.coordinates.x,
-          y:
-            marker.coordinates.y -
-            CAMPUS_EVENT_MARKER_NODE_OFFSET_PX * userUnitsPerPixel,
-        },
-      };
-    }
-    return marker;
+    return escapeEventMarkerFromLabels(marker, labelBounds, userUnitsPerPixel);
   });
 }
 

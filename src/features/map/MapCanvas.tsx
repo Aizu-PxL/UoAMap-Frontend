@@ -13,11 +13,15 @@ import {
 } from "./mapOverlayGeometry";
 import type { OverlayBounds } from "./mapOverlayGeometry";
 import {
-  anchorCampusBuildingEventMarkers,
   createMapMarkerPresentation,
+  EVENT_MARKER_LOCAL_ANCHOR,
+  EVENT_MARKER_RADIUS,
+  EVENT_MARKER_SIZE,
+  getEventCountWidth,
   type EventMarkerPlacement,
   type MapMarkerPlacement,
 } from "./mapMarkerPresentation";
+import { createMapOverlayLayout } from "./mapOverlayLayout";
 import { getMapOverlayRedrawKey } from "./mapOverlayRedraw";
 import { exceedsMapTapMovement } from "./mapGesture";
 import {
@@ -34,7 +38,11 @@ import {
 } from "./mapViewBox";
 import type { MapViewBox } from "./mapViewBox";
 import { getMeetUserUnitsPerPixel } from "./mapViewportScale";
-import { getPlaceCoordinates, getSvgElementCoordinates } from "./placeLocator";
+import {
+  getPlaceCoordinates,
+  getSvgElementBounds,
+  getSvgElementCoordinates,
+} from "./placeLocator";
 
 interface MapCanvasProps {
   floorId?: string;
@@ -64,9 +72,6 @@ const PIN_PATH =
 const LOCATION_DETAIL_PATH = "M25 27.08a5.83 5.83 0 1 0 0-11.66 5.83 5.83 0 0 0 0 11.66Z";
 const PERSON_DETAIL_PATH =
   "M25 20.42a4.17 4.17 0 1 0 0-8.34 4.17 4.17 0 0 0 0 8.34Zm-7.29 10.41h14.58v-2.08c0-3.47-3.24-6.25-7.29-6.25s-7.29 2.78-7.29 6.25v2.08Z";
-const EVENT_MARKER_SIZE = 24;
-const EVENT_MARKER_RADIUS = 11;
-const EVENT_MARKER_LOCAL_ANCHOR = { x: 12, y: 12 };
 const PIN_LOCAL_ANCHOR = { x: 25, y: 45.83 };
 const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
@@ -88,35 +93,72 @@ const buildingLabels: Record<keyof typeof buildingFloorIds, string> = {
   building_LICTiA: "LICTiAを表示",
 };
 
-function getEventCountWidth(eventCount: number): number {
-  return Math.max(14, 8 + String(eventCount).length * 6);
-}
-
-function getMarkerExclusionBounds(
+function getPinExclusionBounds(
   marker: MapMarkerPlacement,
   userUnitsPerPixel: number,
 ): OverlayBounds {
-  if (marker.type === "pin") {
-    return getAnchoredOverlayBounds(
-      { left: 0, top: 0, right: 50, bottom: 45.83 },
-      marker.coordinates,
-      userUnitsPerPixel,
-      PIN_LOCAL_ANCHOR,
-      MARKER_COLLISION_PADDING_PX,
-    );
-  }
-
-  const eventRight =
-    marker.eventCount === undefined
-      ? EVENT_MARKER_SIZE
-      : Math.max(EVENT_MARKER_SIZE, 16 + getEventCountWidth(marker.eventCount));
   return getAnchoredOverlayBounds(
-    { left: 0, top: 0, right: eventRight, bottom: EVENT_MARKER_SIZE },
+    { left: 0, top: 0, right: 50, bottom: 45.83 },
     marker.coordinates,
     userUnitsPerPixel,
-    EVENT_MARKER_LOCAL_ANCHOR,
+    PIN_LOCAL_ANCHOR,
     MARKER_COLLISION_PADDING_PX,
   );
+}
+
+interface OverlayLayoutInput {
+  svgElement: SVGSVGElement;
+  userUnitsPerPixel: number;
+  mapLabels: MapLabel[];
+  floorId: string;
+  events: CampusEvent[];
+  currentPlace: Place | null;
+  destinationPlace: Place | null;
+  focusPlace: Place | null;
+}
+
+// ラベルレイヤーとマーカーレイヤーは同じレイアウト結果を使う必要があるため、
+// マーカー生成からラベルカリングまでを1箇所にまとめる。
+function buildMapOverlayLayout({
+  svgElement,
+  userUnitsPerPixel,
+  mapLabels,
+  floorId,
+  events,
+  currentPlace,
+  destinationPlace,
+  focusPlace,
+}: OverlayLayoutInput) {
+  const markers = createMapMarkerPresentation({
+    currentPlace,
+    destinationPlace,
+    events,
+    floorId,
+    focusPlace,
+    resolveCoordinates: (target) => {
+      if (target.kind === "place") {
+        return getPlaceCoordinates(target.place, svgElement);
+      }
+      if (target.kind === "route-node") {
+        return { x: target.node.x, y: target.node.y };
+      }
+      return getSvgElementCoordinates(target.elementId, svgElement);
+    },
+    resolveFloorSheetId: (targetFloorId) =>
+      floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
+    resolvePlace: (placeId) => getPlace(placeId) ?? null,
+  });
+
+  return createMapOverlayLayout({
+    mapLabels,
+    markers,
+    userUnitsPerPixel,
+    isCampusOverview: floorId === DEFAULT_FLOOR_ID,
+    pinExclusionBounds: markers
+      .filter((marker) => marker.type === "pin")
+      .map((marker) => getPinExclusionBounds(marker, userUnitsPerPixel)),
+    resolveElementBounds: (elementId) => getSvgElementBounds(elementId, svgElement),
+  });
 }
 
 const svgTextCache = new Map<string, Promise<string>>();
@@ -512,39 +554,20 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = anchorCampusBuildingEventMarkers(
-      createMapMarkerPresentation({
-        currentPlace,
-        destinationPlace,
-        events,
-        floorId,
-        focusPlace,
-        resolveCoordinates: (target) => {
-          if (target.kind === "place") {
-            return getPlaceCoordinates(target.place, svgElement);
-          }
-          if (target.kind === "route-node") {
-            return { x: target.node.x, y: target.node.y };
-          }
-          return getSvgElementCoordinates(target.elementId, svgElement);
-        },
-        resolveFloorSheetId: (targetFloorId) =>
-          floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
-        resolvePlace: (placeId) => getPlace(placeId) ?? null,
-      }),
-      mapLabels,
+    const { labelPlacements } = buildMapOverlayLayout({
+      svgElement,
       userUnitsPerPixel,
+      mapLabels,
       floorId,
-    );
+      events,
+      currentPlace,
+      destinationPlace,
+      focusPlace,
+    });
     renderMapLabels({
       layer: labelLayer,
-      labels: mapLabels,
+      placements: labelPlacements,
       userUnitsPerPixel,
-      isCampusOverview: floorId === DEFAULT_FLOOR_ID,
-      // イベントバッジは配置オフセットで文字を避けるため、ラベル除外は水滴ピンのみ
-      exclusionBounds: markerPlacements
-        .filter((marker) => marker.type === "pin")
-        .map((marker) => getMarkerExclusionBounds(marker, userUnitsPerPixel)),
     });
   }, [
     currentPlace,
@@ -572,30 +595,16 @@ export function MapCanvas({
       return;
     }
 
-    const markerPlacements = anchorCampusBuildingEventMarkers(
-      createMapMarkerPresentation({
-        currentPlace,
-        destinationPlace,
-        events,
-        floorId,
-        focusPlace,
-        resolveCoordinates: (target) => {
-          if (target.kind === "place") {
-            return getPlaceCoordinates(target.place, svgElement);
-          }
-          if (target.kind === "route-node") {
-            return { x: target.node.x, y: target.node.y };
-          }
-          return getSvgElementCoordinates(target.elementId, svgElement);
-        },
-        resolveFloorSheetId: (targetFloorId) =>
-          floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
-        resolvePlace: (placeId) => getPlace(placeId) ?? null,
-      }),
+    const { markers: markerPlacements } = buildMapOverlayLayout({
+      svgElement,
+      userUnitsPerPixel: markerScale,
       mapLabels,
-      markerScale,
       floorId,
-    );
+      events,
+      currentPlace,
+      destinationPlace,
+      focusPlace,
+    });
 
     const appendEventBadge = (
       marker: EventMarkerPlacement,

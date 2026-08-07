@@ -1,6 +1,7 @@
 import {
   getCenteredLabelBounds,
   getCenteredLineOffsetsEm,
+  getEstimatedTextWidthEm,
   isOverlayBoundsExcluded,
   overlayBoundsIntersect,
 } from "./mapOverlayGeometry";
@@ -51,12 +52,23 @@ export interface MapLabel {
   visibilityAncestors: SVGElement[];
 }
 
-interface RenderMapLabelsOptions {
-  layer: SVGSVGElement;
+export interface MapLabelPlacement {
+  label: MapLabel;
+  bounds: OverlayBounds;
+  centeredLineOffsetsEm: number[];
+}
+
+interface SelectVisibleMapLabelsOptions {
   labels: MapLabel[];
   userUnitsPerPixel: number;
   isCampusOverview: boolean;
   exclusionBounds?: OverlayBounds[];
+}
+
+interface RenderMapLabelsOptions {
+  layer: SVGSVGElement;
+  placements: MapLabelPlacement[];
+  userUnitsPerPixel: number;
 }
 
 function parseNumericValue(value: string | null): number | null {
@@ -192,12 +204,11 @@ function estimateVisualCenter(
   originalFontSize: number,
   textAnchor: "start" | "middle" | "end",
 ): OverlayPoint {
-  const longestLineLength = Math.max(
-    1,
-    ...lines.map((line) => Array.from(line).length),
-  );
   const estimatedWidth =
-    longestLineLength * originalFontSize * LABEL_CHARACTER_WIDTH_EM;
+    Math.max(
+      LABEL_CHARACTER_WIDTH_EM,
+      ...lines.map((line) => getEstimatedTextWidthEm(line, LABEL_CHARACTER_WIDTH_EM)),
+    ) * originalFontSize;
   const firstOffset = lineOffsetsEm[0] ?? 0;
   const lastOffset = lineOffsetsEm[lineOffsetsEm.length - 1] ?? firstOffset;
 
@@ -340,19 +351,21 @@ export function extractMapLabels(svgElement: SVGSVGElement): MapLabel[] {
   return labels;
 }
 
-export function renderMapLabels({
-  layer,
+/**
+ * 描画すべきラベルとその衝突矩形を確定する。DOMに触れない純関数なので、
+ * イベントバッジの退避計算(mapOverlayLayout)から描画前に呼べる。
+ */
+export function selectVisibleMapLabels({
   labels,
   userUnitsPerPixel,
   isCampusOverview,
   exclusionBounds = [],
-}: RenderMapLabelsOptions): void {
+}: SelectVisibleMapLabelsOptions): MapLabelPlacement[] {
   const visibleLabels = labels.filter(isSourceVisible);
   const labelsByPriority = getPrioritizedLabels(visibleLabels, isCampusOverview);
-  const fragment = layer.ownerDocument.createDocumentFragment();
   const fontSize = LABEL_TARGET_PX * userUnitsPerPixel;
   const collisionPadding = LABEL_COLLISION_PADDING_PX * userUnitsPerPixel;
-  const renderedLabelBoxes: OverlayBounds[] = [];
+  const placements: MapLabelPlacement[] = [];
 
   for (const label of labelsByPriority) {
     const centeredLineOffsetsEm = getCenteredLineOffsetsEm(
@@ -360,7 +373,7 @@ export function renderMapLabels({
       label.lines.length,
       LABEL_LINE_HEIGHT,
     );
-    const boundingBox = getCenteredLabelBounds(
+    const bounds = getCenteredLabelBounds(
       label.center,
       label.lines,
       centeredLineOffsetsEm,
@@ -369,15 +382,27 @@ export function renderMapLabels({
       collisionPadding,
     );
     if (
-      isOverlayBoundsExcluded(boundingBox, exclusionBounds) ||
-      renderedLabelBoxes.some((renderedBox) =>
-        overlayBoundsIntersect(boundingBox, renderedBox),
-      )
+      isOverlayBoundsExcluded(bounds, exclusionBounds) ||
+      placements.some((placement) => overlayBoundsIntersect(bounds, placement.bounds))
     ) {
       continue;
     }
 
-    renderedLabelBoxes.push(boundingBox);
+    placements.push({ label, bounds, centeredLineOffsetsEm });
+  }
+
+  return placements;
+}
+
+export function renderMapLabels({
+  layer,
+  placements,
+  userUnitsPerPixel,
+}: RenderMapLabelsOptions): void {
+  const fragment = layer.ownerDocument.createDocumentFragment();
+  const fontSize = LABEL_TARGET_PX * userUnitsPerPixel;
+
+  for (const { label, centeredLineOffsetsEm } of placements) {
     const textElement = layer.ownerDocument.createElementNS(SVG_NAMESPACE, "text");
     textElement.setAttribute("class", "map-label");
     textElement.setAttribute("font-size", String(fontSize));

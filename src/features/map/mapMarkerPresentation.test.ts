@@ -1,15 +1,79 @@
 import { describe, expect, test } from "bun:test";
 import type { Event, Place } from "../../data/types";
 import {
-  anchorCampusBuildingEventMarkers,
   createMapMarkerPresentation,
+  getEventMarkerInkBounds,
+  layoutEventMarkers,
+  type EventMarkerPlacement,
+  type MapMarkerPlacement,
   type MarkerCoordinateTarget,
 } from "./mapMarkerPresentation";
-import {
-  getAnchoredOverlayBounds,
-  getCenteredLabelBounds,
-  overlayBoundsIntersect,
-} from "./mapOverlayGeometry";
+import type { MapLabel, MapLabelPlacement } from "./mapLabels";
+import type { OverlayBounds } from "./mapOverlayGeometry";
+import { getCenteredLabelBounds, overlayBoundsIntersect } from "./mapOverlayGeometry";
+
+function label(
+  id: string,
+  lines: string[],
+  center: { x: number; y: number },
+  lineOffsetsEm: number[] = [0],
+): MapLabel {
+  return {
+    id,
+    lines,
+    lineOffsetsEm,
+    center,
+    originalFontSize: 12,
+    sourceWasHidden: false,
+    visibilityAncestors: [],
+  };
+}
+
+// selectVisibleMapLabels と同じ計算でラベル矩形を作る(fontSize=12px, padding=2px の画面固定)
+function labelPlacement(
+  source: MapLabel,
+  userUnitsPerPixel: number,
+  centeredLineOffsetsEm = [0],
+): MapLabelPlacement {
+  return {
+    label: source,
+    centeredLineOffsetsEm,
+    bounds: getCenteredLabelBounds(
+      source.center,
+      source.lines,
+      centeredLineOffsetsEm,
+      12 * userUnitsPerPixel,
+      0.95,
+      2 * userUnitsPerPixel,
+    ),
+  };
+}
+
+function layout(options: {
+  markers: MapMarkerPlacement[];
+  labels?: MapLabel[];
+  labelPlacements?: MapLabelPlacement[];
+  userUnitsPerPixel: number;
+  buildingBounds?: OverlayBounds | null;
+}) {
+  return layoutEventMarkers({
+    markers: options.markers,
+    labelPlacements: options.labelPlacements ?? [],
+    mapLabels: options.labels ?? [],
+    userUnitsPerPixel: options.userUnitsPerPixel,
+    resolveElementBounds: () => options.buildingBounds ?? null,
+  });
+}
+
+const studentHallBadge: EventMarkerPlacement = {
+  type: "event",
+  coordinates: { x: 10, y: 20 },
+  markerLabel: "学生ホール、イベント2件。建物を表示",
+  action: { kind: "floor", floorId: "sh-1f" },
+  buildingId: "building_StudentHall",
+  eventCount: 2,
+  colorKey: "default",
+};
 
 const places: Place[] = [
   { id: "room-a", floorId: "rq-1f", name: "研究棟 A", mapping: "svg", svgElementId: "room_a" },
@@ -225,145 +289,145 @@ describe("createMapMarkerPresentation", () => {
   });
 
   test("キャンパス集約バッジを対応する建物名ラベルの直上へ配置する", () => {
-    const anchoredMarkers = anchorCampusBuildingEventMarkers(
-      [
-        {
-          type: "event",
-          coordinates: { x: 10, y: 20 },
-          markerLabel: "学生ホール、イベント2件。建物を表示",
-          action: { kind: "floor", floorId: "sh-1f" },
-          buildingId: "building_StudentHall",
-          eventCount: 2,
-          colorKey: "default",
-        },
-      ],
-      [
-        {
-          id: "text_Cafeteria",
-          lines: ["食堂"],
-          lineOffsetsEm: [0],
-          center: { x: 300, y: 400 },
-          originalFontSize: 12,
-          sourceWasHidden: false,
-          visibilityAncestors: [],
-        },
-        {
-          id: "text_StudentHall",
-          lines: ["学生ホール"],
-          lineOffsetsEm: [0],
-          center: { x: 100, y: 200 },
-          originalFontSize: 12,
-          sourceWasHidden: false,
-          visibilityAncestors: [],
-        },
-      ],
-      2,
-      "campus",
-    );
-    const marker = anchoredMarkers[0];
+    const studentHall = label("text_StudentHall", ["学生ホール"], { x: 100, y: 200 });
+    const marker = layout({
+      markers: [studentHallBadge],
+      labels: [label("text_Cafeteria", ["食堂"], { x: 300, y: 400 }), studentHall],
+      userUnitsPerPixel: 2,
+      buildingBounds: { left: 0, top: 0, right: 300, bottom: 400 },
+    })[0];
 
     // 1行ラベル: 半高6px + クリアランス18px = 24px上 → y = 200 - 24*2
     expect(marker?.coordinates).toEqual({ x: 100, y: 152 });
-    if (!marker) {
+    if (!marker || marker.type !== "event") {
       throw new Error("集約バッジが生成されませんでした");
     }
-    const markerBounds = getAnchoredOverlayBounds(
-      { left: 0, top: 0, right: 30, bottom: 24 },
-      marker.coordinates,
-      2,
-      { x: 12, y: 12 },
-      2,
-    );
-    const labelBounds = getCenteredLabelBounds(
-      { x: 100, y: 200 },
-      ["学生ホール"],
-      [0],
-      24,
-      0.95,
-      4,
-    );
-    expect(overlayBoundsIntersect(markerBounds, labelBounds)).toEqual(false);
+    expect(
+      overlayBoundsIntersect(
+        getEventMarkerInkBounds(marker, 2, 2),
+        labelPlacement(studentHall, 2).bounds,
+      ),
+    ).toEqual(false);
   });
 
   test("2行の建物名ラベルでは行数ぶんバッジを持ち上げ文字と交差しない", () => {
-    const twoLineOffsetsEm = [0, 1.2];
-    const anchoredMarkers = anchorCampusBuildingEventMarkers(
-      [
-        {
-          type: "event",
-          coordinates: { x: 10, y: 20 },
-          markerLabel: "学生ホール、イベント2件。建物を表示",
-          action: { kind: "floor", floorId: "sh-1f" },
-          buildingId: "building_StudentHall",
-          eventCount: 2,
-          colorKey: "default",
-        },
-      ],
-      [
-        {
-          id: "text_StudentHall",
-          lines: ["学生", "ホール"],
-          lineOffsetsEm: twoLineOffsetsEm,
-          center: { x: 100, y: 200 },
-          originalFontSize: 12,
-          sourceWasHidden: false,
-          visibilityAncestors: [],
-        },
-      ],
-      2,
-      "campus",
+    const studentHall = label(
+      "text_StudentHall",
+      ["学生", "ホール"],
+      { x: 100, y: 200 },
+      [0, 1.2],
     );
-    const marker = anchoredMarkers[0];
+    const marker = layout({
+      markers: [studentHallBadge],
+      labels: [studentHall],
+      userUnitsPerPixel: 2,
+      buildingBounds: { left: 0, top: 0, right: 300, bottom: 400 },
+    })[0];
 
     // 2行ラベル: 半高(0.6+0.5)*12=13.2px + クリアランス18px = 31.2px上
     expect(marker?.coordinates).toEqual({ x: 100, y: 200 - 31.2 * 2 });
-    if (!marker) {
+    if (!marker || marker.type !== "event") {
       throw new Error("集約バッジが生成されませんでした");
     }
-    const markerBounds = getAnchoredOverlayBounds(
-      { left: 0, top: 0, right: 30, bottom: 24 },
-      marker.coordinates,
-      2,
-      { x: 12, y: 12 },
-      2,
-    );
-    const labelBounds = getCenteredLabelBounds(
-      { x: 100, y: 200 },
-      ["学生", "ホール"],
-      [-0.6, 0.6],
-      24,
-      0.95,
-      4,
-    );
-    expect(overlayBoundsIntersect(markerBounds, labelBounds)).toEqual(false);
+    expect(
+      overlayBoundsIntersect(
+        getEventMarkerInkBounds(marker, 2, 2),
+        labelPlacement(studentHall, 2, [-0.6, 0.6]).bounds,
+      ),
+    ).toEqual(false);
   });
 
-  test("キャンパス直置きPlaceの個別バッジは20px上へ持ち上げ、フロアシートは持ち上げない", () => {
-    const individualMarker = {
-      type: "event",
-      coordinates: { x: 70, y: 80 },
-      markerLabel: "屋外展示のイベントを表示: イベントO1",
-      action: { kind: "event", eventKey: "O1" },
-      placeId: "outdoor",
-      eventKey: "O1",
-      colorKey: "default",
-    } as const;
+  test("引きで建物からはみ出す集約バッジは外形bbox内へ押し戻す", () => {
+    const studentHall = label("text_StudentHall", ["学生ホール"], { x: 100, y: 200 });
+    const buildingBounds = { left: 80, top: 140, right: 200, bottom: 260 };
+    const marker = layout({
+      markers: [studentHallBadge],
+      labels: [studentHall],
+      userUnitsPerPixel: 2,
+      buildingBounds,
+    })[0];
 
-    const campusAnchored = anchorCampusBuildingEventMarkers(
-      [individualMarker],
-      [],
-      2,
-      "campus",
-    );
-    expect(campusAnchored[0]?.coordinates).toEqual({ x: 70, y: 80 - 20 * 2 });
+    if (!marker || marker.type !== "event") {
+      throw new Error("集約バッジが生成されませんでした");
+    }
+    // ラベル直上のy=152から押し戻され、インク範囲が建物の外形bboxに完全に収まっていること
+    expect(marker.coordinates.y).toBeGreaterThan(152);
+    const ink = getEventMarkerInkBounds(marker, 2);
+    expect(ink.left).toBeGreaterThanOrEqual(buildingBounds.left);
+    expect(ink.top).toBeGreaterThanOrEqual(buildingBounds.top);
+    expect(ink.right).toBeLessThanOrEqual(buildingBounds.right);
+    expect(ink.bottom).toBeLessThanOrEqual(buildingBounds.bottom);
+  });
 
-    const floorAnchored = anchorCampusBuildingEventMarkers(
-      [individualMarker],
-      [],
-      2,
-      "rq-2f",
-    );
-    expect(floorAnchored[0]?.coordinates).toEqual({ x: 70, y: 80 });
+  const individualMarker: EventMarkerPlacement = {
+    type: "event",
+    coordinates: { x: 70, y: 80 },
+    markerLabel: "屋外展示のイベントを表示: イベントO1",
+    action: { kind: "event", eventKey: "O1" },
+    placeId: "outdoor",
+    eventKey: "O1",
+    colorKey: "default",
+  };
+
+  test("個別バッジは重なるラベルの直上へ退避する", () => {
+    const outdoor = label("text_outdoor", ["屋外展示"], { x: 70, y: 80 });
+    const placement = labelPlacement(outdoor, 2);
+    const marker = layout({
+      markers: [individualMarker],
+      labels: [outdoor],
+      labelPlacements: [placement],
+      userUnitsPerPixel: 2,
+    })[0];
+
+    if (!marker || marker.type !== "event") {
+      throw new Error("個別バッジが生成されませんでした");
+    }
+    expect(marker.coordinates.x).toEqual(70);
+    expect(marker.coordinates.y).toBeLessThan(80);
+    expect(
+      overlayBoundsIntersect(getEventMarkerInkBounds(marker, 2), placement.bounds),
+    ).toEqual(false);
+  });
+
+  test("重なるラベルがない個別バッジはルートノード座標のまま動かない", () => {
+    const faraway = label("text_faraway", ["別の場所"], { x: 700, y: 800 });
+    expect(
+      layout({
+        markers: [individualMarker],
+        labels: [faraway],
+        labelPlacements: [labelPlacement(faraway, 2)],
+        userUnitsPerPixel: 2,
+      })[0]?.coordinates,
+    ).toEqual({ x: 70, y: 80 });
+  });
+
+  test("フロアシートの会場バッジは同位置の部屋名ラベルを覆わない", () => {
+    // 実測: rq_room_267 のルートノード(135, 393)と text_m2_267 のbbox中心はほぼ同一点
+    const userUnitsPerPixel = 1.3;
+    const roomLabel = label("text_m2_267", ["267"], { x: 138, y: 393 });
+    const placement = labelPlacement(roomLabel, userUnitsPerPixel);
+    const badge = createPresentation({
+      floorId: "rq-2f",
+      events: [event("R1", "rq_room_267")],
+    })[0];
+
+    expect(badge?.coordinates).toEqual({ x: 135, y: 393 });
+    const marker = layout({
+      markers: badge ? [badge] : [],
+      labels: [roomLabel],
+      labelPlacements: [placement],
+      userUnitsPerPixel,
+    })[0];
+
+    if (!marker || marker.type !== "event") {
+      throw new Error("会場バッジが生成されませんでした");
+    }
+    expect(
+      overlayBoundsIntersect(
+        getEventMarkerInkBounds(marker, userUnitsPerPixel),
+        placement.bounds,
+      ),
+    ).toEqual(false);
   });
 
   test("キャンパスでは建物別件数と屋外place件数を集約しactionを分ける", () => {
