@@ -150,6 +150,7 @@ function buildMapOverlayLayout({
       }
       return getSvgElementCoordinates(target.elementId, svgElement);
     },
+    resolveElementBounds: (elementId) => getSvgElementBounds(elementId, svgElement),
     resolveFloorSheetId: (targetFloorId) =>
       floors.find((candidate) => candidate.id === targetFloorId)?.sheetId ?? null,
     resolvePlace: (placeId) => getPlace(placeId) ?? null,

@@ -6,6 +6,7 @@ import {
   getEventMarkerInkBounds,
   getNextEventSelectionChangeTimestamp,
   layoutEventMarkers,
+  projectPointToCampusBuilding,
   selectUpcomingEvent,
   type EventMarkerPlacement,
   type MapMarkerPlacement,
@@ -94,6 +95,17 @@ const places: Place[] = [
   { id: "rq", floorId: "campus", name: "研究棟", mapping: "svg", svgElementId: "building_ResearchQuad" },
   { id: "outdoor", floorId: "campus", name: "屋外展示", mapping: "coordinates", coordinates: { x: 70, y: 80 } },
   { id: "no-coordinate", floorId: "campus", name: "座標なし", mapping: "coordinates", coordinates: { x: 0, y: 0 } },
+  { id: "rq_room_161", floorId: "rq-1f", name: "研究棟1F 161", mapping: "svg", svgElementId: "room_161" },
+  { id: "rq_room_325f", floorId: "rq-3f", name: "研究棟3F 325F", mapping: "svg", svgElementId: "room_325f" },
+  { id: "lh_room_m8", floorId: "lh-1f", name: "講義棟1F M8", mapping: "svg", svgElementId: "room_m8" },
+  { id: "lh_room_m3", floorId: "lh-2f", name: "講義棟2F M3", mapping: "svg", svgElementId: "room_m3" },
+  { id: "sh_room_cafeteria", floorId: "sh-1f", name: "学生ホール 食堂", mapping: "svg", svgElementId: "room_cafeteria" },
+  { id: "sh_entrance_east", floorId: "sh-2f", name: "学生ホール東口", mapping: "coordinates", coordinates: { x: 125, y: 3 } },
+  { id: "ubic_room_3dtheater", floorId: "ubic-1f", name: "UBIC 3Dシアター", mapping: "svg", svgElementId: "room_3dtheater" },
+  { id: "lictia_room_cswr", floorId: "lictia-1f", name: "LICTiA 箱庭チャンバー室", mapping: "coordinates", coordinates: { x: 32.5, y: 54.6 } },
+  { id: "coordinate-without-route", floorId: "rq-1f", name: "Routeなし座標地点", mapping: "coordinates", coordinates: { x: 227, y: 325 } },
+  { id: "unresolved-room", floorId: "rq-1f", name: "座標未解決", mapping: "svg", svgElementId: "unresolved_room" },
+  { id: "unknown-floor-room", floorId: "unknown-1f", name: "未知フロア", mapping: "coordinates", coordinates: { x: 10, y: 10 } },
 ];
 
 function event(id: string, placeId: string): Event {
@@ -131,7 +143,23 @@ const floorSheetIds = new Map([
   ["campus", "campus"],
   ["rq-1f", "rq1f"],
   ["rq-2f", "rq2f"],
+  ["rq-3f", "rq3f"],
+  ["sh-1f", "sh1f"],
+  ["sh-2f", "sh2f"],
+  ["lh-1f", "lh1f"],
+  ["lh-2f", "lh2f"],
+  ["ubic-1f", "ubic"],
+  ["lictia-1f", "lictia"],
+  ["unknown-1f", "unknown"],
 ]);
+
+const buildingBoundsById: Record<string, OverlayBounds> = {
+  building_ResearchQuad: { left: 100, top: 200, right: 300, bottom: 600 },
+  building_StudentHall: { left: 10, top: 20, right: 90, bottom: 100 },
+  building_LecHall: { left: 300, top: 100, right: 500, bottom: 250 },
+  building_UBIC: { left: 500, top: 50, right: 600, bottom: 100 },
+  building_LICTiA: { left: 600, top: 50, right: 650, bottom: 100 },
+};
 
 function resolveCoordinates(target: MarkerCoordinateTarget) {
   if (target.kind === "route-node") {
@@ -139,6 +167,12 @@ function resolveCoordinates(target: MarkerCoordinateTarget) {
   }
   if (target.kind === "svg-element") {
     return target.elementId === "building_ResearchQuad" ? { x: 10, y: 20 } : null;
+  }
+  if (
+    target.place.mapping === "coordinates" &&
+    target.place.id !== "no-coordinate"
+  ) {
+    return { ...target.place.coordinates };
   }
   const coordinatesByPlaceId: Record<string, { x: number; y: number }> = {
     "room-a": { x: 1, y: 2 },
@@ -159,6 +193,7 @@ function createPresentation(options: {
   floorId?: string;
   focusPlace?: Place | null;
   now?: Date;
+  resolveElementBounds?: (elementId: string) => OverlayBounds | null;
 }) {
   return createMapMarkerPresentation({
     currentPlace: options.currentPlace ?? null,
@@ -168,6 +203,9 @@ function createPresentation(options: {
     focusPlace: options.focusPlace ?? null,
     now: options.now,
     resolveCoordinates,
+    resolveElementBounds:
+      options.resolveElementBounds ??
+      ((elementId) => buildingBoundsById[elementId] ?? null),
     resolveFloorSheetId: (floorId) => floorSheetIds.get(floorId) ?? null,
     resolvePlace: (placeId) => placeById.get(placeId) ?? null,
   });
@@ -179,6 +217,117 @@ function firstEventColor(options: Parameters<typeof createPresentation>[0]) {
 }
 
 describe("createMapMarkerPresentation", () => {
+  test("屋内座標をキャンパス建物bboxの同じ相対位置へ写像して範囲外をクランプする", () => {
+    expect(
+      projectPointToCampusBuilding(
+        { x: 25, y: 50 },
+        { x: 0, y: 0, width: 100, height: 100 },
+        { left: 200, top: 300, right: 600, bottom: 500 },
+      ),
+    ).toEqual({ x: 300, y: 400 });
+    expect(
+      projectPointToCampusBuilding(
+        { x: -10, y: 120 },
+        { x: 0, y: 0, width: 100, height: 100 },
+        { left: 200, top: 300, right: 600, bottom: 500 },
+      ),
+    ).toEqual({ x: 200, y: 500 });
+    expect(
+      projectPointToCampusBuilding(
+        { x: 1, y: 1 },
+        { x: 0, y: 0, width: 0, height: 100 },
+        { left: 200, top: 300, right: 600, bottom: 500 },
+      ),
+    ).toEqual(null);
+  });
+
+  test("9屋内フロアの実Route地点を対応するキャンパス建物bbox内へ投影する", () => {
+    const cases = [
+      ["rq_room_161", buildingBoundsById.building_ResearchQuad],
+      ["rq_room_267", buildingBoundsById.building_ResearchQuad],
+      ["rq_room_325f", buildingBoundsById.building_ResearchQuad],
+      ["lh_room_m8", buildingBoundsById.building_LecHall],
+      ["lh_room_m3", buildingBoundsById.building_LecHall],
+      ["sh_room_cafeteria", buildingBoundsById.building_StudentHall],
+      ["sh_entrance_east", buildingBoundsById.building_StudentHall],
+      ["ubic_room_3dtheater", buildingBoundsById.building_UBIC],
+      ["lictia_room_cswr", buildingBoundsById.building_LICTiA],
+    ] as const;
+
+    for (const [placeId, buildingBounds] of cases) {
+      const presentation = createPresentation({
+        currentPlace: placeById.get(placeId),
+        floorId: "campus",
+      });
+      const marker = presentation[0];
+      expect(presentation.length).toEqual(1);
+      expect(marker?.type).toEqual("pin");
+      if (marker?.type !== "pin") {
+        continue;
+      }
+      expect(marker.markerKind).toEqual("current");
+      expect(marker.placeId).toEqual(placeId);
+      expect(marker.coordinates.x >= buildingBounds.left).toEqual(true);
+      expect(marker.coordinates.x <= buildingBounds.right).toEqual(true);
+      expect(marker.coordinates.y >= buildingBounds.top).toEqual(true);
+      expect(marker.coordinates.y <= buildingBounds.bottom).toEqual(true);
+    }
+  });
+
+  test("Routeノードまたは投影設定を解決できない現在地を省略する", () => {
+    expect(
+      createPresentation({
+        currentPlace: placeById.get("coordinate-without-route"),
+        floorId: "campus",
+      }),
+    ).toEqual([]);
+    expect(
+      createPresentation({
+        currentPlace: placeById.get("unresolved-room"),
+        floorId: "campus",
+      }),
+    ).toEqual([]);
+    expect(
+      createPresentation({
+        currentPlace: placeById.get("unknown-floor-room"),
+        floorId: "campus",
+      }),
+    ).toEqual([]);
+    expect(
+      createPresentation({
+        destinationPlace: placeById.get("rq_room_161"),
+        focusPlace: placeById.get("sh_room_cafeteria"),
+        floorId: "campus",
+      }),
+    ).toEqual([]);
+  });
+
+  test("投影した現在地を優先して同じ建物のイベント集約バッジを省略する", () => {
+    const presentation = createPresentation({
+      currentPlace: placeById.get("rq_room_161"),
+      events: [event("R1", "room-a")],
+      floorId: "campus",
+    });
+
+    expect(presentation.filter((marker) => marker.type === "event")).toEqual([]);
+    expect(presentation.length).toEqual(1);
+    expect(presentation[0]?.type).toEqual("pin");
+    if (presentation[0]?.type === "pin") {
+      expect(presentation[0].markerKind).toEqual("current");
+      expect(presentation[0].placeId).toEqual("rq_room_161");
+    }
+  });
+
+  test("建物bboxを解決できない場合は屋内現在地を誤配置しない", () => {
+    expect(
+      createPresentation({
+        currentPlace: placeById.get("rq_room_161"),
+        floorId: "campus",
+        resolveElementBounds: () => null,
+      }),
+    ).toEqual([]);
+  });
+
   test("正式IDなしイベントも内部keyでmarker actionを作る", () => {
     expect(
       createPresentation({

@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(イベント位置への目的地ピン置換)
+最終更新: 2026-08-07(キャンパス全体図の屋内現在地表示)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -46,6 +46,18 @@
 最新階段ルート表示ブリーフ: `docs/tasks/38-stair-route-direction-icons.md`（未コミット）
 
 最新イベント目的地ピン配置ブリーフ: `docs/tasks/39-event-destination-pin-anchor.md`（未コミット）
+
+最新キャンパス屋内現在地投影ブリーフ: `docs/tasks/40-campus-current-marker-projection.md`（未コミット）
+
+## キャンパス全体図の屋内現在地表示
+
+屋内Placeを現在地にしたままキャンパス全体図へ戻ったとき、同一フロアのRouteノード座標をフロアSVGのルートviewBox内で正規化し、対応するキャンパス建物bbox内のおおよその相対位置へ青い現在地ピンを表示するようにした。研究棟3フロア、講義棟2フロア、学生ホール2フロア、UBIC、LICTiAの計9フロアを5建物へ対応づけ、範囲外をクランプする。投影情報を解決できない場合はピンを省略し、同じ建物のイベント集約バッジは現在地を優先して省略する。階数表示、屋内フロアの正確な位置、屋外現在地、目的地・注目地点、URL、Route・Place・SVG・Figmaは変更していない。
+
+`bun run verify:all`は183 tests / 1,231 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで実Route地点を使った9フロアの投影、正規化、境界クランプ、Routeノード・建物bbox・投影設定の未解決時の省略、屋外現在地、目的地・注目地点の非投影、同建物イベント集約バッジの抑止を確認した。
+
+402×874pxでは、`rq_room_161`、`rq_room_267`、`rq_room_325f`、`lh_room_m8`、`lh_room_m3`、`sh_room_cafeteria`、`sh_entrance_east`、`ubic_room_3dtheater`、`lictia_room_cswr`の全9フロアで、屋内図の従来ピンとキャンパス建物bbox内の投影ピン各1件、階数テキスト0件、同建物集約バッジ0件を確認した。LICTiA代表ケースではズーム・パン前後でアンカー`(575.1903, 264.8125)`と画面上サイズ約33.34×41.67pxを維持した。屋外`main_node_11`は従来座標`(307, 298)`、`rq_room_161`から`M21`への経路は屋内5区間・キャンパス6区間を維持し、console error/warn 0件だった。投影は測量座標ではなく、フロア図と建物bboxの比率による概略位置である。
+
+初回の会話履歴なし読み取り専用レビューでは、Routeノード欠損時にもPlace座標へフォールバックして投影するP2が見つかった。投影専用の厳密なRouteノード解決へ分離し、実Route地点9件とRoute欠損座標Placeの回帰テストを追加して全検証を再実行した。修正後の最終読み取り専用再レビューは指摘なし。
 
 ## イベント位置への目的地ピン置換
 

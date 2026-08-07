@@ -26,16 +26,80 @@ const campusBuildings = {
 
 export type CampusBuildingId = keyof typeof campusBuildings;
 
-const campusBuildingIdBySheetId: Record<string, CampusBuildingId> = {
-  rq1f: "building_ResearchQuad",
-  rq2f: "building_ResearchQuad",
-  rq3f: "building_ResearchQuad",
-  sh1f: "building_StudentHall",
-  sh2f: "building_StudentHall",
-  lh1f: "building_LecHall",
-  lh2f: "building_LecHall",
-  ubic: "building_UBIC",
-  lictia: "building_LICTiA",
+type CampusProjectionFrame = {
+  buildingId: CampusBuildingId;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+// 各屋内SVGルートのviewBox。RQ2FはviewBoxがないためwidth/heightを使う。
+// 屋内座標をこの範囲内の比率へ変換し、キャンパス建物bboxへ概略投影する。
+const campusProjectionFrameBySheetId: Record<string, CampusProjectionFrame> = {
+  rq1f: {
+    buildingId: "building_ResearchQuad",
+    x: 0,
+    y: 0,
+    width: 454.01063,
+    height: 649.68758,
+  },
+  rq2f: {
+    buildingId: "building_ResearchQuad",
+    x: 0,
+    y: 0,
+    width: 507.13501,
+    height: 693,
+  },
+  rq3f: {
+    buildingId: "building_ResearchQuad",
+    x: 0,
+    y: 0,
+    width: 486.13242,
+    height: 693,
+  },
+  sh1f: {
+    buildingId: "building_StudentHall",
+    x: 0,
+    y: 0,
+    width: 136.95795,
+    height: 127.79022,
+  },
+  sh2f: {
+    buildingId: "building_StudentHall",
+    x: 0,
+    y: 0,
+    width: 133.77486,
+    height: 124.54876,
+  },
+  lh1f: {
+    buildingId: "building_LecHall",
+    x: 0.468751,
+    y: 394.109032,
+    width: 467.343628,
+    height: 184.172729,
+  },
+  lh2f: {
+    buildingId: "building_LecHall",
+    x: 0.468911,
+    y: 0.937538,
+    width: 467.343597,
+    height: 284.487366,
+  },
+  ubic: {
+    buildingId: "building_UBIC",
+    x: 0,
+    y: 0,
+    width: 178.37125,
+    height: 76.03061,
+  },
+  lictia: {
+    buildingId: "building_LICTiA",
+    x: 0,
+    y: 0,
+    width: 123.74366,
+    height: 92.549674,
+  },
 };
 
 // アンカー先ラベルの上端からバッジ中心までの距離(バッジ半径11px + 余白)。
@@ -396,6 +460,7 @@ type CreateMapMarkerPresentationOptions = {
   focusPlace: Place | null;
   now?: Date;
   resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null;
+  resolveElementBounds: (elementId: string) => OverlayBounds | null;
   resolveFloorSheetId: (floorId: string) => string | null;
   resolvePlace: (placeId: string) => Place | null;
 };
@@ -457,7 +522,7 @@ function resolveCampusBuildingId(
   if (!sheetId) {
     return null;
   }
-  const buildingId = campusBuildingIdBySheetId[sheetId];
+  const buildingId = campusProjectionFrameBySheetId[sheetId]?.buildingId;
   if (buildingId) {
     return buildingId;
   }
@@ -471,21 +536,67 @@ function resolveCampusBuildingId(
   return null;
 }
 
-function resolveEventCoordinates(
+/** 屋内SVG内の点を、同じ相対位置にあるキャンパス建物bbox内の点へ写像する。 */
+export function projectPointToCampusBuilding(
+  point: OverlayPoint,
+  sourceFrame: Pick<CampusProjectionFrame, "x" | "y" | "width" | "height">,
+  buildingBounds: OverlayBounds,
+): OverlayPoint | null {
+  const targetWidth = buildingBounds.right - buildingBounds.left;
+  const targetHeight = buildingBounds.bottom - buildingBounds.top;
+  if (
+    !Number.isFinite(point.x) ||
+    !Number.isFinite(point.y) ||
+    !Number.isFinite(sourceFrame.x) ||
+    !Number.isFinite(sourceFrame.y) ||
+    !(sourceFrame.width > 0) ||
+    !(sourceFrame.height > 0) ||
+    !Number.isFinite(buildingBounds.left) ||
+    !Number.isFinite(buildingBounds.top) ||
+    !(targetWidth > 0) ||
+    !(targetHeight > 0)
+  ) {
+    return null;
+  }
+
+  const normalizedX = Math.min(
+    Math.max((point.x - sourceFrame.x) / sourceFrame.width, 0),
+    1,
+  );
+  const normalizedY = Math.min(
+    Math.max((point.y - sourceFrame.y) / sourceFrame.height, 0),
+    1,
+  );
+  return {
+    x: buildingBounds.left + normalizedX * targetWidth,
+    y: buildingBounds.top + normalizedY * targetHeight,
+  };
+}
+
+function resolveRouteNodeCoordinates(
   place: Place,
   resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null,
 ): OverlayPoint | null {
   const routeNode = routeGraph.nodes.find(
     (node) => node.placeId === place.id && node.floorId === place.floorId,
   );
-  if (routeNode) {
-    const nodeCoordinates = resolveCoordinates({
-      kind: "route-node",
-      node: routeNode,
-    });
-    if (nodeCoordinates) {
-      return nodeCoordinates;
-    }
+  if (!routeNode) {
+    return null;
+  }
+
+  return resolveCoordinates({ kind: "route-node", node: routeNode });
+}
+
+function resolveEventCoordinates(
+  place: Place,
+  resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null,
+): OverlayPoint | null {
+  const routeNodeCoordinates = resolveRouteNodeCoordinates(
+    place,
+    resolveCoordinates,
+  );
+  if (routeNodeCoordinates) {
+    return routeNodeCoordinates;
   }
 
   return resolveCoordinates({ kind: "place", place });
@@ -499,6 +610,7 @@ export function createMapMarkerPresentation({
   focusPlace,
   now = new Date(),
   resolveCoordinates,
+  resolveElementBounds,
   resolveFloorSheetId,
   resolvePlace,
 }: CreateMapMarkerPresentationOptions): MapMarkerPlacement[] {
@@ -516,6 +628,40 @@ export function createMapMarkerPresentation({
   );
   const blockingPinPlaceIds = new Set(blockingPinPlaces.map((place) => place.id));
   let destinationReplacement: PinMarkerPlacement["replacesEventMarker"];
+  let projectedCurrent:
+    | { buildingId: CampusBuildingId; coordinates: OverlayPoint }
+    | null = null;
+
+  if (
+    floorId === DEFAULT_FLOOR_ID &&
+    currentPlace &&
+    currentPlace.floorId !== DEFAULT_FLOOR_ID
+  ) {
+    const sheetId = resolveFloorSheetId(currentPlace.floorId);
+    const projectionFrame = sheetId
+      ? campusProjectionFrameBySheetId[sheetId]
+      : undefined;
+    const sourceCoordinates = projectionFrame
+      ? resolveRouteNodeCoordinates(currentPlace, resolveCoordinates)
+      : null;
+    const buildingBounds = projectionFrame
+      ? resolveElementBounds(projectionFrame.buildingId)
+      : null;
+    const coordinates =
+      projectionFrame && sourceCoordinates && buildingBounds
+        ? projectPointToCampusBuilding(
+            sourceCoordinates,
+            projectionFrame,
+            buildingBounds,
+          )
+        : null;
+    if (projectionFrame && coordinates) {
+      projectedCurrent = {
+        buildingId: projectionFrame.buildingId,
+        coordinates,
+      };
+    }
+  }
 
   for (const event of events) {
     const group = eventsByPlaceId.get(event.placeId);
@@ -530,12 +676,15 @@ export function createMapMarkerPresentation({
   }
 
   if (floorId === DEFAULT_FLOOR_ID) {
-    const occupiedBuildingIds = new Set(
+    const occupiedBuildingIds = new Set<CampusBuildingId>(
       blockingPinPlaces
         .filter((place) => place.floorId === DEFAULT_FLOOR_ID)
         .map((place) => resolveCampusBuildingId(place, resolveFloorSheetId))
         .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
     );
+    if (projectedCurrent) {
+      occupiedBuildingIds.add(projectedCurrent.buildingId);
+    }
     const eventGroupsByBuildingId = new Map<
       CampusBuildingId,
       { eventCount: number; colorKeys: Set<EventMarkerColorKey> }
@@ -658,10 +807,15 @@ export function createMapMarkerPresentation({
     { place: focusPlace, markerKind: "focus" },
   ] as const;
   for (const pin of pins) {
-    if (!pin.place || pin.place.floorId !== floorId) {
+    if (!pin.place) {
       continue;
     }
-    const coordinates = resolveCoordinates({ kind: "place", place: pin.place });
+    const coordinates =
+      pin.place.floorId === floorId
+        ? resolveCoordinates({ kind: "place", place: pin.place })
+        : pin.markerKind === "current" && floorId === DEFAULT_FLOOR_ID
+          ? projectedCurrent?.coordinates ?? null
+          : null;
     if (!coordinates) {
       continue;
     }
