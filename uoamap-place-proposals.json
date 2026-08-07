@@ -165,8 +165,8 @@
     "name": "駐車場北",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 300,
-      "y": 310
+      "x": 307,
+      "y": 298
     }
   },
   {
@@ -195,8 +195,8 @@
     "name": "中央階段前",
     "mapping": "coordinates",
     "coordinates": {
-      "x": 398,
-      "y": 364
+      "x": 388,
+      "y": 377
     }
   },
   {
@@ -436,7 +436,7 @@
     "mapping": "coordinates",
     "coordinates": {
       "x": 163,
-      "y": 333
+      "y": 339
     }
   },
   {
@@ -526,7 +526,7 @@
     "mapping": "coordinates",
     "coordinates": {
       "x": 162,
-      "y": 72
+      "y": 81
     }
   },
   {
@@ -616,7 +616,7 @@
     "mapping": "coordinates",
     "coordinates": {
       "x": 163,
-      "y": 592
+      "y": 599
     }
   },
   {
