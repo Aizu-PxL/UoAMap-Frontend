@@ -1,6 +1,7 @@
 :root {
   /* Figma Tokens コレクションと対応 */
   --color-accent: #008b8c;
+  --color-accent-muted: rgba(0, 139, 140, 0.3);
   --color-icon-muted: rgba(23, 23, 23, 0.3);
   --color-text: #111111;
   --color-surface: #ffffff;
@@ -421,7 +422,11 @@ input {
   color: var(--color-text);
 }
 
-/* QRはアクティブ時のみアクセント色、他タブ表示中は薄色 */
+/* QRは未選択時も薄いアクセント色で表示する */
+.sheet-nav__button[aria-label="QR"] {
+  color: var(--color-accent-muted);
+}
+
 .sheet-nav__button[aria-label="QR"][aria-current="page"] {
   color: var(--color-accent);
 }

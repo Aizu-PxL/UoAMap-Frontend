@@ -1,4 +1,11 @@
-import { type CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Outlet, useLocation } from "react-router";
 import { BottomSheet } from "../components/bottom-sheet/BottomSheet";
 import type { BottomSheetSnapPoint } from "../components/bottom-sheet/bottomSheetGeometry";
@@ -10,7 +17,7 @@ import { DEFAULT_FLOOR_ID } from "../features/map/mapFloorNavigation";
 import { createMapNavigationPresentation } from "./mapNavigation";
 import { useNavState } from "./useNavState";
 import { LayoutControlProvider } from "./layoutControl";
-import { getEntrySheetSnapPoint } from "./navigationSearch";
+import { getEntrySheetSnapPoint, isNewMapFocusRequest } from "./navigationSearch";
 
 export function AppLayout() {
   const [floorId, setFloorId] = useState(DEFAULT_FLOOR_ID);
@@ -75,6 +82,21 @@ export function AppLayout() {
       setFloorId(DEFAULT_FLOOR_ID);
     }
   }, [hasNavigationParams, mapFocusPlace]);
+
+  // フォーカス要求(nonce)にもフロアを同期する。mapFocusPlaceの同一性が変わらない
+  // 遷移(例: 建物タップでフロアだけ変えた後の「ここへ行く」)では上のエフェクトが
+  // 発火しないため、要求単位で必ずフロアを合わせないとMapCanvas側のフロア不一致
+  // ガードがリセンターを握りつぶす。
+  const lastFloorSyncedNonceRef = useRef(0);
+  useEffect(() => {
+    if (!isNewMapFocusRequest(lastFloorSyncedNonceRef.current, focusRequestNonce)) {
+      return;
+    }
+    lastFloorSyncedNonceRef.current = focusRequestNonce;
+    if (mapFocusPlace) {
+      setFloorId(mapFocusPlace.floorId);
+    }
+  }, [focusRequestNonce, mapFocusPlace]);
 
   useEffect(() => {
     const entrySnapPoint = getEntrySheetSnapPoint(location.pathname);

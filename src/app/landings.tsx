@@ -46,10 +46,7 @@ export function QrLanding() {
           },
           {
             replace: true,
-            state: createNextMapFocusRequestState(
-              undefined,
-              destination.mapFocusPlaceId,
-            ),
+            state: createNextMapFocusRequestState(destination.mapFocusPlaceId),
           },
         );
       })
