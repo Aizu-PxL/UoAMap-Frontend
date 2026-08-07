@@ -11,6 +11,7 @@ import {
   getExpandedBottomSheetHeight,
   getNearestBottomSheetSnapPoint,
   getNextBottomSheetSnapPoint,
+  getReleaseBottomSheetSnapPoint,
   initialBottomSheetSnapPoint,
 } from "./bottomSheetGeometry";
 import type { BottomSheetSnapPoint } from "./bottomSheetGeometry";
@@ -23,6 +24,35 @@ type BottomSheetProps = {
   snapRequest: { key: number; snapPoint: BottomSheetSnapPoint } | null;
   topOverlay?: ReactNode;
 };
+
+type PointerMoveSample = {
+  position: number;
+  timestamp: number;
+};
+
+const RELEASE_VELOCITY_SAMPLE_WINDOW_MS = 100;
+
+function getReleaseVelocity(
+  samples: PointerMoveSample[],
+  releaseTimestamp: number,
+): number {
+  const recentSamples = samples.filter(
+    ({ timestamp }) =>
+      timestamp <= releaseTimestamp &&
+      releaseTimestamp - timestamp <= RELEASE_VELOCITY_SAMPLE_WINDOW_MS,
+  );
+  const firstSample = recentSamples[0];
+  const lastSample = recentSamples[recentSamples.length - 1];
+
+  if (!firstSample || !lastSample || firstSample === lastSample) {
+    return 0;
+  }
+
+  const elapsed = lastSample.timestamp - firstSample.timestamp;
+  return elapsed > 0
+    ? (lastSample.position - firstSample.position) / elapsed
+    : 0;
+}
 
 export function BottomSheet({
   children,
@@ -37,6 +67,7 @@ export function BottomSheet({
     startY: 0,
     startHeight: initialBottomSheetSnapPoint,
     viewportHeight: 1,
+    samples: [] as PointerMoveSample[],
   });
 
   useLayoutEffect(() => {
@@ -61,6 +92,7 @@ export function BottomSheet({
       startY: event.clientY,
       startHeight: height,
       viewportHeight: window.innerHeight || 1,
+      samples: [],
     };
     setIsDragging(true);
   };
@@ -70,6 +102,17 @@ export function BottomSheet({
       return;
     }
 
+    const sample = {
+      position: event.clientY,
+      timestamp: event.timeStamp,
+    };
+    dragState.current.samples = [
+      ...dragState.current.samples.filter(
+        ({ timestamp }) =>
+          sample.timestamp - timestamp <= RELEASE_VELOCITY_SAMPLE_WINDOW_MS,
+      ),
+      sample,
+    ];
     dragTo(event.clientY);
   };
 
@@ -82,7 +125,23 @@ export function BottomSheet({
     );
   };
 
-  const stopDrag = () => {
+  const stopDrag = (event: PointerEvent<HTMLDivElement>) => {
+    const velocity = getReleaseVelocity(
+      dragState.current.samples,
+      event.timeStamp,
+    );
+    dragState.current.samples = [];
+    setIsDragging(false);
+    setHeight((currentHeight) =>
+      getReleaseBottomSheetSnapPoint({
+        height: currentHeight,
+        velocity,
+      }),
+    );
+  };
+
+  const cancelDrag = () => {
+    dragState.current.samples = [];
     setIsDragging(false);
     setHeight(getNearestBottomSheetSnapPoint);
   };
@@ -96,7 +155,7 @@ export function BottomSheet({
           onPointerDown={startDrag}
           onPointerMove={dragSheet}
           onPointerUp={stopDrag}
-          onPointerCancel={stopDrag}
+          onPointerCancel={cancelDrag}
           onDoubleClick={() => setHeight(getNextBottomSheetSnapPoint)}
           role="presentation"
         >

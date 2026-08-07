@@ -6,5 +6,10 @@ declare module "bun:test" {
   export function expect<T>(actual: T): {
     toEqual(expected: unknown): void;
     toBeNull(): void;
+    toMatchObject(expected: object): void;
+    toBeLessThan(expected: number): void;
+    toBeLessThanOrEqual(expected: number): void;
+    toBeGreaterThan(expected: number): void;
+    toBeGreaterThanOrEqual(expected: number): void;
   };
 }

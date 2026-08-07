@@ -88,6 +88,24 @@ export function getCenteredLineOffsetsEm(
   return resolvedOffsets.map((offset) => offset - centerOffset);
 }
 
+// 半角(ラテン・数字・記号)の実測幅は全角のおよそ6割。1文字=全角幅で見積もると
+// 「LICTiA」「104F」のような文字列で矩形が倍近く膨らみ、衝突カリングが過剰に効く。
+const NARROW_CHARACTER_WIDTH_RATIO = 0.58;
+const FULL_WIDTH_CHARACTER_PATTERN =
+  /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꀀ-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
+
+/** 文字種から文字列幅(em)を見積もる。fullWidthEm は全角1文字ぶんの幅。 */
+export function getEstimatedTextWidthEm(text: string, fullWidthEm: number): number {
+  let widthEm = 0;
+  for (const character of text) {
+    widthEm += FULL_WIDTH_CHARACTER_PATTERN.test(character)
+      ? fullWidthEm
+      : fullWidthEm * NARROW_CHARACTER_WIDTH_RATIO;
+  }
+
+  return widthEm;
+}
+
 export function getCenteredLabelBounds(
   center: OverlayPoint,
   lines: string[],
@@ -96,11 +114,11 @@ export function getCenteredLabelBounds(
   characterWidthEm: number,
   padding: number,
 ): OverlayBounds {
-  const longestLineLength = Math.max(
-    1,
-    ...lines.map((line) => Array.from(line).length),
+  const widestLineEm = Math.max(
+    characterWidthEm,
+    ...lines.map((line) => getEstimatedTextWidthEm(line, characterWidthEm)),
   );
-  const width = longestLineLength * fontSize * characterWidthEm;
+  const width = widestLineEm * fontSize;
   const firstOffset = centeredLineOffsetsEm[0] ?? 0;
   const lastOffset =
     centeredLineOffsetsEm[centeredLineOffsetsEm.length - 1] ?? firstOffset;

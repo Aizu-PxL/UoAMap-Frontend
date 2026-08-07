@@ -111,7 +111,7 @@ const reusedRouteQrPlaces: Place[] = [
   coordinates("main_gym", "campus", "体育館前", 390, 435),
   coordinates("main_node_32", "campus", "メイン通路管理棟前", 390, 528),
   coordinates("main_node_34", "campus", "メイン通路講堂前", 367, 590),
-  coordinates("main_node_36", "campus", "正門", 378, 655),
+  coordinates("main_node_36", "campus", "正門", 368, 652),
   coordinates("lh_entrance_west", "lh-1f", "講義棟西口出口", 116, 475),
   coordinates("sh_entrance_south1f", "sh-1f", "学生ホール売店出口", 51, 85),
   coordinates("sh_entrance_east", "sh-2f", "学生ホール東口出口", 125, 3),
@@ -167,6 +167,7 @@ const eventVenuePlaces: Place[] = [
   svg("ubic_room_3dtheater", "ubic-1f", "UBIC 3Dシアター", "room_3DTh"),
   svg("ubic_room_RLA", "ubic-1f", "UBIC 研究ラボエリア", "area_ResearchLab"),
   svg("ubic_room_mar", "ubic-1f", "UBIC 運動解析ルーム", "room_Motion"),
+  coordinates("ubic_room_exchange", "ubic-1f", "UBIC 交流スペース", 49, 49),
 ];
 
 export const places: Place[] = [

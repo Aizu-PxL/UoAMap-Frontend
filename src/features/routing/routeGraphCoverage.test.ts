@@ -343,12 +343,12 @@ describe("実生成Routeグラフcoverage", () => {
 
   test("生成グラフのノード・エッジ内訳を固定する", () => {
     expect(routeGraph.nodes.length).toEqual(350);
-    expect(routeGraph.edges.length).toEqual(447);
-    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(408);
+    expect(routeGraph.edges.length).toEqual(448);
+    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(409);
     expect(routeGraph.edges.filter((edge) => edge.kind === "transfer").length).toEqual(39);
   });
 
-  test("campus-all以外の全123 PlaceがRouteへ収録され講堂から到達可能", () => {
+  test("campus-all以外の全124 PlaceがRouteへ収録され講堂から到達可能", () => {
     const excludedPlaceIds = new Set(["campus-all"]);
     const expectedPlaceIds = places
       .filter((place) => !excludedPlaceIds.has(place.id))
@@ -359,7 +359,7 @@ describe("実生成Routeグラフcoverage", () => {
       .sort();
 
     expect(routedPlaceIds).toEqual(expectedPlaceIds);
-    expect(expectedPlaceIds.length).toEqual(123);
+    expect(expectedPlaceIds.length).toEqual(124);
     for (const placeId of expectedPlaceIds) {
       expect(
         findShortestRouteBetweenPlaces(routeGraph, "main_auditorium", placeId) ===

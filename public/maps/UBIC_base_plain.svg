@@ -744,6 +744,7 @@
              id="route_node_1"
              data-route-node=""
              data-kind="corridor"
+             data-place-id="ubic_room_exchange"
              cx="49"
              cy="49"
              r="2" />
