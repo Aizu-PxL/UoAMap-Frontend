@@ -10,8 +10,8 @@
       "kind": "fixed",
       "installationNote": "駐車場北",
       "floorId": "campus",
-      "x": 300,
-      "y": 310
+      "x": 307,
+      "y": 298
     },
     {
       "qrId": "Q002",
@@ -142,8 +142,8 @@
       "kind": "fixed",
       "installationNote": "中央階段前",
       "floorId": "campus",
-      "x": 398,
-      "y": 364
+      "x": 388,
+      "y": 377
     },
     {
       "qrId": "Q014",
@@ -495,7 +495,7 @@
       "installationNote": "研究棟北中央階段１階",
       "floorId": "rq-1f",
       "x": 162,
-      "y": 72
+      "y": 81
     },
     {
       "qrId": "Q046",
@@ -506,7 +506,7 @@
       "installationNote": "研究棟中央階段１階",
       "floorId": "rq-1f",
       "x": 163,
-      "y": 333
+      "y": 339
     },
     {
       "qrId": "Q047",
@@ -517,7 +517,7 @@
       "installationNote": "研究棟南中央階段１階",
       "floorId": "rq-1f",
       "x": 163,
-      "y": 592
+      "y": 599
     },
     {
       "qrId": "Q048",
@@ -879,8 +879,8 @@
       "kind": "fixed",
       "installationNote": "正門",
       "floorId": "campus",
-      "x": 378,
-      "y": 655
+      "x": 368,
+      "y": 652
     },
     {
       "qrId": "Q081",
@@ -978,8 +978,8 @@
       "kind": "fixed",
       "installationNote": "学生ホールきやれ",
       "floorId": "sh-1f",
-      "x": 43,
-      "y": 71
+      "x": 48,
+      "y": 64
     }
   ],
   "placeProposals": [
@@ -1133,8 +1133,8 @@
       "sheetId": "campus",
       "routeNodeId": "main_node_11",
       "floorId": "campus",
-      "x": 300,
-      "y": 310
+      "x": 307,
+      "y": 298
     },
     {
       "id": "main_node_15",
@@ -1160,8 +1160,8 @@
       "sheetId": "campus",
       "routeNodeId": "main_node_22",
       "floorId": "campus",
-      "x": 398,
-      "y": 364
+      "x": 388,
+      "y": 377
     },
     {
       "id": "main_node_4",
@@ -1377,7 +1377,7 @@
       "routeNodeId": "rq_stairs_midmid_1f",
       "floorId": "rq-1f",
       "x": 163,
-      "y": 333
+      "y": 339
     },
     {
       "id": "rq_stairs_midmid_2f",
@@ -1458,7 +1458,7 @@
       "routeNodeId": "rq_stairs_northmid_1f",
       "floorId": "rq-1f",
       "x": 162,
-      "y": 72
+      "y": 81
     },
     {
       "id": "rq_stairs_northmid_2f",
@@ -1539,7 +1539,7 @@
       "routeNodeId": "rq_stairs_southmid_1f",
       "floorId": "rq-1f",
       "x": 163,
-      "y": 592
+      "y": 599
     },
     {
       "id": "rq_stairs_southmid_2f",
