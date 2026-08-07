@@ -97,6 +97,36 @@ describe("mapViewBox", () => {
     ).toEqual({ x: 320, y: 210, width: 400, height: 200 });
   });
 
+  test("パンは表示viewBoxの15%ぶん外側の余白まで許可する", () => {
+    expect(
+      panMapViewBox(
+        original,
+        { x: 0, y: 0 },
+        { x: 999, y: 999 },
+        original,
+      ),
+    ).toEqual({ x: -20, y: 140, width: 800, height: 400 });
+    expect(
+      panMapViewBox(
+        original,
+        { x: 0, y: 0 },
+        { x: -999, y: -999 },
+        original,
+      ),
+    ).toEqual({ x: 220, y: 260, width: 800, height: 400 });
+  });
+
+  test("元地図より大きい表示viewBoxはパンせず中央固定する", () => {
+    expect(
+      panMapViewBox(
+        { x: 999, y: 999, width: 900, height: 450 },
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        original,
+      ),
+    ).toEqual({ x: 50, y: 175, width: 900, height: 450 });
+  });
+
   test("表示範囲は四辺を越えず、元地図より大きい場合は中央固定する", () => {
     expect(
       clampMapViewBoxPosition(

@@ -59,6 +59,7 @@ export function parseMapViewBox({
 }
 
 const MAX_ZOOM_SCALE = 6;
+const PAN_MARGIN_RATIO = 0.15;
 
 function clampMapViewBoxSize(width: number, original: MapViewBox) {
   const clampedWidth = Math.min(
@@ -74,19 +75,23 @@ function clampMapViewBoxSize(width: number, original: MapViewBox) {
 export function clampMapViewBoxPosition(
   viewBox: MapViewBox,
   original: MapViewBox,
+  marginRatio = 0,
 ): MapViewBox {
   const clampAxis = (
     position: number,
     size: number,
     originalPosition: number,
     originalSize: number,
-  ) =>
-    size >= originalSize
-      ? originalPosition - (size - originalSize) / 2
-      : Math.min(
-          Math.max(position, originalPosition),
-          originalPosition + originalSize - size,
-        );
+  ) => {
+    if (size > originalSize) {
+      return originalPosition - (size - originalSize) / 2;
+    }
+
+    const margin = size * marginRatio;
+    const minimumPosition = originalPosition - margin;
+    const maximumPosition = originalPosition + originalSize - size + margin;
+    return Math.min(Math.max(position, minimumPosition), maximumPosition);
+  };
 
   return {
     ...viewBox,
@@ -141,7 +146,7 @@ export function panMapViewBox(
     ...start,
     x: start.x + startPoint.x - currentPoint.x,
     y: start.y + startPoint.y - currentPoint.y,
-  }, original);
+  }, original, PAN_MARGIN_RATIO);
 }
 
 export function getProportionalMapViewBox(
