@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import type { MapLabel } from "./mapLabels";
-import type { EventMarkerPlacement } from "./mapMarkerPresentation";
+import type {
+  EventMarkerPlacement,
+  MapMarkerPlacement,
+  PinMarkerPlacement,
+} from "./mapMarkerPresentation";
 import { createMapOverlayLayout } from "./mapOverlayLayout";
 import type { OverlayBounds } from "./mapOverlayGeometry";
 
@@ -23,7 +27,7 @@ function label(
 
 function layout(options: {
   mapLabels: MapLabel[];
-  markers: EventMarkerPlacement[];
+  markers: MapMarkerPlacement[];
   userUnitsPerPixel: number;
   isCampusOverview?: boolean;
   buildingBounds?: OverlayBounds | null;
@@ -34,7 +38,12 @@ function layout(options: {
     markers: options.markers,
     userUnitsPerPixel: options.userUnitsPerPixel,
     isCampusOverview: options.isCampusOverview ?? false,
-    pinExclusionBounds: [],
+    getPinExclusionBounds: (marker: PinMarkerPlacement) => ({
+      left: marker.coordinates.x - 12,
+      top: marker.coordinates.y - 48,
+      right: marker.coordinates.x + 12,
+      bottom: marker.coordinates.y,
+    }),
     resolveElementBounds: () => options.buildingBounds ?? null,
     resolvePlaceBounds: () => options.placeBounds ?? null,
   });
@@ -173,5 +182,106 @@ describe("createMapOverlayLayout", () => {
     expect(coordinates?.y).toBeGreaterThanOrEqual(buildingBounds.top);
     expect(coordinates?.y).toBeLessThanOrEqual(buildingBounds.bottom);
     expect(renderedLabelIds(result)).toEqual(["text_StudentHall"]);
+  });
+
+  test("個別イベントの最終中心へ目的地pinを置きバッジを最終出力から除く", () => {
+    const roomLabel = label("text_room", ["267"], { x: 70, y: 80 });
+    const eventMarker: EventMarkerPlacement = {
+      type: "event",
+      coordinates: { x: 70, y: 80 },
+      markerLabel: "会場のイベントを表示",
+      action: { kind: "event", eventKey: "E1" },
+      placeId: "venue",
+      eventKey: "E1",
+      colorKey: "default",
+    };
+    const badgeOnly = layout({
+      mapLabels: [roomLabel],
+      markers: [eventMarker],
+      userUnitsPerPixel: 1,
+    });
+    const replaced = layout({
+      mapLabels: [roomLabel],
+      markers: [
+        eventMarker,
+        {
+          type: "pin",
+          coordinates: { x: 5, y: 6 },
+          markerKind: "destination",
+          placeId: "venue",
+          replacesEventMarker: { kind: "place", placeId: "venue" },
+        },
+      ],
+      userUnitsPerPixel: 1,
+    });
+
+    expect(replaced.markers).toEqual([
+      {
+        type: "pin",
+        coordinates: badgeOnly.markers[0]?.coordinates,
+        markerKind: "destination",
+        placeId: "venue",
+        replacesEventMarker: { kind: "place", placeId: "venue" },
+      },
+    ]);
+    expect(replaced.markers.some((marker) => marker.type === "event")).toEqual(false);
+    expect(renderedLabelIds(replaced)).toEqual(["text_room"]);
+  });
+
+  test("キャンパス集約バッジの最終中心へ目的地pinを置換する", () => {
+    const studentHall = label("text_StudentHall", ["学生ホール"], { x: 100, y: 200 });
+    const badgeOnly = layout({
+      mapLabels: [studentHall],
+      markers: [studentHallBadge],
+      userUnitsPerPixel: 2,
+      isCampusOverview: true,
+      buildingBounds: { left: 0, top: 0, right: 300, bottom: 400 },
+    });
+    const replaced = layout({
+      mapLabels: [studentHall],
+      markers: [
+        studentHallBadge,
+        {
+          type: "pin",
+          coordinates: { x: 10, y: 20 },
+          markerKind: "destination",
+          placeId: "student-hall",
+          replacesEventMarker: {
+            kind: "building",
+            buildingId: "building_StudentHall",
+          },
+        },
+      ],
+      userUnitsPerPixel: 2,
+      isCampusOverview: true,
+      buildingBounds: { left: 0, top: 0, right: 300, bottom: 400 },
+    });
+
+    expect(replaced.markers.length).toEqual(1);
+    expect(replaced.markers[0]).toMatchObject({
+      type: "pin",
+      coordinates: badgeOnly.markers[0]?.coordinates,
+      markerKind: "destination",
+    });
+  });
+
+  test("置換対象のイベントがなければ目的地pinのPlace座標を維持する", () => {
+    const pinLabel = label("text_pin", ["目的地"], { x: 25, y: 10 });
+    const result = layout({
+      mapLabels: [pinLabel],
+      markers: [
+        {
+          type: "pin",
+          coordinates: { x: 25, y: 30 },
+          markerKind: "destination",
+          placeId: "no-event",
+          replacesEventMarker: { kind: "place", placeId: "no-event" },
+        },
+      ],
+      userUnitsPerPixel: 1,
+    });
+
+    expect(result.markers[0]?.coordinates).toEqual({ x: 25, y: 30 });
+    expect(renderedLabelIds(result)).toEqual([]);
   });
 });

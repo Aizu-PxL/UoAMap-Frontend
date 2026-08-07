@@ -160,9 +160,7 @@ function buildMapOverlayLayout({
     markers,
     userUnitsPerPixel,
     isCampusOverview: floorId === DEFAULT_FLOOR_ID,
-    pinExclusionBounds: markers
-      .filter((marker) => marker.type === "pin")
-      .map((marker) => getPinExclusionBounds(marker, userUnitsPerPixel)),
+    getPinExclusionBounds: (marker) => getPinExclusionBounds(marker, userUnitsPerPixel),
     resolveElementBounds: (elementId) => getSvgElementBounds(elementId, svgElement),
     resolvePlaceBounds: (placeId) => {
       const place = getPlace(placeId);

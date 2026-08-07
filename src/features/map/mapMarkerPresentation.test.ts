@@ -330,6 +330,50 @@ describe("createMapMarkerPresentation", () => {
     ]);
   });
 
+  test("目的地と重なる個別イベントを配置用に残し置換対象をpinへ保持する", () => {
+    expect(
+      createPresentation({
+        destinationPlace: placeById.get("room-a"),
+        events: [event("EA", "room-a")],
+      }),
+    ).toEqual([
+      {
+        type: "event",
+        coordinates: { x: 1, y: 2 },
+        markerLabel: "研究棟 Aのイベントを表示: イベントEA",
+        action: { kind: "event", eventKey: "EA" },
+        placeId: "room-a",
+        eventKey: "EA",
+        eventId: "EA",
+        colorKey: "explanation",
+      },
+      {
+        type: "pin",
+        coordinates: { x: 1, y: 2 },
+        markerKind: "destination",
+        placeId: "room-a",
+        replacesEventMarker: { kind: "place", placeId: "room-a" },
+      },
+    ]);
+  });
+
+  test("現在地または注目ピンが同時に重なる場合はイベントを従来どおり抑止する", () => {
+    const room = placeById.get("room-a");
+    const presentation = createPresentation({
+      currentPlace: room,
+      destinationPlace: room,
+      focusPlace: room,
+      events: [event("EA", "room-a")],
+    });
+
+    expect(presentation.filter((marker) => marker.type === "event")).toEqual([]);
+    expect(presentation.map((marker) => marker.coordinates)).toEqual([
+      { x: 1, y: 2 },
+      { x: 1, y: 2 },
+      { x: 1, y: 2 },
+    ]);
+  });
+
   test("別フロアでは表示中フロアのcurrentまたはdestination pinだけを描画する", () => {
     const currentPlace = placeById.get("room-a");
     const destinationPlace = placeById.get("room-rq2");
@@ -693,6 +737,36 @@ describe("createMapMarkerPresentation", () => {
 
     expect(presentation).toEqual([
       { type: "pin", coordinates: { x: 10, y: 20 }, markerKind: "current", placeId: "rq" },
+    ]);
+  });
+
+  test("キャンパス建物の目的地pinへ集約バッジの置換対象を保持する", () => {
+    expect(
+      createPresentation({
+        destinationPlace: placeById.get("rq"),
+        floorId: "campus",
+        events: [event("R1", "room-a")],
+      }),
+    ).toEqual([
+      {
+        type: "event",
+        coordinates: { x: 10, y: 20 },
+        markerLabel: "研究棟、イベント1件。建物を表示",
+        action: { kind: "floor", floorId: "rq-1f" },
+        buildingId: "building_ResearchQuad",
+        eventCount: 1,
+        colorKey: "study",
+      },
+      {
+        type: "pin",
+        coordinates: { x: 10, y: 20 },
+        markerKind: "destination",
+        placeId: "rq",
+        replacesEventMarker: {
+          kind: "building",
+          buildingId: "building_ResearchQuad",
+        },
+      },
     ]);
   });
 });

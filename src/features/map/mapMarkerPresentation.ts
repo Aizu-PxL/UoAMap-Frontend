@@ -82,6 +82,9 @@ export type PinMarkerPlacement = {
   coordinates: OverlayPoint;
   markerKind: "current" | "destination" | "focus";
   placeId: string;
+  replacesEventMarker?:
+    | { kind: "place"; placeId: string }
+    | { kind: "building"; buildingId: CampusBuildingId };
 };
 
 export type MapMarkerPlacement = EventMarkerPlacement | PinMarkerPlacement;
@@ -305,6 +308,8 @@ export interface EventMarkerLayout {
   markers: MapMarkerPlacement[];
   /** バッジのアンカーに使ったラベルID。バッジによる衝突カリングから保護する */
   anchoredLabelIds: Set<string>;
+  /** 最終出力に残るバッジだけのアンカー保護を選べるよう、対象別にも保持する */
+  anchoredLabelIdsByMarkerKey: Map<string, string>;
 }
 
 /** 確定済みラベルと外形bboxをもとにイベントバッジの最終座標を決める。 */
@@ -322,6 +327,7 @@ export function layoutEventMarkers({
   );
   const labelBounds = labelPlacements.map((placement) => placement.bounds);
   const anchoredLabelIds = new Set<string>();
+  const anchoredLabelIdsByMarkerKey = new Map<string, string>();
 
   // 建物(俯瞰)・部屋(フロア)のどちらも「アンカーラベルの直上 → 外形内へ押し戻し」で揃える。
   const anchorWithin = (
@@ -334,6 +340,14 @@ export function layoutEventMarkers({
       return null;
     }
     anchoredLabelIds.add(anchorLabel.id);
+    const markerKey = marker.buildingId
+      ? `building:${marker.buildingId}`
+      : marker.placeId
+        ? `place:${marker.placeId}`
+        : null;
+    if (markerKey) {
+      anchoredLabelIdsByMarkerKey.set(markerKey, anchorLabel.id);
+    }
     return anchorEventMarkerWithinBounds(
       marker,
       anchorLabel,
@@ -371,7 +385,7 @@ export function layoutEventMarkers({
     );
   });
 
-  return { markers: laidOutMarkers, anchoredLabelIds };
+  return { markers: laidOutMarkers, anchoredLabelIds, anchoredLabelIdsByMarkerKey };
 }
 
 type CreateMapMarkerPresentationOptions = {
@@ -497,10 +511,11 @@ export function createMapMarkerPresentation({
       colorKeys: Set<EventMarkerColorKey>;
     }
   >();
-  const pinPlaces = [currentPlace, destinationPlace, focusPlace].filter(
+  const blockingPinPlaces = [currentPlace, focusPlace].filter(
     (place): place is Place => place !== null,
   );
-  const pinPlaceIds = new Set(pinPlaces.map((place) => place.id));
+  const blockingPinPlaceIds = new Set(blockingPinPlaces.map((place) => place.id));
+  let destinationReplacement: PinMarkerPlacement["replacesEventMarker"];
 
   for (const event of events) {
     const group = eventsByPlaceId.get(event.placeId);
@@ -516,7 +531,7 @@ export function createMapMarkerPresentation({
 
   if (floorId === DEFAULT_FLOOR_ID) {
     const occupiedBuildingIds = new Set(
-      pinPlaces
+      blockingPinPlaces
         .filter((place) => place.floorId === DEFAULT_FLOOR_ID)
         .map((place) => resolveCampusBuildingId(place, resolveFloorSheetId))
         .filter((buildingId): buildingId is CampusBuildingId => buildingId !== null),
@@ -563,6 +578,13 @@ export function createMapMarkerPresentation({
         eventCount,
         colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
+
+      if (
+        destinationPlace?.floorId === DEFAULT_FLOOR_ID &&
+        resolveCampusBuildingId(destinationPlace, resolveFloorSheetId) === buildingId
+      ) {
+        destinationReplacement = { kind: "building", buildingId };
+      }
     }
 
     for (const [placeId, { events: placeEvents, eventCount, colorKeys }] of eventsByPlaceId) {
@@ -571,7 +593,7 @@ export function createMapMarkerPresentation({
         !place ||
         place.floorId !== DEFAULT_FLOOR_ID ||
         resolveCampusBuildingId(place, resolveFloorSheetId) !== null ||
-        pinPlaceIds.has(placeId)
+        blockingPinPlaceIds.has(placeId)
       ) {
         continue;
       }
@@ -594,11 +616,15 @@ export function createMapMarkerPresentation({
         eventCount,
         colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
+
+      if (destinationPlace?.id === placeId) {
+        destinationReplacement = { kind: "place", placeId };
+      }
     }
   } else {
     for (const [placeId, { events: placeEvents, colorKeys }] of eventsByPlaceId) {
       const place = resolvePlace(placeId);
-      if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
+      if (!place || place.floorId !== floorId || blockingPinPlaceIds.has(placeId)) {
         continue;
       }
       const coordinates = resolveEventCoordinates(place, resolveCoordinates);
@@ -619,6 +645,10 @@ export function createMapMarkerPresentation({
         eventId: selectedEvent.id,
         colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
+
+      if (destinationPlace?.id === placeId) {
+        destinationReplacement = { kind: "place", placeId };
+      }
     }
   }
 
@@ -640,6 +670,9 @@ export function createMapMarkerPresentation({
       coordinates,
       markerKind: pin.markerKind,
       placeId: pin.place.id,
+      ...(pin.markerKind === "destination" && destinationReplacement
+        ? { replacesEventMarker: destinationReplacement }
+        : {}),
     });
   }
 
