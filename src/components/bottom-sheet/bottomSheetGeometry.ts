@@ -1,6 +1,7 @@
 export const bottomSheetSnapPoints = [22, 58, 82] as const;
 export type BottomSheetSnapPoint = (typeof bottomSheetSnapPoints)[number];
 export const initialBottomSheetSnapPoint = 58;
+export const BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS = 0.5;
 
 export function clampBottomSheetHeight(value: number): number {
   return Math.min(
@@ -24,10 +25,30 @@ export function getBottomSheetDragHeight({
   return clampBottomSheetHeight(startHeight + delta);
 }
 
-export function getNearestBottomSheetSnapPoint(value: number): number {
+export function getNearestBottomSheetSnapPoint(
+  value: number,
+): BottomSheetSnapPoint {
   return bottomSheetSnapPoints.reduce((nearest, point) =>
     Math.abs(point - value) < Math.abs(nearest - value) ? point : nearest,
   );
+}
+
+export function getReleaseBottomSheetSnapPoint({
+  height,
+  velocity,
+}: {
+  height: number;
+  velocity: number;
+}): BottomSheetSnapPoint {
+  if (velocity > BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS) {
+    return bottomSheetSnapPoints[0];
+  }
+
+  if (velocity < -BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS) {
+    return bottomSheetSnapPoints[bottomSheetSnapPoints.length - 1];
+  }
+
+  return getNearestBottomSheetSnapPoint(height);
 }
 
 export function getNextBottomSheetSnapPoint(value: number): number {

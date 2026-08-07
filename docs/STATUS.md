@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(QRナビゲーション未選択色調整)
+最終更新: 2026-08-07(BottomSheetフリックスナップ)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -38,6 +38,16 @@
 最新ルート開始時現在地ピン統一ブリーフ: `docs/tasks/29-current-marker-route-start.md`（未コミット）
 
 最新QRナビゲーション色調整ブリーフ: `docs/tasks/33-qr-nav-inactive-color.md`（未コミット）
+
+最新BottomSheetフリックスナップブリーフ: `docs/tasks/34-bottom-sheet-fling-snap.md`（未コミット）
+
+## BottomSheetフリックスナップ
+
+ドラッグ終了時の直近100ms以内のpointermoveサンプル（位置・タイムスタンプ）から下向きを正とするpx/msの速度を算出し、閾値`0.5 px/ms`を厳密に超えた場合は下方向を22svh、上方向を82svhへ直接スナップする。閾値以下は従来の最寄りスナップと下側優先タイブレークを維持する。pointer cancelはフリック扱いせず、`snapRequest`、`expandRequestKey`、タブ切替、ダブルクリックも変更していない。
+
+日本語名の4テストで下方向フリック、上方向フリック、閾値未満、閾値ちょうどを固定した。`bun test`は143 tests / 0 fail / 1,062 assertions、`bun run build`、`bun run verify:places`（124 Place / 89 QR / 61 Event）、`git diff --check`はPASSした。CSS、ルーティング、データ、SVG地図、API契約、Figmaは変更していない。
+
+402×874pxブラウザ確認を実施した（Codexセッションではsandboxの`listen EPERM`で未実施だったものをリードが補完）。合成PointerEventで再現し、58svhからの高速下フリック→22svh、22svhからの高速上フリック→82svh、82svhからの高速下フリック→58を飛ばして22svh、82svhからの低速ドラッグ（約0.08 px/ms、終了位置約48svh）→最寄り58svhを確認。console error 0件。初回の会話履歴なし読み取り専用レビューではコード上の指摘なし。STATUS未追記のP2は本追記で解消した。
 
 ## QRナビゲーション未選択色の調整
 

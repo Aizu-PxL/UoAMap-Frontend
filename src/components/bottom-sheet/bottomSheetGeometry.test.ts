@@ -1,10 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import {
+  BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS,
   clampBottomSheetHeight,
   getBottomSheetDragHeight,
   getExpandedBottomSheetHeight,
   getNearestBottomSheetSnapPoint,
   getNextBottomSheetSnapPoint,
+  getReleaseBottomSheetSnapPoint,
 } from "./bottomSheetGeometry";
 
 describe("bottomSheetGeometry", () => {
@@ -51,6 +53,46 @@ describe("bottomSheetGeometry", () => {
         getNearestBottomSheetSnapPoint,
       ),
     ).toEqual([22, 22, 22, 58, 58, 58, 82, 82, 82]);
+  });
+
+  test("82相当の高さから閾値超の下方向速度なら58を飛ばして22へスナップする", () => {
+    expect(
+      getReleaseBottomSheetSnapPoint({
+        height: 80,
+        velocity: BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS + 0.01,
+      }),
+    ).toEqual(22);
+  });
+
+  test("22相当の高さから閾値超の上方向速度なら82へスナップする", () => {
+    expect(
+      getReleaseBottomSheetSnapPoint({
+        height: 24,
+        velocity: -BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS - 0.01,
+      }),
+    ).toEqual(82);
+  });
+
+  test("閾値未満の速度なら従来どおり最寄りスナップ点を選ぶ", () => {
+    expect(
+      getReleaseBottomSheetSnapPoint({
+        height: 60,
+        velocity: BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS - 0.01,
+      }),
+    ).toEqual(58);
+  });
+
+  test("閾値ちょうどはフリック扱いせず最寄りスナップ点を選ぶ", () => {
+    expect([
+      getReleaseBottomSheetSnapPoint({
+        height: 80,
+        velocity: BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS,
+      }),
+      getReleaseBottomSheetSnapPoint({
+        height: 24,
+        velocity: -BOTTOM_SHEET_FLING_VELOCITY_THRESHOLD_PX_PER_MS,
+      }),
+    ]).toEqual([82, 22]);
   });
 
   test("double-clickはnearestを基準に22→58→82→22と循環する", () => {
