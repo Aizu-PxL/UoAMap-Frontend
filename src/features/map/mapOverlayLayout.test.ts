@@ -27,6 +27,7 @@ function layout(options: {
   userUnitsPerPixel: number;
   isCampusOverview?: boolean;
   buildingBounds?: OverlayBounds | null;
+  placeBounds?: OverlayBounds | null;
 }) {
   return createMapOverlayLayout({
     mapLabels: options.mapLabels,
@@ -35,6 +36,7 @@ function layout(options: {
     isCampusOverview: options.isCampusOverview ?? false,
     pinExclusionBounds: [],
     resolveElementBounds: () => options.buildingBounds ?? null,
+    resolvePlaceBounds: () => options.placeBounds ?? null,
   });
 }
 
@@ -100,6 +102,30 @@ describe("createMapOverlayLayout", () => {
 
     expect(renderedLabelIds(result)).toEqual(["text_room"]);
     expect(result.markers[0]?.coordinates.y).toBeLessThan(0);
+  });
+
+  test("狭い部屋でバッジと重なってもアンカー先の部屋名は残す", () => {
+    const roomLabel = label("text_room", ["144"], { x: 50, y: 16.5 });
+    const otherLabel = label("text_other", ["143"], { x: 50, y: -16 });
+    const result = layout({
+      mapLabels: [roomLabel, otherLabel],
+      markers: [
+        {
+          type: "event",
+          coordinates: { x: 50, y: 16.5 },
+          markerLabel: "144のイベントを表示",
+          action: { kind: "event", eventKey: "E1" },
+          placeId: "room",
+          eventKey: "E1",
+          colorKey: "default",
+        },
+      ],
+      userUnitsPerPixel: 1,
+      placeBounds: { left: 0, top: 0, right: 100, bottom: 33 },
+    });
+
+    // アンカー先の144は残り、はみ出し先の隣室143はバッジに譲る
+    expect(renderedLabelIds(result)).toEqual(["text_room"]);
   });
 
   test("クランプしていない集約バッジはアンカー先建物名を残し、他のラベルは落とす", () => {

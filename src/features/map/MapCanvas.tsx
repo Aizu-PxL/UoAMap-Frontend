@@ -158,6 +158,12 @@ function buildMapOverlayLayout({
       .filter((marker) => marker.type === "pin")
       .map((marker) => getPinExclusionBounds(marker, userUnitsPerPixel)),
     resolveElementBounds: (elementId) => getSvgElementBounds(elementId, svgElement),
+    resolvePlaceBounds: (placeId) => {
+      const place = getPlace(placeId);
+      return place?.mapping === "svg"
+        ? getSvgElementBounds(place.svgElementId, svgElement)
+        : null;
+    },
   });
 }
 

@@ -157,55 +157,76 @@ function clampToRange(value: number, min: number, max: number, fallback: number)
   return min > max ? fallback : Math.min(Math.max(value, min), max);
 }
 
+/** 矩形内に中心があるラベルのうち、矩形の中心に最も近いものを返す。 */
+export function findLabelInsideBounds(
+  labels: MapLabel[],
+  bounds: OverlayBounds,
+): MapLabel | null {
+  const centerX = (bounds.left + bounds.right) / 2;
+  const centerY = (bounds.top + bounds.bottom) / 2;
+  const distance = (label: MapLabel) =>
+    (label.center.x - centerX) ** 2 + (label.center.y - centerY) ** 2;
+
+  return labels
+    .filter(
+      (label) =>
+        label.center.x >= bounds.left &&
+        label.center.x <= bounds.right &&
+        label.center.y >= bounds.top &&
+        label.center.y <= bounds.bottom,
+    )
+    .reduce<MapLabel | null>(
+      (nearest, label) =>
+        nearest === null || distance(label) < distance(nearest) ? label : nearest,
+      null,
+    );
+}
+
 /**
- * 集約バッジを建物名ラベルの直上へ置いたうえで、建物の外形bbox内へ押し戻す。
+ * バッジをアンカーラベル(俯瞰なら建物名、フロアなら部屋名)の直上へ置いたうえで、
+ * その外形bbox(建物 or 部屋)の中へ押し戻す。
  * 直上オフセットは画面固定量なので、引き(userUnitsPerPixelが大)ではそのままだと外形を飛び出す。
  *
  * 押し戻しの制約は2段階。バッジ全体(インク範囲)を外形内に収めるのが基本だが、
- * それだと建物名の文字に乗ってしまう小さな建物では、**アンカー点が外形内にある**ことだけを
- * 保証して文字の直上へ戻す。建物名を消さずに、バッジが建物へ属して見える状態を優先する。
+ * それだと文字に乗ってしまう小さな建物・部屋では、**アンカー点が外形内にある**ことだけを
+ * 保証し、直上・直下のうち外形からのはみ出しが少ない側へ置く。
+ * 文字を消さずに、バッジがその建物・部屋へ属して見える状態を優先する。
  */
-function anchorAggregateEventMarker(
+function anchorEventMarkerWithinBounds(
   marker: EventMarkerPlacement,
-  buildingId: CampusBuildingId,
-  labelById: Map<string, MapLabel>,
-  labelBoundsById: Map<string, OverlayBounds>,
-  buildingBounds: OverlayBounds | null,
+  anchorLabel: MapLabel,
+  anchorLabelBounds: OverlayBounds | undefined,
+  containerBounds: OverlayBounds | null,
   userUnitsPerPixel: number,
+  /** 左右位置の基準。俯瞰の集約バッジは建物名、フロアはルートノードのx */
+  desiredX: number,
 ): EventMarkerPlacement {
-  const labelId = campusBuildingLabelIdByBuildingId[buildingId];
-  const label = labelById.get(labelId);
-  const desired = label
-    ? {
-        x: label.center.x,
-        y:
-          label.center.y -
-          (getLabelHalfHeightPx(label) + CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX) *
-            userUnitsPerPixel,
-      }
-    : marker.coordinates;
-
-  if (!buildingBounds) {
+  const desired = {
+    x: desiredX,
+    y:
+      anchorLabel.center.y -
+      (getLabelHalfHeightPx(anchorLabel) + CAMPUS_EVENT_MARKER_LABEL_CLEARANCE_PX) *
+        userUnitsPerPixel,
+  };
+  if (!containerBounds) {
     return { ...marker, coordinates: desired };
   }
 
   const ink = getInkOffsets(marker, userUnitsPerPixel);
-  const centerX = (buildingBounds.left + buildingBounds.right) / 2;
   const x = clampToRange(
     desired.x,
-    buildingBounds.left - ink.left,
-    buildingBounds.right - ink.right,
-    centerX - (ink.left + ink.right) / 2,
+    containerBounds.left - ink.left,
+    containerBounds.right - ink.right,
+    (containerBounds.left + containerBounds.right) / 2 - (ink.left + ink.right) / 2,
   );
   const softY = clampToRange(
     desired.y,
-    buildingBounds.top - ink.top,
-    buildingBounds.bottom - ink.bottom,
-    (buildingBounds.top + buildingBounds.bottom) / 2 - (ink.top + ink.bottom) / 2,
+    containerBounds.top - ink.top,
+    containerBounds.bottom - ink.bottom,
+    (containerBounds.top + containerBounds.bottom) / 2 - (ink.top + ink.bottom) / 2,
   );
-  const labelBounds = labelBoundsById.get(labelId);
   const hitsLabel = (candidateY: number) =>
-    labelBounds !== undefined &&
+    anchorLabelBounds !== undefined &&
     overlayBoundsIntersect(
       getAnchoredOverlayBounds(
         getEventMarkerLocalInkBounds(marker),
@@ -213,31 +234,18 @@ function anchorAggregateEventMarker(
         userUnitsPerPixel,
         EVENT_MARKER_LOCAL_ANCHOR,
       ),
-      labelBounds,
+      anchorLabelBounds,
     );
 
   let y = softY;
-  if (labelBounds && hitsLabel(softY)) {
-    // 建物名が建物の上端寄りだと直上に逃げ場がない。その場合は文字の直下へ回す。
+  if (anchorLabelBounds && hitsLabel(softY)) {
+    // 押し戻した結果アンカー先の文字に乗るなら、文字の直上まで戻す。
+    // 外形の上端より上へは出さない(アンカー点は必ず外形内に残す)。
     const clearance = EVENT_MARKER_LABEL_CLEARANCE_PX * userUnitsPerPixel;
-    const above = labelBounds.top - clearance - ink.bottom;
-    const below = labelBounds.bottom + clearance - ink.top;
-    const overhang = (candidate: number) =>
-      Math.max(0, buildingBounds.top - (candidate + ink.top)) +
-      Math.max(0, candidate + ink.bottom - buildingBounds.bottom);
-    // アンカーが外形内に残る候補のうち、外形からのはみ出しが最小のものを選ぶ
-    const clearCandidates = [above, below].filter(
-      (candidate) =>
-        candidate >= buildingBounds.top &&
-        candidate <= buildingBounds.bottom &&
-        !hitsLabel(candidate),
+    y = Math.max(
+      anchorLabelBounds.top - clearance - ink.bottom,
+      containerBounds.top,
     );
-    y =
-      clearCandidates.length > 0
-        ? clearCandidates.reduce((best, candidate) =>
-            overhang(candidate) < overhang(best) ? candidate : best,
-          )
-        : Math.max(above, buildingBounds.top);
   }
 
   return { ...marker, coordinates: { x, y } };
@@ -287,39 +295,83 @@ export interface LayoutEventMarkersOptions {
   labelPlacements: MapLabelPlacement[];
   mapLabels: MapLabel[];
   userUnitsPerPixel: number;
+  /** 建物SVG要素の外形bbox(俯瞰の集約バッジ用) */
   resolveElementBounds: (elementId: string) => OverlayBounds | null;
+  /** Placeに対応するSVG要素(部屋)の外形bbox。座標指定Placeなどはnull */
+  resolvePlaceBounds: (placeId: string) => OverlayBounds | null;
 }
 
-/** 確定済みラベルを避けるようにイベントバッジの最終座標を決める。 */
+export interface EventMarkerLayout {
+  markers: MapMarkerPlacement[];
+  /** バッジのアンカーに使ったラベルID。バッジによる衝突カリングから保護する */
+  anchoredLabelIds: Set<string>;
+}
+
+/** 確定済みラベルと外形bboxをもとにイベントバッジの最終座標を決める。 */
 export function layoutEventMarkers({
   markers,
   labelPlacements,
   mapLabels,
   userUnitsPerPixel,
   resolveElementBounds,
-}: LayoutEventMarkersOptions): MapMarkerPlacement[] {
+  resolvePlaceBounds,
+}: LayoutEventMarkersOptions): EventMarkerLayout {
   const labelById = new Map(mapLabels.map((label) => [label.id, label]));
   const labelBoundsById = new Map(
     labelPlacements.map((placement) => [placement.label.id, placement.bounds]),
   );
   const labelBounds = labelPlacements.map((placement) => placement.bounds);
+  const anchoredLabelIds = new Set<string>();
 
-  return markers.map((marker) => {
+  // 建物(俯瞰)・部屋(フロア)のどちらも「アンカーラベルの直上 → 外形内へ押し戻し」で揃える。
+  const anchorWithin = (
+    marker: EventMarkerPlacement,
+    anchorLabel: MapLabel | null,
+    containerBounds: OverlayBounds | null,
+    desiredX: number,
+  ): MapMarkerPlacement | null => {
+    if (!anchorLabel) {
+      return null;
+    }
+    anchoredLabelIds.add(anchorLabel.id);
+    return anchorEventMarkerWithinBounds(
+      marker,
+      anchorLabel,
+      labelBoundsById.get(anchorLabel.id),
+      containerBounds,
+      userUnitsPerPixel,
+      desiredX,
+    );
+  };
+
+  const laidOutMarkers = markers.map((marker) => {
     if (marker.type !== "event") {
       return marker;
     }
+
     if (marker.buildingId) {
-      return anchorAggregateEventMarker(
-        marker,
-        marker.buildingId,
-        labelById,
-        labelBoundsById,
-        resolveElementBounds(marker.buildingId),
-        userUnitsPerPixel,
+      const buildingLabel =
+        labelById.get(campusBuildingLabelIdByBuildingId[marker.buildingId]) ?? null;
+      return (
+        anchorWithin(
+          marker,
+          buildingLabel,
+          resolveElementBounds(marker.buildingId),
+          buildingLabel?.center.x ?? marker.coordinates.x,
+        ) ?? marker
       );
     }
-    return escapeEventMarkerFromLabels(marker, labelBounds, userUnitsPerPixel);
+
+    // フロアの個別バッジはルートノードのxを維持する(部屋からはみ出すときだけ左右クランプ)
+    const placeBounds = marker.placeId ? resolvePlaceBounds(marker.placeId) : null;
+    const roomLabel = placeBounds ? findLabelInsideBounds(mapLabels, placeBounds) : null;
+    return (
+      anchorWithin(marker, roomLabel, placeBounds, marker.coordinates.x) ??
+      escapeEventMarkerFromLabels(marker, labelBounds, userUnitsPerPixel)
+    );
   });
+
+  return { markers: laidOutMarkers, anchoredLabelIds };
 }
 
 type CreateMapMarkerPresentationOptions = {

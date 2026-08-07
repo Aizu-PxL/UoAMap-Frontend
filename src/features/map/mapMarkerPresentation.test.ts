@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { Event, Place } from "../../data/types";
 import {
   createMapMarkerPresentation,
+  EVENT_MARKER_RADIUS,
   getEventMarkerInkBounds,
   layoutEventMarkers,
   type EventMarkerPlacement,
@@ -49,12 +50,13 @@ function labelPlacement(
   };
 }
 
-function layout(options: {
+function layoutAll(options: {
   markers: MapMarkerPlacement[];
   labels?: MapLabel[];
   labelPlacements?: MapLabelPlacement[];
   userUnitsPerPixel: number;
   buildingBounds?: OverlayBounds | null;
+  placeBounds?: OverlayBounds | null;
 }) {
   return layoutEventMarkers({
     markers: options.markers,
@@ -62,7 +64,12 @@ function layout(options: {
     mapLabels: options.labels ?? [],
     userUnitsPerPixel: options.userUnitsPerPixel,
     resolveElementBounds: () => options.buildingBounds ?? null,
+    resolvePlaceBounds: () => options.placeBounds ?? null,
   });
+}
+
+function layout(options: Parameters<typeof layoutAll>[0]) {
+  return layoutAll(options).markers;
 }
 
 const studentHallBadge: EventMarkerPlacement = {
@@ -428,6 +435,106 @@ describe("createMapMarkerPresentation", () => {
         placement.bounds,
       ),
     ).toEqual(false);
+  });
+
+  test("部屋の外形が取れる会場バッジは部屋bbox内に収め、部屋名も避ける", () => {
+    const roomBounds = { left: 0, top: 0, right: 100, bottom: 80 };
+    const roomLabel = label("text_room", ["267"], { x: 50, y: 40 });
+    const placement = labelPlacement(roomLabel, 1);
+    const marker = layout({
+      // ルートノードは部屋名(x=50)から少しずれた位置にある
+      markers: [{ ...individualMarker, placeId: "room", coordinates: { x: 42, y: 40 } }],
+      labels: [roomLabel],
+      labelPlacements: [placement],
+      userUnitsPerPixel: 1,
+      placeBounds: roomBounds,
+    })[0];
+
+    if (!marker || marker.type !== "event") {
+      throw new Error("会場バッジが生成されませんでした");
+    }
+    // xはルートノードのまま。部屋名のxへ寄せない
+    expect(marker.coordinates.x).toEqual(42);
+    const ink = getEventMarkerInkBounds(marker, 1);
+    expect(ink.left).toBeGreaterThanOrEqual(roomBounds.left);
+    expect(ink.top).toBeGreaterThanOrEqual(roomBounds.top);
+    expect(ink.right).toBeLessThanOrEqual(roomBounds.right);
+    expect(ink.bottom).toBeLessThanOrEqual(roomBounds.bottom);
+    expect(overlayBoundsIntersect(ink, placement.bounds)).toEqual(false);
+  });
+
+  test("部屋の幅が足りない場合だけxを部屋bbox内へクランプする", () => {
+    // 幅26の部屋にインク幅22のバッジ。ノードのx=4では左へはみ出すのでクランプされる
+    const roomBounds = { left: 0, top: 0, right: 26, bottom: 80 };
+    const roomLabel = label("text_room", ["127"], { x: 13, y: 40 });
+    const marker = layout({
+      markers: [{ ...individualMarker, placeId: "room", coordinates: { x: 4, y: 40 } }],
+      labels: [roomLabel],
+      labelPlacements: [labelPlacement(roomLabel, 1)],
+      userUnitsPerPixel: 1,
+      placeBounds: roomBounds,
+    })[0];
+
+    const ink = marker?.type === "event" ? getEventMarkerInkBounds(marker, 1) : null;
+    expect(ink?.left).toBeGreaterThanOrEqual(roomBounds.left);
+    expect(ink?.right).toBeLessThanOrEqual(roomBounds.right);
+  });
+
+  test("バッジと部屋名が両立しない狭い部屋でもアンカー点は部屋bbox内に残す", () => {
+    // 高さ33の部屋にバッジ22と文字18は入らない。はみ出しはバッジ半径11までに抑える
+    const roomBounds = { left: 0, top: 0, right: 100, bottom: 33 };
+    const roomLabel = label("text_room", ["144"], { x: 50, y: 16.5 });
+    const marker = layout({
+      markers: [{ ...individualMarker, placeId: "room" }],
+      labels: [roomLabel],
+      labelPlacements: [labelPlacement(roomLabel, 1)],
+      userUnitsPerPixel: 1,
+      placeBounds: roomBounds,
+    })[0];
+
+    if (!marker || marker.type !== "event") {
+      throw new Error("会場バッジが生成されませんでした");
+    }
+    expect(marker.coordinates.y).toBeGreaterThanOrEqual(roomBounds.top);
+    expect(marker.coordinates.y).toBeLessThanOrEqual(roomBounds.bottom);
+    const ink = getEventMarkerInkBounds(marker, 1);
+    expect(roomBounds.top - ink.top).toBeLessThanOrEqual(EVENT_MARKER_RADIUS);
+    expect(ink.bottom - roomBounds.bottom).toBeLessThanOrEqual(EVENT_MARKER_RADIUS);
+  });
+
+  test("部屋の外形が取れない会場バッジは従来どおりラベル直上へ退避する", () => {
+    const roomLabel = label("text_room", ["267"], { x: 70, y: 80 });
+    const placement = labelPlacement(roomLabel, 1);
+    const marker = layout({
+      markers: [{ ...individualMarker, placeId: "coordinates-only" }],
+      labels: [roomLabel],
+      labelPlacements: [placement],
+      userUnitsPerPixel: 1,
+      placeBounds: null,
+    })[0];
+
+    if (!marker || marker.type !== "event") {
+      throw new Error("会場バッジが生成されませんでした");
+    }
+    // 退避はy方向のみ。ラベル中心x(70)ではなくルートノードのxを維持する
+    expect(marker.coordinates.x).toEqual(70);
+    expect(marker.coordinates.y).toBeLessThan(80);
+    expect(
+      overlayBoundsIntersect(getEventMarkerInkBounds(marker, 1), placement.bounds),
+    ).toEqual(false);
+  });
+
+  test("アンカーに使ったラベルIDを返す", () => {
+    const roomLabel = label("text_room", ["267"], { x: 50, y: 40 });
+    expect([
+      ...layoutAll({
+        markers: [{ ...individualMarker, placeId: "room" }],
+        labels: [roomLabel],
+        labelPlacements: [labelPlacement(roomLabel, 1)],
+        userUnitsPerPixel: 1,
+        placeBounds: { left: 0, top: 0, right: 100, bottom: 80 },
+      }).anchoredLabelIds,
+    ]).toEqual(["text_room"]);
   });
 
   test("キャンパスでは建物別件数と屋外place件数を集約しactionを分ける", () => {

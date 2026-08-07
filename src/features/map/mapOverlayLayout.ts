@@ -1,4 +1,4 @@
-import { campusAggregateBuildingLabelIds, selectVisibleMapLabels } from "./mapLabels";
+import { selectVisibleMapLabels } from "./mapLabels";
 import type { MapLabel, MapLabelPlacement } from "./mapLabels";
 import { getEventMarkerInkBounds, layoutEventMarkers } from "./mapMarkerPresentation";
 import type { MapMarkerPlacement } from "./mapMarkerPresentation";
@@ -15,7 +15,10 @@ export interface CreateMapOverlayLayoutOptions {
   isCampusOverview: boolean;
   /** 水滴ピンの除外矩形(ラベルより常に優先される) */
   pinExclusionBounds: OverlayBounds[];
+  /** 建物SVG要素の外形bbox(俯瞰の集約バッジ用) */
   resolveElementBounds: (elementId: string) => OverlayBounds | null;
+  /** Placeに対応するSVG要素(部屋)の外形bbox。座標指定Placeなどはnull */
+  resolvePlaceBounds: (placeId: string) => OverlayBounds | null;
 }
 
 export interface MapOverlayLayout {
@@ -24,7 +27,7 @@ export interface MapOverlayLayout {
 }
 
 /**
- * ラベル確定 → バッジ退避 → 残衝突ラベルの除去、を1パスで解く。
+ * ラベル確定 → バッジ配置 → 残衝突ラベルの除去、を1パスで解く。
  * ラベルとマーカーの両レイヤーがこの同じ結果を使うことで、位置の食い違いを防ぐ。
  */
 export function createMapOverlayLayout({
@@ -34,6 +37,7 @@ export function createMapOverlayLayout({
   isCampusOverview,
   pinExclusionBounds,
   resolveElementBounds,
+  resolvePlaceBounds,
 }: CreateMapOverlayLayoutOptions): MapOverlayLayout {
   const selectedLabels = selectVisibleMapLabels({
     labels: mapLabels,
@@ -42,27 +46,26 @@ export function createMapOverlayLayout({
     exclusionBounds: pinExclusionBounds,
   });
 
-  const laidOutMarkers = layoutEventMarkers({
+  const { markers: laidOutMarkers, anchoredLabelIds } = layoutEventMarkers({
     markers,
     labelPlacements: selectedLabels,
     mapLabels,
     userUnitsPerPixel,
     resolveElementBounds,
+    resolvePlaceBounds,
   });
 
-  // 退避しても重なりが残るラベルを落とす。ただし集約バッジのアンカーとなる5建物名だけは残す:
-  // 俯瞰の主要な道標であり、バッジの指し先そのものなので消すと何件の建物か読めなくなる。
+  // 重なりが残るラベルを落とす。ただしバッジのアンカー先(俯瞰は建物名、フロアは部屋名)は残す:
+  // バッジの指し先そのものなので、消すとどの建物・どの部屋のイベントか読めなくなる。
   const badgeBounds = laidOutMarkers
     .filter((marker) => marker.type === "event")
     .map((marker) =>
       getEventMarkerInkBounds(marker, userUnitsPerPixel, MARKER_COLLISION_PADDING_PX),
     );
-  const isProtectedFromBadges = (labelId: string) =>
-    isCampusOverview && campusAggregateBuildingLabelIds.has(labelId);
 
   const labelPlacements = selectedLabels.filter(
     (placement) =>
-      isProtectedFromBadges(placement.label.id) ||
+      anchoredLabelIds.has(placement.label.id) ||
       !badgeBounds.some((bounds) => overlayBoundsIntersect(placement.bounds, bounds)),
   );
 
