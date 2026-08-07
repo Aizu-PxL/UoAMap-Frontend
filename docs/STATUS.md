@@ -67,6 +67,14 @@
 
 最新BottomSheet追従型地図操作UI整理ブリーフ: `docs/tasks/25-map-sheet-controls.md`（未コミット）
 
+最新ページズーム抑止ブリーフ: `docs/tasks/31-disable-page-zoom.md`（未コミット）
+
+## ページ全体のズーム抑止
+
+`index.html`のviewport metaに`maximum-scale=1.0`と`user-scalable=no`を追加し、スマホブラウザでアプリ本体をページ全体として拡大できないようにした。スケジュール画像にはページ全体と分離した専用ズーム（縮小・拡大ボタン、倍率表示、2本指ピンチ）を追加し、表示領域内のスクロールと閉じる操作も維持している。
+
+`bun test`（137 tests / 1,052 assertions）、`bun run build`、`bun run verify:places`（124 Place / 89 QR / 61 Event）、`git diff --check`はPASS。402×874pxのローカルブラウザでviewport metaの反映、スケジュール画面の表示、ズーム操作UI、スケジュールviewportの`computed touchAction = none`、console error 0件を確認した。実機の2本指ピンチは未確認。会話履歴なしの読み取り専用独立レビューは指摘なし。
+
 ## BottomSheet追従型の地図操作UI整理
 
 フロア切替と「キャンパス全体へ戻る」を`MapSheetControls`へ抽出し、`MapCanvas`とは別にBottomSheetの子要素として配置した。BottomSheetは外枠とsurfaceを分け、外枠の上端フローティング領域がシートのheight transitionに直接追従する。旧`bottom: calc(var(--bottom-sheet-height) + 1rem)`による操作UI位置計算は削除し、`--bottom-sheet-height`は地図表示中心の調整だけに残している。
@@ -155,7 +163,7 @@ Placeは88 QR地点 + 35イベント会場 + `campus-all`の123件（Q089の`sh_
 
 地図viewBoxを元SVG範囲へclampし、最大拡大率を6倍へ統一した。8px以内の地図タップでBottomSheetを22svhへ下げる。シートは22／58／82svhを外部要求でき、QRとイベント詳細は82svh、「ここへ行く」とQR解決後は22svhを使う。旧192px最小高を撤廃し、地図表示切替はCSS変数へ追従、下部3メニューは各1/3幅・64pxの操作領域とした。
 
-イベントバッジは正式ID先頭文字をScheduleの7色へ対応させ、混色／IDなし集約はtealとした。バッジをPlace座標の画面上20px上へ置いて部屋ラベルを残し、個別イベントは正式ID詳細または内部key詳細へ直接遷移する。フロア切替の経路通知ドットを廃止した。QRカメラはdocumentまたは映像領域が非表示なら破棄し、両方が表示された時だけ再取得する。Schedule画像にはスクロール／ピンチ可能な全画面拡大ダイアログを追加した。
+イベントバッジは正式ID先頭文字をScheduleの7色へ対応させ、混色／IDなし集約はtealとした。バッジをPlace座標の画面上20px上へ置いて部屋ラベルを残し、個別イベントは正式ID詳細または内部key詳細へ直接遷移する。フロア切替の経路通知ドットを廃止した。QRカメラはdocumentまたは映像領域が非表示なら破棄し、両方が表示された時だけ再取得する。Schedule画像には全画面拡大ダイアログを追加し、後のページ全体ズーム抑止後も画像専用のボタン／ピンチ操作で拡大縮小できるようにした。
 
 `bun run verify:all`は初回122 tests / 965 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、型チェック、production build、git diff checkをPASS。独立レビュー指摘の直リンク時シート状態を修正後、全123 tests / 971 assertions、production build、109 Place / 74 QR / 60 Event、git diff checkを再度PASSした。幅402pxで地図四辺clamp・最大6倍、QR 82svh、地図タップ22svh、Schedule拡大とEscape終了、イベント詳細、現在地あり／なしの「ここへ行く」、QR解決後の経路、カテゴリ色、ラベル、経路ドット非表示、console error 0件を確認した。直リンクの`/qr`・正式／内部key詳細は82svh、イベント一覧は58svh、QR解決後は22svhとなることも再確認した。320×568は22svh=124.95px、375×667は143.01pxとなり、各1/3幅・64pxメニューとシート上16px以上を保つ地図表示切替を確認した。ブラウザにカメラ権限を付与していないため実映像の停止／再取得は未確認で、可視性の組み合わせはpure testで固定した。
 
@@ -311,7 +319,7 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 | `/events` | 検索タブ。テキスト+タグで絞り込み、カード→詳細→「ここへ行く」 |
 | `/events?highlight=T3` | 内部Event keyが一致するカードがアクセント色枠で強調され、リスト内の位置まで自動スクロール |
 | `/` のイベントマーカー | 開催地(表示中フロア)のラベル上20pxにカテゴリ色の人型バッジ。単一イベントのタップは `/e/:eventId` または `/events/:eventKey` の詳細へ遷移し、at/to/focusを保持してシートを82svhへ展開。キャンパス集約は建物フロアへ移動 |
-| `/schedule` | タイムスケジュール画像。画像タップでスクロール／ピンチ可能な全画面拡大ダイアログを表示 |
+| `/schedule` | タイムスケジュール画像。画像タップで、スクロールと画像専用の拡大縮小が可能な全画面表示ダイアログを表示 |
 
 ## アーキテクチャ要点(触る前に知るべきこと)
 
