@@ -343,8 +343,8 @@ describe("実生成Routeグラフcoverage", () => {
 
   test("生成グラフのノード・エッジ内訳を固定する", () => {
     expect(routeGraph.nodes.length).toEqual(350);
-    expect(routeGraph.edges.length).toEqual(447);
-    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(408);
+    expect(routeGraph.edges.length).toEqual(448);
+    expect(routeGraph.edges.filter((edge) => edge.kind === "walk").length).toEqual(409);
     expect(routeGraph.edges.filter((edge) => edge.kind === "transfer").length).toEqual(39);
   });
 
