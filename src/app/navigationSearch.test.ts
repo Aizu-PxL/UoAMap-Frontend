@@ -5,6 +5,7 @@ import {
   createResolvedQrNavigation,
   getEntrySheetSnapPoint,
   getEventDetailPath,
+  isNewMapFocusRequest,
   setDestinationSearchParams,
   setEventHighlightSearchParams,
   setFocusSearchParams,
@@ -141,27 +142,35 @@ describe("目的地から経路案内への遷移", () => {
 });
 
 describe("地図の再フォーカス要求", () => {
-  test("既存nonceを1増やし、それ以外のlocation stateは引き継がない", () => {
-    expect(
-      createNextMapFocusRequestState({
-        mapFocusRequestNonce: 4,
-        unrelated: "value",
-      }),
-    ).toEqual({ mapFocusRequestNonce: 5 });
-    expect(
-      createNextMapFocusRequestState(
-        { mapFocusRequestNonce: 4, unrelated: "value" },
-        "main_node_11",
-      ),
-    ).toEqual({ mapFocusRequestNonce: 5, mapFocusPlaceId: "main_node_11" });
+  test("呼び出しごとに相異なる単調増加のnonceを発行する", () => {
+    const first = createNextMapFocusRequestState();
+    const second = createNextMapFocusRequestState();
+    const third = createNextMapFocusRequestState("main_node_11");
+
+    expect(second.mapFocusRequestNonce > first.mapFocusRequestNonce).toEqual(
+      true,
+    );
+    expect(third.mapFocusRequestNonce > second.mapFocusRequestNonce).toEqual(
+      true,
+    );
   });
 
-  test("nonceが未設定または数値でなければ1から開始する", () => {
-    expect(createNextMapFocusRequestState(undefined)).toEqual({
-      mapFocusRequestNonce: 1,
-    });
-    expect(
-      createNextMapFocusRequestState({ mapFocusRequestNonce: "4" }),
-    ).toEqual({ mapFocusRequestNonce: 1 });
+  test("mapFocusPlaceIdは指定時のみ含まれ、余分なキーを持たない", () => {
+    const withoutPlace = createNextMapFocusRequestState();
+    expect(Object.keys(withoutPlace)).toEqual(["mapFocusRequestNonce"]);
+
+    const withPlace = createNextMapFocusRequestState("main_node_11");
+    expect(withPlace.mapFocusPlaceId).toEqual("main_node_11");
+    expect(Object.keys(withPlace).sort()).toEqual([
+      "mapFocusPlaceId",
+      "mapFocusRequestNonce",
+    ]);
+  });
+
+  test("isNewMapFocusRequestはstateなし(0)と処理済みnonceを弾く", () => {
+    expect(isNewMapFocusRequest(5, 0)).toEqual(false);
+    expect(isNewMapFocusRequest(5, 5)).toEqual(false);
+    expect(isNewMapFocusRequest(5, 6)).toEqual(true);
+    expect(isNewMapFocusRequest(6, 5)).toEqual(true);
   });
 });

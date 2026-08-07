@@ -98,22 +98,24 @@ export function getEntrySheetSnapPoint(pathname: string): 82 | null {
   return null;
 }
 
+// Date.now()シード: history.stateに残った過去ドキュメントのnonceとリロード後に
+// 衝突しないよう、ドキュメントごとに単調増加かつ全ドキュメント横断でほぼ一意にする。
+let mapFocusRequestNonceSource = Date.now();
+
 export function createNextMapFocusRequestState(
-  currentState: unknown,
   mapFocusPlaceId?: string,
 ): MapFocusRequestState {
-  const previousNonce = getMapFocusRequestNonce(currentState);
+  mapFocusRequestNonceSource += 1;
   return {
-    mapFocusRequestNonce: previousNonce + 1,
+    mapFocusRequestNonce: mapFocusRequestNonceSource,
     ...(mapFocusPlaceId ? { mapFocusPlaceId } : {}),
   };
 }
 
-function getMapFocusRequestNonce(currentState: unknown): number {
-  if (typeof currentState !== "object" || currentState === null) {
-    return 0;
-  }
-
-  const nonce = (currentState as Record<string, unknown>).mapFocusRequestNonce;
-  return typeof nonce === "number" ? nonce : 0;
+// 0は「location.stateにフォーカス要求がない」センチネル(AppLayoutが生成)。
+export function isNewMapFocusRequest(
+  lastHandledNonce: number,
+  nonce: number,
+): boolean {
+  return nonce !== 0 && nonce !== lastHandledNonce;
 }

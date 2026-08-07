@@ -473,10 +473,12 @@ export function MapCanvas({
     }
 
     const coordinates = getPlaceCoordinates(mapFocusPlace, svgElement);
-    lastHandledFocusRequestRef.current = focusRequestKey;
     if (!coordinates) {
+      // 座標が解決できない間は要求を消費せず、deps変化(フロア切替やシート
+      // ロード完了)のたびに再試行できるようにする。
       return;
     }
+    lastHandledFocusRequestRef.current = focusRequestKey;
 
     setViewBox(
       focusMapViewBox(

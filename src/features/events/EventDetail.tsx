@@ -65,10 +65,7 @@ export function EventDetail() {
       },
       destination.mapFocusPlaceId
         ? {
-            state: createNextMapFocusRequestState(
-              location.state,
-              destination.mapFocusPlaceId,
-            ),
+            state: createNextMapFocusRequestState(destination.mapFocusPlaceId),
           }
         : undefined,
     );
