@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   clampScheduleScale,
   getNextScheduleScale,
   getPinchScheduleScale,
+  getScheduleFocalScroll,
+  getScheduleZoomAnchor,
   SCHEDULE_MIN_SCALE,
   SCHEDULE_MAX_SCALE,
 } from "./scheduleZoom";
@@ -15,6 +17,18 @@ type PointerPoint = {
   y: number;
 };
 
+/**
+ * ズームの基準点。`anchor*` は画像左上を原点とする等倍座標、`scrollOrigin*` は
+ * 「変形前の画像原点のクライアント座標 + スクロール位置」で、transform はレイアウトを
+ * 変えないためジェスチャ中は一定になる。
+ */
+type ScheduleZoomFocus = {
+  scrollOriginX: number;
+  scrollOriginY: number;
+  anchorX: number;
+  anchorY: number;
+};
+
 type ScheduleGesture =
   | {
       kind: "drag";
@@ -23,11 +37,11 @@ type ScheduleGesture =
       startScrollLeft: number;
       startScrollTop: number;
     }
-  | {
+  | ({
       kind: "pinch";
       initialDistance: number;
       initialScale: number;
-    };
+    } & ScheduleZoomFocus);
 
 function getPointerDistance(points: Iterable<PointerPoint>): number | null {
   const [first, second] = [...points];
@@ -38,16 +52,81 @@ function getPointerDistance(points: Iterable<PointerPoint>): number | null {
   return Math.hypot(second.x - first.x, second.y - first.y);
 }
 
+function getPointerMidpoint(points: Iterable<PointerPoint>): PointerPoint | null {
+  const [first, second] = [...points];
+  if (!first || !second) {
+    return null;
+  }
+
+  return { x: (first.x + second.x) / 2, y: (first.y + second.y) / 2 };
+}
+
 export function SchedulePanel() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [scale, setScale] = useState(1);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const pointersRef = useRef(new Map<number, PointerPoint>());
   const gestureRef = useRef<ScheduleGesture | null>(null);
+  const pendingScrollRef = useRef<{ left: number; top: number } | null>(null);
 
   const clearGesture = () => {
     pointersRef.current.clear();
     gestureRef.current = null;
+    pendingScrollRef.current = null;
+  };
+
+  /** 焦点(ピンチ中心・表示中央)を、倍率が変わっても保てる形で測る */
+  const measureZoomFocus = (focal: PointerPoint): ScheduleZoomFocus | null => {
+    const viewport = viewportRef.current;
+    const image = imageRef.current;
+    if (!viewport || !image) {
+      return null;
+    }
+
+    const imageRect = image.getBoundingClientRect();
+    const currentScale = clampScheduleScale(scale);
+    return {
+      scrollOriginX: imageRect.left + viewport.scrollLeft,
+      scrollOriginY: imageRect.top + viewport.scrollTop,
+      anchorX: getScheduleZoomAnchor(focal.x, imageRect.left, currentScale),
+      anchorY: getScheduleZoomAnchor(focal.y, imageRect.top, currentScale),
+    };
+  };
+
+  const getFocalScroll = (focus: ScheduleZoomFocus, nextScale: number, focal: PointerPoint) => ({
+    left: getScheduleFocalScroll(focus.scrollOriginX, focus.anchorX, nextScale, focal.x),
+    top: getScheduleFocalScroll(focus.scrollOriginY, focus.anchorY, nextScale, focal.y),
+  });
+
+  /** 倍率変更でスクロール可能域が広がった後に補正したいので、DOM反映後(描画前)に適用する */
+  useLayoutEffect(() => {
+    const pending = pendingScrollRef.current;
+    pendingScrollRef.current = null;
+    const viewport = viewportRef.current;
+    if (!pending || !viewport) {
+      return;
+    }
+
+    viewport.scrollLeft = pending.left;
+    viewport.scrollTop = pending.top;
+  }, [scale]);
+
+  const zoomWithButton = (direction: "in" | "out") => {
+    const viewport = viewportRef.current;
+    const nextScale = getNextScheduleScale(scale, direction);
+    if (!viewport || nextScale === scale) {
+      return;
+    }
+
+    const viewportRect = viewport.getBoundingClientRect();
+    const center = {
+      x: viewportRect.left + viewport.clientWidth / 2,
+      y: viewportRect.top + viewport.clientHeight / 2,
+    };
+    const focus = measureZoomFocus(center);
+    pendingScrollRef.current = focus ? getFocalScroll(focus, nextScale, center) : null;
+    setScale(nextScale);
   };
 
   const closeDialog = () => {
@@ -110,7 +189,7 @@ export function SchedulePanel() {
                     type="button"
                     aria-label="スケジュール画像を縮小"
                     disabled={scale <= SCHEDULE_MIN_SCALE}
-                    onClick={() => setScale((currentScale) => getNextScheduleScale(currentScale, "out"))}
+                    onClick={() => zoomWithButton("out")}
                   >
                     −
                   </button>
@@ -122,7 +201,7 @@ export function SchedulePanel() {
                     type="button"
                     aria-label="スケジュール画像を拡大"
                     disabled={scale >= SCHEDULE_MAX_SCALE}
-                    onClick={() => setScale((currentScale) => getNextScheduleScale(currentScale, "in"))}
+                    onClick={() => zoomWithButton("in")}
                   >
                     ＋
                   </button>
@@ -161,8 +240,15 @@ export function SchedulePanel() {
                     };
                   } else if (pointersRef.current.size === 2) {
                     const initialDistance = getPointerDistance(pointersRef.current.values());
-                    if (initialDistance) {
-                      gestureRef.current = { kind: "pinch", initialDistance, initialScale: scale };
+                    const midpoint = getPointerMidpoint(pointersRef.current.values());
+                    const focus = midpoint ? measureZoomFocus(midpoint) : null;
+                    if (initialDistance && focus) {
+                      gestureRef.current = {
+                        kind: "pinch",
+                        initialDistance,
+                        initialScale: scale,
+                        ...focus,
+                      };
                     }
                   }
                 }}
@@ -177,15 +263,25 @@ export function SchedulePanel() {
                   currentPointer.y = event.clientY;
 
                   if (pointersRef.current.size >= 2 && gestureRef.current?.kind === "pinch") {
+                    const gesture = gestureRef.current;
                     const currentDistance = getPointerDistance(pointersRef.current.values());
-                    if (currentDistance) {
-                      setScale(
-                        getPinchScheduleScale(
-                          gestureRef.current.initialScale,
-                          gestureRef.current.initialDistance,
-                          currentDistance,
-                        ),
+                    const midpoint = getPointerMidpoint(pointersRef.current.values());
+                    if (currentDistance && midpoint) {
+                      const nextScale = getPinchScheduleScale(
+                        gesture.initialScale,
+                        gesture.initialDistance,
+                        currentDistance,
                       );
+                      // アンカーはピンチ開始時のまま固定するので、指の中心が動けば画像もついてくる
+                      const nextScroll = getFocalScroll(gesture, nextScale, midpoint);
+                      if (nextScale === scale) {
+                        // 倍率が上下限に張り付いている間は再レンダリングされないため、その場で反映する
+                        viewport.scrollLeft = nextScroll.left;
+                        viewport.scrollTop = nextScroll.top;
+                      } else {
+                        pendingScrollRef.current = nextScroll;
+                        setScale(nextScale);
+                      }
                       event.preventDefault();
                     }
                     return;
@@ -232,6 +328,7 @@ export function SchedulePanel() {
                 }}
               >
                 <img
+                  ref={imageRef}
                   src={scheduleImageUrl}
                   alt="オープンキャンパス2026 夏ステージ タイムスケジュール拡大画像"
                   draggable="false"
