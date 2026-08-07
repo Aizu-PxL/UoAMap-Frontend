@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(同一地点イベントの未実施回選択)
+最終更新: 2026-08-07(階段ルートの上り／下りアイコン)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -42,6 +42,20 @@
 最新BottomSheetフリックスナップブリーフ: `docs/tasks/34-bottom-sheet-fling-snap.md`（未コミット）
 
 最新同一地点イベント選択ブリーフ: `docs/tasks/37-upcoming-event-marker-selection.md`（未コミット）
+
+最新階段ルート表示ブリーフ: `docs/tasks/38-stair-route-direction-icons.md`（未コミット）
+
+## 階段ルートの上り／下りアイコン
+
+階段を使う経路では、始点から順序付けられたエッジ列をたどり、各階段transferの出発側ノードだけに進行方向アイコンを表示する。下階から上階は上り、上階から下階は下りとし、連続する階段移動では中間階を次の出発側として表示する。最終到着階には階段マーカーを表示せず、建物出入口transferの既存円形マーカーは両側で維持する。
+
+添付SVGの黒24pxアイコンを白い32px円形背景とアクセント色2px枠へ載せ、既存の`getMeetUserUnitsPerPixel`を使ってズーム非依存の画面固定サイズにした。Figma、地図SVG、生成Routeグラフ、Place・QR・Event、URL、Repository/API契約は変更していない。
+
+`bun run verify:all`は172 tests / 1,135 assertions、production build、125 Place / 89 QR / 61 Event、350 nodes / 448 edges、git diff checkをPASSした。純粋関数テストで上り・下り、3フロア連続移動、中間階、同一フロア、入口transfer、未知／不連続経路を確認した。
+
+402×874pxでは、`/?at=rq_room_161&to=P12`で1F・2Fに上り、3Fは階段マーカーなし、`/?at=rq_room_325f&to=P5`で3F・2Fに下り、1Fは階段マーカーなしを確認した。ズーム前後ともアイコン24px・背景32px・枠2pxを維持した。`/?at=main_node_11&to=M21`ではキャンパスと講義棟1Fの入口円を維持し、講義棟1Fの上りアイコンと共存すること、console error/warn 0件を確認した。
+
+会話履歴なしの読み取り専用独立レビューは指摘なし。
 
 ## 同一地点イベントの未実施回選択
 

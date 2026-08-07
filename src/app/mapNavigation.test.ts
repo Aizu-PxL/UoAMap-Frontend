@@ -40,6 +40,53 @@ describe("map navigation presentation", () => {
     ]);
   });
 
+  test("研究棟1Fと3Fの往復で出発側と中間階へ上り／下りを付ける", () => {
+    const upward = createPresentation({
+      currentPlace: place("rq_room_161"),
+      destinationPlace: place("rq_room_325f"),
+    }).routePresentation;
+    const downward = createPresentation({
+      currentPlace: place("rq_room_325f"),
+      destinationPlace: place("rq_room_161"),
+    }).routePresentation;
+
+    expect(
+      upward.floorsById
+        .get("rq-1f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs")
+        .map((marker) => marker.direction),
+    ).toEqual(["up"]);
+    expect(
+      upward.floorsById
+        .get("rq-2f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs")
+        .map((marker) => marker.direction),
+    ).toEqual(["up"]);
+    expect(
+      upward.floorsById
+        .get("rq-3f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs"),
+    ).toEqual([]);
+
+    expect(
+      downward.floorsById
+        .get("rq-3f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs")
+        .map((marker) => marker.direction),
+    ).toEqual(["down"]);
+    expect(
+      downward.floorsById
+        .get("rq-2f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs")
+        .map((marker) => marker.direction),
+    ).toEqual(["down"]);
+    expect(
+      downward.floorsById
+        .get("rq-1f")
+        ?.transferMarkers.filter((marker) => marker.kind === "stairs"),
+    ).toEqual([]);
+  });
+
   test("目的地だけなら目的地を初期表示し経路は空にする", () => {
     const result = createPresentation({
       destinationPlace: place("lh_room_m2"),

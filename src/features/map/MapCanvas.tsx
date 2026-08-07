@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import stairsArrowDownUrl from "../../assets/stairs_arrow_down.svg";
+import stairsArrowUpUrl from "../../assets/stairs_arrow_up.svg";
 import { getEventDetailPath } from "../../app/navigationSearch";
 import type { BottomSheetSnapPoint } from "../../components/bottom-sheet/bottomSheetGeometry";
 import { floors, getPlace, mapSheets } from "../../data/places";
@@ -79,6 +81,8 @@ const MARKER_COLLISION_PADDING_PX = 2;
 const EVENT_MARKER_PERSON_PATH =
   "M12 10.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6.75 18h10.5v-1.5c0-2.5-2.33-4.5-5.25-4.5s-5.25 2-5.25 4.5V18Z";
 const ROUTE_TRANSFER_MARKER_RADIUS = 7;
+const ROUTE_STAIR_BADGE_RADIUS = 16;
+const ROUTE_STAIR_ICON_SIZE = 24;
 const buildingFloorIds = {
   building_ResearchQuad: "rq-1f",
   building_StudentHall: "sh-1f",
@@ -515,14 +519,50 @@ export function MapCanvas({
     if (userUnitsPerPixel === null) {
       return;
     }
-    for (const node of floorPresentation.transferNodes) {
-      const marker = document.createElementNS(SVG_NAMESPACE, "circle");
-      marker.setAttribute("class", "map-route-transfer");
-      marker.setAttribute("data-route-node-id", node.id);
-      marker.setAttribute("cx", String(node.x));
-      marker.setAttribute("cy", String(node.y));
-      marker.setAttribute("r", String(ROUTE_TRANSFER_MARKER_RADIUS * userUnitsPerPixel));
-      routeLayer.append(marker);
+    for (const markerPresentation of floorPresentation.transferMarkers) {
+      if (markerPresentation.kind === "entrance") {
+        const marker = document.createElementNS(SVG_NAMESPACE, "circle");
+        marker.setAttribute("class", "map-route-transfer");
+        marker.setAttribute("data-route-node-id", markerPresentation.id);
+        marker.setAttribute("cx", String(markerPresentation.x));
+        marker.setAttribute("cy", String(markerPresentation.y));
+        marker.setAttribute(
+          "r",
+          String(ROUTE_TRANSFER_MARKER_RADIUS * userUnitsPerPixel),
+        );
+        routeLayer.append(marker);
+        continue;
+      }
+
+      const group = document.createElementNS(SVG_NAMESPACE, "g");
+      const badge = document.createElementNS(SVG_NAMESPACE, "circle");
+      const icon = document.createElementNS(SVG_NAMESPACE, "image");
+      const iconSize = ROUTE_STAIR_ICON_SIZE * userUnitsPerPixel;
+
+      group.setAttribute("class", "map-route-stair");
+      group.setAttribute("data-route-node-id", markerPresentation.id);
+      group.setAttribute("data-route-stair-direction", markerPresentation.direction);
+      badge.setAttribute("class", "map-route-stair__badge");
+      badge.setAttribute("cx", String(markerPresentation.x));
+      badge.setAttribute("cy", String(markerPresentation.y));
+      badge.setAttribute(
+        "r",
+        String(ROUTE_STAIR_BADGE_RADIUS * userUnitsPerPixel),
+      );
+      icon.setAttribute("class", "map-route-stair__icon");
+      icon.setAttribute(
+        "href",
+        markerPresentation.direction === "up"
+          ? stairsArrowUpUrl
+          : stairsArrowDownUrl,
+      );
+      icon.setAttribute("x", String(markerPresentation.x - iconSize / 2));
+      icon.setAttribute("y", String(markerPresentation.y - iconSize / 2));
+      icon.setAttribute("width", String(iconSize));
+      icon.setAttribute("height", String(iconSize));
+      icon.setAttribute("preserveAspectRatio", "xMidYMid meet");
+      group.append(badge, icon);
+      routeLayer.append(group);
     }
   }, [floorId, loading, overlayRedrawKey, routePresentation]);
 
