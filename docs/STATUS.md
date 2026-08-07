@@ -1,6 +1,6 @@
 # STATUS — いまどこまでできているか
 
-最終更新: 2026-08-07(BottomSheetカレンダーアイコンのサイズ調整)
+最終更新: 2026-08-07(公開QRパス対応)
 **更新タイミング**: スライス(docs/tasks/のブリーフ1本)完了ごと、またはロードマップのステップ完了時に必ず更新する。
 
 新しいセッション・別のエージェントは、まずこのファイル → [HANDOFF.md](HANDOFF.md) → [SPEC.md](SPEC.md) → [WORKFLOW.md](WORKFLOW.md) → [BACKLOG.md](BACKLOG.md) の順に読めば作業を再開できる。
@@ -66,6 +66,24 @@
 最新ブラウザのプル更新抑止ブリーフ: `docs/tasks/24-pull-to-refresh-guard.md`（未コミット）
 
 最新BottomSheet追従型地図操作UI整理ブリーフ: `docs/tasks/25-map-sheet-controls.md`（未コミット）
+
+最新ページズーム抑止ブリーフ: `docs/tasks/31-disable-page-zoom.md`（未コミット）
+
+最新公開QRパス対応ブリーフ: `docs/tasks/32-public-qr-path-alias.md`（未コミット）
+
+## 公開QRパス対応
+
+印刷QRの正式URLを`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId`に確定し、アプリ本体は`base=/`のルート配信を維持したまま、このパスだけを既存`QrLanding`の別名として追加した。アプリ内スキャナーも同一originの正式URLを受理し、外部origin・類似パス・余分なパス・不正IDは従来どおり拒否する。内部`/q/:qrId`、Repository/API、QR対応表、Vite base、ポスター生成処理は変更していない。
+
+`bun run verify:all`は138 tests / 1,053 assertions、production build、124 Place / 89 QR / 61 Event、350 nodes / 447 edges、git diff checkをPASS。402×874pxで公開Q001、目的地付き公開Q001、公開Q999、既存`/q/Q001`を確認し、Q001は`at=main_node_11`へ正規化、`to=M21`保持、Q999の利用者向けエラー、console error/warn 0件を確認した。本番反映、実URLの再確認、実機・実印刷QRの受入は未実施。
+
+初回の会話履歴なし読み取り専用独立レビューで、残存していた旧QR表記とURL決定手順の矛盾3件をP2として指摘され、仕様・実機受入表・スキャナー説明を修正した。修正後の最終再レビューは指摘なし。
+
+## ページ全体のズーム抑止
+
+`index.html`のviewport metaに`maximum-scale=1.0`と`user-scalable=no`を追加し、スマホブラウザでアプリ本体をページ全体として拡大できないようにした。スケジュール画像にはページ全体と分離した専用ズーム（縮小・拡大ボタン、倍率表示、2本指ピンチ）を追加し、表示領域内のスクロールと閉じる操作も維持している。
+
+`bun test`（137 tests / 1,052 assertions）、`bun run build`、`bun run verify:places`（124 Place / 89 QR / 61 Event）、`git diff --check`はPASS。402×874pxのローカルブラウザでviewport metaの反映、スケジュール画面の表示、ズーム操作UI、スケジュールviewportの`computed touchAction = none`、console error 0件を確認した。実機の2本指ピンチは未確認。会話履歴なしの読み取り専用独立レビューは指摘なし。
 
 ## BottomSheet追従型の地図操作UI整理
 
@@ -155,7 +173,7 @@ Placeは88 QR地点 + 35イベント会場 + `campus-all`の123件（Q089の`sh_
 
 地図viewBoxを元SVG範囲へclampし、最大拡大率を6倍へ統一した。8px以内の地図タップでBottomSheetを22svhへ下げる。シートは22／58／82svhを外部要求でき、QRとイベント詳細は82svh、「ここへ行く」とQR解決後は22svhを使う。旧192px最小高を撤廃し、地図表示切替はCSS変数へ追従、下部3メニューは各1/3幅・64pxの操作領域とした。
 
-イベントバッジは正式ID先頭文字をScheduleの7色へ対応させ、混色／IDなし集約はtealとした。バッジをPlace座標の画面上20px上へ置いて部屋ラベルを残し、個別イベントは正式ID詳細または内部key詳細へ直接遷移する。フロア切替の経路通知ドットを廃止した。QRカメラはdocumentまたは映像領域が非表示なら破棄し、両方が表示された時だけ再取得する。Schedule画像にはスクロール／ピンチ可能な全画面拡大ダイアログを追加した。
+イベントバッジは正式ID先頭文字をScheduleの7色へ対応させ、混色／IDなし集約はtealとした。バッジをPlace座標の画面上20px上へ置いて部屋ラベルを残し、個別イベントは正式ID詳細または内部key詳細へ直接遷移する。フロア切替の経路通知ドットを廃止した。QRカメラはdocumentまたは映像領域が非表示なら破棄し、両方が表示された時だけ再取得する。Schedule画像には全画面拡大ダイアログを追加し、後のページ全体ズーム抑止後も画像専用のボタン／ピンチ操作で拡大縮小できるようにした。
 
 `bun run verify:all`は初回122 tests / 965 assertions、109 Place / 74 QR / 60 Event、336 nodes / 425 edges、型チェック、production build、git diff checkをPASS。独立レビュー指摘の直リンク時シート状態を修正後、全123 tests / 971 assertions、production build、109 Place / 74 QR / 60 Event、git diff checkを再度PASSした。幅402pxで地図四辺clamp・最大6倍、QR 82svh、地図タップ22svh、Schedule拡大とEscape終了、イベント詳細、現在地あり／なしの「ここへ行く」、QR解決後の経路、カテゴリ色、ラベル、経路ドット非表示、console error 0件を確認した。直リンクの`/qr`・正式／内部key詳細は82svh、イベント一覧は58svh、QR解決後は22svhとなることも再確認した。320×568は22svh=124.95px、375×667は143.01pxとなり、各1/3幅・64pxメニューとシート上16px以上を保つ地図表示切替を確認した。ブラウザにカメラ権限を付与していないため実映像の停止／再取得は未確認で、可視性の組み合わせはpure testで固定した。
 
@@ -311,13 +329,13 @@ bun run verify:routes  # SVGのRouteグラフが生成結果と一致するこ�
 | `/events` | 検索タブ。テキスト+タグで絞り込み、カード→詳細→「ここへ行く」 |
 | `/events?highlight=T3` | 内部Event keyが一致するカードがアクセント色枠で強調され、リスト内の位置まで自動スクロール |
 | `/` のイベントマーカー | 開催地(表示中フロア)のラベル上20pxにカテゴリ色の人型バッジ。単一イベントのタップは `/e/:eventId` または `/events/:eventKey` の詳細へ遷移し、at/to/focusを保持してシートを82svhへ展開。キャンパス集約は建物フロアへ移動 |
-| `/schedule` | タイムスケジュール画像。画像タップでスクロール／ピンチ可能な全画面拡大ダイアログを表示 |
+| `/schedule` | タイムスケジュール画像。画像タップで、スクロールと画像専用の拡大縮小が可能な全画面表示ダイアログを表示 |
 
 ## アーキテクチャ要点(触る前に知るべきこと)
 
 - **地図SVGはReact非管理DOM**: `MapCanvas` は SVG を `svgHostRef`(専用div)内に `DOMParser`+`replaceChildren` で挿入する。**React管理下の要素とSVG DOMを混ぜない**こと(混ぜるとReactの再レンダーでクラッシュする)。SVG要素へのイベントは addEventListener + クリーンアップで管理
 - **URLが状態の正**(SPEC §5.2): 現在地`at`/目的地`to`/注目`focus`はURLクエリ。フォーカス優先順位は focus > to > at。「現在地へ/目的地へ」は`focus=`を使う。「ここへ行く」直後とQR解決直後の現在地への注目だけは、公開URLへ`focus`ピンを追加しない一時的なnavigation stateで要求する
-- **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一origin・`BASE_URL`配下の`/q/:qrId`だけを受理する。読み取り後は既存クエリを保持して`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
+- **アプリ内QRスキャン**: `qr-scanner`で背面カメラを優先し、同一originの`BASE_URL`配下`/q/:qrId`と正式公開パス`/UoAMap-Frontend/q/:qrId`を受理する。読み取り後は既存クエリを保持して内部`/q/:qrId`へ渡し、`QrLanding`が`at`を置換・`focus`を削除・`to`を保持する。画面離脱、document非表示、映像領域がシート外へ隠れた時はscannerをdestroyし、両方が表示状態へ戻った時だけ再取得する。カメラ再取得の一時競合には400ms後の自動再試行1回+手動再試行で復旧する
 - **フロア切替**: floors(src/data/places.ts)がfloorId→sheetIdを解決。全フロアを1 SVG = 1 MapSheetで管理し、同一建物内の切替も共通のシート読込処理を使う
 - **places.ts が地点語彙の正**: 全124 Placeの内訳はQR地点89件（新規座標Place案73件 + 既存Routeノード再利用14件 + Q018のSVG Routeノード1件 + Q089のイベント会場共有1件）、イベント会場35件、意図的unmapped 1件(`campus-all`)。**変更したら必ず `bun run verify:places`**
 - **座標変換**: スクリーン→SVG座標は `getScreenCTM().inverse()` を使う(コンテナ矩形の線形換算はレターボックス余白でずれるため禁止)。Place位置解決は `src/features/map/placeLocator.ts`(getBBox+CTM)

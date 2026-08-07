@@ -1,21 +1,21 @@
 # 本番公開・デプロイ・実機QR受入計画
 
-最終更新: 2026-07-21
+最終更新: 2026-08-07
 
 ## 位置づけ
 
 本番URLの決定、ホスティング設定、バックエンド接続、QRの印刷・設置、実機受入、当日運用を一つの手順で管理する。
 アプリの機能仕様は [SPEC.md](SPEC.md)、API契約は [API.md](API.md)、通常の実装・検証手順は [WORKFLOW.md](WORKFLOW.md) を正とし、この文書は**公開作業と現地受入の正**とする。
 
-現時点では本番計画のみで、ホスティング先・本番URL・QR設置一覧は未確定。本番公開済みではない。GitHub Pagesはモック確認用の暫定公開先として設定するが、本番originの決定や物理QR印刷の承認には使用しない。
+本番originは`https://uoa-ocmap.com`、アプリのbase pathは`/`、印刷QRの正式な外部リンクは`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId`に確定した。ホスティング所有者・API本番構成・QR設置一覧・実機受入・量産承認は未確定であり、URLの決定だけを本番公開や物理QR印刷の承認として扱わない。
 
 ## 1. 公開の基本方針
 
-- QRにはPlace IDを直接入れず、確定した本番URLの `/q/:qrId` を入れる。
+- QRにはPlace IDを直接入れず、`https://uoa-ocmap.com/UoAMap-Frontend/q/:qrId` を入れる。`/UoAMap-Frontend/`はQR専用の接頭辞であり、アプリ全体のbase pathではない。
 - 本番URLは年度が変わっても使い続ける。年度や開催日をパスへ含めない。
 - 推奨は大学が管理できる専用サブドメインのルート配下（例: `https://map.example.ac.jp/`）。`/uoamap/` のようなサブパス配信は、組織の制約で必要な場合だけ採用する。
 - 本番はHTTPS必須。アプリ内QRスキャンのカメラ利用にはsecure contextが必要。
-- `/q/*`、`/e/*`、`/p/*` への直接アクセスをSPAのエントリへ戻すフォールバックが必須。
+- `/q/*`、`/UoAMap-Frontend/q/*`、`/e/*`、`/p/*` への直接アクセスをSPAのエントリへ戻すフォールバックが必須。
 - QRの量産印刷は、本番origin・base path・リダイレクト方針を凍結し、実印刷サンプルの実機受入がPASSしてから行う。
 - フロントに秘密情報を埋め込まない。公開読み取りAPIの接続先だけをビルド設定または同一originの `/api` で与える。
 - QR印刷後に本番originを変更しない。やむを得ず変更する場合は、旧URLを長期リダイレクトし、アプリ内スキャンの同一origin判定も再検証する。
@@ -41,8 +41,9 @@ Codex等の実装担当だけでは、公式ドメインの取得・DNS変更・
 
 | 項目 | 確定値 | 状態 |
 |---|---|---|
-| 本番origin（例: `https://map.example.ac.jp`） | 未定 | ⬜ |
-| base path（推奨: `/`） | 未定 | ⬜ |
+| 本番origin | `https://uoa-ocmap.com` | ✅ |
+| アプリのbase path | `/` | ✅ |
+| 印刷QRの公開パス | `/UoAMap-Frontend/q/:qrId` | ✅ |
 | ホスティング先・組織/プロジェクト所有者 | 未定 | ⬜ |
 | 本番デプロイ元ブランチ | 未定 | ⬜ |
 | デプロイ承認者・実行者 | 未定 | ⬜ |
@@ -57,13 +58,13 @@ Codex等の実装担当だけでは、公式ドメインの取得・DNS変更・
 値の凍結時に、次の実URLを台帳へ記録する。
 
 ```text
-アプリトップ:     <production-origin><base-path>
-QR:               <production-origin><base-path>q/<qrId>
-イベント外部導線: <production-origin><base-path>e/<eventId>
-地点確認用:       <production-origin><base-path>p/<placeId>
+アプリトップ:     https://uoa-ocmap.com/
+QR:               https://uoa-ocmap.com/UoAMap-Frontend/q/<qrId>
+イベント外部導線: https://uoa-ocmap.com/e/<eventId>
+地点確認用:       https://uoa-ocmap.com/p/<placeId>
 ```
 
-base pathは `/`、または `/uoamap/` のように先頭・末尾を `/` に揃える。`www`有無、HTTP→HTTPS、仮ホスト名から本番ホスト名への転送も統一する。印刷QRには転送前の仮URLではなく、利用者に保証する正規URLを格納する。
+アプリのbase pathは`/`を維持する。`/UoAMap-Frontend/`は印刷QRの互換入口としてRouterが受理し、QR解決後はルート配下の`/?at=:placeId`へ正規化する。`www`有無、HTTP→HTTPS、仮ホスト名から本番ホスト名への転送も統一する。印刷QRには転送前の仮URLではなく、上記の正規URLを格納する。
 
 ### 暫定GitHub PagesとCloudflare Pages移行
 
@@ -77,9 +78,9 @@ base pathは `/`、または `/uoamap/` のように先頭・末尾を `/` に�
 
 特定サービス名ではなく、次をすべて満たすことを採用条件とする。
 
-- カスタムドメインと自動更新されるHTTPS証明書
+- `https://uoa-ocmap.com`のカスタムドメインと自動更新されるHTTPS証明書
 - Viteの静的成果物 `dist/` の配信
-- `/q/*`、`/e/*`、`/p/*`、`/events`、`/qr`、`/schedule` のSPAフォールバック
+- `/q/*`、`/UoAMap-Frontend/q/*`、`/e/*`、`/p/*`、`/events`、`/qr`、`/schedule` のSPAフォールバック
 - プレビュー環境と本番環境の分離
 - 直前の正常デプロイへ短時間で戻せること
 - デプロイ履歴、実行者、ビルドログを確認できること
@@ -87,7 +88,7 @@ base pathは `/`、または `/uoamap/` のように先頭・末尾を `/` に�
 - 必要なら `/api/*` をバックエンドへ同一originで転送できること。別originの場合は [API.md](API.md) のCORS条件を満たすこと
 - `THIRD_PARTY_NOTICES.txt` を含む `dist/` を欠落なく配信できること
 
-GitHub Pages、Vercel等の候補比較は、この条件と大学側のアカウント・DNS・保守方針が揃ってから行う。サービスを決める前にQR URLを確定しない。
+GitHub Pages、Vercel等の候補比較は、この条件と大学側のアカウント・DNS・保守方針が揃ってから行う。正式QR URLは確定済みのため、採用サービスをURLへ適合させ、サービス都合でQR URLを変更しない。
 
 ## 5. 実装計画
 
@@ -167,14 +168,14 @@ git diff --check
 
 | # | 操作 | 期待結果 |
 |---|---|---|
-| QR-01 | 標準カメラで固定QRを読む | 本番 `/q/:qrId` が開き、正しい `at` へ正規化される |
+| QR-01 | 標準カメラで固定QRを読む | 本番 `/UoAMap-Frontend/q/:qrId` が開き、正しい `at` へ正規化される |
 | QR-02 | 目的地なしでQRを読む | 現在地ピンが表示され、地点名が台帳と一致する |
 | QR-03 | `to` 設定後にアプリ内でQRを読む | `to` を保持し、`at` だけ更新してルートを表示する |
 | QR-04 | QRタブへ戻り別QRを読む | 旧 `focus` を削除し、目的地を保持したままルートを再計算する |
 | QR-05 | 無効・未登録QRを読む | クラッシュせず日本語エラーとスタッフ案内を表示する |
 | QR-06 | カメラ権限を拒否後に再試行する | 日本語の復旧案内が出て、権限復旧後に再開できる |
 | QR-07 | 外部originや別パスのQRをアプリ内で読む | 道案内QRとして受理せず、スキャンを継続する |
-| QR-08 | `/q/*` を新規タブ・再読み込みで開く | 404にならず、同じ地点へ解決する |
+| QR-08 | `/UoAMap-Frontend/q/*` と内部 `/q/*` を新規タブ・再読み込みで開く | 404にならず、同じ地点へ解決する |
 | QR-09 | 弱い回線でQRを読む | 待機中・失敗が判別でき、再試行またはスタッフ案内へ進める |
 | QR-10 | QR対応表を変更する | 定めたキャッシュ時間内（API契約上は60秒以下推奨）に新しいPlaceへ解決する |
 | QR-11 | 実掲示位置から読む | 想定距離・角度・照明・反射の範囲で両OSが読み取れる |
