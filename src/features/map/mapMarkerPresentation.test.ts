@@ -4,7 +4,9 @@ import {
   createMapMarkerPresentation,
   EVENT_MARKER_RADIUS,
   getEventMarkerInkBounds,
+  getNextEventSelectionChangeTimestamp,
   layoutEventMarkers,
+  selectUpcomingEvent,
   type EventMarkerPlacement,
   type MapMarkerPlacement,
   type MarkerCoordinateTarget,
@@ -117,6 +119,13 @@ function idlessEvent(key: string, placeId: string): Event {
   };
 }
 
+function timedEvent(id: string, placeId: string, starts: string[]): Event {
+  return {
+    ...event(id, placeId),
+    timeSlots: starts.map((start) => ({ start })),
+  };
+}
+
 const placeById = new Map(places.map((place) => [place.id, place]));
 const floorSheetIds = new Map([
   ["campus", "campus"],
@@ -149,6 +158,7 @@ function createPresentation(options: {
   events?: Event[];
   floorId?: string;
   focusPlace?: Place | null;
+  now?: Date;
 }) {
   return createMapMarkerPresentation({
     currentPlace: options.currentPlace ?? null,
@@ -156,6 +166,7 @@ function createPresentation(options: {
     events: options.events ?? [],
     floorId: options.floorId ?? "rq-1f",
     focusPlace: options.focusPlace ?? null,
+    now: options.now,
     resolveCoordinates,
     resolveFloorSheetId: (floorId) => floorSheetIds.get(floorId) ?? null,
     resolvePlace: (placeId) => placeById.get(placeId) ?? null,
@@ -188,7 +199,7 @@ describe("createMapMarkerPresentation", () => {
     ]);
   });
 
-  test("同一placeを先頭イベントで代表し入力place順を維持する", () => {
+  test("時刻情報がない同一placeは先頭イベントで代表し入力place順を維持する", () => {
     const presentation = createPresentation({
       events: [event("E2", "room-b"), event("E1", "room-a"), event("E3", "room-a")],
     });
@@ -215,6 +226,83 @@ describe("createMapMarkerPresentation", () => {
         colorKey: "explanation",
       },
     ]);
+  });
+
+  test("同一placeは現在時刻以降で最も早い回を入力順に関係なく代表にする", () => {
+    const presentation = createPresentation({
+      events: [
+        timedEvent("E3", "room-a", ["2026-08-08T13:00:00+09:00"]),
+        timedEvent("E1", "room-a", ["2026-08-08T09:30:00+09:00"]),
+        timedEvent("E2", "room-a", ["2026-08-08T11:00:00+09:00"]),
+      ],
+      now: new Date("2026-08-08T10:00:00+09:00"),
+    });
+
+    expect(presentation[0]).toMatchObject({
+      markerLabel: "研究棟 Aのイベントを表示: イベントE2",
+      action: { kind: "event", eventKey: "E2" },
+      eventKey: "E2",
+      eventId: "E2",
+    });
+  });
+
+  test("同じイベントの後続スロットも未実施候補として扱う", () => {
+    const first = timedEvent("E1", "room-a", [
+      "2026-08-08T09:30:00+09:00",
+      "2026-08-08T13:00:00+09:00",
+    ]);
+    const second = timedEvent("E2", "room-a", [
+      "2026-08-08T12:00:00+09:00",
+    ]);
+
+    expect(
+      selectUpcomingEvent(
+        [first, second],
+        new Date("2026-08-08T10:00:00+09:00"),
+      )?.key,
+    ).toEqual("E2");
+    expect(
+      selectUpcomingEvent(
+        [first, second],
+        new Date("2026-08-08T12:30:00+09:00"),
+      )?.key,
+    ).toEqual("E1");
+  });
+
+  test("全回の開始後は入力順の先頭へフォールバックする", () => {
+    const first = timedEvent("E2", "room-a", [
+      "2026-08-08T11:00:00+09:00",
+    ]);
+    const second = timedEvent("E1", "room-a", [
+      "2026-08-08T09:30:00+09:00",
+    ]);
+
+    expect(
+      selectUpcomingEvent(
+        [first, second],
+        new Date("2026-08-08T14:00:00+09:00"),
+      )?.key,
+    ).toEqual("E2");
+  });
+
+  test("次の開始時刻直後をバッジ再生成時刻として返す", () => {
+    const events = [
+      timedEvent("E2", "room-a", ["2026-08-08T13:00:00+09:00"]),
+      timedEvent("E1", "room-a", ["2026-08-08T11:00:00+09:00"]),
+    ];
+
+    expect(
+      getNextEventSelectionChangeTimestamp(
+        events,
+        new Date("2026-08-08T10:00:00+09:00"),
+      ),
+    ).toEqual(new Date("2026-08-08T11:00:00+09:00").getTime() + 1);
+    expect(
+      getNextEventSelectionChangeTimestamp(
+        events,
+        new Date("2026-08-08T14:00:00+09:00"),
+      ),
+    ).toEqual(null);
   });
 
   test("eventを先に描画しpinをcurrent・destination・focus順に前面へ置く", () => {

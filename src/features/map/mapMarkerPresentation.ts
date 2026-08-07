@@ -380,10 +380,60 @@ type CreateMapMarkerPresentationOptions = {
   events: readonly CampusEvent[];
   floorId: string;
   focusPlace: Place | null;
+  now?: Date;
   resolveCoordinates: (target: MarkerCoordinateTarget) => OverlayPoint | null;
   resolveFloorSheetId: (floorId: string) => string | null;
   resolvePlace: (placeId: string) => Place | null;
 };
+
+/**
+ * 現在時刻以降に始まるスロットが最も早いイベントを選ぶ。
+ * 未実施スロットがない場合は、既存挙動を保つため入力順の先頭へ戻す。
+ */
+export function selectUpcomingEvent(
+  events: readonly CampusEvent[],
+  now = new Date(),
+): CampusEvent | null {
+  const nowTimestamp = now.getTime();
+  let selectedEvent: CampusEvent | null = null;
+  let selectedStart = Number.POSITIVE_INFINITY;
+
+  for (const event of events) {
+    for (const timeSlot of event.timeSlots) {
+      const start = new Date(timeSlot.start).getTime();
+      if (
+        Number.isFinite(start) &&
+        start >= nowTimestamp &&
+        start < selectedStart
+      ) {
+        selectedEvent = event;
+        selectedStart = start;
+      }
+    }
+  }
+
+  return selectedEvent ?? events[0] ?? null;
+}
+
+/** 次に代表イベントが切り替わり得る、開始時刻直後のtimestampを返す。 */
+export function getNextEventSelectionChangeTimestamp(
+  events: readonly CampusEvent[],
+  now = new Date(),
+): number | null {
+  const nowTimestamp = now.getTime();
+  let nextStart = Number.POSITIVE_INFINITY;
+
+  for (const event of events) {
+    for (const timeSlot of event.timeSlots) {
+      const start = new Date(timeSlot.start).getTime();
+      if (Number.isFinite(start) && start >= nowTimestamp && start < nextStart) {
+        nextStart = start;
+      }
+    }
+  }
+
+  return Number.isFinite(nextStart) ? nextStart + 1 : null;
+}
 
 function resolveCampusBuildingId(
   place: Place,
@@ -433,6 +483,7 @@ export function createMapMarkerPresentation({
   events,
   floorId,
   focusPlace,
+  now = new Date(),
   resolveCoordinates,
   resolveFloorSheetId,
   resolvePlace,
@@ -441,7 +492,7 @@ export function createMapMarkerPresentation({
   const eventsByPlaceId = new Map<
     string,
     {
-      firstEvent: CampusEvent;
+      events: CampusEvent[];
       eventCount: number;
       colorKeys: Set<EventMarkerColorKey>;
     }
@@ -454,7 +505,7 @@ export function createMapMarkerPresentation({
   for (const event of events) {
     const group = eventsByPlaceId.get(event.placeId);
     eventsByPlaceId.set(event.placeId, {
-      firstEvent: group?.firstEvent ?? event,
+      events: [...(group?.events ?? []), event],
       eventCount: (group?.eventCount ?? 0) + 1,
       colorKeys: new Set([
         ...(group?.colorKeys ?? []),
@@ -514,7 +565,7 @@ export function createMapMarkerPresentation({
       });
     }
 
-    for (const [placeId, { firstEvent, eventCount, colorKeys }] of eventsByPlaceId) {
+    for (const [placeId, { events: placeEvents, eventCount, colorKeys }] of eventsByPlaceId) {
       const place = resolvePlace(placeId);
       if (
         !place ||
@@ -528,20 +579,24 @@ export function createMapMarkerPresentation({
       if (!coordinates) {
         continue;
       }
+      const selectedEvent = selectUpcomingEvent(placeEvents, now);
+      if (!selectedEvent) {
+        continue;
+      }
       placements.push({
         type: "event",
         coordinates,
-        markerLabel: `${place.name}のイベント${eventCount}件を表示: ${firstEvent.title}`,
-        action: { kind: "event", eventKey: firstEvent.key },
+        markerLabel: `${place.name}のイベント${eventCount}件を表示: ${selectedEvent.title}`,
+        action: { kind: "event", eventKey: selectedEvent.key },
         placeId: place.id,
-        eventKey: firstEvent.key,
-        eventId: firstEvent.id,
+        eventKey: selectedEvent.key,
+        eventId: selectedEvent.id,
         eventCount,
         colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
     }
   } else {
-    for (const [placeId, { firstEvent, colorKeys }] of eventsByPlaceId) {
+    for (const [placeId, { events: placeEvents, colorKeys }] of eventsByPlaceId) {
       const place = resolvePlace(placeId);
       if (!place || place.floorId !== floorId || pinPlaceIds.has(placeId)) {
         continue;
@@ -550,14 +605,18 @@ export function createMapMarkerPresentation({
       if (!coordinates) {
         continue;
       }
+      const selectedEvent = selectUpcomingEvent(placeEvents, now);
+      if (!selectedEvent) {
+        continue;
+      }
       placements.push({
         type: "event",
         coordinates,
-        markerLabel: `${place.name}のイベントを表示: ${firstEvent.title}`,
-        action: { kind: "event", eventKey: firstEvent.key },
+        markerLabel: `${place.name}のイベントを表示: ${selectedEvent.title}`,
+        action: { kind: "event", eventKey: selectedEvent.key },
         placeId: place.id,
-        eventKey: firstEvent.key,
-        eventId: firstEvent.id,
+        eventKey: selectedEvent.key,
+        eventId: selectedEvent.id,
         colorKey: getAggregatedEventMarkerColorKey(colorKeys),
       });
     }

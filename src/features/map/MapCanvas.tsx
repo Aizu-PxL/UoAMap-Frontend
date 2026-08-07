@@ -18,6 +18,8 @@ import {
   EVENT_MARKER_RADIUS,
   EVENT_MARKER_SIZE,
   getEventCountWidth,
+  getNextEventSelectionChangeTimestamp,
+  selectUpcomingEvent,
   type EventMarkerPlacement,
   type MapMarkerPlacement,
 } from "./mapMarkerPresentation";
@@ -234,6 +236,7 @@ export function MapCanvas({
   routePresentation,
   onRequestBottomSheetSnap,
 }: MapCanvasProps) {
+  const [eventTimeVersion, setEventTimeVersion] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -271,6 +274,25 @@ export function MapCanvas({
   ].join(":");
   const routeFloorIds = routePresentation.floorIds;
   const hasVisibleRoute = routeFloorIds.has(floorId);
+
+  useEffect(() => {
+    const now = new Date();
+    const changeTimestamp = getNextEventSelectionChangeTimestamp(events, now);
+    if (changeTimestamp === null) {
+      return;
+    }
+
+    // setTimeoutの上限を超える場合も、上限到達時に再評価して次の境界へつなぐ。
+    const delay = Math.min(
+      Math.max(changeTimestamp - now.getTime(), 1),
+      2_147_483_647,
+    );
+    const timeout = window.setTimeout(
+      () => setEventTimeVersion((version) => version + 1),
+      delay,
+    );
+    return () => window.clearTimeout(timeout);
+  }, [events, eventTimeVersion]);
 
   // Store original viewBox for zoom clamping calculation
   const originalViewBoxRef = useRef<MapViewBox>(DEFAULT_VIEW_BOX);
@@ -579,6 +601,7 @@ export function MapCanvas({
     currentPlace,
     destinationPlace,
     events,
+    eventTimeVersion,
     floorId,
     focusPlace,
     loading,
@@ -720,10 +743,19 @@ export function MapCanvas({
             return;
           }
 
+          const selectedEvent = marker.placeId
+            ? selectUpcomingEvent(
+                events.filter((event) => event.placeId === marker.placeId),
+                new Date(),
+              )
+            : null;
           onRequestBottomSheetSnap(82);
           void navigate(
             {
-              pathname: getEventDetailPath(marker.action.eventKey, marker.eventId),
+              pathname: getEventDetailPath(
+                selectedEvent ? selectedEvent.key : marker.action.eventKey,
+                selectedEvent ? selectedEvent.id : marker.eventId,
+              ),
               search: location.search,
             },
             { state: location.state },
@@ -767,6 +799,7 @@ export function MapCanvas({
     currentPlace,
     destinationPlace,
     events,
+    eventTimeVersion,
     floorId,
     focusPlace,
     loading,
